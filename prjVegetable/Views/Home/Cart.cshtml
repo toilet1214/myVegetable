@@ -1,0 +1,226 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<style>
+    .h3 {
+        font-size: 50px;
+        position: relative;
+    }
+
+    .h6,
+    .h4,
+    .shipping-zip {
+        font-size: 25px;
+    }
+
+    .large-checkbox {
+        width: 15px;
+        /* 設定寬度 */
+        height: 15px;
+        /* 設定高度 */
+        transform: scale(1.2);
+        /* 放大比例 */
+        margin-right: 5px;
+        /* 調整與文字間距 */
+        margin-left: 10px;
+    }
+
+    textarea {
+        height: 100px;
+        width: 370px !important;
+        resize: none;
+        text-align: left !important;
+    }
+
+    .small-textbox {
+        width: 50px;
+        text-align: center;
+        margin-top: 7px;
+    }
+</style>
+<body>
+    <div class="container my-5">
+        <!--從這裡開始插入內容-->
+        <div>
+            <div class="py-4 mb-4 mb-lg-10" style="background-color: #bcaf8d">
+                <div class="container d-lg-flex justify-content-between align-items-center py-2 py-lg-4">
+                    <div class="pe-lg-4 text-center text-lg-start">
+                        <h1 class="h3 mb-0">購物車清單</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="container mb-4 mb-lg-10">
+                <div class="row g-4 g-lg-10">
+                    <div class="col-lg-8">
+                        <div class="border rounded-3 p-4">
+                            <!-- Product -->
+                            <div class="row align-items-center pb-4">
+                                <div class="col-12 col-md-auto">
+                                    <a href="#">
+                                        <img class="d-block mx-auto" width="120"
+                                             src="assets/img/product-card/product-beats-earphones.png" alt="Product">
+                                    </a>
+                                </div>
+                                <div class="col-12 col-md text-center text-md-start">
+                                    <h6 class="mb-0">
+                                        <a href="#" class="link-accent link-hover-primary"> Beats Studio Buds </a>
+                                    </h6>
+                                    <span class="d-block text-danger">$149</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <div class="mt-3 mt-md-0 quantity-products d-flex justify-content-center">
+                                        <button class="quantity-btn-minus"><i class="ri-subtract-line"></i></button>
+                                        <input id="quantityNumber1" class="quantity-number" type="number" value="1">
+                                        <button class="quantity-btn-plus"><i class="ri-add-line"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <button class="btn btn-link text-danger d-flex align-items-center px-0 pe-md-3 mx-auto"
+                                            type="button">
+                                        <i class="ri-close-circle-line fs-5 me-2"></i>
+                                        <span>移除</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="mb-4">
+                            <!-- Product -->
+                            <!-- Product -->
+                            <div class="row align-items-center pb-4">
+                                <div class="col-12 col-md-auto">
+                                    <a href="#">
+                                        <img class="d-block mx-auto" width="120"
+                                             src="assets/img/product-card/product-kardon-speaker.png" alt="Product">
+                                    </a>
+                                </div>
+                                <div class="col-12 col-md text-center text-md-start">
+                                    <h6 class="mb-0">
+                                        <a href="#" class="link-accent link-hover-primary"> Harman Kardon Onyx </a>
+                                    </h6>
+                                    <span class="d-block text-danger">$249</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <div class="mt-3 mt-md-0 quantity-products d-flex justify-content-center">
+                                        <button class="quantity-btn-minus"><i class="ri-subtract-line"></i></button>
+                                        <input id="quantityNumber2" class="quantity-number" type="number" value="1">
+                                        <button class="quantity-btn-plus"><i class="ri-add-line"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <button class="btn btn-link text-danger d-flex align-items-center px-0 pe-md-3 mx-auto"
+                                            type="button">
+                                        <i class="ri-close-circle-line fs-5 me-2"></i>
+                                        <span>移除</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="mb-4">
+                            <!-- Product -->
+                            <!-- Product -->
+                            <div class="row align-items-center pb-4">
+                                <div class="col-12 col-md-auto">
+                                    <a href="#">
+                                        <img class="d-block mx-auto" width="120"
+                                             src="assets/img/product-card/product-xiaomi-redmi.png" alt="Product">
+                                    </a>
+                                </div>
+                                <div class="col-12 col-md text-center text-md-start">
+                                    <h6 class="mb-0">
+                                        <a href="#" class="link-accent link-hover-primary"> Xiaomi Redmi 10 </a>
+                                    </h6>
+                                    <span class="d-block text-danger">$199</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <div class="mt-3 mt-md-0 quantity-products d-flex justify-content-center">
+                                        <button class="quantity-btn-minus"><i class="ri-subtract-line"></i></button>
+                                        <input id="quantityNumber3" class="quantity-number" type="number" value="1">
+                                        <button class="quantity-btn-plus"><i class="ri-add-line"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <button class="btn btn-link text-danger d-flex align-items-center px-0 pe-md-3 mx-auto"
+                                            type="button">
+                                        <i class="ri-close-circle-line fs-5 me-2"></i>
+                                        <span>移除</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <hr class="mb-4">
+                            <!-- Product -->
+                            <!-- Product -->
+                            <div class="row align-items-center pb-4">
+                                <div class="col-12 col-md-auto">
+                                    <a href="#">
+                                        <img class="d-block mx-auto" width="120"
+                                             src="assets/img/product-card/product-apple-watch.png" alt="Product">
+                                    </a>
+                                </div>
+                                <div class="col-12 col-md text-center text-md-start">
+                                    <h6 class="mb-0">
+                                        <a href="#" class="link-accent link-hover-primary"> Apple Watch 7 </a>
+                                    </h6>
+                                    <span class="d-block text-danger">$299</span>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <div class="mt-3 mt-md-0 quantity-products d-flex justify-content-center">
+                                        <button class="quantity-btn-minus"><i class="ri-subtract-line"></i></button>
+                                        <input id="quantityNumber4" class="quantity-number" type="number" value="1">
+                                        <button class="quantity-btn-plus"><i class="ri-add-line"></i></button>
+                                    </div>
+                                </div>
+                                <div class="col-12 col-md-auto">
+                                    <button class="btn btn-link text-danger d-flex align-items-center px-0 pe-md-3 mx-auto"
+                                            type="button">
+                                        <i class="ri-close-circle-line fs-5 me-2"></i>
+                                        <span>移除</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="card border" style="background-color:#bcaf8d">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <h4>總額</h4>
+                                    <h4>$949.00</h4>
+                                </div>
+                                <hr class="mb-4">
+                                <div class="mb-4">
+                                    <label for="" class="formlabel shipping-detail">收貨人資料:</label></br>
+                                    <label for="shipping-customer-name" class="formlabel">姓名</label></br>
+                                    <input type="text" class="shipping-customer-name"></br>
+                                    <label for="shipping-customer-phone" class="formlabel">電話</label></br>
+                                    <input type="text" class="shipping-customer-phone">
+                                </div>
+                                <h6 class="shipping-detail">配送地址:</h6>
+                                <form class="needs-validation" novalidate="">
+                                    <div class="mb-4">
+                                        <input type="text" class="shipping-customer-address large-textbox"></br>
+                                        <label class="form-label" for="shipping-zip">
+                                            郵遞區號
+                                            <input type="text" id="shipping-zip" class="small-textbox">
+                                        </label></br>
+                                        <input type="checkbox" id="SameAsMember" class="large-checkbox"> 同會員資料</br>
+                                        <div class="invalid-feedback">地址填寫不完全</div>
+                                    </div>
+                                    <hr class="mb-4">
+                                    <div class="mb-4">
+                                        <label class="form-label" for="shipping-note">備註:</label>
+                                        <textarea class="form-control" id="shipping-note"></textarea>
+                                    </div>
+                                    <button class="btn btn-primary btn-shadow d-block w-100"
+                                            type="submit">
+                                        確認付款
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
