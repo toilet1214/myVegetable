@@ -8,5 +8,30 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
+
+        public IActionResult Update()
+        {
+            return View();
+        }
+
+        public IActionResult Report()
+        {
+            return View();
+        }
+
+        public IActionResult History()
+        {
+            return View();
+        }
+
+        public IActionResult Order()
+        {
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
     }
 }
