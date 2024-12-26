@@ -29,7 +29,7 @@
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav mx-auto mb-lg-0 ms-5 mt-1">
                             <li class="nav-item me-3">
-                                <a class="nav-link" href="/">首頁</a>
+                                <a class="nav-link" href="@Url.Action("Index", "Home")">首頁</a>
                             </li>
                             <li class="nav-item me-3">
                                 <a class="nav-link" href="./product-list.html">產品列表</a>
@@ -56,9 +56,28 @@
                 </div>
             </nav>
         </header>
-        <div class="pt-5">
-            @RenderBody()
-        </div>
+        <div class="container-fluid mt-5 pt-5">
+  <div class="row ">
+      <!-- 側邊欄 -->
+      <div class="col-md-3 ">
+
+          <nav class="nav  flex-column">
+              <a class="nav-link w-50" href="#">個人資料</a>
+              <a class="nav-link w-50" href="#">訂單資訊</a>
+              <a class="nav-link w-50" href="#">歷史訂單</a>
+              <a class="nav-link w-50" href="#">問題回報</a>
+          </nav>
+
+      </div>
+
+      <!-- 內容區域 -->
+      <div class="col-md-9 ">
+          <div id="main-content">
+                        @RenderBody()  <!-- 渲染頁面的具體內容 -->
+          </div>
+      </div>
+  </div>
+</div>
     </main>
     <!-- footer Start-->
     <footer class="bg-primary py-4 mt-5 text-center text-white">
@@ -233,7 +252,7 @@
                             </div>
                             <div class="d-flex login">
                                 <a href="" class="text-end me-3">忘記密碼</a>
-                                <a href="@Url.Action("Register", "Home")" class="text-end">立即註冊</a>
+                                <a href="" class="text-end">立即註冊</a>
                             </div>
                         </div>
                         <div class="text-center" style="margin-top: 80px;">

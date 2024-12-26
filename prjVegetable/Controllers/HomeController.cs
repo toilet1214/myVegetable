@@ -33,7 +33,7 @@ namespace prjVegetable.Controllers
             return View();
         }
 
-        public IActionResult ProductList()
+        public IActionResult Register()
         {
             return View();
         }

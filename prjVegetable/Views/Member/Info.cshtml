@@ -1,0 +1,79 @@
+﻿@{
+    Layout = "~/Views/Shared/_MemberCenter.cshtml";
+}
+
+<div class="container mt-5 mx-5 col-md-6 ">
+    <div class="card-header bg-primary text-white text-center" style="border-top-left-radius: 15px; border-top-right-radius: 15px; width:30%;">
+        <h3 class="mb-0">會員資料</h3>
+    </div>
+    <!-- 外層卡片，並加上圓角 -->
+    <div class="card shadow" style="border-radius: 15px;border-top-left-radius: 0;">
+        <!-- 標題區塊放到卡片外部 -->
+
+        <div class="card-body">
+            <form>
+                <!-- 會員帳號 -->
+                <div class="mb-3">
+                    <label for="username" class="form-label">帳號</label>
+                    <input type="text" class="form-control text-start w-75 border-1 border-dark disabled" id="username" value="您的帳號" required>
+                </div>
+                <!-- 會員密碼 -->
+                <div class="mb-3">
+                    <label for="password" class="form-label">密碼</label>
+                    <input type="password" class="form-control text-start w-75 border-1 border-dark " id="password" value="您的密碼" required>
+                </div>
+                <!-- 會員姓名 -->
+                <div class="mb-3">
+                    <label for="name" class="form-label">姓名</label>
+                    <input type="text" class="form-control text-start w-75 border-1 border-dark " id="name" placeholder="輸入您的姓名" required>
+                </div>
+                <!-- 生日與性別並排 -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="birthdate" class="form-label">生日</label>
+                        <input type="date" class="form-control text-start w-50 border-1 border-dark " id="birthdate" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="gender" class="form-label">性別</label>
+                        <select class="form-select border-1 border-dark w-50" id="gender" required>
+                            <option value="" disabled selected>選擇性別</option>
+                            <option value="male">男性</option>
+                            <option value="female">女性</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- 會員手機 -->
+                <div class="mb-3">
+                    <label for="mobile" class="form-label">手機</label>
+                    <input type="tel" class="form-control text-start w-75 border-1 border-dark " id="mobile" placeholder="輸入您的手機號碼" required>
+                </div>
+                <!-- 會員家電 -->
+                <div class="mb-3">
+                    <label for="phone" class="form-label">市話</label>
+                    <input type="tel" class="form-control text-start w-75 border-1 border-dark " id="phone" value="輸入您的家用電話">
+                </div>
+                <!-- 會員地址 -->
+                <div class="mb-3">
+                    <label for="address" class="form-label">地址</label>
+                    <input type="text" class="form-control text-start w-75 border-1 border-dark " id="address" placeholder="輸入您的地址" required>
+                </div>
+                <!-- 會員Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control text-start w-75 border-1 border-dark " id="email" placeholder="輸入您的電子郵件" required>
+                </div>
+                <!-- 會員統編 -->
+                <div class="mb-3">
+                    <label for="taxId" class="form-label">統編</label>
+                    <input type="text" class="form-control text-start w-75 border-1 border-dark " id="taxId" placeholder="輸入您的統一編號">
+                </div>
+                <!-- 按鈕 -->
+                <div class="d-flex justify-content-end mt-4">
+                    <button type="submit" class="btn btn-primary">保存變更</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
