@@ -1,0 +1,104 @@
+﻿@model prjVegetable.Models.TPerson
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>TPerson</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FPId" />
+            <div class="form-group">
+                <label asp-for="FPName" class="control-label"></label>
+                <input asp-for="FPName" class="form-control" />
+                <span asp-validation-for="FPName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPAccount" class="control-label"></label>
+                <input asp-for="FPAccount" class="form-control" />
+                <span asp-validation-for="FPAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPPassword" class="control-label"></label>
+                <input asp-for="FPPassword" class="form-control" />
+                <span asp-validation-for="FPPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPGender" class="control-label"></label>
+                <input asp-for="FPGender" class="form-control" />
+                <span asp-validation-for="FPGender" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPBirth" class="control-label"></label>
+                <input asp-for="FPBirth" class="form-control" />
+                <span asp-validation-for="FPBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPPhone" class="control-label"></label>
+                <input asp-for="FPPhone" class="form-control" />
+                <span asp-validation-for="FPPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPTel" class="control-label"></label>
+                <input asp-for="FPTel" class="form-control" />
+                <span asp-validation-for="FPTel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPAddress" class="control-label"></label>
+                <input asp-for="FPAddress" class="form-control" />
+                <span asp-validation-for="FPAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPEmail" class="control-label"></label>
+                <input asp-for="FPEmail" class="form-control" />
+                <span asp-validation-for="FPEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPUinvoice" class="control-label"></label>
+                <input asp-for="FPUinvoice" class="form-control" />
+                <span asp-validation-for="FPUinvoice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPStatus" class="control-label"></label>
+                <input asp-for="FPStatus" class="form-control" />
+                <span asp-validation-for="FPStatus" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPEmp" class="control-label"></label>
+                <input asp-for="FPEmp" class="form-control" />
+                <span asp-validation-for="FPEmp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPTelEmptel" class="control-label"></label>
+                <input asp-for="FPTelEmptel" class="form-control" />
+                <span asp-validation-for="FPTelEmptel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPCreatedAt" class="control-label"></label>
+                <input asp-for="FPCreatedAt" class="form-control" />
+                <span asp-validation-for="FPCreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPEditor" class="control-label"></label>
+                <input asp-for="FPEditor" class="form-control" />
+                <span asp-validation-for="FPEditor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

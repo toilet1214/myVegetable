@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>員工資料</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/themes/base/theme.min.css">
+</head>
+
+<body>
+    <main>
+        <div class="container">
+            <div class="row d-block bg-primary text-white">
+                <p>頁首</p>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <!--側邊欄 start-->
+                <div class="col-3">
+                    <div class="accordion" id="accordionPanelsStayOpenExample">
+                        <!-- 基本資料區域 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseOne">
+                                    基本資料建檔
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingOne">
+                                <div class="accordion-body">
+                                    <a href="~/TPersons/Index" class="btn btn-primary d-block mb-1 w-100" )>員工資料維護</a>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">會員資料維護</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">供應商資料維護</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">商品資料維護</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 基本資料區域 end -->
+                        <!-- 盤點作業 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseTwo">
+                                    盤點系統
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingTwo">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">庫存盤點單</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">庫存調整</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 盤點作業 end -->
+                        <!-- 發票管理 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseThree">
+                                    發票管理
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingThree">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">出貨發票管理</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">進貨發票管理</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 發票管理 end -->
+                        <!-- 採購管理 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseFour">
+                                    採購管理
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingFour">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">採購作業管理</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">報價作業管理</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 採購管理 end -->
+                        <!-- 進出貨作業 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingFive">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseFive" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseFive">
+                                    進出貨作業
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingFive">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">進貨作業管理</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">出貨作業管理</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 進出貨作業 end -->
+                        <!-- 訂單管理 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingSix">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseSix" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseSix">
+                                    訂單管理
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseSix" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingSix">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">訂單管理</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 訂單管理 end -->
+                        <!-- 帳款管理 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingSeven">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseSeven" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseSeven">
+                                    帳款管理
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseSeven" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingSeven">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">應收帳款管理</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">應付帳款管理</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 帳款管理 end -->
+                        <!-- 網頁管理 start -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="panelsStayOpen-headingEight">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                        data-bs-target="#panelsStayOpen-collapseEight" aria-expanded="false"
+                                        aria-controls="panelsStayOpen-collapseEight">
+                                    網頁管理
+                                </button>
+                            </h2>
+                            <div id="panelsStayOpen-collapseEight" class="accordion-collapse collapse"
+                                 aria-labelledby="panelsStayOpen-headingEight">
+                                <div class="accordion-body">
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">輪播圖片變更</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">熱門消息變更</button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 網頁管理 end -->
+                    </div>
+                </div>
+                <!--側邊欄 end-->
+                <div class="col-9">
+                    <!-- 工具列 start -->
+                    <div class="row  d-block mb-3">
+                        <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-primary"><i class="bi bi-search me-2"></i>搜尋</button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="bi bi-skip-start-fill me-2"></i>第一筆
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="bi bi-caret-left-fill me-2"></i>上一筆
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="bi bi-caret-right-fill me-2"></i>下一筆
+                            </button>
+                            <button type="button" class="btn btn-primary">
+                                <i class="bi bi-skip-end-fill me-2"></i>最後一筆
+                            </button>
+                            <button type="button" class="btn btn-primary"><i class="bi bi-file-earmark me-2"></i>新增</button>
+                            <button type="button" class="btn btn-primary"><i class="bi bi-pencil me-2"></i>修改</button>
+                            <button type="button" class="btn btn-primary"><i class="bi bi-trash me-2"></i>刪除</button>
+                            <button type="button" class="btn btn-primary"><i class="bi bi-floppy me-2"></i>儲存</button>
+                        </div>
+                    </div>
+                    <!-- 工具列 end -->
+                    <!-- 表單 start -->
+                    @RenderBody()
+                    <!-- 表單 end -->
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="bg-primary py-4 mt-5 text-center">
+        <div class="container">
+            <div class="row d-block bg-primary text-white mt-3">
+                <p>頁尾</p>
+            </div>
+        </div>
+    </footer>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js"></script>
+    <script src="js/datepicker-zh-TW.js">//日期中文化</script>
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                changeMonth: true,
+                changeYear: true,
+                firstDay: 1,
+                yearRange: "1960:2044"
+            });
+        });
+    </script>
+</body>
+
+</html>
