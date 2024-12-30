@@ -34,7 +34,7 @@ namespace prjVegetable.Controllers
             }
 
             var tPerson = await _context.TPeople
-                .FirstOrDefaultAsync(m => m.FPId == id);
+                .FirstOrDefaultAsync(m => m.FId == id);
             if (tPerson == null)
             {
                 return NotFound();
@@ -88,7 +88,7 @@ namespace prjVegetable.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("FPId,FPName,FPAccount,FPPassword,FPGender,FPBirth,FPPhone,FPTel,FPAddress,FPEmail,FPUinvoice,FPStatus,FPEmp,FPTelEmptel,FPCreatedAt,FPEditor")] TPerson tPerson)
         {
-            if (id != tPerson.FPId)
+            if (id != tPerson.FId)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace prjVegetable.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TPersonExists(tPerson.FPId))
+                    if (!TPersonExists(tPerson.FId))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace prjVegetable.Controllers
             }
 
             var tPerson = await _context.TPeople
-                .FirstOrDefaultAsync(m => m.FPId == id);
+                .FirstOrDefaultAsync(m => m.FId == id);
             if (tPerson == null)
             {
                 return NotFound();
@@ -151,7 +151,7 @@ namespace prjVegetable.Controllers
 
         private bool TPersonExists(int id)
         {
-            return _context.TPeople.Any(e => e.FPId == id);
+            return _context.TPeople.Any(e => e.FId == id);
         }
     }
 }

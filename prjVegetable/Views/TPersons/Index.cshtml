@@ -17,17 +17,17 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.FPName)
+                    @Html.DisplayNameFor(model => model.FName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.FPAccount)
+                    @Html.DisplayNameFor(model => model.FAccount)
                 </th>                
                 <th>
-                    @Html.DisplayNameFor(model => model.FPPhone)
+                    @Html.DisplayNameFor(model => model.FPhone)
                 </th>               
                 
                 <th>
-                    @Html.DisplayNameFor(model => model.FPStatus)
+                    @Html.DisplayNameFor(model => model.FPermissiion)
                 </th>
                 
                 <th></th>
@@ -38,22 +38,22 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPName)
+                        @Html.DisplayFor(modelItem => item.FName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPAccount)
+                        @Html.DisplayFor(modelItem => item.FAccount)
                     </td>                    
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPPhone)
+                        @Html.DisplayFor(modelItem => item.FPhone)
                     </td>                   
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPStatus)
+                        @Html.DisplayFor(modelItem => item.FPermissiion)
                     </td>
                     
                     <td>
-                        <a asp-action="Edit" asp-route-id="@item.FPId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FPId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FPId">Delete</a>
+                        <a asp-action="Edit" asp-route-id="@item.FId">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.FId">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.FId">Delete</a>
                     </td>
                 </tr>
             }

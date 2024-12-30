@@ -2,7 +2,7 @@
 
 namespace prjVegetable.Models
 {
-    public class TPersonWrap
+    public class TMemberWrap
     {
         private TPerson _person = null;
         public TPerson person
@@ -10,18 +10,18 @@ namespace prjVegetable.Models
             get { return _person; }
             set { _person = value; }
         }
-        public TPersonWrap() 
-        { 
-        _person = new TPerson();
+        public TMemberWrap()
+        {
+            _person = new TPerson();
         }
-        
+
         public int FId
         {
             get { return _person.FId; }
             set { _person.FId = value; }
         }
 
-        
+
         public string FName
         {
             [DisplayName("姓名")]
@@ -56,7 +56,7 @@ namespace prjVegetable.Models
             get { return _person.FBirth; }
             set { _person.FBirth = value; }
         }
-        
+
         [DisplayName("手機")]
         public string FPhone
         {
