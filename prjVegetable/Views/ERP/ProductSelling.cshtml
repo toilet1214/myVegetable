@@ -39,7 +39,7 @@
 
     table,
     th,
-    td {
+    td{
         border: 1px solid #ccc;
     }
 
@@ -69,6 +69,14 @@
       }
       .card{background:lightgray;
       margin-top:-15px;}
+
+    .form-select {
+        border: 1px solid black; /* 添加黑色邊框 */
+        width: 200px; /* 設定寬度 */
+        height: 35px; /* 設定高度 */
+        box-sizing: border-box; /* 確保寬度包括內邊距和邊框 */
+    }
+    
 </style>
 
 
@@ -106,16 +114,16 @@
                 <div class="row mb-3">
                     <label class="col-md-2 col-form-label">出貨別</label>
                     <div class="col-md-4">
-                        <select class="form-select">
+                        <select class="form-select" name="product-type">
                             <option>蔬菜</option>
                             <option>水果</option>
                         </select>
                     </div>
                     <label class="col-md-2 col-form-label">廠商</label>
                     <div class="col-md-4">
-                        <select class="form-select">
+                        <select class="form-select" name="product-provider">
                             <option>廠商1</option>
-                            <option>廠商  2</option>
+                            <option>廠商2</option>
                         </select>
                     </div>
                 </div>

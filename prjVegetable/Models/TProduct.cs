@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 
 namespace prjVegetable.Models;
@@ -24,4 +25,5 @@ public partial class TProduct
     public string FOrigin { get; set; } = null!;
 
     public string FEditer { get; set; } = null!;
+    
 }

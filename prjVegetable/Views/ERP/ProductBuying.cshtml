@@ -69,6 +69,13 @@
       }
       .card{background:lightgray;
       margin-top:-15px;}
+
+    .form-select {
+        border: 1px solid black; /* 添加黑色邊框 */
+        width: 200px; /* 設定寬度 */
+        height: 35px; /* 設定高度 */
+        box-sizing: border-box; /* 確保寬度包括內邊距和邊框 */
+    }
 </style>
 
 
@@ -98,25 +105,42 @@
                     <div class="col-md-4">
                         <input type="text" class="form-control">
                     </div>
-                    <label class="col-md-2 col-form-label">發票日期</label>
-                    <div class="col-md-4">
-                        <input type="date" class="form-control">
-                    </div>
                 </div>
                 <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">進貨別</label>
+                    <label class="col-md-2 col-form-label">商品類別</label>
                     <div class="col-md-4">
                         <select class="form-select">
                             <option>蔬菜</option>
                             <option>水果</option>
                         </select>
                     </div>
-                    <label class="col-md-2 col-form-label">廠商</label>
+                    <label class="col-md-2 col-form-label">供應商</label>
                     <div class="col-md-4">
                         <select class="form-select">
-                            <option>廠商1</option>
-                            <option>廠商  2</option>
+                            <option>供應商1</option>
+                            <option>供應商2</option>
                         </select>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">進貨商品</label>
+                    <div class="col-md-4">
+                        <select class="form-select">
+                            <option>商品1</option>
+                            <option>商品2</option>
+                        </select>
+                    </div>
+                    <label class="col-md-2 col-form-label">進貨數量</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">商品單價</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">進貨總額</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -127,7 +151,7 @@
                 </div>
             </div>
         </div>
-
+        
         <!-- 進貨明細 -->
         <div class="card mb-4">
             <div class="card-body">
@@ -175,7 +199,6 @@
                 </div>
             </div>
         </div>
-
         <!-- Footer Info -->
         <div class="card mb-4">
             <div class="card-body">
@@ -183,21 +206,17 @@
                 <div class="row mb-3">
                     <label class="col-md-2 col-form-label">建檔人員</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control">
+                        <select class="form-select" name="Creator">
+                            <option>建檔人員1</option>
+                            <option>建檔人員2</option>
+                        </select>
                     </div>
                     <label class="col-md-2 col-form-label">修改人員</label>
                     <div class="col-md-4">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">付款期限</label>
-                    <div class="col-md-4">
-                        <input type="date" class="form-control">
-                    </div>
-                    <label class="col-md-2 col-form-label">進貨額</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control">
+                        <select class="form-select" name="Editor">
+                            <option>修改人員1</option>
+                            <option>修改人員2</option>
+                        </select>
                     </div>
                 </div>
             </div>
