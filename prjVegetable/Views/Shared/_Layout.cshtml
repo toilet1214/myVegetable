@@ -216,6 +216,7 @@
                 </div>
                 <div class="modal-body">
                     <form action="" class="needs-validation" novalidate>
+                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
                         <div class="form-group mb-3">
                             <input type="text" class="form-control-login custom-input" id="account" name="account"
                                    placeholder="請輸入Email / 手機號碼" data-placeholder="請輸入Email / 手機號碼" required>
