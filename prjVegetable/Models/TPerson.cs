@@ -31,7 +31,7 @@ public partial class TPerson
 
     public string FEmp { get; set; } = null!;
 
-    public string FTelEmptel { get; set; } = null!;
+    public string FEmpTel { get; set; } = null!;
 
     public DateTime? FCreatedAt { get; set; }
 

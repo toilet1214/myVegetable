@@ -7,23 +7,25 @@ public partial class TInvoice
 {
     public int FId { get; set; }
 
-    public string FInvoiceNumber { get; set; } = null!;
+    public string FNumber { get; set; } = null!;
 
-    public int FDate { get; set; }
+    public DateTime FDate { get; set; }
 
     public string FForm { get; set; } = null!;
 
-    public string FCustomerId { get; set; } = null!;
+    public int FCustomerId { get; set; }
 
-    public string FCustomerNumber { get; set; } = null!;
+    public string FCustomerUbn { get; set; } = null!;
 
-    public string FSupplierId { get; set; } = null!;
+    public int FSupplierId { get; set; }
 
-    public string FSupplierNumber { get; set; } = null!;
+    public string FSupplierUbn { get; set; } = null!;
 
-    public string FInOut { get; set; } = null!;
+    public int FInOut { get; set; }
 
-    public string FStatus { get; set; } = null!;
+    public int FStatus { get; set; }
 
     public int FTotal { get; set; }
+
+    public string? FEditer { get; set; }
 }

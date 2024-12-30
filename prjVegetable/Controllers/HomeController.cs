@@ -37,6 +37,14 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Register(TPerson P)
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            db.TPeople.Add(P);
+            db.SaveChanges();
+            return View(Index);
+        }
 
         public IActionResult Privacy()
         {
