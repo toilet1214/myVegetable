@@ -12,6 +12,9 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
-
+        public IActionResult ProductSelling()
+        {
+            return View();
+        }
     }
 }
