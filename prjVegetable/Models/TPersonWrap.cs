@@ -10,21 +10,21 @@ namespace prjVegetable.Models
             get { return _person; }
             set { _person = value; }
         }
-        public TPersonWrap() 
-        { 
-        _person = new TPerson();
+        public TPersonWrap()
+        {
+            _person = new TPerson();
         }
-        
+
         public int FId
         {
             get { return _person.FId; }
             set { _person.FId = value; }
         }
 
-        
+        [DisplayName("姓名")]
         public string FName
         {
-            [DisplayName("姓名")]
+
             get { return _person.FName; }
             set { _person.FName = value; }
         }
@@ -56,7 +56,7 @@ namespace prjVegetable.Models
             get { return _person.FBirth; }
             set { _person.FBirth = value; }
         }
-        
+
         [DisplayName("手機")]
         public string FPhone
         {

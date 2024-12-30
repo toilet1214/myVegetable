@@ -1,7 +1,8 @@
-﻿@model prjVegetable.Models.TPerson
+﻿@model prjVegetable.Models.TPersonWrap
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
 <h1>Edit</h1>
@@ -28,11 +29,7 @@
                 <input asp-for="FPassword" class="form-control" />
                 <span asp-validation-for="FPassword" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FGender" class="control-label"></label>
-                <input asp-for="FGender" class="form-control" />
-                <span asp-validation-for="FGender" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <label asp-for="FBirth" class="control-label"></label>
                 <input asp-for="FBirth" class="form-control" />
@@ -99,6 +96,6 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+@* @section Scripts { *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* } *@

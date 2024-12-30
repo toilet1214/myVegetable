@@ -1,63 +1,121 @@
-﻿@model IEnumerable<prjVegetable.Models.TPerson>
+﻿@model IEnumerable<prjVegetable.Models.TPersonWrap>
 
 @{
     ViewData["Title"] = "Index";
-}
-@{
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>員工資料維護</h1>
+<h1>Index</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">新增員工資料</a>
+    <a asp-action="Create">Create New</a>
 </p>
-<div class="col-9">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.FName)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.FAccount)
-                </th>                
-                <th>
-                    @Html.DisplayNameFor(model => model.FPhone)
-                </th>               
-                
-                <th>
-                    @Html.DisplayNameFor(model => model.FPermissiion)
-                </th>
-                
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FAccount)
-                    </td>                    
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FPhone)
-                    </td>                   
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FPermissiion)
-                    </td>
-                    
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@item.FId">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@item.FId">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@item.FId">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
-
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAccount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPassword)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FGender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEmail)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUbn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPermissiion)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEmp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEmpTel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEditor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FAccount)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FPassword)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FGender)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FBirth)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FPhone)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FTel)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FAddress)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FEmail)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FUbn)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FPermissiion)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FEmp)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FEmpTel)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FCreatedAt)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.person.FEditor)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FId">Edit</a> |
+                @*<a asp-action="Details" asp-route-id="@item.FId">Details</a> |*@
+                @Html.ActionLink("移除", "Delete", "Tpersons", new { id = item.person.FId },
+                             new { onclick = "return confirm('確定要刪除嗎?')" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

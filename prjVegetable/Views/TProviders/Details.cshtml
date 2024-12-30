@@ -1,0 +1,72 @@
+﻿@model prjVegetable.Models.TProvider
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>TProvider</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FUbn)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FUbn)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FTel)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FTel)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FConnect)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FConnect)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FAccountant)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FAccountant)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FAddress)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FAddress)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FDelivery)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FDelivery)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FInvoiceadd)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FInvoiceadd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FEditer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.FEditer)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model?.FId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

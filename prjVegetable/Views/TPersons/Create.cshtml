@@ -12,18 +12,28 @@
 <form asp-action="Create">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FId" class="control-label">編號</label>
-                <input asp-for="FId" class="form-control" type="text" />
-                <span asp-validation-for="FId" class="text-danger"></span>
-            </div>
-        </div>
+        
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FName" class="control-label">姓名</label>
                 <input asp-for="FName" class="form-control" type="text" />
-                <span asp-validation-for="FName" class="text-danger"></span>
+                @* <span asp-validation-for="FName" class="text-danger"></span> *@
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FUbn" class="control-label">統編</label>
+                <input asp-for="FUbn" class="form-control" type="text" />
+                @* <span asp-validation-for="FUbn" class="text-danger"></span> *@
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FPermissiion" class="control-label">權限</label>
+                <input asp-for="FPermissiion" class="form-control" type="text" />
+                @* <span asp-validation-for="FPermissiion" class="text-danger"></span> *@
             </div>
         </div>
     </div>
@@ -32,14 +42,14 @@
             <div class="form-group">
                 <label asp-for="FAccount" class="control-label">帳號</label>
                 <input asp-for="FAccount" class="form-control" />
-                <span asp-validation-for="FAccount" class="text-danger"></span>
+                @* <span asp-validation-for="FAccount" class="text-danger"></span> *@
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FPassword" class="control-label">密碼</label>
                 <input asp-for="FPassword" class="form-control" />
-                <span asp-validation-for="FPassword" class="text-danger"></span>
+                @* <span asp-validation-for="FPassword" class="text-danger"></span> *@
             </div>
         </div>
     </div>
@@ -58,14 +68,14 @@
                     <input asp-for="FGender" class="form-check-input" type="radio" id="inlineRadio2" value="1">
                     <label class="form-check-label" for="inlineRadio2">女</label>
                 </div>
-                <span asp-validation-for="FGender" class="text-danger"></span>
+                @* <span asp-validation-for="FGender" class="text-danger"></span> *@
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FBirth" class="control-label">生日</label>
                 <input asp-for="FBirth" class="form-control" />
-                <span asp-validation-for="FBirth" class="text-danger"></span>
+                @* <span asp-validation-for="FBirth" class="text-danger"></span> *@
             </div>
         </div>        
     </div>
@@ -74,14 +84,14 @@
             <div class="form-group">
                 <label asp-for="FPhone" class="control-label">手機</label>
                 <input asp-for="FPhone" class="form-control" />
-                <span asp-validation-for="FPhone" class="text-danger"></span>
+                @* <span asp-validation-for="FPhone" class="text-danger"></span> *@
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FTel" class="control-label">家用電話</label>
                 <input asp-for="FTel" class="form-control" />
-                <span asp-validation-for="FTel" class="text-danger"></span>
+                @* <span asp-validation-for="FTel" class="text-danger"></span> *@
             </div>
         </div>
     </div>
@@ -90,14 +100,14 @@
             <div class="form-group">
                 <label asp-for="FEmp" class="control-label">緊急聯絡人</label>
                 <input asp-for="FEmp" class="form-control" />
-                <span asp-validation-for="FEmp" class="text-danger"></span>
+                @* <span asp-validation-for="FEmp" class="text-danger"></span> *@
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FEmpTel" class="control-label">緊急聯絡人電話</label>
                 <input asp-for="FEmpTel" class="form-control" />
-                <span asp-validation-for="FEmpTel" class="text-danger"></span>
+                @* <span asp-validation-for="FEmpTel" class="text-danger"></span> *@
             </div>
         </div>
     </div>
@@ -105,14 +115,14 @@
         <div class="form-group">
             <label asp-for="FAddress" class="control-label">地址</label>
             <input asp-for="FAddress" class="form-control" />
-            <span asp-validation-for="FAddress" class="text-danger"></span>
+            @* <span asp-validation-for="FAddress" class="text-danger"></span> *@
         </div>
     </div>
     <div class="row mb-3">
         <div class="form-group">
             <label asp-for="FEmail" class="control-label">電子郵件</label>
             <input asp-for="FEmail" class="form-control" />
-            <span asp-validation-for="FEmail" class="text-danger"></span>
+            @* <span asp-validation-for="FEmail" class="text-danger"></span> *@
         </div>
     </div>
     <div class="row mb-3">
@@ -120,21 +130,21 @@
             <div class="form-group">
                 <label asp-for="FCreatedAt" class="control-label">建檔時間</label>
                 <input asp-for="FCreatedAt" class="form-control" />
-                <span asp-validation-for="FCreatedAt" class="text-danger"></span>
+                @* <span asp-validation-for="FCreatedAt" class="text-danger"></span> *@
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FEditor" class="control-label">建檔人</label>
                 <input asp-for="FEditor" class="form-control" />
-                <span asp-validation-for="FEditor" class="text-danger"></span>
+                @* <span asp-validation-for="FEditor" class="text-danger"></span> *@
             </div>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-6">
             <div>
-                <a asp-action="Index">回員工資料列表</a>
+                <a asp-action="Index">回員工與會員列表</a>
             </div>
         </div>
         <div class="col-6">

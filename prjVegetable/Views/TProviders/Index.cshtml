@@ -1,0 +1,85 @@
+﻿@model IEnumerable<prjVegetable.Models.TProvider>
+
+@{
+    ViewData["Title"] = "Index";
+}
+@{
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>廠商資料列表</h1>
+
+<p>
+    <a asp-action="Create">新增廠商資料</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUbn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FConnect)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAccountant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDelivery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceadd)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEditer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FUbn)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTel)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FConnect)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAccountant)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FDelivery)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FInvoiceadd)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FEditer)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a> |
+                <a asp-action="Delete" asp-route-id="@item.FId">刪除資料</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
