@@ -7,7 +7,7 @@ public partial class TPurchaseDetail
 {
     public int FId { get; set; }
 
-    public string FPurchaseId { get; set; } = null!;
+    public int FPurchaseId { get; set; }
 
     public string FProductName { get; set; } = null!;
 

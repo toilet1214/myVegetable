@@ -47,7 +47,7 @@ namespace prjVegetable.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-   
+
 
         public IActionResult Forgot()
         {
