@@ -67,173 +67,140 @@
         width: 400px !important; 
         height: 200px !important;
       }
+      .card{background:lightgray;
+      margin-top:-15px;}
 </style>
 
 
 <body>
     <div class="container">
-        <!-- Header / Label -->
+        <!-- Header -->
         <div class="header">
-            <span class="label-title">進貨單維護</span>
+            <h2 class="label-title">進貨單維護</h2>
         </div>
-        <!-- Margin Sections -->
-        <div class="margin-section mb-3">
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">進貨日期</label>
-                <div class="col-sm-10">
-                    <input type="date" class="form-control">
+
+        <!-- 進貨資料 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="label-title">進貨資料</h5>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">進貨日期</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">進貨單號</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">進貨單號</label>
-                <div class="col-sm-8">
-                    <input type="text" class="form-control">
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">發票號碼</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">發票日期</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control">
+                    </div>
                 </div>
-                <div class="col-sm-2">
-                    <button class="btn-img"></button>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">進貨別</label>
+                    <div class="col-md-4">
+                        <select class="form-select">
+                            <option>蔬菜</option>
+                            <option>水果</option>
+                        </select>
+                    </div>
+                    <label class="col-md-2 col-form-label">廠商</label>
+                    <div class="col-md-4">
+                        <select class="form-select">
+                            <option>廠商1</option>
+                            <option>廠商  2</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">發票號碼</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">進貨別</label>
-                <div class="col-sm-10">
-                    <select class="form-select">
-                        <option>選項1</option>
-                        <option>選項2</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">廠商</label>
-                <div class="col-sm-8">
-                    <select class="form-select">
-                        <option>選項1</option>
-                        <option>選項2</option>
-                    </select>
-                </div>
-                <div class="col-sm-2">
-                    <label class="form-label">廠商名稱</label>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">發票日期</label>
-                <div class="col-sm-10">
-                    <input type="date" class="form-control">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">備註</label>
-                <div class="col-sm-10">
-                    <textarea class="form-control" id="text-notes"></textarea>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">發票格式</label>
-                <div class="col-sm-10">
-                    <select class="form-select">
-                        <option>選項1</option>
-                        <option>選項2</option>
-                    </select>
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">採購人員</label>
-                <div class="col-sm-10">
-                    <select class="form-select">
-                        <option>選項1</option>
-                        <option>選項2</option>
-                    </select>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">備註</label>
+                    <div class="col-md-10">
+                        <textarea class="form-control"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Label for detail section -->
-        <div class="margin-section mb-3">
-            <label class="label-title">進貨明細</label>
-            <div class="mb-3">
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="itemOption" id="itemCode" value="itemCode">
-                    <label class="form-check-label" for="itemCode">品名編號</label>
+        <!-- 進貨明細 -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="label-title">進貨明細</h5>
+                <div class="table-container">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>品名編號</th>
+                                <th>品名規格</th>
+                                <th>數量</th>
+                                <th>單位</th>
+                                <th>類別名稱</th>
+                                <th>單價</th>
+                                <th>折數</th>
+                                <th>金額</th>
+                                <th>備註</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>DC007</td>
+                                <td>EB235 洗髮乳(白)</td>
+                                <td>10</td>
+                                <td>個</td>
+                                <td>一般商品</td>
+                                <td>250</td>
+                                <td>10.00</td>
+                                <td>2500</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>DC008</td>
+                                <td>國際經典香水</td>
+                                <td>5</td>
+                                <td>瓶</td>
+                                <td>一般商品</td>
+                                <td>200</td>
+                                <td>10.00</td>
+                                <td>1000</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="itemOption" id="barcode" value="barcode">
-                    <label class="form-check-label" for="barcode">國際條碼</label>
-                </div>
-            </div>
-
-            <!-- SQL Data Table Display -->
-            <div class="table-container">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>品名編號</th>
-                            <th>品名規格</th>
-                            <th>數量</th>
-                            <th>單位</th>
-                            <th>類別名稱</th>
-                            <th>單價</th>
-                            <th>折數</th>
-                            <th>金額</th>
-                            <th>備註</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>DC007</td>
-                            <td>EB235 洗髮乳(白)</td>
-                            <td>10</td>
-                            <td>個</td>
-                            <td>一般商品</td>
-                            <td>250</td>
-                            <td>10.00</td>
-                            <td>2500</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>DC008</td>
-                            <td>國際經典香水</td>
-                            <td>5</td>
-                            <td>瓶</td>
-                            <td>一般商品</td>
-                            <td>200</td>
-                            <td>10.00</td>
-                            <td>1000</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
 
-        <!-- Margin Section for Footer Info -->
-        <div class="margin-section mb-3">
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">建檔人員</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control">
+        <!-- Footer Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="label-title">其他資訊</h5>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">建檔人員</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">修改人員</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <label class="col-md-2 col-form-label">付款期限</label>
+                    <div class="col-md-4">
+                        <input type="date" class="form-control">
+                    </div>
+                    <label class="col-md-2 col-form-label">進貨額</label>
+                    <div class="col-md-4">
+                        <input type="text" class="form-control">
+                    </div>
                 </div>
             </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">修改人員</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">付款期限</label>
-                <div class="col-sm-10">
-                    <input type="date" class="form-control">
-                </div>
-            </div>
-            <div class="row mb-2">
-                <label class="col-sm-2 col-form-label">進貨額</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control">
-                </div>
-            </div>
+        </div>
+    </div>
 </body>

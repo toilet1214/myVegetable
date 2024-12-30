@@ -1,4 +1,4 @@
-﻿@model List<prjVegetable.Models.CartItems>
+﻿@model List<prjVegetable.Models.TCart>
 @{
 }
 <style>
@@ -70,20 +70,20 @@
                             <div class="row align-items-center pb-4">
                                 <!-- 商品圖片 -->
                                 <div class="col-12 col-md-auto">
-                                    <img class="d-block mx-auto" width="120" src="assets/img/product-placeholder.png" alt="@item.ProductName">
+                                    <img class="d-block mx-auto" width="120" src="assets/img/product-placeholder.png" alt="@item.FProductName">
                                 </div>
                                 <!-- 商品名稱與價格 -->
                                 <div class="col-12 col-md text-center text-md-start">
-                                    <h6 class="mb-0">@item.ProductName</h6>
-                                    <span class="d-block text-danger">單價: $@item.Price</span>
+                                    <h6 class="mb-0">@item.FProductName</h6>
+                                    <span class="d-block text-danger">單價: $@item.FPrice</span>
                                 </div>
                                 <!-- 數量調整 -->
                                 <div class="col-12 col-md-auto">
                                     <form asp-action="AddToCart" method="post">
                                         <div class="d-flex justify-content-center align-items-center">
                                             <button class="btn btn-outline-secondary btn-sm" type="submit">-</button>
-                                            <input type="hidden" name="productId" value="@item.ProductId" />
-                                            <span class="mx-2">@item.Quantity</span>
+                                            <input type="hidden" name="productId" value="@item.FProductId" />
+                                            <span class="mx-2">@item.FCount</span>
                                             <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
                                         </div>
                                     </form>
@@ -91,7 +91,7 @@
                                 <!-- 移除按鈕 -->
                                 <div class="col-12 col-md-auto">
                                     <form asp-action="RemoveFromCart" method="post">
-                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <input type="hidden" name="productId" value="@item.FProductId" />
                                         <button class="btn btn-link text-danger px-0" type="submit">移除</button>
                                     </form>
                                 </div>
@@ -161,13 +161,15 @@
         const memberData = {
             name: "會員姓名",
             phone: "會員電話",
-            address: "會員地址"
+            address: "會員地址",
+            
         };
 
         const buyerData = {
-            name: "訂購人姓名",
-            phone: "訂購人電話",
-            address: "訂購人地址"
+            name: "收貨人姓名",
+            phone: "收貨人電話",
+            address: "收貨人地址",
+            
         };
 
         // 同會員資料邏輯

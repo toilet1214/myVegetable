@@ -27,28 +27,28 @@ namespace prjVegetable.Controllers
             return View(cart); // 傳遞購物車資料到 View
         }
         [HttpPost]
-        public IActionResult AddToCart(int productId, string productName, decimal price, int quantity, int imgId)
+        public IActionResult AddToCart(int productId, string productName, int price, int count, int imgId)
         {
             // 從 Session 取得購物車
             var cart = GetCartFromSession();
 
             // 檢查是否已有該商品
-            var existingItem = cart.FirstOrDefault(x => x.ProductId == productId);
+            var existingItem = cart.FirstOrDefault(x => x.FProductId == productId);
             if (existingItem != null)
             {
-                existingItem.Quantity += quantity; // 更新數量
+                existingItem.FCount += count; // 更新數量
             }
             else
             {
-                cart.Add(new CartItems
+                cart.Add(new TCart
                 {
-                    Id = cart.Count + 1, // 假設 ID 為自增
-                    ProductId = productId,
-                    ProductName = productName,
-                    Price = price,
-                    Quantity = quantity,
-                    ImgId = imgId,
-                    BuyerId = 0 // 預設 BuyerId，實際可能從用戶資訊獲取
+                    FId = cart.Count + 1, // 假設 ID 為自增
+                    FProductId = productId,
+                    FProductName = productName,
+                    FPrice = price,
+                    FCount = count,
+                    FImgId = imgId,
+                    FBuyerId = 0 // 預設 BuyerId，實際可能從用戶資訊獲取
                 });
             }
             // 更新購物車到 Session
@@ -57,16 +57,16 @@ namespace prjVegetable.Controllers
             return RedirectToAction("Cart");
         }
         // 從 Session 取得購物車資料
-        private List<CartItems> GetCartFromSession()
+        private List<TCart> GetCartFromSession()
         {
             var cartJson = HttpContext.Session.GetString(CartSessionKey);
             return string.IsNullOrEmpty(cartJson)
-                ? new List<CartItems>()
-                : JsonSerializer.Deserialize<List<CartItems>>(cartJson);
+                ? new List<TCart>()
+                : JsonSerializer.Deserialize<List<TCart>>(cartJson);
         }
 
         // 將購物車資料保存到 Session
-        private void SaveCartToSession(List<CartItems> cart)
+        private void SaveCartToSession(List<TCart> cart)
         {
             var cartJson = JsonSerializer.Serialize(cart);
             HttpContext.Session.SetString(CartSessionKey, cartJson);
@@ -130,7 +130,10 @@ namespace prjVegetable.Controllers
             return View();
         }
 
-        
+        public IActionResult ProductBuying()
+        {
+            return View();
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
