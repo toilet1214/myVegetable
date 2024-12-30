@@ -28,7 +28,8 @@ namespace prjVegetable.Controllers
 
         public IActionResult inventory_adjustment()
         {
-            return View();
+            var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
+            return View(TInventoryDetail);
         }
 
     }
