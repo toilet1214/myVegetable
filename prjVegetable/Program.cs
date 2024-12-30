@@ -1,7 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using prjVegetable.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<DbVegetableContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("dbVegetable")));
 
 var app = builder.Build();
 
