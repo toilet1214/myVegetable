@@ -6,19 +6,13 @@
 }
 
 <div class="container my-5">
-
     <div class="row">
         <div class="row">
             <div class="col-5">
                 <!-- 庫存盤點單號 -->
                 <div class="d-flex mb-0 align-items-center">
                     <label for="inventoryNo" class="pe-1 mb-3">庫存盤點單號</label>
-                    <select class="form-select form-select-sm w-auto mb-3 ms-auto" aria-label=".form-select-sm example" id="inventoryNo">
-                        <option selected>2024123000003</option>
-                        <option value="1">One</option>
-                        <option value="2">Two</option>
-                        <option value="3">Three</option>
-                    </select>
+                    <input class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" value="2024123000006" aria-label="readonly input example" readonly id="">
                 </div>
                 <!-- 盤點基準日 -->
                 <div class="d-flex mb-0 align-items-center">
@@ -37,8 +31,6 @@
                 </div>
             </div>
         </div>
-
-
     </div>
     <hr/>
     <div>
@@ -80,3 +72,63 @@
         <button type="button" class="btn btn-primary">執行庫存調整</button>
     </div>
 </div>
+
+<!-- 跳出新增視窗 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增盤點單</h5>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group mb-3 row">
+                        <label for="BaseDate" class="col-form-label col-sm-3 pe-0">盤點基準日</label>
+                        <div class="col-sm-6 px-0">
+                            <input type="date" class="form-control" id="BaseDate" name="BaseDate">
+                       </div>
+                    </div>
+
+                    <div class="form-group mb-3 row">
+                        <label for="ProductStartCode" class="col-form-label col-sm-3 pe-0">商品編號</label>
+                        <div class="col-sm-4 px-0">
+                            <input type="text" class="form-control" id="ProductStartCode" name="ProductStartCode">
+                        </div>
+                        <div class="col-sm-1 d-flex justify-content-center align-items-center">
+                            <label for="ProductEndCode" class="col-form-label px-0">~</label>
+                        </div>
+                        <div class="col-sm-4 px-0">
+                            <input type="text" class="form-control" id="ProductEndCode" name="ProductEndCode">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                       <label for="Category" class="col-form-label col-sm-3 pe-0">商品類別</label>
+                       <div class="col-sm-6 px-0">
+                         <select class="form-control" id="ProductCategory" name="ProductCategory">
+                            <option value="category1">類別 1</option>
+                            <option value="category2">類別 2</option>
+                            <option value="category3">類別 3</option>
+                            <option value="category4">類別 4</option>
+                         </select>
+                       </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+        document.getElementById('addButton').addEventListener('click', function () {
+        const url = this.getAttribute('data-url');
+        // 根據 URL 打開對應的新增視窗
+        window.location.href = url;
+    });
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
