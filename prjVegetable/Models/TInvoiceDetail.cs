@@ -11,7 +11,7 @@ public partial class TInvoiceDetail
 
     public string FProductName { get; set; } = null!;
 
-    public int FConut { get; set; }
+    public int FCount { get; set; }
 
     public int FPrice { get; set; }
 

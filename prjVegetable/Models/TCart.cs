@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace prjVegetable.Models;
 
@@ -19,5 +18,14 @@ public partial class TCart
     public int FImgId { get; set; }
 
     public int FBuyerId { get; set; }
-    public decimal TotalPrice => FCount * FPrice; // 總價 (計算屬性)
+
+    // 新增 TotalPrice 屬性
+    public int TotalPrice
+    {
+        get
+        {
+            return FPrice * FCount;
+        }
+    }
+
 }
