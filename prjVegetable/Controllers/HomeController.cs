@@ -26,36 +26,36 @@ namespace prjVegetable.Controllers
             ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
             return View(cart); // 傳遞購物車資料到 View
         }
-        [HttpPost]
-        public IActionResult AddToCart(int productId, string productName, int price, int count, int imgId)
-        {
-            // 從 Session 取得購物車
-            var cart = GetCartFromSession();
+        //[HttpPost]
+        //public IActionResult AddToCart(int productId, string productName, int price, int count, int imgId)
+        //{
+        //    // 從 Session 取得購物車
+        //    var cart = GetCartFromSession();
 
-            // 檢查是否已有該商品
-            var existingItem = cart.FirstOrDefault(x => x.FProductId == productId);
-            if (existingItem != null)
-            {
-                existingItem.FCount += count; // 更新數量
-            }
-            else
-            {
-                cart.Add(new TCart
-                {
-                    FId = cart.Count + 1, // 假設 ID 為自增
-                    FProductId = productId,
-                    FProductName = productName,
-                    FPrice = price,
-                    FCount = count,
-                    FImgId = imgId,
-                    FBuyerId = 0 // 預設 BuyerId，實際可能從用戶資訊獲取
-                });
-            }
-            // 更新購物車到 Session
-            SaveCartToSession(cart);
+        //    // 檢查是否已有該商品
+        //    var existingItem = cart.FirstOrDefault(x => x.FProductId == productId);
+        //    if (existingItem != null)
+        //    {
+        //        existingItem.FCount += count; // 更新數量
+        //    }
+        //    else
+        //    {
+        //        cart.Add(new TCart
+        //        {
+        //            FId = cart.Count + 1, // 假設 ID 為自增
+        //            FProductId = productId,
+        //            FProductName = productName,
+        //            FPrice = price,
+        //            FCount = count,
+        //            FImgId = imgId,
+        //            FBuyerId = 1 // 預設 BuyerId，實際可能從用戶資訊獲取
+        //        });
+        //    }
+        //    // 更新購物車到 Session
+        //    SaveCartToSession(cart);
 
-            return RedirectToAction("Cart");
-        }
+        //    return RedirectToAction("Cart");
+        //}
         // 從 Session 取得購物車資料
         private List<TCart> GetCartFromSession()
         {
@@ -70,6 +70,52 @@ namespace prjVegetable.Controllers
         {
             var cartJson = JsonSerializer.Serialize(cart);
             HttpContext.Session.SetString(CartSessionKey, cartJson);
+        }
+        [HttpPost]
+        public IActionResult RemoveFromCart(int productId)
+        {
+            var cart = GetCartFromSession();
+
+            // 查找購物車內的商品
+            var itemToRemove = cart.FirstOrDefault(x => x.FProductId == productId);
+            if (itemToRemove != null)
+            {
+                cart.Remove(itemToRemove); // 從購物車列表中移除商品
+            }
+
+            SaveCartToSession(cart); // 更新 Session
+            return RedirectToAction("Cart"); // 返回購物車頁面
+        }
+        [HttpPost]
+        public IActionResult IncreaseQuantity(int productId)
+        {
+            var cart = GetCartFromSession();
+
+            // 查找購物車內的商品
+            var item = cart.FirstOrDefault(x => x.FProductId == productId);
+            if (item != null)
+            {
+                item.FCount += 1; // 增加數量
+            }
+
+            SaveCartToSession(cart); // 更新 Session
+            return RedirectToAction("Cart");
+        }
+
+        [HttpPost]
+        public IActionResult DecreaseQuantity(int productId)
+        {
+            var cart = GetCartFromSession();
+
+            // 查找購物車內的商品
+            var item = cart.FirstOrDefault(x => x.FProductId == productId);
+            if (item != null)
+            {
+                item.FCount = Math.Max(item.FCount - 1, 1); // 減少數量，保證至少為 1
+            }
+
+            SaveCartToSession(cart); // 更新 Session
+            return RedirectToAction("Cart");
         }
         //[HttpPost]
         //public IActionResult Checkout(string shippingName, string shippingPhone, string shippingAddress, string note, bool sameAsMember)
