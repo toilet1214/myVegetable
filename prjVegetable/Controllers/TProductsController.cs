@@ -61,10 +61,10 @@ namespace prjVegetable.Controllers
                 .FirstOrDefaultAsync(m => m.FId == id);
             if (tProduct == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(tProduct);
+            return View(new TProductWrap() {product = tProduct });
         }
 
         // GET: TProducts/Create
@@ -77,16 +77,11 @@ namespace prjVegetable.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FId,FName,FClassification,FPrice,FDescription,FQuantity,FLaunchAt,FStorage,FOrigin,FEditer")] TProduct tProduct)
+        public async Task<IActionResult> Create(TProductWrap tProductwrap)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tProduct);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tProduct);
+            _context.TProducts.Add(tProductwrap.product);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TProducts/Edit/5
@@ -94,50 +89,39 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            var tProduct = await _context.TProducts.FindAsync(id);
+            var tProduct = await _context.TProducts.FirstOrDefaultAsync(c => c.FId == id);
             if (tProduct == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
-            return View(tProduct);
+            return View(new TProductWrap() {product = tProduct });
         }
 
         // POST: TProducts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FId,FName,FClassification,FPrice,FDescription,FQuantity,FLaunchAt,FStorage,FOrigin,FEditer")] TProduct tProduct)
+        public IActionResult Edit(TProductWrap tProductwrap)
         {
-            if (id != tProduct.FId)
-            {
-                return NotFound();
+            TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == tProductwrap.FId);
+
+            if (e != null)
+            {//拿掉不給使用者修改的欄位
+               e.FName = tProductwrap.FName;
+                e.FClassification = tProductwrap.FClassification;
+                e.FPrice = tProductwrap.FPrice;
+                e.FDescription = tProductwrap.FDescription;
+                e.FQuantity = tProductwrap.FQuantity;
+                e.FLaunchAt = tProductwrap.FLaunchAt;
+                e.FStorage = tProductwrap.FStorage;
+                e.FOrigin = tProductwrap.FOrigin;
+                _context.SaveChanges();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tProduct);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TProductExists(tProduct.FId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tProduct);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TProducts/Delete/5
@@ -154,28 +138,12 @@ namespace prjVegetable.Controllers
             {
                 return NotFound();
             }
+            _context.TProducts.Remove(tProduct);
+            _context.SaveChanges();
 
-            return View(tProduct);
-        }
-
-        // POST: TProducts/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tProduct = await _context.TProducts.FindAsync(id);
-            if (tProduct != null)
-            {
-                _context.TProducts.Remove(tProduct);
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TProductExists(int id)
-        {
-            return _context.TProducts.Any(e => e.FId == id);
-        }
+        
     }
 }

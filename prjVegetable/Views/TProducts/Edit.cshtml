@@ -1,10 +1,11 @@
-﻿@model prjVegetable.Models.TProduct
+﻿@model prjVegetable.Models.TProductWrap
 
 @{
     ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>Edit</h1>
+<h1>編輯資料</h1>
 
 <h4>TProduct</h4>
 <hr />
@@ -66,9 +67,9 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">回產品列表</a>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+@* @section Scripts { *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* } *@
