@@ -38,7 +38,7 @@
                                 <div class="accordion-body">
                                     <a href="~/TPersons/Index" class="btn btn-primary d-block mb-1 w-100" )>員工與會員資料維護</a>
                                     <a href="~/TProviders/Index" class="btn btn-primary d-block mb-1 w-100" )>供應商資料維護</a>
-                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">商品資料維護</button>
+                                    <a href="~/TProducts/Index" class="btn btn-primary d-block mb-1 w-100" )>供應商資料維護</a>
                                 </div>
                             </div>
                         </div>
@@ -182,12 +182,18 @@
     <footer class="bg-primary py-4 mt-5 text-center">
         <div class="container">
             <div class="row d-block bg-primary text-white mt-3">
-                <p>頁尾</p>
+                <div class="col-2 position-fixed botton-0 end-0">
+                    <a href="@Url.Action("Index", "ERP")" class="btn btn-warning d-block mb-1 w-100" )>回資料管理首頁</a>
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-warning d-block mb-1 w-100" )>回首頁</a>
+                </div>
+                <p>頁尾
+                </p>
             </div>
         </div>
     </footer>
     
 
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js"></script>

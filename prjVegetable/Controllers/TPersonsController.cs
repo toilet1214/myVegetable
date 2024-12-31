@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -19,9 +20,24 @@ namespace prjVegetable.Controllers
         }        
 
         // GET: TPersons
-        public IActionResult Index()
+        public IActionResult Index(CKeywordViewModel vm)
         {
+            string keyword = vm.txtKeyword;
             IEnumerable<TPerson> datas = null;
+            if (string.IsNullOrEmpty(keyword)) 
+            {
+                datas = from p in _context.TPeople
+                        select p;
+            }
+            else
+            {
+                datas = _context.TPeople.Where(p => 
+                p.FName.Contains(keyword)||
+                p.FPhone.Contains(keyword)||
+                p.FAddress.Contains(keyword)||
+                p.FEmail.Contains(keyword)
+                );
+            }
             var data = _context.TPeople.ToList();  
             List<TPersonWrap>list = new List<TPersonWrap>();
             foreach (var p in data) 
@@ -36,17 +52,15 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            var tPerson = await _context.TPeople
-                .FirstOrDefaultAsync(m => m.FId == id);
-            if (tPerson == null)
-            {
-                return NotFound();
-            }
+            var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+            if (x == null)
+                return RedirectToAction(nameof(Index));
 
-            return View(tPerson);
+            return View(new TPersonWrap() { person = x });
+            
         }
 
         // GET: TPersons/Create
@@ -69,8 +83,6 @@ namespace prjVegetable.Controllers
 
             // 重定向回 Index 頁面
             return RedirectToAction(nameof(Index));
-
-            
         }
 
         // GET: TPersons/Edit/5
@@ -137,13 +149,6 @@ namespace prjVegetable.Controllers
 
             // 重定向回 Index 頁面
             return RedirectToAction(nameof(Index));
-        }
-
-        
-
-        private bool TPersonExists(int id)
-        {
-            return _context.TPeople.Any(e => e.FId == id);
-        }
+        }        
     }
 }

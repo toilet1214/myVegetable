@@ -47,7 +47,7 @@ namespace prjVegetable.Models
         public string FConnect
         {
             get { return _provider.FConnect; }
-            set { _provider.FTel = value; }
+            set { _provider.FConnect = value; }
         }
 
         [DisplayName("廠商會計")]

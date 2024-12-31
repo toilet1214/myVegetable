@@ -5,23 +5,20 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>Index</h1>
-
+<h1>人員資料列表</h1><br />
+@using (Html.BeginForm()) 
+{ 
+    @:搜尋 @Html.TextBox("txtKeyword") <input type="submit" value="查詢" class="btn btn-primary">
+}<br />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.FName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FAccount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPassword)
-            </th>
+            </th>            
             <th>
                 @Html.DisplayNameFor(model => model.FGender)
             </th>
@@ -33,31 +30,16 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FTel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FAddress)
-            </th>
+            </th>            
             <th>
                 @Html.DisplayNameFor(model => model.FEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FUbn)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPermissiion)
-            </th>
+            </th>            
             <th>
                 @Html.DisplayNameFor(model => model.FEmp)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FEmpTel)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCreatedAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FEditor)
-            </th>
+            </th>            
             <th></th>
         </tr>
     </thead>
@@ -66,13 +48,7 @@
         <tr>
             <td>
                     @Html.DisplayFor(modelItem => item.person.FName)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FAccount)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FPassword)
-            </td>
+            </td>            
             <td>
                     @Html.DisplayFor(modelItem => item.person.FGender)
             </td>
@@ -84,34 +60,19 @@
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.person.FTel)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FAddress)
-            </td>
+            </td>            
             <td>
                     @Html.DisplayFor(modelItem => item.person.FEmail)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FUbn)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FPermissiion)
-            </td>
+            </td>            
             <td>
                     @Html.DisplayFor(modelItem => item.person.FEmp)
             </td>
             <td>
                     @Html.DisplayFor(modelItem => item.person.FEmpTel)
-            </td>
+            </td>            
             <td>
-                    @Html.DisplayFor(modelItem => item.person.FCreatedAt)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FEditor)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FId">Edit</a> |
-                @*<a asp-action="Details" asp-route-id="@item.FId">Details</a> |*@
+                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a> <br>
+                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
                 @Html.ActionLink("移除", "Delete", "Tpersons", new { id = item.person.FId },
                              new { onclick = "return confirm('確定要刪除嗎?')" })
             </td>

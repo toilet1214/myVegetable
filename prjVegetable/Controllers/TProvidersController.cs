@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -19,9 +20,32 @@ namespace prjVegetable.Controllers
         }
 
         // GET: TProviders
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(CKeywordViewModel vm)
         {
-            return View(await _context.TProviders.ToListAsync());
+            string keyword = vm.txtKeyword;
+            IEnumerable<TProvider> datas = null;
+            if (string.IsNullOrEmpty(keyword))
+            {
+                datas = from p in _context.TProviders
+                        select p;
+            }
+            else 
+            {
+                datas = _context.TProviders.Where(p =>
+                p.FName.Contains(keyword)||
+                p.FUbn.Contains(keyword) ||
+                p.FTel.Contains(keyword) ||
+                p.FConnect.Contains(keyword) ||
+                p.FAddress.Contains(keyword)
+                );
+            }
+            var data = _context.TProviders.ToList();
+            List<TProviderWrap> list = new List<TProviderWrap>();
+            foreach (var p in data)
+            {
+                list.Add(new TProviderWrap() { provider = p });
+            }
+            return View(list);
         }
 
         // GET: TProviders/Details/5
@@ -29,17 +53,17 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
             var tProvider = await _context.TProviders
                 .FirstOrDefaultAsync(m => m.FId == id);
             if (tProvider == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(tProvider);
+            return View(new TProviderWrap() {provider = tProvider });
         }
 
         // GET: TProviders/Create
@@ -52,16 +76,11 @@ namespace prjVegetable.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FId,FName,FUbn,FTel,FConnect,FAccountant,FAddress,FDelivery,FInvoiceadd,FEditer")] TProvider tProvider)
+        public async Task<IActionResult> Create(TProviderWrap tProviderwrap)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tProvider);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tProvider);
+            _context.TProviders.Add(tProviderwrap.provider);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));            
         }
 
         // GET: TProviders/Edit/5
@@ -69,15 +88,15 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            var tProvider = await _context.TProviders.FindAsync(id);
+            var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId ==id);
             if (tProvider == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
-            return View(tProvider);
+            return View(new TProviderWrap() {provider = tProvider });
         }
 
         // POST: TProviders/Edit/5
@@ -85,34 +104,22 @@ namespace prjVegetable.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FId,FName,FUbn,FTel,FConnect,FAccountant,FAddress,FDelivery,FInvoiceadd,FEditer")] TProvider tProvider)
+        public async Task<IActionResult> Edit(TProviderWrap tProviderwrap)
         {
-            if (id != tProvider.FId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tProvider);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TProviderExists(tProvider.FId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tProvider);
+            TProvider e = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == tProviderwrap.FId);
+            if (e != null)
+            { //拿掉不給使用者修改的欄位
+              e.FName = tProviderwrap.FName;
+              e.FUbn = tProviderwrap.FUbn;
+                e.FTel=tProviderwrap.FTel;
+                e.FConnect = tProviderwrap.FConnect;
+                e.FAccountant = tProviderwrap.FAccountant;
+                e.FAddress = tProviderwrap.FAddress;
+                e.FDelivery = tProviderwrap.FDelivery;
+                e.FInvoiceadd = tProviderwrap.FInvoiceadd;
+                _context.SaveChanges();
+            }            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TProviders/Delete/5
@@ -129,28 +136,10 @@ namespace prjVegetable.Controllers
             {
                 return NotFound();
             }
+            _context.TProviders.Remove(tProvider);
+            _context.SaveChanges();
 
-            return View(tProvider);
-        }
-
-        // POST: TProviders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tProvider = await _context.TProviders.FindAsync(id);
-            if (tProvider != null)
-            {
-                _context.TProviders.Remove(tProvider);
-            }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TProviderExists(int id)
-        {
-            return _context.TProviders.Any(e => e.FId == id);
-        }
+        }        
     }
 }

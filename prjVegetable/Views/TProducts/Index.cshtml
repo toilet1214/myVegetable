@@ -1,0 +1,91 @@
+﻿@model IEnumerable<prjVegetable.Models.TProductWrap>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>商品資料列表</h1>
+<br />
+@using (Html.BeginForm())
+{
+    @:搜尋 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢" class="btn btn-primary">
+}
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FClassification)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDescription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FQuantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FLaunchAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FStorage)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOrigin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEditer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.product.FName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FClassification)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FPrice)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FDescription)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FQuantity)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FLaunchAt)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FStorage)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FOrigin)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.product.FEditer)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
+                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
+                @Html.ActionLink("移除", "Delete", "Tproducts", new { id = item.product.FId },
+                             new { onclick = "return confirm('確定要刪除嗎?')" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

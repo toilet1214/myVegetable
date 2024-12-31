@@ -2,8 +2,6 @@
 
 @{
     ViewData["Title"] = "Create";
-}
-@{
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 <h1>新增資料</h1>
@@ -17,7 +15,7 @@
             <div class="form-group">
                 <label asp-for="FName" class="control-label">姓名</label>
                 <input asp-for="FName" class="form-control" type="text" />
-                @* <span asp-validation-for="FName" class="text-danger"></span> *@
+                 <span asp-validation-for="FName" class="text-danger"></span> 
             </div>
         </div>
     </div>
@@ -26,7 +24,7 @@
             <div class="form-group">
                 <label asp-for="FUbn" class="control-label">統編</label>
                 <input asp-for="FUbn" class="form-control" type="text" />
-                @* <span asp-validation-for="FUbn" class="text-danger"></span> *@
+                <span asp-validation-for="FUbn" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
@@ -153,15 +151,12 @@
             </div>
         </div>
     </div>
-    
-    
-   
 </form>
 
 
 
 
 
-@* @section Scripts { *@
-@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* @section Scripts {  *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}  *@
 @* } *@
