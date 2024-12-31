@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using prjVegetable.Models;
 
 namespace prjVegetable.Controllers
 {
@@ -8,8 +9,8 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
-
-        public IActionResult Update()
+        [HttpPost]
+        public IActionResult Index(CCustomerWrap p)
         {
             return View();
         }
@@ -19,12 +20,13 @@ namespace prjVegetable.Controllers
             return View();
         }
 
-        public IActionResult History()
+
+        public IActionResult Order()
         {
             return View();
         }
 
-        public IActionResult Order()
+        public IActionResult OrderDetail()
         {
             return View();
         }

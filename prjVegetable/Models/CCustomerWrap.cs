@@ -16,19 +16,21 @@ namespace prjVegetable.Models
             _person = new TPerson();
         }
 
-        
+        [Required(ErrorMessage = "必填")]
         [DisplayName("姓名")]
         public string FName
         {
             get { return _person.FName; }
             set { _person.FName = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("帳號")]
         public string FAccount
         {
             get { return _person.FAccount; }
             set { _person.FAccount = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("密碼")]
         public string FPassword
         {
@@ -41,30 +43,35 @@ namespace prjVegetable.Models
             get { return _person.FGender; }
             set { _person.FGender = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("生日")]
         public DateOnly FBirth
         {
             get { return _person.FBirth; }
             set { _person.FBirth = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("手機")]
         public string FPhone
         {
             get { return _person.FPhone; }
             set { _person.FPhone = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("市內電話")]
         public string FTel
         {
             get { return _person.FTel; }
             set { _person.FTel = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("地址")]
         public string FAddress
         {
             get { return _person.FAddress; }
             set { _person.FAddress = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [DisplayName("Email")]
         public string FEmail
         {
@@ -77,6 +84,7 @@ namespace prjVegetable.Models
             get { return _person.FUbn; }
             set { _person.FUbn = value; }
         }
+        [Required(ErrorMessage = "必填")]
         [Compare("FPassword", ErrorMessage = "請確認密碼一致")]
         [DisplayName("確認密碼")]
         public string ConfirmPassword { get; set; }

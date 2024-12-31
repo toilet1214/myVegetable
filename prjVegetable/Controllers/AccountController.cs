@@ -10,17 +10,18 @@ namespace prjVegetable.Controllers
     public class AccountController : Controller
     {
         [HttpPost]
-        public IActionResult Login(CLoginViewModel vm, string returnUrl)
+        public IActionResult Login(CLoginViewModel vm,string returnUrl)
         {
             TPerson user = (new DbVegetableContext()).TPeople.FirstOrDefault(t => t.FAccount.Equals(vm.txtAccount) && t.FPassword.Equals(vm.txtPassword));
             if (user != null && user.FPassword.Equals(vm.txtPassword))
             {
                 string json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
-                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermissiion);
+                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission);
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            TempData["ErrorMessage"] = "帳號或密碼錯誤，請再試一次";
+            return Redirect(returnUrl);
         }
     }
 }

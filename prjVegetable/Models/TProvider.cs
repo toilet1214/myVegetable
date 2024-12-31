@@ -23,5 +23,5 @@ public partial class TProvider
 
     public string FInvoiceadd { get; set; } = null!;
 
-    public int FEditer { get; set; }
+    public int FEditor { get; set; }
 }

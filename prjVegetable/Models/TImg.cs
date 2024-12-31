@@ -15,5 +15,5 @@ public partial class TImg
 
     public DateTime? FUploadAt { get; set; }
 
-    public string FEditer { get; set; } = null!;
+    public string FEditor { get; set; } = null!;
 }
