@@ -15,7 +15,11 @@ namespace prjVegetable.Models
         {
             _person = new TPerson();
         }
-
+        public int FId
+        {
+            get { return _person.FId; }
+            set { _person.FId = value; }
+        }
         [Required(ErrorMessage = "必填")]
         [DisplayName("姓名")]
         public string FName
