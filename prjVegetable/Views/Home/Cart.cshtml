@@ -1,5 +1,36 @@
 ﻿@model List<prjVegetable.Models.TCart>
+@using prjVegetable.Models
+@inject DbVegetableContext dbContext
 @{
+    // 初始化購物車（Session）
+    // var cartJson = Context.Session.GetString("CartSession");
+    // var cart = string.IsNullOrEmpty(cartJson)
+    //     ? new List<TCart>()
+    //     : System.Text.Json.JsonSerializer.Deserialize<List<TCart>>(cartJson);
+
+    // 確保購物車中有範本產品
+    // var product = dbContext.TProducts.FirstOrDefault(p => p.FId == 1); 查詢範本產品
+    // if (product != null && !cart.Any(c => c.FProductId == product.FId))
+    // {
+    //     如果產品存在且尚未在購物車中，則新增
+    //     cart.Add(new TCart
+    //             {
+    //                 FId = cart.Count + 1, 假設 ID 自增
+    //                 FProductId = product.FId,
+    //                 FProductName = product.FName,
+    //                 FPrice = product.FPrice,
+    //                 FCount = 1, 預設數量為 1
+    //                 FImgId = 1, 假設圖片 ID 固定為 1
+    //                 FBuyerId = 0 預設 BuyerId
+    //             });
+
+    //     保存購物車到 Session
+    //     var updatedCartJson = System.Text.Json.JsonSerializer.Serialize(cart);
+    //     Context.Session.SetString("CartSession", updatedCartJson);
+
+    //     重導向避免重複執行邏輯
+    //     Context.Response.Redirect(Url.Action("Cart", "Home"));
+    // }
 }
 <style>
     .h3 {
@@ -67,32 +98,36 @@
                     {
                         foreach (var item in Model)
                         {
-                            <div class="row align-items-center pb-4">
+
+                            <div class="row align-items-center">
                                 <!-- 商品圖片 -->
-                                <div class="col-12 col-md-auto">
-                                    <img class="d-block mx-auto" width="120" src="assets/img/product-placeholder.png" alt="@item.FProductName">
+                                <div class="col-2 text-center">
+                                    <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName">
                                 </div>
                                 <!-- 商品名稱與價格 -->
-                                <div class="col-12 col-md text-center text-md-start">
+                                <div class="col-4 text-start">
                                     <h6 class="mb-0">@item.FProductName</h6>
                                     <span class="d-block text-danger">單價: $@item.FPrice</span>
                                 </div>
                                 <!-- 數量調整 -->
-                                <div class="col-12 col-md-auto">
-                                    <form asp-action="AddToCart" method="post">
-                                        <div class="d-flex justify-content-center align-items-center">
-                                            <button class="btn btn-outline-secondary btn-sm" type="submit">-</button>
-                                            <input type="hidden" name="productId" value="@item.FProductId" />
-                                            <span class="mx-2">@item.FCount</span>
-                                            <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
-                                        </div>
-                                    </form>
+                                <div class="col-4 text-center">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="productId" value="@item.FProductId">
+                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmDecrease(@item.FProductId, @item.FCount)">-</button>
+                                        </form>
+                                        <span class="qty-value mx-2">@item.FCount</span>
+                                        <form method="post" style="display:inline;">
+                                            <input type="hidden" name="productId" value="@item.FProductId">
+                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit">+</button>
+                                        </form>
+                                    </div>
                                 </div>
                                 <!-- 移除按鈕 -->
-                                <div class="col-12 col-md-auto">
-                                    <form asp-action="RemoveFromCart" method="post">
-                                        <input type="hidden" name="productId" value="@item.FProductId" />
-                                        <button class="btn btn-link text-danger px-0" type="submit">移除</button>
+                                <div class="col-2 text-center">
+                                    <form method="post">
+                                        <input type="hidden" name="productId" value="@item.FProductId">
+                                        <button class="btn btn-link text-danger" type="submit">移除</button>
                                     </form>
                                 </div>
                             </div>
@@ -166,9 +201,9 @@
         };
 
         const buyerData = {
-            name: "收貨人姓名",
-            phone: "收貨人電話",
-            address: "收貨人地址",
+            name: "",
+            phone: "",
+            address: "",
             
         };
 
@@ -186,6 +221,13 @@
                 document.getElementById('shippingAddress').value = buyerData.address || '';
             }
         });
+        function confirmDecrease(productId, currentCount) {
+            if (currentCount === 1) {
+                const confirmDelete = confirm("數量已經是 1，是否確定要移除該商品？");
+                return confirmDelete; // 如果確認，返回 true，表單將提交
+            }
+            return true; // 如果數量大於 1，直接提交表單
+        }
     </script>
 
 </body>

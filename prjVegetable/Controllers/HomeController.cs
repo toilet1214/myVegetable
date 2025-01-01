@@ -111,7 +111,16 @@ namespace prjVegetable.Controllers
             var item = cart.FirstOrDefault(x => x.FProductId == productId);
             if (item != null)
             {
-                item.FCount = Math.Max(item.FCount - 1, 1); // 減少數量，保證至少為 1
+                if (item.FCount > 1)
+                {
+                    // 如果數量大於 1，直接減少
+                    item.FCount -= 1;
+                }
+                else
+                {
+                    // 如果數量為 1，由前端確認後決定是否刪除
+                    cart.Remove(item);
+                }
             }
 
             SaveCartToSession(cart); // 更新 Session
