@@ -152,7 +152,7 @@
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
-                        <form method="post" asp-action="Checkout">
+                        <form method="post" action="/Home/Checkout">
                             <!-- 同會員資料 -->
                             <div class="mb-4">
                                 <input type="checkbox" id="SameAsMember" class="large-checkbox" />
@@ -220,6 +220,14 @@
                 document.getElementById('shippingPhone').value = '';
                 document.getElementById('shippingAddress').value = '';
             }
+        });
+        document.getElementById('shippingName').value = data.data.name;
+        document.getElementById('shippingPhone').value = data.data.phone;
+        document.getElementById('shippingAddress').value = data.data.address;
+        document.querySelector('form').addEventListener('submit', function (e) {
+            console.log("收件人姓名:", document.getElementById('shippingName').value);
+            console.log("收件人電話:", document.getElementById('shippingPhone').value);
+            console.log("收件人地址:", document.getElementById('shippingAddress').value);
         });
         function confirmDecrease(productId, currentCount) {
             if (currentCount === 1) {

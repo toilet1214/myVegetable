@@ -31,43 +31,16 @@ namespace prjVegetable.Controllers
             ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
             return View(cart); // 傳遞購物車資料到 View
         }
-        //[HttpPost]
-        //public IActionResult AddToCart(int productId, string productName, int price, int count, int imgId)
-        //{
-        //    // 從 Session 取得購物車
-        //    var cart = GetCartFromSession();
-
-        //    // 檢查是否已有該商品
-        //    var existingItem = cart.FirstOrDefault(x => x.FProductId == productId);
-        //    if (existingItem != null)
-        //    {
-        //        existingItem.FCount += count; // 更新數量
-        //    }
-        //    else
-        //    {
-        //        cart.Add(new TCart
-        //        {
-        //            FId = cart.Count + 1, // 假設 ID 為自增
-        //            FProductId = productId,
-        //            FProductName = productName,
-        //            FPrice = price,
-        //            FCount = count,
-        //            FImgId = imgId,
-        //            FBuyerId = 1 // 預設 BuyerId，實際可能從用戶資訊獲取
-        //        });
-        //    }
-        //    // 更新購物車到 Session
-        //    SaveCartToSession(cart);
-
-        //    return RedirectToAction("Cart");
-        //}
-        // 從 Session 取得購物車資料
         private List<TCart> GetCartFromSession()
         {
             var cartJson = HttpContext.Session.GetString(CartSessionKey);
             return string.IsNullOrEmpty(cartJson)
                 ? new List<TCart>()
                 : JsonSerializer.Deserialize<List<TCart>>(cartJson);
+        }
+        private void ClearCartFromSession()
+        {
+            HttpContext.Session.Remove("CartSession");
         }
 
         // 將購物車資料保存到 Session
@@ -152,6 +125,79 @@ namespace prjVegetable.Controllers
                     address = member.FAddress
                 }
             });
+        }
+        [HttpPost]
+        public IActionResult Checkout(string shippingName, string shippingPhone, string shippingAddress, string? remark)
+        {
+            if (string.IsNullOrEmpty(shippingName) || string.IsNullOrEmpty(shippingPhone) || string.IsNullOrEmpty(shippingAddress))
+            {
+                return BadRequest("表單提交的資料不完整。");
+            }
+
+            try
+            {
+                // 模擬當前使用者的 FId（假設已登入）
+                int currentUserId = HttpContext.Session.GetInt32("UserId") ?? 1; // 若無 Session，預設為 1
+
+                // 計算總金額（int）
+                var cart = GetCartFromSession(); // 從 Session 中取得購物車
+                if (cart == null || !cart.Any())
+                {
+                    return BadRequest("購物車是空的，無法完成結帳。");
+                }
+                int totalAmount = cart.Sum(item => item.FPrice * item.FCount);
+
+                // 如果備註為 null 或空，設為 "無"
+                if (string.IsNullOrEmpty(remark))
+                {
+                    remark = "無";
+                }
+
+                // 1. 建立 TOrder
+                var newOrder = new TOrder
+                {
+                    FBuyerId = currentUserId,
+                    FTotal = totalAmount,
+                    FStatus = "未完成",
+                    FOrderAt = DateTime.Now,
+                    FAddress = shippingAddress,
+                    FReceiverName = shippingName,
+                    FPhone = shippingPhone,
+                    FRemark = remark
+                };
+
+                _dbContext.TOrders.Add(newOrder);
+                _dbContext.SaveChanges(); // 儲存 TOrder，取得自動生成的 FId
+
+                // 2. 建立 OrderList
+                foreach (var cartItem in cart)
+                {
+                    var orderListItem = new OrderList
+                    {
+                        FOrderId = newOrder.FId, // 關聯剛剛新增的 TOrder
+                        FProductId = cartItem.FProductId,
+                        FProductName = cartItem.FProductName,
+                        FPrice = cartItem.FPrice,
+                        FCount = cartItem.FCount,
+                        FSum = cartItem.FPrice * cartItem.FCount
+                    };
+
+                    _dbContext.OrderLists.Add(orderListItem);
+                }
+
+                _dbContext.SaveChanges(); // 儲存所有 OrderList 資料
+
+                // 3. 清空購物車
+                ClearCartFromSession();
+
+                return RedirectToAction("OrderConfirmation", new { orderId = newOrder.FId });
+            }
+            catch (Exception ex)
+            {
+                // 錯誤處理（可記錄日誌）
+                Console.WriteLine("錯誤：" + ex.Message);
+                return View("Error");
+            }
         }
         public IActionResult About()
         {
