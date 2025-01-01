@@ -1,0 +1,79 @@
+﻿@model IEnumerable<prjVegetable.Models.COrderWrap>
+
+@{
+    ViewData["Title"] = "Order";
+}
+
+<h1>Order</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FBuyerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOrderAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FReceiverName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPhone)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FRemark)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FBuyerId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FOrderAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FReceiverName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FPhone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FRemark)
+            </td>
+            <td>
+                @Html.ActionLink("修改", "Edit", new { id=item.FId})
+                @Html.ActionLink("訂單詳細資料", "OrderList", new {  id=item.FId  }) |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -5,35 +5,35 @@ namespace prjVegetable.Models;
 
 public partial class TPerson
 {
-    public int FPId { get; set; }
+    public int FId { get; set; }
 
-    public string FPName { get; set; }
+    public string FName { get; set; } = null!;
 
-    public string FPAccount { get; set; }
+    public string FAccount { get; set; } = null!;
 
-    public string FPPassword { get; set; }
+    public string FPassword { get; set; } = null!;
 
-    public string FPGender { get; set; }
+    public string FGender { get; set; } = null!;
 
-    public DateOnly FPBirth { get; set; }
+    public DateOnly FBirth { get; set; }
 
-    public string FPPhone { get; set; }
+    public string FPhone { get; set; } = null!;
 
-    public string FPTel { get; set; }
+    public string FTel { get; set; } = null!;
 
-    public string FPAddress { get; set; }
+    public string FAddress { get; set; } = null!;
 
-    public string FPEmail { get; set; }
+    public string FEmail { get; set; } = null!;
 
-    public string FPUinvoice { get; set; }
+    public string FUbn { get; set; } = null!;
 
-    public string FPStatus { get; set; }
+    public string FPermission { get; set; } = null!;
 
-    public string FPEmp { get; set; }
+    public string FEmp { get; set; } = null!;
 
-    public string FPTelEmptel { get; set; }
+    public string FEmpTel { get; set; } = null!;
 
-    public DateTime? FPCreatedAt { get; set; }
+    public DateTime? FCreatedAt { get; set; }
 
-    public string? FPEditor { get; set; } 
+    public string FEditor { get; set; } = null!;
 }

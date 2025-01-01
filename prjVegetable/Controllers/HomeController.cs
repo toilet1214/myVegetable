@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using prjVegetable.Models;
+using prjVegetable.ViewModel;
 using System.Diagnostics;
+using System.Text.Json;
 
 namespace prjVegetable.Controllers
 {
@@ -33,7 +35,21 @@ namespace prjVegetable.Controllers
             return View();
         }
 
-        public IActionResult ProductList()
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Register(TPerson P)
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            db.TPeople.Add(P);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+        public IActionResult Forgot()
         {
             return View();
         }

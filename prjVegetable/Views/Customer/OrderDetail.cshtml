@@ -1,0 +1,76 @@
+﻿@model IEnumerable<prjVegetable.Models.COrderListWrap>
+
+@{
+    ViewData["Title"] = "OrderDetail";
+}
+
+<h1>OrderDetail</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSum)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FOrderId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FProductId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FCount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FSum)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div>
+    <a asp-action="Order">返回</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
