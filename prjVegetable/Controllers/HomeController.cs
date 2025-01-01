@@ -105,7 +105,7 @@ namespace prjVegetable.Controllers
             return RedirectToAction("Cart");
         }
         [HttpGet]
-        public IActionResult GetMemberInfo(int memberId)
+        public IActionResult GetMemberInfo(int? memberId)
         {
             // 假設 dbContext 已注入
             var member = _dbContext.TPeople.FirstOrDefault(p => p.FId == memberId);
@@ -127,7 +127,7 @@ namespace prjVegetable.Controllers
             });
         }
         [HttpPost]
-        public IActionResult Checkout(string shippingName, string shippingPhone, string shippingAddress, string? remark)
+        public IActionResult Checkout(string? shippingName, string? shippingPhone, string? shippingAddress, string? note)
         {
             if (string.IsNullOrEmpty(shippingName) || string.IsNullOrEmpty(shippingPhone) || string.IsNullOrEmpty(shippingAddress))
             {
@@ -147,12 +147,6 @@ namespace prjVegetable.Controllers
                 }
                 int totalAmount = cart.Sum(item => item.FPrice * item.FCount);
 
-                // 如果備註為 null 或空，設為 "無"
-                if (string.IsNullOrEmpty(remark))
-                {
-                    remark = "無";
-                }
-
                 // 1. 建立 TOrder
                 var newOrder = new TOrder
                 {
@@ -163,7 +157,7 @@ namespace prjVegetable.Controllers
                     FAddress = shippingAddress,
                     FReceiverName = shippingName,
                     FPhone = shippingPhone,
-                    FRemark = remark
+                    FRemark = note
                 };
 
                 _dbContext.TOrders.Add(newOrder);
@@ -190,7 +184,7 @@ namespace prjVegetable.Controllers
                 // 3. 清空購物車
                 ClearCartFromSession();
 
-                return RedirectToAction("OrderConfirmation", new { orderId = newOrder.FId });
+                return RedirectToAction("Index", new { orderId = newOrder.FId });
             }
             catch (Exception ex)
             {

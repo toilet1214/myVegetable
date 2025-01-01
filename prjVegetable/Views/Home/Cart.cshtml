@@ -1,5 +1,6 @@
 ﻿@model List<prjVegetable.Models.TCart>
 @using prjVegetable.Models
+@{ViewData["Title"] = "Cart";}
 @inject DbVegetableContext dbContext
 @{
     // 初始化購物車（Session）
@@ -152,7 +153,7 @@
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
-                        <form method="post" action="/Home/Checkout">
+                        <form method="post" asp-action="Checkout" asp-controller="Home">
                             <!-- 同會員資料 -->
                             <div class="mb-4">
                                 <input type="checkbox" id="SameAsMember" class="large-checkbox" />
@@ -180,7 +181,7 @@
                             <!-- 備註 -->
                             <div class="mb-4">
                                 <label for="note">備註</label>
-                                <textarea name="note" class="form-control">無</textarea>
+                                <textarea id="note" name="note" class="form-control">無</textarea>
                             </div>
 
                             <!-- 確認付款 -->
@@ -206,6 +207,7 @@
                             document.getElementById('shippingName').value = data.data.name;
                             document.getElementById('shippingPhone').value = data.data.phone;
                             document.getElementById('shippingAddress').value = data.data.address;
+                            
                         } else {
                             alert(data.message);
                         }
@@ -224,10 +226,12 @@
         document.getElementById('shippingName').value = data.data.name;
         document.getElementById('shippingPhone').value = data.data.phone;
         document.getElementById('shippingAddress').value = data.data.address;
+        document.getElementById('note').value = data.data.remark;
         document.querySelector('form').addEventListener('submit', function (e) {
             console.log("收件人姓名:", document.getElementById('shippingName').value);
             console.log("收件人電話:", document.getElementById('shippingPhone').value);
             console.log("收件人地址:", document.getElementById('shippingAddress').value);
+            
         });
         function confirmDecrease(productId, currentCount) {
             if (currentCount === 1) {
