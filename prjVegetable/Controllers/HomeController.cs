@@ -194,16 +194,9 @@ namespace prjVegetable.Controllers
             }
             catch (Exception ex)
             {
-                // 記錄錯誤
+                // 錯誤處理（可記錄日誌）
                 Console.WriteLine("錯誤：" + ex.Message);
-
-                // 將錯誤訊息傳遞到 Error 視圖
-                var errorModel = new ErrorViewModel
-                {
-                    RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-                };
-
-                return View("Error", errorModel);
+                return View("Error");
             }
         }
         public IActionResult About()
@@ -238,11 +231,7 @@ namespace prjVegetable.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            var model = new ErrorViewModel
-            {
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
-            };
-            return View(model);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
