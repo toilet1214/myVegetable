@@ -11,6 +11,7 @@
 
     // 確保購物車中有範本產品
     var product = dbContext.TProducts.FirstOrDefault(p => p.FId == 1); //查詢範本產品
+    var product2 = dbContext.TProducts.FirstOrDefault(p => p.FId == 2);
     if (product != null && !cart.Any(c => c.FProductId == product.FId))
     {
     //     如果產品存在且尚未在購物車中，則新增
@@ -24,7 +25,19 @@
                     FImgId = 1, //假設圖片 ID 固定為 1
                     FBuyerId = 0 //預設 BuyerId
                 });
-
+        if (product2 != null && !cart.Any(c => c.FProductId == product2.FId))
+        {
+            cart.Add(new TCart
+                    {
+                        FId = cart.Count + 1, // 假設 ID 自增
+                        FProductId = product2.FId,
+                        FProductName = product2.FName,
+                        FPrice = product2.FPrice,
+                        FCount = 1, // 預設數量為 1
+                        FImgId = 2, // 假設圖片 ID 固定為 2
+                        FBuyerId = 0 // 預設 BuyerId
+                    });
+        }
     //     保存購物車到 Session
         var updatedCartJson = System.Text.Json.JsonSerializer.Serialize(cart);
         Context.Session.SetString("CartSession", updatedCartJson);
@@ -113,20 +126,20 @@
                                 <!-- 數量調整 -->
                                 <div class="col-4 text-center">
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <form method="post" style="display:inline;">
+                                        <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Home">
                                             <input type="hidden" name="productId" value="@item.FProductId">
                                             <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmDecrease(@item.FProductId, @item.FCount)">-</button>
                                         </form>
                                         <span class="qty-value mx-2">@item.FCount</span>
-                                        <form method="post" style="display:inline;">
+                                        <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Home">
                                             <input type="hidden" name="productId" value="@item.FProductId">
-                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit">+</button>
+                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmIncrease(@item.FProductId, @item.FCount)">+</button>
                                         </form>
                                     </div>
                                 </div>
                                 <!-- 移除按鈕 -->
                                 <div class="col-2 text-center">
-                                    <form method="post">
+                                    <form method="post" asp-action="RemoveFromCart" asp-controller="Home">
                                         <input type="hidden" name="productId" value="@item.FProductId">
                                         <button class="btn btn-link text-danger" type="submit">移除</button>
                                     </form>
@@ -239,6 +252,9 @@
                 return confirmDelete; // 如果確認，返回 true，表單將提交
             }
             return true; // 如果數量大於 1，直接提交表單
+        }
+        function confirmIncrease(productId, currentCount) {
+            return true; // 始終允許提交表單
         }
     </script>
 
