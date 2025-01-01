@@ -18,14 +18,11 @@ public partial class TCart
     public int FImgId { get; set; }
 
     public int FBuyerId { get; set; }
-
-    // 新增 TotalPrice 屬性
     public int TotalPrice
     {
         get
         {
-            return FPrice * FCount;
+            return FPrice * FCount; // 總價格 = 單價 * 數量
         }
     }
-
 }

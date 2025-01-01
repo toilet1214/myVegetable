@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using System.Diagnostics;
 using System.Text.Json;
@@ -8,11 +9,15 @@ namespace prjVegetable.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        
         private const string CartSessionKey = "CartSession";
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ILogger<HomeController> _logger;
+        private readonly DbVegetableContext _dbContext;
+
+        public HomeController(ILogger<HomeController> logger, DbVegetableContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
         public IActionResult Index()
@@ -126,40 +131,28 @@ namespace prjVegetable.Controllers
             SaveCartToSession(cart); // 更新 Session
             return RedirectToAction("Cart");
         }
-        //[HttpPost]
-        //public IActionResult Checkout(string shippingName, string shippingPhone, string shippingAddress, string note, bool sameAsMember)
-        //{
-        //    if (sameAsMember)
-        //    {
-        //        // 如果勾選同會員資料，從會員資料填入
-        //        shippingName = "會員姓名"; // 這裡應替換為實際會員資料
-        //        shippingPhone = "會員電話";
-        //        shippingAddress = "會員地址";
-        //    }
-        //    else
-        //    {
-        //        // 如果未勾選，使用提交的資料（可能來自訂購人）
-        //        // shippingName, shippingPhone, shippingAddress 已經從表單接收
-        //    }
+        [HttpGet]
+        public IActionResult GetMemberInfo(int memberId)
+        {
+            // 假設 dbContext 已注入
+            var member = _dbContext.TPeople.FirstOrDefault(p => p.FId == memberId);
 
-        //    // 處理訂單邏輯，例如保存到資料庫
-        //    // 假設存入 tOrder 表
-        //    var order = new Order
-        //    {
-        //        fReceiverName = shippingName,
-        //        fPhone = shippingPhone,
-        //        fAddress = shippingAddress,
-        //        fRemark = note,
-        //        fOrderAt = DateTime.Now,
-        //        fStatus = "Pending",
-        //        fTotal = 999 // 模擬總金額，應來自購物車
-        //    };
+            if (member == null)
+            {
+                return Json(new { success = false, message = "會員資料不存在。" });
+            }
 
-        //    // TODO: 將訂單保存到資料庫
-
-        //    // 返回確認頁面
-        //    return RedirectToAction("OrderConfirmation");
-        //}
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    name = member.FName,
+                    phone = member.FPhone,
+                    address = member.FAddress
+                }
+            });
+        }
         public IActionResult About()
         {
             return View();

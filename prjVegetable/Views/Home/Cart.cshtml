@@ -193,32 +193,32 @@
     </div>
     <script>
         // 模擬會員資料與訂購人資料
-        const memberData = {
-            name: "會員姓名",
-            phone: "會員電話",
-            address: "會員地址",
-            
-        };
-
-        const buyerData = {
-            name: "",
-            phone: "",
-            address: "",
-            
-        };
-
-        // 同會員資料邏輯
         document.getElementById('SameAsMember').addEventListener('change', function () {
+            const memberId = 1; // 預設的會員 FId = 1
+
             if (this.checked) {
-                // 填入會員資料
-                document.getElementById('shippingName').value = memberData.name;
-                document.getElementById('shippingPhone').value = memberData.phone;
-                document.getElementById('shippingAddress').value = memberData.address;
+                // 勾選時，透過 AJAX 獲取會員資料
+                fetch(`/Home/GetMemberInfo?memberId=${memberId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 填充表單字段
+                            document.getElementById('shippingName').value = data.data.name;
+                            document.getElementById('shippingPhone').value = data.data.phone;
+                            document.getElementById('shippingAddress').value = data.data.address;
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('無法獲取會員資料:', error);
+                        alert('無法抓取會員資料，請稍後再試。');
+                    });
             } else {
-                // 填入訂購人資料（或清空）
-                document.getElementById('shippingName').value = buyerData.name || '';
-                document.getElementById('shippingPhone').value = buyerData.phone || '';
-                document.getElementById('shippingAddress').value = buyerData.address || '';
+                // 取消勾選時清空表單
+                document.getElementById('shippingName').value = '';
+                document.getElementById('shippingPhone').value = '';
+                document.getElementById('shippingAddress').value = '';
             }
         });
         function confirmDecrease(productId, currentCount) {
