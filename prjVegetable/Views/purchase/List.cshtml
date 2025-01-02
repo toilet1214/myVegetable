@@ -1,0 +1,133 @@
+﻿@model IEnumerable<team_20241228.Models.CTPurchaseWrap>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>採購單管理</h1>
+@using (Html.BeginForm())
+{
+    @:關鍵字 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢">
+}
+<p>
+    <a asp-action="create">新增採購單</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+@*             <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.FPurchase_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSupplier_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSupplier_name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPurchase_person)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FValid_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTax_type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoice_form)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPayment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCeate_file_person)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FModify_person)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPurchase_dollar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDollar_tax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTotal_dollar)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FNote)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @{
+            int count = 0;
+            @foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPurchase_date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSupplier_id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSupplier_name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPurchase_person)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FValid_date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FTax_type)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FInvoice_form)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPayment)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FCeate_file_person)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FModify_person)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPurchase_dollar)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FDollar_tax)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FTotal_dollar)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FNote)
+                    </td>
+                    <td>
+                        @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
+                        @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                    </td>
+                </tr>
+            }
+
+
+
+        }
+
+    </tbody>
+</table>

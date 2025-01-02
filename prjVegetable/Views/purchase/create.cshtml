@@ -1,0 +1,104 @@
+﻿@model team_20241228.Models.CTPurchaseWrap
+
+@{
+    ViewData["Title"] = "create";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>新增採購單</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+@*             <div class="form-group">
+                <label asp-for="FId" class="control-label"></label>
+                <input asp-for="FId" class="form-control" />
+                <span asp-validation-for="FId" class="text-danger"></span>
+            </div> *@
+            <div class="form-group">
+                <label asp-for="FPurchase_date" class="control-label"></label>
+                <input asp-for="FPurchase_date" class="form-control" />
+                <span asp-validation-for="FPurchase_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FSupplier_id" class="control-label"></label>
+                <input asp-for="FSupplier_id" class="form-control" />
+                <span asp-validation-for="FSupplier_id" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FSupplier_name" class="control-label"></label>
+                <input asp-for="FSupplier_name" class="form-control" />
+                <span asp-validation-for="FSupplier_name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPurchase_person" class="control-label"></label>
+                <input asp-for="FPurchase_person" class="form-control" />
+                <span asp-validation-for="FPurchase_person" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FValid_date" class="control-label"></label>
+                <input asp-for="FValid_date" class="form-control" />
+                <span asp-validation-for="FValid_date" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FTax_type" class="control-label"></label>
+                <input asp-for="FTax_type" class="form-control" />
+                <span asp-validation-for="FTax_type" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FInvoice_form" class="control-label"></label>
+                <input asp-for="FInvoice_form" class="form-control" />
+                <span asp-validation-for="FInvoice_form" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPayment" class="control-label"></label>
+                <input asp-for="FPayment" class="form-control" />
+                <span asp-validation-for="FPayment" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FCeate_file_person" class="control-label"></label>
+                <input asp-for="FCeate_file_person" class="form-control" />
+                <span asp-validation-for="FCeate_file_person" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FModify_person" class="control-label"></label>
+                <input asp-for="FModify_person" class="form-control" />
+                <span asp-validation-for="FModify_person" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPurchase_dollar" class="control-label"></label>
+                <input asp-for="FPurchase_dollar" class="form-control" />
+                <span asp-validation-for="FPurchase_dollar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FDollar_tax" class="control-label"></label>
+                <input asp-for="FDollar_tax" class="form-control" />
+                <span asp-validation-for="FDollar_tax" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FTotal_dollar" class="control-label"></label>
+                <input asp-for="FTotal_dollar" class="form-control" />
+                <span asp-validation-for="FTotal_dollar" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FNote" class="control-label"></label>
+                <input asp-for="FNote" class="form-control" />
+                <span asp-validation-for="FNote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增並送出" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="List">取消</a>
+</div>
+
+@* @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+ *@
