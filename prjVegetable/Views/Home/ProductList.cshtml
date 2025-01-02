@@ -31,45 +31,46 @@
         int count = 0;
     }
 
-    <!--產品側邊欄 start -->
-    <div class="bg-secondary">
-        <div class="container mt-5 py-2 w-50 fs-5 ">
-            <div class="row">
-                <div class="imgicon col-12 col-md-2 me-2 ">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>葉菜</p>
-                    </div>
-                </div>
-                <div class="imgicon col-12 col-md-2 me-2">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>根莖</p>
-                    </div>
-                </div>
-                <div class="imgicon col-12 col-md-2 me-2">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>蕈菇</p>
-                    </div>
-                </div>
-                <div class="imgicon col-12 col-md-2 me-2">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>水果</p>
-                    </div>
-                </div>
-                <div class="imgicon col-12 col-md-2 me-2">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>蔬菜箱</p>
-                    </div>
-                </div>
 
+    <!--產品側邊欄 start -->
+        <div class="bg-secondary">
+            <div class="container mt-5 py-2 w-50 fs-5 ">
+                <div class="row">
+                    <div class="imgicon col-12 col-md-2 me-2">
+                        <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                        <div class="mt-1 d-flex justify-content-center align-items-end">
+                            <p>根莖</p>
+                        </div>
+                    </div>
+                    <div class="imgicon col-12 col-md-2 me-2">
+                        <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                        <div class="mt-1 d-flex justify-content-center align-items-end">
+                            <p>根莖</p>
+                        </div>
+                    </div>
+                    <div class="imgicon col-12 col-md-2 me-2">
+                        <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                        <div class="mt-1 d-flex justify-content-center align-items-end">
+                            <p>蕈菇</p>
+                        </div>
+                    </div>
+                    <div class="imgicon col-12 col-md-2 me-2">
+                        <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                        <div class="mt-1 d-flex justify-content-center align-items-end">
+                            <p>水果</p>
+                        </div>
+                    </div>
+                    <div class="imgicon col-12 col-md-2 me-2">
+                        <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                        <div class="mt-1 d-flex justify-content-center align-items-end">
+                            <p>蔬菜箱</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    
 
-    </div>
 
     <!-- 篩選價格 start -->
     <div class="container d-flex flex-column  margin-top: auto ">
@@ -248,13 +249,13 @@
                         const fromPosition = from.value - to.min;
                         const toPosition = to.value - to.min;
                         controlSlider.style.background = `linear-gradient(
-                                                      to right,
-                                                      ${sliderColor} 0%,
-                                                      ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
-                                                      ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
-                                                      ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
-                                                      ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
-                                                      ${sliderColor} 100%)`;
+                                                                                                      to right,
+                                                                                                      ${sliderColor} 0%,
+                                                                                                      ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
+                                                                                                      ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
+                                                                                                      ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                                                                                      ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                                                                                      ${sliderColor} 100%)`;
                     }
 
                     function setToggleAccessible(currentTarget) {
