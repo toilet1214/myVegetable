@@ -1,0 +1,54 @@
+﻿@model team_20241228.Models.CTInvoiceDetailWrap
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>修改發票明細資訊</h1>
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="FNumber" class="control-label"></label>
+                <input asp-for="FNumber" class="form-control" />
+                <span asp-validation-for="FNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FProductName" class="control-label"></label>
+                <input asp-for="FProductName" class="form-control" />
+                <span asp-validation-for="FProductName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FConut" class="control-label"></label>
+                <input asp-for="FConut" class="form-control" />
+                <span asp-validation-for="FConut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPrice" class="control-label"></label>
+                <input asp-for="FPrice" class="form-control" />
+                <span asp-validation-for="FPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FSum" class="control-label"></label>
+                <input asp-for="FSum" class="form-control" />
+                <span asp-validation-for="FSum" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="List">取消</a>
+</div>
+
+@* @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} *@

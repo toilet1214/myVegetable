@@ -1,0 +1,107 @@
+﻿@model IEnumerable<team_20241228.Models.CTInvoiceWrap>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>發票管理</h1>
+@using (Html.BeginForm())
+{
+    @:關鍵字 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢">
+}
+
+<p>
+    <a asp-action="Create">新增發票</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+@*             <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th> *@
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceForm)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCustomerId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCustomerUnifiedEdition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSupplierId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSupplierUnifiedEdition)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEditer)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            @foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FInvoiceNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FInvoiceForm)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FCustomerId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FCustomerUnifiedEdition)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSupplierId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSupplierUnifiedEdition)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FInOut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FTotal)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FEditer)
+                    </td>
+                    <td>
+                        @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
+                        @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+
+                    </td>
+                </tr>
+            }
+
+        }
+    </tbody>
+</table>
