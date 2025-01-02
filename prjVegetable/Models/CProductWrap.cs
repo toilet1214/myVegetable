@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prjVegetable.Models
 {
@@ -16,6 +17,8 @@ namespace prjVegetable.Models
         {
             _product = new TProduct();
         }
+
+
         public int FId
         {
             get { return _product.FId; }
@@ -83,5 +86,11 @@ namespace prjVegetable.Models
             get { return _product.FEditor; }
             set { _product.FEditor = value; }
         }
+
+
+        public string FImgName
+        { get;set; }
+
+        public List<string> ImgList { get; set; }
     }
 }
