@@ -1,0 +1,106 @@
+﻿@model prjVegetable.Models.CProviderWrap
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>新增資料</h1>
+
+<hr />
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FName" class="control-label"></label>
+                <input asp-for="FName" class="form-control" />
+                <span asp-validation-for="FName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FUbn" class="control-label"></label>
+                <input asp-for="FUbn" class="form-control" />
+                <span asp-validation-for="FUbn" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FConnect" class="control-label"></label>
+                <input asp-for="FConnect" class="form-control" />
+                <span asp-validation-for="FConnect" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FTel" class="control-label"></label>
+                <input asp-for="FTel" class="form-control" />
+                <span asp-validation-for="FTel" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FAccountant" class="control-label"></label>
+                <input asp-for="FAccountant" class="form-control" />
+                <span asp-validation-for="FAccountant" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="FAddress" class="control-label"></label>
+                <input asp-for="FAddress" class="form-control" />
+                <span asp-validation-for="FAddress" class="text-danger"></span>
+            </div>
+        </div>        
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="FDelivery" class="control-label"></label>
+                <input asp-for="FDelivery" class="form-control" />
+                <span asp-validation-for="FDelivery" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="FInvoiceadd" class="control-label"></label>
+                <input asp-for="FInvoiceadd" class="form-control" />
+                <span asp-validation-for="FInvoiceadd" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div>
+                <a asp-action="Index">回廠商列表</a>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group d-grid justify-content-md-end">
+                <input type="submit" value="新增資料" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+
+
+
+
+</form>
+
+
+
+
+@* @section Scripts { *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* } *@

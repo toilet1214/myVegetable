@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -19,10 +20,31 @@ namespace prjVegetable.Controllers
         }        
 
         // GET: TPersons
-        public IActionResult Index()
+        public IActionResult Index(CKeywordViewModel vm)
         {
-            var data = _context.TPeople.ToList();
-            return View(data);
+            string keyword = vm.txtKeyword;
+            IEnumerable<TPerson> datas = null;
+            if (string.IsNullOrEmpty(keyword)) 
+            {
+                datas = from p in _context.TPeople
+                        select p;
+            }
+            else
+            {
+                datas = _context.TPeople.Where(p => 
+                p.FName.Contains(keyword)||
+                p.FPhone.Contains(keyword)||
+                p.FAddress.Contains(keyword)||
+                p.FEmail.Contains(keyword)
+                );
+            }
+            var data = _context.TPeople.ToList();  
+            List<CPersonWrap>list = new List<CPersonWrap>();
+            foreach (var p in data) 
+            {
+                list.Add(new CPersonWrap() { person = p });
+            }
+            return View(list);
         }
 
         // GET: TPersons/Details/5
@@ -30,17 +52,15 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            var tPerson = await _context.TPeople
-                .FirstOrDefaultAsync(m => m.FPId == id);
-            if (tPerson == null)
-            {
-                return NotFound();
-            }
+            var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+            if (x == null)
+                return RedirectToAction(nameof(Index));
 
-            return View(tPerson);
+            return View(new CPersonWrap() { person = x });
+            
         }
 
         // GET: TPersons/Create
@@ -52,17 +72,17 @@ namespace prjVegetable.Controllers
         // POST: TPersons/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FPId,FPName,FPAccount,FPPassword,FPGender,FPBirth,FPPhone,FPTel,FPAddress,FPEmail,FPUinvoice,FPStatus,FPEmp,FPTelEmptel,FPCreatedAt,FPEditor")] TPerson tPerson)
+        [HttpPost]        
+        public async Task<IActionResult> Create(CPersonWrap tPersonwrap)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tPerson);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tPerson);
+            // 將新的 TPerson 物件加入到資料庫上下文
+            _context.TPeople.Add(tPersonwrap.person);
+
+            // 儲存變更
+            await _context.SaveChangesAsync();
+
+            // 重定向回 Index 頁面
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TPersons/Edit/5
@@ -70,50 +90,44 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Index));
             }
 
-            var tPerson = await _context.TPeople.FindAsync(id);
-            if (tPerson == null)
-            {
-                return NotFound();
-            }
-            return View(tPerson);
+            var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+            if (x == null)
+                return RedirectToAction(nameof(Index));
+
+            return View(new CPersonWrap() { person = x });
         }
 
         // POST: TPersons/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("FPId,FPName,FPAccount,FPPassword,FPGender,FPBirth,FPPhone,FPTel,FPAddress,FPEmail,FPUinvoice,FPStatus,FPEmp,FPTelEmptel,FPCreatedAt,FPEditor")] TPerson tPerson)
+        public IActionResult Edit(CPersonWrap tPersonwrap)
         {
-            if (id != tPerson.FPId)
-            {
-                return NotFound();
+            TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == tPersonwrap.FId);
+            
+            if (e != null)
+            {   //拿掉不給使用者修改的欄位
+               e.FName = tPersonwrap.FName;
+               e.FAccount = tPersonwrap.FAccount;
+               e.FPassword = tPersonwrap.FPassword;
+               e.FBirth =  tPersonwrap.FBirth;
+               e.FPhone = tPersonwrap.FPhone;
+               e.FTel = tPersonwrap.FTel;
+               e.FAddress = tPersonwrap.FAddress;
+               e.FEmail = tPersonwrap.FEmail;
+               e.FUbn = tPersonwrap.FUbn;
+               e.FPermission = tPersonwrap.FPermissiion;
+               e.FEmp = tPersonwrap.FEmp;
+               e.FEmpTel  = tPersonwrap.FEmpTel;
+               e.FCreatedAt = tPersonwrap.FCreatedAt;
+               e.FEditor = tPersonwrap.FEditor;
+                _context.SaveChanges();
             }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tPerson);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TPersonExists(tPerson.FPId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tPerson);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: TPersons/Delete/5
@@ -125,33 +139,16 @@ namespace prjVegetable.Controllers
             }
 
             var tPerson = await _context.TPeople
-                .FirstOrDefaultAsync(m => m.FPId == id);
+                .FirstOrDefaultAsync(m => m.FId == id);
             if (tPerson == null)
             {
                 return NotFound();
             }
+            _context.TPeople.Remove(tPerson);
+            _context.SaveChanges();
 
-            return View(tPerson);
-        }
-
-        // POST: TPersons/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tPerson = await _context.TPeople.FindAsync(id);
-            if (tPerson != null)
-            {
-                _context.TPeople.Remove(tPerson);
-            }
-
-            await _context.SaveChangesAsync();
+            // 重定向回 Index 頁面
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TPersonExists(int id)
-        {
-            return _context.TPeople.Any(e => e.FPId == id);
-        }
+        }        
     }
 }
