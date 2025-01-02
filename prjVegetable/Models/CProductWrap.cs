@@ -18,74 +18,68 @@ namespace prjVegetable.Models
         }
 
 
-        public int FProductId
+        public int FId
         {
-            get { return _product.FProductId; }
-            set { _product.FProductId = value; }
+            get { return _product.FId; }
+            set { _product.FId = value; }
         }
 
-        public string FProductName
+        public string FName
         {
-            get { return _product.FProductName; }
-            set { _product.FProductName = value; }
+            get { return _product.FName; }
+            set { _product.FName = value; }
         }
-        public string FProductClassification
+        public string FClassification
         {
-            get { return _product.FProductClassification; }
-            set { _product.FProductClassification = value; }
-        }
-
-        public int FProductPrice
-        {
-            get { return _product.FProductPrice; }
-            set { _product.FProductPrice = value; }
+            get { return _product.FClassification; }
+            set { _product.FClassification = value; }
         }
 
-        public string FProductDescription
+        public int FPrice
         {
-            get { return _product.FProductDescription; }
-            set { _product.FProductDescription = value; }
+            get { return _product.FPrice; }
+            set { _product.FPrice = value; }
         }
 
-        public int FProductQuantity
+        public string FDescription
         {
-            get { return _product.FProductQuantity; }
-            set { _product.FProductQuantity = value; }
+            get { return _product.FDescription; }
+            set { _product.FDescription = value; }
         }
 
-        public DateTime FProductCreatedAt
+        public int FQuantity
         {
-            get { return _product.FProductCreatedAt; }
-            set { _product.FProductCreatedAt = value; }
+            get { return _product.FQuantity; }
+            set { _product.FQuantity = value; }
         }
 
-        public string FProductStorage
+        public DateTime FLaunchAt
         {
-            get { return _product.FProductStorage; }
-            set { _product.FProductStorage = value; }
+            get { return _product.FLaunchAt; }
+            set { _product.FLaunchAt = value; }
         }
 
-        public string FProductOrigin
+        public string FStorage
         {
-            get { return _product.FProductOrigin; }
-            set { _product.FProductOrigin = value; }
+            get { return _product.FStorage; }
+            set { _product.FStorage = value; }
         }
 
-        public string FProductEditer
+        public string FOrigin
         {
-            get { return _product.FProductEditer; }
-            set { _product.FProductEditer = value; }
+            get { return _product.FOrigin; }
+            set { _product.FOrigin = value; }
         }
 
-        public virtual ICollection<TImg> TImgs { get; set; } = new List<TImg>();
+        public string FEditor
+        {
+            get { return _product.FEditor; }
+            set { _product.FEditor = value; }
+        }
 
-        [NotMapped]
-        //public TImg TImg { get; set; }
+
         public string FImgName
-        {
-            get { return _product.FImgName; }
-            set { _product.FImgName = value; }
-        }
+        { get;set; }
 
     }
 }

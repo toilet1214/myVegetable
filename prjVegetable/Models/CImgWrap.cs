@@ -16,10 +16,10 @@
             _img = new TImg();
         }
 
-        public int FImgId
+        public int FId
         {
-            get { return img.FImgId; }
-            set { img.FImgId = value; }
+            get { return img.FId; }
+            set { img.FId = value; }
         }
 
         public int FProductId
@@ -34,22 +34,22 @@
             set { img.FImgName = value; }
         }
 
-        public int FImgOrder
+        public int FOrderBy
         {
-            get { return img.FImgOrder; }
-            set { img.FImgOrder = value; }
+            get { return img.FOrderBy; }
+            set { img.FOrderBy = value; }
         }
 
-        public DateTime? FImgCreatedAt
+        public DateTime? FUploadAt
         {
-            get { return img.FImgCreatedAt; }
-            set { img.FImgCreatedAt = value; }
+            get { return img.FUploadAt; }
+            set { img.FUploadAt = value; }
         }
 
-        public string FImgEditer
+        public string FEditor
         {
-            get { return img.FImgEditer; }
-            set { img.FImgEditer = value; }
+            get { return img.FEditor; }
+            set { img.FEditor = value; }
         }
 
         public virtual TProduct FProduct { get; set; } = null!;

@@ -38,22 +38,21 @@ namespace prjVegetable.Controllers
         {
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
-            var products = db.TProducts.Include(p => p.TImgs).ToList();
+            var products = db.TProducts.ToList();
             //var images = db.TImgs.ToList();
 
             foreach (var p in products)
             {
                 CProductWrap pp = new CProductWrap() { product  = p};
+                var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
+                pp.FImgName = image?.FImgName;
                 list.Add(pp);
             }
-            foreach (var product in list)
-            {
-                var image = product.product.TImgs.FirstOrDefault(img => img.FProductId == product.product.FProductId);
-                product.FImgName = image?.FImgName;
 
-            }
             return View(list);
         }
+
+        
 
         public IActionResult Privacy()
         {

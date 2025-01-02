@@ -95,10 +95,10 @@
         @foreach (var item in Model)
         {
             count++;
-            bool isSoldOut = item.FProductQuantity == 0;  // 檢查產品是否售完
+            bool isSoldOut = item.FQuantity == 0;  // 檢查產品是否售完
 
 
-            <div class="col">
+            <div class="col" href="#">
                 <a href="" class="text-decoration-none">
 
                     <div class="card h-100 shadow-sm d-flex flex-column @((isSoldOut) ? "sold-out" : "")">
@@ -116,9 +116,9 @@
                         @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
                         <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid @((isSoldOut) ? "sold-out-img" : "")" alt="Image">
                         <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.FProductName)</h5>
-                            <p class="card-text">【@Html.DisplayFor(modelItem => item.FProductDescription)】《宅配含運》</p>
-                            <p class="card-text">NT @Html.DisplayFor(modelItem => item.FProductPrice)</p>
+                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.FName)</h5>
+                            <p class="card-text">【@Html.DisplayFor(modelItem => item.FDescription)】《宅配含運》</p>
+                            <p class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</p>
                             <div class="d-flex">
                                 <button class="btn"><i class="bi bi-heart"></i></button>
                                 <button class="btn @((isSoldOut) ? "disabled" : "")"><i class="bi bi-cart"></i>加入購物車</button>
