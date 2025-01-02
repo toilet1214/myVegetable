@@ -19,6 +19,9 @@ namespace prjVegetable.Controllers
             return View();
         }
         public IActionResult ProductBuying()
+        {
+            return View();
+        }
 
         //盤點作業 by允7
         public IActionResult inventory()

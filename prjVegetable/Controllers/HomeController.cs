@@ -11,19 +11,15 @@ namespace prjVegetable.Controllers
     public class HomeController : Controller
     {
         private readonly IWebHostEnvironment _environment;
-
-        public HomeController(IWebHostEnvironment environment)
-        {
-            _environment = environment;
-        }
         private const string CartSessionKey = "CartSession";
         private readonly ILogger<HomeController> _logger;
         private readonly DbVegetableContext _dbContext;
 
-        public HomeController(ILogger<HomeController> logger, DbVegetableContext dbContext)
+        public HomeController(ILogger<HomeController> logger, DbVegetableContext dbContext, IWebHostEnvironment environment)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _environment = environment;
         }
 
         public IActionResult Index()
