@@ -1,4 +1,4 @@
-﻿@model IEnumerable<prjVegetable.Models.TProductWrap>
+﻿@model IEnumerable<prjVegetable.Models.CProductWrap>
 
 @{
     ViewData["Title"] = "Index";
@@ -44,7 +44,7 @@
                 @Html.DisplayNameFor(model => model.FOrigin)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FEditer)
+                @Html.DisplayNameFor(model => model.FEditor)
             </th>
             <th></th>
         </tr>
@@ -77,7 +77,7 @@
                     @Html.DisplayFor(modelItem => item.product.FOrigin)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.product.FEditer)
+                    @Html.DisplayFor(modelItem => item.product.FEditor)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />

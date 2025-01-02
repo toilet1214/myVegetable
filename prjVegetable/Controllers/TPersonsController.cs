@@ -39,10 +39,10 @@ namespace prjVegetable.Controllers
                 );
             }
             var data = _context.TPeople.ToList();  
-            List<TPersonWrap>list = new List<TPersonWrap>();
+            List<CPersonWrap>list = new List<CPersonWrap>();
             foreach (var p in data) 
             {
-                list.Add(new TPersonWrap() { person = p });
+                list.Add(new CPersonWrap() { person = p });
             }
             return View(list);
         }
@@ -59,7 +59,7 @@ namespace prjVegetable.Controllers
             if (x == null)
                 return RedirectToAction(nameof(Index));
 
-            return View(new TPersonWrap() { person = x });
+            return View(new CPersonWrap() { person = x });
             
         }
 
@@ -73,7 +73,7 @@ namespace prjVegetable.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]        
-        public async Task<IActionResult> Create(TPersonWrap tPersonwrap)
+        public async Task<IActionResult> Create(CPersonWrap tPersonwrap)
         {
             // 將新的 TPerson 物件加入到資料庫上下文
             _context.TPeople.Add(tPersonwrap.person);
@@ -97,14 +97,14 @@ namespace prjVegetable.Controllers
             if (x == null)
                 return RedirectToAction(nameof(Index));
 
-            return View(new TPersonWrap() { person = x });
+            return View(new CPersonWrap() { person = x });
         }
 
         // POST: TPersons/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult Edit(TPersonWrap tPersonwrap)
+        public IActionResult Edit(CPersonWrap tPersonwrap)
         {
             TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == tPersonwrap.FId);
             
@@ -119,7 +119,7 @@ namespace prjVegetable.Controllers
                e.FAddress = tPersonwrap.FAddress;
                e.FEmail = tPersonwrap.FEmail;
                e.FUbn = tPersonwrap.FUbn;
-               e.FPermissiion = tPersonwrap.FPermissiion;
+               e.FPermission = tPersonwrap.FPermissiion;
                e.FEmp = tPersonwrap.FEmp;
                e.FEmpTel  = tPersonwrap.FEmpTel;
                e.FCreatedAt = tPersonwrap.FCreatedAt;

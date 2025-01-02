@@ -2,7 +2,7 @@
 
 namespace prjVegetable.Models
 {
-    public class TPersonWrap
+    public class CPersonWrap
     {
         private TPerson _person = null;
         public TPerson person
@@ -10,7 +10,7 @@ namespace prjVegetable.Models
             get { return _person; }
             set { _person = value; }
         }
-        public TPersonWrap()
+        public CPersonWrap()
         {
             _person = new TPerson();
         }
@@ -95,8 +95,8 @@ namespace prjVegetable.Models
         [DisplayName("權限")]
         public string FPermissiion
         {
-            get { return _person.FPermissiion; }
-            set { _person.FPermissiion = value; }
+            get { return _person.FPermission; }
+            set { _person.FPermission = value; }
         }
 
         [DisplayName("緊急聯絡人")]

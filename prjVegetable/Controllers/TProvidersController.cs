@@ -40,10 +40,10 @@ namespace prjVegetable.Controllers
                 );
             }
             var data = _context.TProviders.ToList();
-            List<TProviderWrap> list = new List<TProviderWrap>();
+            List<CProviderWrap> list = new List<CProviderWrap>();
             foreach (var p in data)
             {
-                list.Add(new TProviderWrap() { provider = p });
+                list.Add(new CProviderWrap() { provider = p });
             }
             return View(list);
         }
@@ -63,7 +63,7 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new TProviderWrap() {provider = tProvider });
+            return View(new CProviderWrap() {provider = tProvider });
         }
 
         // GET: TProviders/Create
@@ -76,7 +76,7 @@ namespace prjVegetable.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create(TProviderWrap tProviderwrap)
+        public async Task<IActionResult> Create(CProviderWrap tProviderwrap)
         {
             _context.TProviders.Add(tProviderwrap.provider);
             await _context.SaveChangesAsync();
@@ -96,7 +96,7 @@ namespace prjVegetable.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            return View(new TProviderWrap() {provider = tProvider });
+            return View(new CProviderWrap() {provider = tProvider });
         }
 
         // POST: TProviders/Edit/5
@@ -104,7 +104,7 @@ namespace prjVegetable.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(TProviderWrap tProviderwrap)
+        public async Task<IActionResult> Edit(CProviderWrap tProviderwrap)
         {
             TProvider e = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == tProviderwrap.FId);
             if (e != null)

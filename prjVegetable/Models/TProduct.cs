@@ -23,5 +23,5 @@ public partial class TProduct
 
     public string FOrigin { get; set; } = null!;
 
-    public string FEditer { get; set; } = null!;
+    public string FEditor { get; set; } = null!;
 }

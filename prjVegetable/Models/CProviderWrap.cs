@@ -2,7 +2,7 @@
 
 namespace prjVegetable.Models
 {
-    public class TProviderWrap
+    public class CProviderWrap
     {
         private TProvider _provider = null;
         public TProvider provider
@@ -10,7 +10,7 @@ namespace prjVegetable.Models
             get { return _provider; }
             set { _provider = value; }
         }
-        public TProviderWrap()
+        public CProviderWrap()
         {
             _provider = new TProvider();
         }
@@ -79,10 +79,10 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("資料修改人")]
-        public int FEditer
+        public int FEditor
         {
-            get { return _provider.FEditer; }
-            set { _provider.FEditer = value; }
+            get { return _provider.FEditor; }
+            set { _provider.FEditor = value; }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace prjVegetable.Models
 {
-    public class TProductWrap
+    public class CProductWrap
     {
         private TProduct _product = null;
 
@@ -12,7 +12,7 @@ namespace prjVegetable.Models
             set { _product = value; }
         }
 
-        public TProductWrap()
+        public CProductWrap()
         {
             _product = new TProduct();
         }
@@ -78,10 +78,10 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("修改人")]
-        public string FEditer
+        public string FEditor
         {
-            get { return _product.FEditer; }
-            set { _product.FEditer = value; }
+            get { return _product.FEditor; }
+            set { _product.FEditor = value; }
         }
     }
 }

@@ -40,10 +40,10 @@ namespace prjVegetable.Controllers
                 );
             }
             var data = _context.TProducts.ToList();
-            List<TProductWrap>list = new List<TProductWrap>();
+            List<CProductWrap>list = new List<CProductWrap>();
             foreach (var p in data) 
             {
-                list.Add(new TProductWrap() { product = p });
+                list.Add(new CProductWrap() { product = p });
             
             }
             return View(list);
@@ -64,7 +64,7 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new TProductWrap() {product = tProduct });
+            return View(new CProductWrap() {product = tProduct });
         }
 
         // GET: TProducts/Create
@@ -77,7 +77,7 @@ namespace prjVegetable.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create(TProductWrap tProductwrap)
+        public async Task<IActionResult> Create(CProductWrap tProductwrap)
         {
             _context.TProducts.Add(tProductwrap.product);
             await _context.SaveChangesAsync();
@@ -97,14 +97,14 @@ namespace prjVegetable.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            return View(new TProductWrap() {product = tProduct });
+            return View(new CProductWrap() {product = tProduct });
         }
 
         // POST: TProducts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult Edit(TProductWrap tProductwrap)
+        public IActionResult Edit(CProductWrap tProductwrap)
         {
             TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == tProductwrap.FId);
 
