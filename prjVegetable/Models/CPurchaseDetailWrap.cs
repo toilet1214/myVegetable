@@ -2,9 +2,9 @@
 using prjVegetable.Models;
 using System.ComponentModel;
 
-namespace team_20241228.Models
+namespace prjVegetable.Models
 {
-    public class CTPurchaseDetailWrap 
+    public class CPurchaseDetailWrap 
     {
         //----define the value
         private TPurchaseDetail _PurchaseDetail;
@@ -15,7 +15,7 @@ namespace team_20241228.Models
         }
 
         //------save the data by global variable
-        public CTPurchaseDetailWrap()
+        public CPurchaseDetailWrap()
         {
             _PurchaseDetail = new TPurchaseDetail();
         }

@@ -10,11 +10,11 @@ using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
-    public class TPersonsController : Controller
+    public class PersonsController : Controller
     {
         private readonly DbVegetableContext _context;
 
-        public TPersonsController(DbVegetableContext context)
+        public PersonsController(DbVegetableContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
         }

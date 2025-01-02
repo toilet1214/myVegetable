@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjVegetable.Models;
-using team_20241228.Models;
-using team_20241228.ViewModels;
+using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
-namespace team_20241228.Controllers
+namespace prjVegetable.Controllers
 {
-    public class purchaseDetailController : Controller
+    public class PurchaseDetailController : Controller
 	{
-        public IActionResult List(CkeywordViewModels vm)
+        public IActionResult List(CKeywordViewModel vm)
         {
-            //額外使用"CKeywordViewModels"內的引數，區分request/required 的回傳值
+            //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
             DbVegetableContext db = new DbVegetableContext();
             string keyword = vm.txtKeyword;
 
@@ -25,9 +25,9 @@ namespace team_20241228.Controllers
                  p => p.FPurchaseId.ToString().Contains(keyword) || p.FProductName.Contains(keyword));
 
             //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
-            List<CTPurchaseDetailWrap> list = new List<CTPurchaseDetailWrap>();
+            List<CPurchaseDetailWrap> list = new List<CPurchaseDetailWrap>();
             foreach (var t in datas)
-                list.Add(new CTPurchaseDetailWrap() { PurchaseDetail = t });
+                list.Add(new CPurchaseDetailWrap() { PurchaseDetail = t });
             return View(list);
         }
 
@@ -79,7 +79,7 @@ namespace team_20241228.Controllers
 
             // 根據傳入的 id 查找對應的客戶資料
             TPurchaseDetail x = db.TPurchaseDetails.FirstOrDefault(c => c.FId == id);
-            CTPurchaseDetailWrap c = new CTPurchaseDetailWrap() { PurchaseDetail=x};
+            CPurchaseDetailWrap c = new CPurchaseDetailWrap() { PurchaseDetail=x};
 
             // 如果找不到該客戶，重導向到 List 動作
             if (x == null)

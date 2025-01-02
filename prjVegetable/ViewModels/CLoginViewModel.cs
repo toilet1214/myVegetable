@@ -1,4 +1,4 @@
-﻿namespace prjVegetable.ViewModel
+﻿namespace prjVegetable.ViewModels
 {
     public class CLoginViewModel
     {

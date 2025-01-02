@@ -2,9 +2,9 @@
 using prjVegetable.Models;
 using System.ComponentModel;
 
-namespace team_20241228.Models
+namespace prjVegetable.Models
 {
-    public class CTInvoiceWrap 
+    public class CInvoiceWrap 
     {
         //use gobal variable
         private TInvoice _tInvoice ;
@@ -14,7 +14,7 @@ namespace team_20241228.Models
             get { return _tInvoice; }
             set { _tInvoice = value; }
         }
-        public CTInvoiceWrap()
+        public CInvoiceWrap()
         {
             _tInvoice = new TInvoice();
         }

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
-using prjVegetable.ViewModel;
+using prjVegetable.ViewModels;
 using System.Diagnostics;
 using System.Text.Json;
 

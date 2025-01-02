@@ -2,9 +2,9 @@
 using prjVegetable.Models;
 using System.ComponentModel;
 
-namespace team_20241228.Models
+namespace prjVegetable.Models
 {
-    public class CTInvoiceDetailWrap 
+    public class CInvoiceDetailWrap 
     {
         //----define the value
         private TInvoiceDetail _InvoiceDetail;
@@ -15,7 +15,7 @@ namespace team_20241228.Models
         }
 
         //------save the data by global variable
-        public CTInvoiceDetailWrap()
+        public CInvoiceDetailWrap()
         {
             _InvoiceDetail = new TInvoiceDetail();
         }

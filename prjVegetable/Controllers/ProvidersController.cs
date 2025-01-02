@@ -10,46 +10,45 @@ using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
-    public class TProductsController : Controller
+    public class ProvidersController : Controller
     {
         private readonly DbVegetableContext _context;
 
-        public TProductsController(DbVegetableContext context)
+        public ProvidersController(DbVegetableContext context)
         {
             _context = context;
         }
 
-        // GET: TProducts
+        // GET: TProviders
         public async Task<IActionResult> Index(CKeywordViewModel vm)
         {
             string keyword = vm.txtKeyword;
-            IEnumerable<TProduct> datas = null;
+            IEnumerable<TProvider> datas = null;
             if (string.IsNullOrEmpty(keyword))
             {
-                datas = from p in _context.TProducts
+                datas = from p in _context.TProviders
                         select p;
             }
             else 
             {
-                datas = _context.TProducts.Where(p =>
+                datas = _context.TProviders.Where(p =>
                 p.FName.Contains(keyword)||
-                p.FClassification.Contains(keyword) ||
-                p.FLaunchAt.ToString().Contains(keyword) ||
-                p.FStorage.Contains(keyword) ||
-                p.FOrigin.Contains(keyword)
+                p.FUbn.Contains(keyword) ||
+                p.FTel.Contains(keyword) ||
+                p.FConnect.Contains(keyword) ||
+                p.FAddress.Contains(keyword)
                 );
             }
-            var data = _context.TProducts.ToList();
-            List<CProductWrap>list = new List<CProductWrap>();
-            foreach (var p in data) 
+            var data = _context.TProviders.ToList();
+            List<CProviderWrap> list = new List<CProviderWrap>();
+            foreach (var p in data)
             {
-                list.Add(new CProductWrap() { product = p });
-            
+                list.Add(new CProviderWrap() { provider = p });
             }
             return View(list);
         }
 
-        // GET: TProducts/Details/5
+        // GET: TProviders/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -57,34 +56,34 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var tProduct = await _context.TProducts
+            var tProvider = await _context.TProviders
                 .FirstOrDefaultAsync(m => m.FId == id);
-            if (tProduct == null)
+            if (tProvider == null)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new CProductWrap() {product = tProduct });
+            return View(new CProviderWrap() {provider = tProvider });
         }
 
-        // GET: TProducts/Create
+        // GET: TProviders/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: TProducts/Create
+        // POST: TProviders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public async Task<IActionResult> Create(CProductWrap tProductwrap)
+        public async Task<IActionResult> Create(CProviderWrap tProviderwrap)
         {
-            _context.TProducts.Add(tProductwrap.product);
+            _context.TProviders.Add(tProviderwrap.provider);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));            
         }
 
-        // GET: TProducts/Edit/5
+        // GET: TProviders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,39 +91,38 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var tProduct = await _context.TProducts.FirstOrDefaultAsync(c => c.FId == id);
-            if (tProduct == null)
+            var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId ==id);
+            if (tProvider == null)
             {
                 return RedirectToAction(nameof(Index));
             }
-            return View(new CProductWrap() {product = tProduct });
+            return View(new CProviderWrap() {provider = tProvider });
         }
 
-        // POST: TProducts/Edit/5
+        // POST: TProviders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        public IActionResult Edit(CProductWrap tProductwrap)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(CProviderWrap tProviderwrap)
         {
-            TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == tProductwrap.FId);
-
+            TProvider e = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == tProviderwrap.FId);
             if (e != null)
-            {//拿掉不給使用者修改的欄位
-               e.FName = tProductwrap.FName;
-                e.FClassification = tProductwrap.FClassification;
-                e.FPrice = tProductwrap.FPrice;
-                e.FDescription = tProductwrap.FDescription;
-                e.FQuantity = tProductwrap.FQuantity;
-                e.FLaunchAt = tProductwrap.FLaunchAt;
-                e.FStorage = tProductwrap.FStorage;
-                e.FOrigin = tProductwrap.FOrigin;
+            { //拿掉不給使用者修改的欄位
+              e.FName = tProviderwrap.FName;
+              e.FUbn = tProviderwrap.FUbn;
+                e.FTel=tProviderwrap.FTel;
+                e.FConnect = tProviderwrap.FConnect;
+                e.FAccountant = tProviderwrap.FAccountant;
+                e.FAddress = tProviderwrap.FAddress;
+                e.FDelivery = tProviderwrap.FDelivery;
+                e.FInvoiceadd = tProviderwrap.FInvoiceadd;
                 _context.SaveChanges();
-            }
-
+            }            
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: TProducts/Delete/5
+        // GET: TProviders/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -132,18 +130,16 @@ namespace prjVegetable.Controllers
                 return NotFound();
             }
 
-            var tProduct = await _context.TProducts
+            var tProvider = await _context.TProviders
                 .FirstOrDefaultAsync(m => m.FId == id);
-            if (tProduct == null)
+            if (tProvider == null)
             {
                 return NotFound();
             }
-            _context.TProducts.Remove(tProduct);
+            _context.TProviders.Remove(tProvider);
             _context.SaveChanges();
 
             return RedirectToAction(nameof(Index));
-        }
-
-        
+        }        
     }
 }
