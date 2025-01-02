@@ -31,12 +31,12 @@ namespace prjVegetable.Controllers
             ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
             return View(cart); // 傳遞購物車資料到 View
         }
-        private List<TCart> GetCartFromSession()
+        private List<CCartWrap> GetCartFromSession()
         {
             var cartJson = HttpContext.Session.GetString(CartSessionKey);
             return string.IsNullOrEmpty(cartJson)
-                ? new List<TCart>()
-                : JsonSerializer.Deserialize<List<TCart>>(cartJson);
+                ? new List<CCartWrap>()
+                : JsonSerializer.Deserialize<List<CCartWrap>>(cartJson);
         }
         private void ClearCartFromSession()
         {
@@ -44,7 +44,7 @@ namespace prjVegetable.Controllers
         }
 
         // 將購物車資料保存到 Session
-        private void SaveCartToSession(List<TCart> cart)
+        private void SaveCartToSession(List<CCartWrap> cart)
         {
             var cartJson = JsonSerializer.Serialize(cart);
             HttpContext.Session.SetString(CartSessionKey, cartJson);
@@ -166,7 +166,7 @@ namespace prjVegetable.Controllers
                 // 2. 建立 OrderList
                 foreach (var cartItem in cart)
                 {
-                    var orderListItem = new OrderList
+                    var orderListItem = new TOrderList
                     {
                         FOrderId = newOrder.FId, // 關聯剛剛新增的 TOrder
                         FProductId = cartItem.FProductId,
@@ -176,7 +176,7 @@ namespace prjVegetable.Controllers
                         FSum = cartItem.FPrice * cartItem.FCount
                     };
 
-                    _dbContext.OrderLists.Add(orderListItem);
+                    _dbContext.TOrderLists.Add(orderListItem);
                 }
 
                 _dbContext.SaveChanges(); // 儲存所有 OrderList 資料
