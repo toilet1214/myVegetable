@@ -1,0 +1,99 @@
+﻿@model prjVegetable.Models.CPersonWrap
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>編輯資料</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="FId" />
+            <div class="form-group">
+                <label asp-for="FName" class="control-label"></label>
+                <input asp-for="FName" class="form-control" />
+                <span asp-validation-for="FName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FAccount" class="control-label"></label>
+                <input asp-for="FAccount" class="form-control" />
+                <span asp-validation-for="FAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPassword" class="control-label"></label>
+                <input asp-for="FPassword" class="form-control" />
+                <span asp-validation-for="FPassword" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="FBirth" class="control-label"></label>
+                <input asp-for="FBirth" class="form-control" />
+                <span asp-validation-for="FBirth" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPhone" class="control-label"></label>
+                <input asp-for="FPhone" class="form-control" />
+                <span asp-validation-for="FPhone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FTel" class="control-label"></label>
+                <input asp-for="FTel" class="form-control" />
+                <span asp-validation-for="FTel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FAddress" class="control-label"></label>
+                <input asp-for="FAddress" class="form-control" />
+                <span asp-validation-for="FAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FEmail" class="control-label"></label>
+                <input asp-for="FEmail" class="form-control" />
+                <span asp-validation-for="FEmail" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FUbn" class="control-label"></label>
+                <input asp-for="FUbn" class="form-control" />
+                <span asp-validation-for="FUbn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FPermissiion" class="control-label"></label>
+                <input asp-for="FPermissiion" class="form-control" />
+                <span asp-validation-for="FPermissiion" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FEmp" class="control-label"></label>
+                <input asp-for="FEmp" class="form-control" />
+                <span asp-validation-for="FEmp" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FEmpTel" class="control-label"></label>
+                <input asp-for="FEmpTel" class="form-control" />
+                <span asp-validation-for="FEmpTel" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FCreatedAt" class="control-label"></label>
+                <input asp-for="FCreatedAt" class="form-control" />
+                <span asp-validation-for="FCreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FEditor" class="control-label"></label>
+                <input asp-for="FEditor" class="form-control" />
+                <span asp-validation-for="FEditor" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="儲存" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">回員工與會員列表</a>
+</div>
+
+@* @section Scripts { *@
+@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
+@* } *@

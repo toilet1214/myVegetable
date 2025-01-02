@@ -1,0 +1,86 @@
+﻿@model IEnumerable<prjVegetable.Models.CProviderWrap>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+
+<h1>廠商資料列表</h1><br />
+@using(Html.BeginForm())
+{
+    @:搜尋 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢" class="btn btn-primary">
+
+}<br />
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">新增廠商資料</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FUbn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTel)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FConnect)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAccountant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDelivery)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceadd)
+            </th>            
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.provider.FName)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FUbn)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FTel)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FConnect)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FAccountant)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FAddress)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FDelivery)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.provider.FInvoiceadd)
+            </td>            
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br/>
+                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
+                @Html.ActionLink("移除", "Delete", "Tproviders", new { id = item.provider.FId },
+                             new { onclick = "return confirm('確定要刪除嗎?')" })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

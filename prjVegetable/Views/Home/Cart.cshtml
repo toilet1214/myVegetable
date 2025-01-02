@@ -1,0 +1,261 @@
+﻿@model List<prjVegetable.Models.CCartWrap>
+@using prjVegetable.Models
+@{ViewData["Title"] = "Cart";}
+@inject DbVegetableContext dbContext
+@{
+    // 初始化購物車（Session）
+    var cartJson = Context.Session.GetString("CartSession");
+    var cart = string.IsNullOrEmpty(cartJson)
+        ? new List<TCart>()
+        : System.Text.Json.JsonSerializer.Deserialize<List<TCart>>(cartJson);
+
+    // 確保購物車中有範本產品
+    var product = dbContext.TProducts.FirstOrDefault(p => p.FId == 1); //查詢範本產品
+    var product2 = dbContext.TProducts.FirstOrDefault(p => p.FId == 2);
+    if (product != null && !cart.Any(c => c.FProductId == product.FId))
+    {
+    //     如果產品存在且尚未在購物車中，則新增
+        cart.Add(new TCart
+                {
+                    FId = cart.Count + 1, //假設 ID 自增
+                    FProductId = product.FId,
+                    FProductName = product.FName,
+                    FPrice = product.FPrice,
+                    FCount = 1, //預設數量為 1
+                    FImgId = 1, //假設圖片 ID 固定為 1
+                    FBuyerId = 0 //預設 BuyerId
+                });
+        if (product2 != null && !cart.Any(c => c.FProductId == product2.FId))
+        {
+            cart.Add(new TCart
+                    {
+                        FId = cart.Count + 1, // 假設 ID 自增
+                        FProductId = product2.FId,
+                        FProductName = product2.FName,
+                        FPrice = product2.FPrice,
+                        FCount = 1, // 預設數量為 1
+                        FImgId = 2, // 假設圖片 ID 固定為 2
+                        FBuyerId = 0 // 預設 BuyerId
+                    });
+        }
+    //     保存購物車到 Session
+        var updatedCartJson = System.Text.Json.JsonSerializer.Serialize(cart);
+        Context.Session.SetString("CartSession", updatedCartJson);
+
+        //重導向避免重複執行邏輯
+        Context.Response.Redirect(Url.Action("Cart", "Home"));
+    }
+}
+<style>
+    .h3 {
+        font-size: 50px;
+        position: relative;
+    }
+
+    .btn-primary {
+        background-color: #667b68;
+        border: none;
+        padding: 12px 20px;
+        font-size: 20px;
+    }
+
+        .btn-primary:active {
+            background-color: #5f624e;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #5f624e;
+            border: none;
+        }
+    .h6,
+    .h4{
+        font-size: 25px;
+    }
+
+    .large-checkbox {
+        width: 15px;
+        /* 設定寬度 */
+        height: 15px;
+        /* 設定高度 */
+        transform: scale(1.2);
+        /* 放大比例 */
+        margin-right: 5px;
+        /* 調整與文字間距 */
+        margin-left: 10px;
+    }
+
+    textarea {
+        height: 100px;
+        width: 370px !important;
+        resize: none;
+        text-align: left !important;
+    }
+
+    .small-textbox {
+        width: 50px;
+        text-align: center;
+        margin-top: 7px;
+    }
+</style>
+<body>
+    <div class="container my-5">
+        <!-- 購物車清單 -->
+        <div class="py-4 mb-4 mb-lg-10" style="background-color: #a3b899">
+            <h1 class="h3 mb-0 text-center">購物車清單</h1>
+        </div>
+        <div class="row g-4 g-lg-10">
+            <!-- 商品列表 -->
+            <div class="col-lg-8">
+                <div class="border rounded-3 p-4">
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+
+                            <div class="row align-items-center">
+                                <!-- 商品圖片 -->
+                                <div class="col-2 text-center">
+                                    <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName">
+                                </div>
+                                <!-- 商品名稱與價格 -->
+                                <div class="col-4 text-start">
+                                    <h6 class="mb-0">@item.FProductName</h6>
+                                    <span class="d-block text-danger">單價: $@item.FPrice</span>
+                                </div>
+                                <!-- 數量調整 -->
+                                <div class="col-4 text-center">
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Home">
+                                            <input type="hidden" name="productId" value="@item.FProductId">
+                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmDecrease(@item.FProductId, @item.FCount)">-</button>
+                                        </form>
+                                        <span class="qty-value mx-2">@item.FCount</span>
+                                        <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Home">
+                                            <input type="hidden" name="productId" value="@item.FProductId">
+                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmIncrease(@item.FProductId, @item.FCount)">+</button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- 移除按鈕 -->
+                                <div class="col-2 text-center">
+                                    <form method="post" asp-action="RemoveFromCart" asp-controller="Home">
+                                        <input type="hidden" name="productId" value="@item.FProductId">
+                                        <button class="btn btn-link text-danger" type="submit">移除</button>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr class="mb-4">
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-center">購物車目前沒有商品。</p>
+                    }
+                </div>
+            </div>
+
+            <!-- 收貨人資料與結帳資訊 -->
+            <div class="col-lg-4">
+                <div class="card border" style="background-color:#dde6d5">
+                    <div class="card-body">
+                        <!-- 總金額 -->
+                        <div class="d-flex align-items-center justify-content-between">
+                            <h4>總金額</h4>
+                            <h4>$@ViewBag.TotalPrice</h4>
+                        </div>
+                        <hr class="mb-4">
+                        <!-- 收貨人資料表單 -->
+                        <form method="post" asp-action="Checkout" asp-controller="Home">
+                            <!-- 同會員資料 -->
+                            <div class="mb-4">
+                                <input type="checkbox" id="SameAsMember" class="large-checkbox" />
+                                <label for="SameAsMember">同會員資料</label>
+                            </div>
+
+                            <!-- 收貨人姓名 -->
+                            <div class="mb-4">
+                                <label for="shippingName">收貨人姓名</label>
+                                <input type="text" id="shippingName" name="shippingName" class="form-control" style="width:100%;" required />
+                            </div>
+
+                            <!-- 收貨人電話 -->
+                            <div class="mb-4">
+                                <label for="shippingPhone">收貨人電話</label>
+                                <input type="text" id="shippingPhone" name="shippingPhone" class="form-control" style="width:100%;" required />
+                            </div>
+
+                            <!-- 收貨人地址 -->
+                            <div class="mb-4">
+                                <label for="shippingAddress">收貨人地址</label>
+                                <textarea id="shippingAddress" name="shippingAddress" class="form-control" style="width:100%;" required></textarea>
+                            </div>
+
+                            <!-- 備註 -->
+                            <div class="mb-4">
+                                <label for="note">備註</label>
+                                <textarea id="note" name="note" class="form-control">無</textarea>
+                            </div>
+
+                            <!-- 確認付款 -->
+                            <button class="btn btn-primary w-100" type="submit">確認付款</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // 模擬會員資料與訂購人資料
+        document.getElementById('SameAsMember').addEventListener('change', function () {
+            const memberId = 1; // 預設的會員 FId = 1
+
+            if (this.checked) {
+                // 勾選時，透過 AJAX 獲取會員資料
+                fetch(`/Home/GetMemberInfo?memberId=${memberId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // 填充表單字段
+                            document.getElementById('shippingName').value = data.data.name;
+                            document.getElementById('shippingPhone').value = data.data.phone;
+                            document.getElementById('shippingAddress').value = data.data.address;
+                            
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('無法獲取會員資料:', error);
+                        alert('無法抓取會員資料，請稍後再試。');
+                    });
+            } else {
+                // 取消勾選時清空表單
+                document.getElementById('shippingName').value = '';
+                document.getElementById('shippingPhone').value = '';
+                document.getElementById('shippingAddress').value = '';
+            }
+        });
+        document.getElementById('shippingName').value = data.data.name;
+        document.getElementById('shippingPhone').value = data.data.phone;
+        document.getElementById('shippingAddress').value = data.data.address;
+        document.getElementById('note').value = data.data.remark;
+        document.querySelector('form').addEventListener('submit', function (e) {
+            console.log("收件人姓名:", document.getElementById('shippingName').value);
+            console.log("收件人電話:", document.getElementById('shippingPhone').value);
+            console.log("收件人地址:", document.getElementById('shippingAddress').value);
+            
+        });
+        function confirmDecrease(productId, currentCount) {
+            if (currentCount === 1) {
+                const confirmDelete = confirm("數量已經是 1，是否確定要移除該商品？");
+                return confirmDelete; // 如果確認，返回 true，表單將提交
+            }
+            return true; // 如果數量大於 1，直接提交表單
+        }
+        function confirmIncrease(productId, currentCount) {
+            return true; // 始終允許提交表單
+        }
+    </script>
+
+</body>
