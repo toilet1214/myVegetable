@@ -93,7 +93,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("權限")]
-        public string FPermissiion
+        public string FPermission
         {
             get { return _person.FPermission; }
             set { _person.FPermission = value; }

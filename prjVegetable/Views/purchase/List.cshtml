@@ -17,47 +17,47 @@
 <table class="table">
     <thead>
         <tr>
-@*             <th>
-                @Html.DisplayNameFor(model => model.FId)
-            </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.FPurchase_date)
+                序
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FSupplier_id)
+                @Html.DisplayNameFor(model => model.FBuyDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FSupplier_name)
+                @Html.DisplayNameFor(model => model.FSupplierId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FPurchase_person)
+                @Html.DisplayNameFor(model => model.FSupplierName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FValid_date)
+                @Html.DisplayNameFor(model => model.FBuyer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FTax_type)
+                @Html.DisplayNameFor(model => model.FExpirationDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FInvoice_form)
+                @Html.DisplayNameFor(model => model.FIsTax)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceForm)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FPayment)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FCeate_file_person)
+                @Html.DisplayNameFor(model => model.FCreater)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FModify_person)
+                @Html.DisplayNameFor(model => model.FEditor)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FPurchase_dollar)
+                @Html.DisplayNameFor(model => model.FPreTax)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FDollar_tax)
+                @Html.DisplayNameFor(model => model.FTax)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FTotal_dollar)
+                @Html.DisplayNameFor(model => model.FTotal)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FNote)
@@ -77,43 +77,43 @@
                         @count
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPurchase_date)
+                        @Html.DisplayFor(modelItem => item.FBuyDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FSupplier_id)
+                        @Html.DisplayFor(modelItem => item.FSupplierId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FSupplier_name)
+                        @Html.DisplayFor(modelItem => item.FSupplierName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPurchase_person)
+                        @Html.DisplayFor(modelItem => item.FBuyer)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FValid_date)
+                        @Html.DisplayFor(modelItem => item.FExpirationDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FTax_type)
+                        @Html.DisplayFor(modelItem => item.FIsTax)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FInvoice_form)
+                        @Html.DisplayFor(modelItem => item.FInvoiceForm)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FPayment)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FCeate_file_person)
+                        @Html.DisplayFor(modelItem => item.FCreater)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FModify_person)
+                        @Html.DisplayFor(modelItem => item.FEditor)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPurchase_dollar)
+                        @Html.DisplayFor(modelItem => item.FPreTax)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FDollar_tax)
+                        @Html.DisplayFor(modelItem => item.FTax)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FTotal_dollar)
+                        @Html.DisplayFor(modelItem => item.FTotal)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FNote)

@@ -12,45 +12,42 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-@*             <div class="form-group">
-                <label asp-for="FId" class="control-label"></label>
-                <input asp-for="FId" class="form-control" />
-                <span asp-validation-for="FId" class="text-danger"></span>
-            </div> *@
+
+            <input asp-for="FId" class="form-control hidden" />
             <div class="form-group">
-                <label asp-for="FPurchase_date" class="control-label"></label>
-                <input asp-for="FPurchase_date" class="form-control" />
-                <span asp-validation-for="FPurchase_date" class="text-danger"></span>
+                <label asp-for="FBuyDate" class="control-label"></label>
+                <input type="date" asp-for="FBuyDate" class="form-control" />
+                <span asp-validation-for="FBuyDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FSupplier_id" class="control-label"></label>
-                <input asp-for="FSupplier_id" class="form-control" />
-                <span asp-validation-for="FSupplier_id" class="text-danger"></span>
+                <label asp-for="FSupplierId" class="control-label"></label>
+                <input asp-for="FSupplierId" class="form-control" />
+                <span asp-validation-for="FSupplierId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FSupplier_name" class="control-label"></label>
-                <input asp-for="FSupplier_name" class="form-control" />
-                <span asp-validation-for="FSupplier_name" class="text-danger"></span>
+                <label asp-for="FSupplierName" class="control-label"></label>
+                <input asp-for="FSupplierName" class="form-control" />
+                <span asp-validation-for="FSupplierName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FPurchase_person" class="control-label"></label>
-                <input asp-for="FPurchase_person" class="form-control" />
-                <span asp-validation-for="FPurchase_person" class="text-danger"></span>
+                <label asp-for="FBuyer" class="control-label"></label>
+                <input asp-for="FBuyer" class="form-control" />
+                <span asp-validation-for="FBuyer" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FValid_date" class="control-label"></label>
-                <input asp-for="FValid_date" class="form-control" />
-                <span asp-validation-for="FValid_date" class="text-danger"></span>
+                <label asp-for="FExpirationDate" class="control-label"></label>
+                <input type="date" asp-for="FExpirationDate" class="form-control" />
+                <span asp-validation-for="FExpirationDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FTax_type" class="control-label"></label>
-                <input asp-for="FTax_type" class="form-control" />
-                <span asp-validation-for="FTax_type" class="text-danger"></span>
+                <label asp-for="FIsTax" class="control-label"></label>
+                <input asp-for="FIsTax" class="form-control" />
+                <span asp-validation-for="FIsTax" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FInvoice_form" class="control-label"></label>
-                <input asp-for="FInvoice_form" class="form-control" />
-                <span asp-validation-for="FInvoice_form" class="text-danger"></span>
+                <label asp-for="FInvoiceForm" class="control-label"></label>
+                <input asp-for="FInvoiceForm" class="form-control" />
+                <span asp-validation-for="FInvoiceForm" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FPayment" class="control-label"></label>
@@ -58,29 +55,29 @@
                 <span asp-validation-for="FPayment" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FCeate_file_person" class="control-label"></label>
-                <input asp-for="FCeate_file_person" class="form-control" />
-                <span asp-validation-for="FCeate_file_person" class="text-danger"></span>
+                <label asp-for="FCreater" class="control-label"></label>
+                <input asp-for="FCreater" class="form-control" />
+                <span asp-validation-for="FCreater" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FModify_person" class="control-label"></label>
-                <input asp-for="FModify_person" class="form-control" />
-                <span asp-validation-for="FModify_person" class="text-danger"></span>
+                <label asp-for="FEditor" class="control-label"></label>
+                <input asp-for="FEditor" class="form-control" />
+                <span asp-validation-for="FEditor" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FPurchase_dollar" class="control-label"></label>
-                <input asp-for="FPurchase_dollar" class="form-control" />
-                <span asp-validation-for="FPurchase_dollar" class="text-danger"></span>
+                <label asp-for="FPreTax" class="control-label"></label>
+                <input asp-for="FPreTax" class="form-control" />
+                <span asp-validation-for="FPreTax" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FDollar_tax" class="control-label"></label>
-                <input asp-for="FDollar_tax" class="form-control" />
-                <span asp-validation-for="FDollar_tax" class="text-danger"></span>
+                <label asp-for="FTax" class="control-label"></label>
+                <input asp-for="FTax" class="form-control" />
+                <span asp-validation-for="FTax" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FTotal_dollar" class="control-label"></label>
-                <input asp-for="FTotal_dollar" class="form-control" />
-                <span asp-validation-for="FTotal_dollar" class="text-danger"></span>
+                <label asp-for="FTotal" class="control-label"></label>
+                <input asp-for="FTotal" class="form-control" />
+                <span asp-validation-for="FTotal" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FNote" class="control-label"></label>

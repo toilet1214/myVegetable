@@ -119,7 +119,7 @@ namespace prjVegetable.Controllers
                e.FAddress = tPersonwrap.FAddress;
                e.FEmail = tPersonwrap.FEmail;
                e.FUbn = tPersonwrap.FUbn;
-               e.FPermission = tPersonwrap.FPermissiion;
+               e.FPermission = tPersonwrap.FPermission;
                e.FEmp = tPersonwrap.FEmp;
                e.FEmpTel  = tPersonwrap.FEmpTel;
                e.FCreatedAt = tPersonwrap.FCreatedAt;

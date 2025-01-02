@@ -33,52 +33,52 @@ namespace team_20241228.Models
 			}
 
 			[DisplayName("採購日")]
-			public DateOnly? FPurchase_date
-			{
+			public DateOnly? FBuyDate
+        {
 
 				get { return _purchase.FBuyDate ; }
 				set { _purchase.FBuyDate = value ; }
 			}
 
 			[DisplayName("供應商id")]
-			public string? FSupplier_id
-			{
+			public string? FSupplierId
+        {
 				get { return _purchase.FSupplierId; }
 				set { _purchase.FSupplierId = value; }
 			}
 
 			[DisplayName("供應商名稱")]
-			public string? FSupplier_name
-			{
+			public string? FSupplierName
+        {
 				get { return _purchase.FSupplierName; }
 				set { _purchase.FSupplierName = value; }
 			}
 
 			[DisplayName("採購人")]
-			public string? FPurchase_person
-			{
+			public string? FBuyer
+        {
 				get { return _purchase.FBuyer; }
 				set { _purchase.FBuyer = value; }
 			}
 
 			[DisplayName("有效期限")]
-			public DateOnly? FValid_date
-			{
+			public DateOnly? FExpirationDate
+        {
 				get { return _purchase.FExpirationDate ; }
 				set { _purchase.FExpirationDate = value ; }
 			}
 
 
 			[DisplayName("應稅")]
-			public string? FTax_type
-			{
+			public string? FIsTax
+        {
 				get { return _purchase.FIsTax; }
 				set { _purchase.FIsTax = value ; }
 			}
 
 			[DisplayName("發票格式")]
-			public string? FInvoice_form
-			{
+			public string? FInvoiceForm
+        {
 				get { return _purchase.FInvoiceForm; }
 				set { _purchase.FInvoiceForm = value; }
 			}
@@ -89,35 +89,35 @@ namespace team_20241228.Models
 				set { _purchase.FPayment = value; }
 			}
 			[DisplayName("建檔人")]
-			public string? FCeate_file_person
-			{
+			public string? FCreater
+        {
 				get { return _purchase.FCreater; }
 				set { _purchase.FCreater = value; }
 			}
 
 			[DisplayName("修改人")]
-			public string? FModify_person
-			{
+			public string? FEditor
+        {
 				get { return _purchase.FEditor; }
 				set { _purchase.FEditor = value; }
 			}
 			[DisplayName("採購金額")]
-			public int? FPurchase_dollar
-			{
+			public int? FPreTax
+        {
 				get { return _purchase.FPreTax; }
 				set { _purchase.FPreTax = value; }
 			}
 
 			[DisplayName("稅")]
-			public int? FDollar_tax
-			{
+			public int? FTax
+        {
 				get { return _purchase.FTax; }
 				set { _purchase.FTax = value ; }
 			}
 
 			[DisplayName("總額")]
-			public int? FTotal_dollar
-			{
+			public int? FTotal
+        {
 				get { return _purchase.FTotal; }
 				set { _purchase.FTotal = value ; }
 			}
