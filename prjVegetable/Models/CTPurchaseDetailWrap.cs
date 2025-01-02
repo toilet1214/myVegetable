@@ -21,7 +21,7 @@ namespace team_20241228.Models
         }
 
         //--------------------------------------
-        [DisplayName("FID")]
+        [DisplayName("採購明細號碼")]
         public int FId
         {
             get { return _PurchaseDetail.FId; }
@@ -29,21 +29,21 @@ namespace team_20241228.Models
         }
 
         [DisplayName("採購號碼")]
-        public string FPurchaseId
+        public string? FPurchaseId
         {
             get { return _PurchaseDetail.FPurchaseId; }
             set { _PurchaseDetail.FPurchaseId = value; }
         }
 
         [DisplayName("品名")]
-        public string FProductName
+        public string? FProductName
         {
             get { return _PurchaseDetail.FProductName; }
             set { _PurchaseDetail.FProductName = value; }
         }
 
         [DisplayName("數量")]
-        public int? FCount
+        public int? FConut
         {
             get { return _PurchaseDetail.FConut; }
             set { _PurchaseDetail.FConut = value; }

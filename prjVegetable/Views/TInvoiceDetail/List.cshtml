@@ -18,7 +18,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FId)
+                序號
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FNumber)
@@ -65,7 +65,6 @@
                     </td>
                     <td>
                         @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
-
                         @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
                     </td>
                 </tr>

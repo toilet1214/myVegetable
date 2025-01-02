@@ -28,19 +28,19 @@ namespace team_20241228.Models
         }
 
         [DisplayName("發票號碼")]
-        public string? FInvoiceNumber
+        public string? FNumber
         {
             get { return _tInvoice.FNumber; }
             set { _tInvoice.FNumber = value; }
         }
         [DisplayName("發票日期")]
-        public DateOnly? FInvoiceDate
+        public DateOnly? FDate
         {
             get { return _tInvoice.FDate; }
             set { _tInvoice.FDate = value; }
         }
         [DisplayName("發票格式")]
-        public string? FInvoiceForm
+        public string? FForm
         {
             get { return _tInvoice.FForm; }
             set { _tInvoice.FForm = value; }
@@ -52,7 +52,7 @@ namespace team_20241228.Models
             set { _tInvoice.FCustomerId = value; }
         }
         [DisplayName("會員統編")]
-        public string? FCustomerUnifiedEdition
+        public string? FCustomerUbn
         {
             get { return _tInvoice.FCustomerUbn; }
             set { _tInvoice.FCustomerUbn = value; }
@@ -64,7 +64,7 @@ namespace team_20241228.Models
             set { _tInvoice.FSupplierId = value; }
         }
         [DisplayName("供應商統編")]
-        public string? FSupplierUnifiedEdition
+        public string? FSupplierUbn
         {
             get { return _tInvoice.FSupplierUbn; }
             set { _tInvoice.FSupplierUbn = value; }
@@ -88,7 +88,7 @@ namespace team_20241228.Models
             set { _tInvoice.FTotal = value; }
         }
         [DisplayName("修改人")]
-        public string? FEditer
+        public string? FEditor
         {
             get { return _tInvoice.FEditor; }
             set { _tInvoice.FEditor = value; }

@@ -12,20 +12,20 @@
     <div class="col-md-4">
         <form asp-action="create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-@*             <div class="form-group">
-                <label asp-for="FId" class="control-label"></label>
+            <div class="form-group" hidden>
+                <label asp-for="FId" class="control-label " ></label>
                 <input asp-for="FId" class="form-control" />
                 <span asp-validation-for="FId" class="text-danger"></span>
-            </div> *@
-            <div class="form-group">
-                <label asp-for="FInvoiceNumber" class="control-label"></label>
-                <input asp-for="FInvoiceNumber" class="form-control" />
-                <span asp-validation-for="FInvoiceNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FInvoiceForm" class="control-label"></label>
-                <input asp-for="FInvoiceForm" class="form-control" />
-                <span asp-validation-for="FInvoiceForm" class="text-danger"></span>
+                <label asp-for="FNumber" class="control-label"></label>
+                <input asp-for="FNumber" class="form-control" />
+                <span asp-validation-for="FNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FForm" class="control-label"></label>
+                <input asp-for="FForm" class="form-control" />
+                <span asp-validation-for="FForm" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FCustomerId" class="control-label"></label>
@@ -33,9 +33,9 @@
                 <span asp-validation-for="FCustomerId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FCustomerUnifiedEdition" class="control-label"></label>
-                <input asp-for="FCustomerUnifiedEdition" class="form-control" />
-                <span asp-validation-for="FCustomerUnifiedEdition" class="text-danger"></span>
+                <label asp-for="FCustomerUbn" class="control-label"></label>
+                <input asp-for="FCustomerUbn" class="form-control" />
+                <span asp-validation-for="FCustomerUbn" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FSupplierId" class="control-label"></label>
@@ -43,9 +43,9 @@
                 <span asp-validation-for="FSupplierId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FSupplierUnifiedEdition" class="control-label"></label>
-                <input asp-for="FSupplierUnifiedEdition" class="form-control" />
-                <span asp-validation-for="FSupplierUnifiedEdition" class="text-danger"></span>
+                <label asp-for="FSupplierUbn" class="control-label"></label>
+                <input asp-for="FSupplierUbn" class="form-control" />
+                <span asp-validation-for="FSupplierUbn" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FInOut" class="control-label"></label>
@@ -63,9 +63,9 @@
                 <span asp-validation-for="FTotal" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FEditer" class="control-label"></label>
-                <input asp-for="FEditer" class="form-control" />
-                <span asp-validation-for="FEditer" class="text-danger"></span>
+                <label asp-for="FEditor" class="control-label"></label>
+                <input asp-for="FEditor" class="form-control" />
+                <span asp-validation-for="FEditor" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="新增並送出" class="btn btn-primary" />
@@ -75,7 +75,9 @@
 </div>
 
 <div>
-    <a asp-action="List">取消</a>
+      <form asp-action="List" method="post">
+        <button type="submit" class="btn btn-danger">取消</button>
+    </form>
 </div>
 
 @* @section Scripts {

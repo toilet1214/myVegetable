@@ -18,26 +18,26 @@
 <table class="table">
     <thead>
         <tr>
-@*             <th>
-                @Html.DisplayNameFor(model => model.FId)
-            </th> *@
             <th>
-                @Html.DisplayNameFor(model => model.FInvoiceNumber)
+                序號
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FInvoiceForm)
+                @Html.DisplayNameFor(model => model.FNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FNumber)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FCustomerId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FCustomerUnifiedEdition)
+                @Html.DisplayNameFor(model => model.FCustomerUbn)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FSupplierId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FSupplierUnifiedEdition)
+                @Html.DisplayNameFor(model => model.FCustomerUbn)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FInOut)
@@ -49,7 +49,7 @@
                 @Html.DisplayNameFor(model => model.FTotal)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FEditer)
+                @Html.DisplayNameFor(model => model.FEditor)
             </th>
             <th></th>
         </tr>
@@ -65,22 +65,22 @@
                         @count
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FInvoiceNumber)
+                        @Html.DisplayFor(modelItem => item.FNumber)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FInvoiceForm)
+                        @Html.DisplayFor(modelItem => item.FForm)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FCustomerId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FCustomerUnifiedEdition)
+                        @Html.DisplayFor(modelItem => item.FCustomerUbn)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FSupplierId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FSupplierUnifiedEdition)
+                        @Html.DisplayFor(modelItem => item.FSupplierUbn)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FInOut)
@@ -92,7 +92,7 @@
                         @Html.DisplayFor(modelItem => item.FTotal)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FEditer)
+                        @Html.DisplayFor(modelItem => item.FEditor)
                     </td>
                     <td>
                         @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
