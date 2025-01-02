@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 
-//namespace prjVegetable.Controllers
-//{
-//    public class TPersonsController : Controller
-//    {
-//        private readonly DbVegetableContext _context;
+namespace prjVegetable.Controllers
+{
+    public class TPersonsController : Controller
+    {
+        private readonly DbVegetableContext _context;
 
-//        public TPersonsController(DbVegetableContext context)
-//        {
-//            _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
-//        }        
+        public TPersonsController(DbVegetableContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
+        }
 
         // GET: TPersons
         public IActionResult Index(CKeywordViewModel vm)
@@ -63,11 +63,11 @@ using prjVegetable.ViewModels;
             
         }
 
-//        // GET: TPersons/Create
-//        public IActionResult Create()
-//        {
-//            return View();
-//        }
+        // GET: TPersons/Create
+        public IActionResult Create()
+        {
+            return View();
+        }
 
         // POST: TPersons/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -130,13 +130,13 @@ using prjVegetable.ViewModels;
             return RedirectToAction(nameof(Index));
         }
 
-//        // GET: TPersons/Delete/5
-//        public async Task<IActionResult> Delete(int? id)
-//        {
-//            if (id == null)
-//            {
-//                return NotFound();
-//            }
+        //        // GET: TPersons/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
             var tPerson = await _context.TPeople
                 .FirstOrDefaultAsync(m => m.FId == id);
