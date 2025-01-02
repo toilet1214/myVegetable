@@ -1,0 +1,77 @@
+﻿@model IEnumerable<team_20241228.Models.CTInvoiceDetailWrap>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>發票明明細管理</h1>
+@using (Html.BeginForm())
+{
+    @:關鍵字 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢">
+}
+<p>
+    <a asp-action="Create">新增發票明細</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FConut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSum)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            @foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FProductName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FConut)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSum)
+                    </td>
+                    <td>
+                        @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
+
+                        @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                    </td>
+                </tr>
+            }
+
+
+        }
+    </tbody>
+</table>

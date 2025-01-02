@@ -1,0 +1,197 @@
+--drop database [dbVegetable]
+--drop table tInvoiceDetail
+--drop table tInvoice
+--drop table tPurchase
+--drop table tPurchaseDetail
+CREATE DATABASE [dbVegetable]
+GO
+USE dbVegetable
+CREATE TABLE tInvoiceDetail (
+	fId  int  PRIMARY KEY identity(1,1),
+	fNumber Nvarchar(50),
+	fProductName Nvarchar(50),
+	fConut int ,
+	fPrice int ,
+	fSum int  
+);
+GO
+CREATE TABLE tInvoice (
+	fId int  PRIMARY KEY identity(1,1),
+    	fNumber nvarchar(50),
+	fDate date,
+	fForm nvarchar(20),
+	fCustomerId int,
+	fCustomerUBN nvarchar(50),
+	fSupplierId int,
+	fSupplierUBN nvarchar(50),
+	fInOut int,
+	fStatus int,
+	fTotal int,
+	fEditor nvarchar(50)
+);
+GO
+CREATE TABLE tPurchase (
+	fId int  PRIMARY KEY identity(1,1),
+    	fBuyDate date,
+	fSupplierId nvarchar(50),
+	fSupplierName nvarchar(50),
+	fBuyer nvarchar(50),
+	fExpirationDate date,
+	fIsTax nvarchar(50) ,
+	fInvoiceForm nvarchar(20),
+	fPayment nvarchar(20),
+	fCreater nvarchar(20),
+	fEditor nvarchar(20),
+	fPreTax int,
+	fTax int,
+	fTotal int,
+    	fNote  nvarchar(100) 
+);
+GO
+CREATE TABLE tPurchaseDetail (
+	fId int PRIMARY KEY identity(1,1),
+   	fPurchaseId nvarchar(50),
+	fProductName nvarchar(50),
+	fConut int,
+	fPrice int,
+	fSum  int 
+);
+GO
+create table tProvider(
+fId int not null identity(1,1) primary key,
+fName nvarchar(100) NOT NULL,
+fUBN nvarchar(10) NOT NULL,
+fTel nvarchar(30) NOT NULL,
+fConnect nvarchar(50) NOT NULL,
+fAccountant nvarchar(50) NOT NULL,
+fAddress nvarchar(100) NOT NULL,
+fDelivery nvarchar(100) NOT NULL,
+fInvoiceadd nvarchar(100) NOT NULL,
+fEditor int NOT NULL
+);
+GO
+CREATE TABLE tProduct (
+    fId INT NOT NULL IDENTITY(1,1) PRIMARY KEY ,  -- 產品ID，自動增長
+    fName NVARCHAR(500) NOT NULL DEFAULT '', -- 產品名稱，不允許為 NULL，默認為空字串
+    fClassification NVARCHAR(500) NOT NULL DEFAULT '', -- 產品分類，不允許為 NULL，默認為空字串
+    fPrice INT NOT NULL DEFAULT 0,         -- 產品價格，整數，不允許為 NULL，默認為 0
+    fDescription TEXT NOT NULL DEFAULT '',         -- 產品描述，不允許為 NULL，默認為空字串
+    fQuantity INT NOT NULL DEFAULT 0,              -- 產品庫存數量，默認為 0
+    fLaunchAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- 上架日期，使用 DATETIME 類型，默認為當前時間戳
+    fStorage NVARCHAR(500) NOT NULL DEFAULT '',     -- 藏溫方式，默認為空字串
+    fOrigin NVARCHAR(500) NOT NULL DEFAULT '',      -- 產品產地，默認為空字串
+    fEditor NVARCHAR(500) NOT NULL DEFAULT '',      -- 修改人，默認為空字串
+);
+GO
+CREATE TABLE tImg
+(
+    fId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,        -- 照片ID，設定為自動遞增
+    fProductId INT NOT NULL,                      -- 商品ID，必須填寫
+    fName NVARCHAR(500) NOT NULL DEFAULT '',    -- 照片名稱，預設為空字串
+    fOrder INT NOT NULL,                       -- 照片排序，必須填寫
+    fUploadAt DATETIME DEFAULT GETDATE(),   -- 上傳日期，預設為當前時間
+    fEditor NVARCHAR(500) NOT NULL DEFAULT '',  -- 修改人，預設為空字串
+   
+);
+GO
+CREATE TABLE tOrder (
+    fId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,  -- 訂單 ID (自動遞增，從 1 開始，遞增步長為 1)
+    fBuyerId INT NOT NULL,  -- 購買人 (不允許為空)
+    fTotal INT NOT NULL,  -- 總金額 (不允許為空)
+    fStatus NVARCHAR(50) NOT NULL,  -- 訂單狀態 (不允許為空)
+    fOrderAt DATETIME NOT NULL DEFAULT GETDATE(),  -- 訂單創建時間 (不允許為空，默認為當前時間)
+    fAddress NVARCHAR(255) NOT NULL,  -- 收件人地址 (不允許為空)
+    fReceiverName NVARCHAR(100) NOT NULL,  -- 收件人姓名 (不允許為空)
+    fPhone NVARCHAR(15) NOT NULL,  -- 收件人電話 (不允許為空)
+    fRemark NVARCHAR(MAX) NOT NULL DEFAULT '',  -- 備註 (不允許為空，默認為空字串)
+   
+);
+GO
+CREATE TABLE tPerson (
+    fId INT IDENTITY(1,1) PRIMARY KEY,            -- 自增主鍵
+    fName NVARCHAR(500) NOT NULL DEFAULT '',       -- 會員姓名，預設為空字串
+    fAccount NVARCHAR(500) NOT NULL DEFAULT '',    -- 會員帳號，預設為空字串
+    fPassword NVARCHAR(500) NOT NULL DEFAULT '',   -- 會員密碼，預設為空字串
+    fGender NVARCHAR(100) NOT NULL DEFAULT '',      -- 會員姓別，預設為空字串
+    fBirth DATE NOT NULL,                          -- 會員生日
+    fPhone NVARCHAR(20)  NOT NULL DEFAULT '',                -- 會員手機，預設為空字串
+    fTel NVARCHAR(20)  NOT NULL DEFAULT '',                  -- 會員家電，預設為空字串
+    fAddress NVARCHAR(500)  NOT NULL DEFAULT '',             -- 會員地址，預設為空字串
+    fEmail NVARCHAR(500)  NOT NULL DEFAULT '',               -- 會員Email，預設為空字串
+    fUBN NVARCHAR(50)  NOT NULL DEFAULT '',             -- 會員統編，預設為空字串
+    fPermission NVARCHAR(500)  NOT NULL DEFAULT 'member',              -- 權限，預設為空字串
+    fEmp NVARCHAR(500)  NOT NULL DEFAULT '',                 -- 緊急聯絡人姓名，預設為空字串
+    fEmpTel NVARCHAR(20)  NOT NULL DEFAULT '',           -- 緊急聯絡人電話，預設為空字串
+    fCreatedAt DATETIME DEFAULT GETDATE(),       -- 創建時間，預設為當前時間
+    fEditor NVARCHAR(500)  NOT NULL DEFAULT ''               -- 編輯者，預設為空字串
+);
+GO
+CREATE TABLE tCart (
+fId INT IDENTITY(1,1) NOT NULL PRIMARY KEY, 
+fProductId INT NOT NULL, 
+fProductName NVARCHAR(500) NOT NULL, 
+fCount INT NOT NULL, 
+fPrice INT NOT NULL, 
+fImgId INT NOT NULL, 
+fBuyerId INT NOT NULL
+);
+GO
+
+CREATE TABLE tFAQ (
+    fId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,      -- 自動遞增的主鍵
+    fQuestion NVARCHAR(500) NOT NULL,        -- 問題欄位
+    fAnswer NVARCHAR(MAX) NOT NULL,          -- 答案欄位
+    fCreatedAt DATETIME NOT NULL DEFAULT GETDATE(),   -- 記錄創建時間
+    fUpdatedAt DATETIME NOT NULL DEFAULT GETDATE()    -- 記錄更新時間
+);
+GO
+CREATE TABLE tAboutUs (
+    fId INT NOT NULL IDENTITY(1,1) PRIMARY KEY,      -- 自動遞增的主鍵
+    fTitle NVARCHAR(200) NOT NULL,           -- 標題欄位
+    fContent NVARCHAR(MAX) NOT NULL,         -- 內容欄位
+    fCreatedAt DATETIME NOT NULL DEFAULT GETDATE(),   -- 記錄創建時間
+    fUpdatedAt DATETIME NOT NULL DEFAULT GETDATE()    -- 記錄更新時間
+);
+GO
+
+CREATE TABLE tInventoryMain (
+    fId INT IDENTITY(1,1) PRIMARY KEY,
+    fInventoryNo NVARCHAR(50) NOT NULL,
+    fBaselineDate DATE NOT NULL,
+    fCreatedAt DATETIME NOT NULL DEFAULT GETDATE(),
+    fCreatorId NVARCHAR(255) NOT NULL, 
+    fEditor NVARCHAR(255) NULL 
+);
+GO
+
+CREATE TABLE tInventoryDetail (
+    fId INT IDENTITY(1,1) PRIMARY KEY, 
+    fInventoryNo NVARCHAR(50) NOT NULL,
+    fProductId INT NOT NULL, 
+    fProductName NVARCHAR(500) NOT NULL,  
+    fSystemQuantity INT NOT NULL,  
+    fActualQuantity INT NULL, 
+    fDifferenceQuantity INT NULL,  
+
+    fAmount INT NOT NULL,                         
+    fRemark NVARCHAR(MAX) NULL,
+    fEditor NVARCHAR(255) NULL 	
+);
+GO
+
+INSERT INTO tAboutUs (fTitle, fContent)
+VALUES
+('關於我們', '我們是一家專注於提供新鮮、健康和美味蔬果的網絡平台。我們的使命是為每一位顧客提供最高品質的產品和最佳的購物體驗。從當地農場直接配送到您的餐桌，我們確保每一件產品都符合嚴格的品質標準，並且每一次配送都能如期送達。\n\n我們的團隊由一群熱愛食物並且致力於改善生活品質的專業人士組成。除了蔬果，我們也提供各種優質的有機產品，旨在讓每位顧客的日常飲食更加健康與多樣化。\n\n我們不僅關注產品品質，還重視顧客的體驗。我們的客服團隊隨時為您解答任何問題，並提供專業的建議和支持。您的滿意是我們最重要的目標。\n\n感謝您選擇我們的服務，期待為您提供更多新鮮美味的產品，讓您的生活更加健康。');
+GO
+INSERT INTO tFAQ (fQuestion, fAnswer)
+VALUES
+('我應該如何下訂單？', '您可以選擇所需的蔬果，將它們添加到購物車並進行結帳。系統將引導您完成支付流程，支持信用卡、線上支付等方式。'),
+('我可以使用什麼付款方式？', '我們接受多種付款方式，包括信用卡、借記卡、Apple Pay 和 Google Pay。結帳頁面將顯示可用的付款選項。'),
+('我如何查詢我的訂單狀態？', '您可以在我們的網站上登入您的帳戶，並查看訂單詳細信息和配送狀態。我們也會通過電子郵件通知您訂單進度。'),
+('配送地區有哪些？', '我們提供全國範圍的配送服務。您可以在結帳時查看是否支持您的配送地址。'),
+('你們的蔬果是新鮮的嗎？', '是的，我們提供的新鮮蔬果是每日挑選的，並且保證最高品質。我們的產品來自本地農場，並且經過嚴格篩選。'),
+('如果我收到的蔬果有損壞，該怎麼辦？', '如果您收到的商品損壞，請在24小時內聯繫我們的客服團隊，我們會安排退換貨服務。'),
+('如何註冊會員？', '您只需要點擊網站上方的「註冊」按鈕，填寫您的基本資料，即可成為我們的會員，享受專屬優惠和優惠券。'),
+('忘記密碼該怎麼辦？', '在登入頁面，點擊「忘記密碼」，系統會要求您提供註冊時使用的電子郵件地址，並發送重設密碼的鏈接。'),
+('我可以退貨嗎？', '我們提供 7 天無理由退貨服務。您可以在收到商品後的 7 天內聯繫我們辦理退貨。'),
+('如何申請退款？', '若您對訂單有任何問題，請在我們的客服頁面填寫退款申請，我們將在 3-5 個工作日內處理您的退款申請。');

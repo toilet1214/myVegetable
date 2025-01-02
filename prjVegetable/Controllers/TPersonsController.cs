@@ -17,7 +17,7 @@ namespace prjVegetable.Controllers
         public TPersonsController(DbVegetableContext context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
-        }        
+        }
 
         // GET: TPersons
         public IActionResult Index(CKeywordViewModel vm)
@@ -119,7 +119,7 @@ namespace prjVegetable.Controllers
                e.FAddress = tPersonwrap.FAddress;
                e.FEmail = tPersonwrap.FEmail;
                e.FUbn = tPersonwrap.FUbn;
-               e.FPermission = tPersonwrap.FPermissiion;
+               e.FPermission = tPersonwrap.FPermission;
                e.FEmp = tPersonwrap.FEmp;
                e.FEmpTel  = tPersonwrap.FEmpTel;
                e.FCreatedAt = tPersonwrap.FCreatedAt;
@@ -130,7 +130,7 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: TPersons/Delete/5
+        //        // GET: TPersons/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
