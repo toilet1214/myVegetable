@@ -7,7 +7,7 @@ public partial class TInventoryDetail
 {
     public int FId { get; set; }
 
-    public int FInventoryMainId { get; set; }
+    public string FInventoryNo { get; set; } = null!;
 
     public int FProductId { get; set; }
 
@@ -22,4 +22,6 @@ public partial class TInventoryDetail
     public int FAmount { get; set; }
 
     public string? FRemark { get; set; }
+
+    public string? FEditor { get; set; }
 }
