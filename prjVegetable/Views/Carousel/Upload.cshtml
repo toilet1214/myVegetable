@@ -1,0 +1,42 @@
+﻿@model CarouselImageViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<div class="container my-5">
+    <h2>請選擇圖片上傳</h2>
+
+    <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
+        <div>
+            <label for="Image1">Image 1</label>
+            <input type="file" id="Image1" name="Image1" onchange="previewImage(this, 'preview1')" />
+            <img id="preview1" style="max-width: 200px; display: block;" />
+        </div>
+        <div>
+            <label for="Image2">Image 2</label>
+            <input type="file" id="Image2" name="Image2" onchange="previewImage(this, 'preview2')" />
+            <img id="preview2" style="max-width: 200px; display: block;" />
+        </div>
+        <div>
+            <label for="Image3">Image 3</label>
+            <input type="file" id="Image3" name="Image3" onchange="previewImage(this, 'preview3')" />
+            <img id="preview3" style="max-width: 200px; display: block;" />
+        </div>
+        <button type="submit">上傳圖片</button>
+    </form>
+
+    <script>
+        function previewImage(input, previewId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById(previewId).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+
+</div>

@@ -14,7 +14,6 @@ namespace prjVegetable.Controllers
             _VegetableContext = VegetableContext;
         }
 
-        
         public IActionResult Index()
         {
             return View();

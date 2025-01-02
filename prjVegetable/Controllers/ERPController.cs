@@ -33,6 +33,15 @@ namespace prjVegetable.Controllers
             var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
             return View(TInventoryDetail);
         }
-        
+
+        public IActionResult CardSetting()
+        {
+            return View();
+        }
+
+        public IActionResult CarouselSetting()
+        {
+            return View();
+        }
     }
 }

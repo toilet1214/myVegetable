@@ -170,8 +170,14 @@
                             <div id="panelsStayOpen-collapseEight" class="accordion-collapse collapse"
                                  aria-labelledby="panelsStayOpen-headingEight">
                                 <div class="accordion-body">
-                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">輪播圖片變更</button>
-                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">熱門消息變更</button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100"
+                                            onclick="location.href='@Url.Action("Upload", "Carousel")'">
+                                        輪播圖片變更
+                                    </button>
+                                    <button type="button" class="btn btn-primary d-block mb-1 w-100"
+                                            onclick="location.href='@Url.Action("CardSetting", "Setting")'">
+                                        熱門消息變更
+                                    </button>
                                 </div>
                             </div>
                         </div>
