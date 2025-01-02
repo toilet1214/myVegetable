@@ -9,9 +9,9 @@ public partial class TImg
 
     public int FProductId { get; set; }
 
-    public string FName { get; set; } = null!;
+    public string FImgName { get; set; } = null!;
 
-    public int FOrder { get; set; }
+    public int FOrderBy { get; set; }
 
     public DateTime? FUploadAt { get; set; }
 

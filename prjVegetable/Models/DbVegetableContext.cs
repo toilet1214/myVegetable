@@ -54,6 +54,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TAboutU>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C2F9302F7");
+            entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227CF0CF22FB");
 
             entity.ToTable("tAboutUs");
 
@@ -75,6 +76,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TCart>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227C2CD8984B");
+            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227C13AEABE7");
 
             entity.ToTable("tCart");
 
@@ -92,6 +94,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TFaq>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227C952D504C");
+            entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227CB636DDEC");
 
             entity.ToTable("tFAQ");
 
@@ -113,6 +116,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TImg>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227CA9BF3336");
+            entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227C0D3924D8");
 
             entity.ToTable("tImg");
 
@@ -122,10 +126,13 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fEditor");
             entity.Property(e => e.FName)
+            entity.Property(e => e.FImgName)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fName");
             entity.Property(e => e.FOrder).HasColumnName("fOrder");
+                .HasColumnName("fImgName");
+            entity.Property(e => e.FOrderBy).HasColumnName("fOrderBy");
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FUploadAt)
                 .HasDefaultValueSql("(getdate())")
@@ -136,6 +143,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TInventoryDetail>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CBCD14A2C");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C985B0A6C");
 
             entity.ToTable("tInventoryDetail");
 
@@ -160,6 +168,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TInventoryMain>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CAC5FEC68");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C2CB3381F");
 
             entity.ToTable("tInventoryMain");
 
@@ -183,6 +192,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TInvoice>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C08AF2685");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227CA8E9C563");
 
             entity.ToTable("tInvoice");
 
@@ -194,6 +204,7 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FDate)
                 .HasColumnType("datetime")
                 .HasColumnName("fDate");
+            entity.Property(e => e.FDate).HasColumnName("fDate");
             entity.Property(e => e.FEditor)
                 .HasMaxLength(50)
                 .HasColumnName("fEditor");
@@ -215,6 +226,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TInvoiceDetail>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227CB52FE626");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227CAA9C048E");
 
             entity.ToTable("tInvoiceDetail");
 
@@ -233,6 +245,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TOrder>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227C9F4C7079");
+            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227C092BED32");
 
             entity.ToTable("tOrder");
 
@@ -263,6 +276,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TOrderList>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227C04ACD5B5");
+            entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227C9AE659B7");
 
             entity.ToTable("tOrderList");
 
@@ -280,6 +294,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TPerson>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227C26AC30AF");
+            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227CAD3C70F2");
 
             entity.ToTable("tPerson");
 
@@ -346,6 +361,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TProduct>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C1F5F0CC9");
+            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227CECE1E308");
 
             entity.ToTable("tProduct");
 
@@ -385,6 +401,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TProvider>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227C41AAEF1C");
+            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227C25A8B255");
 
             entity.ToTable("tProvider");
 
@@ -419,6 +436,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TPurchase>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227C856D2328");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CED8BFA29");
 
             entity.ToTable("tPurchase");
 
@@ -426,6 +444,7 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FBuyDate)
                 .HasColumnType("datetime")
                 .HasColumnName("fBuyDate");
+            entity.Property(e => e.FBuyDate).HasColumnName("fBuyDate");
             entity.Property(e => e.FBuyer)
                 .HasMaxLength(50)
                 .HasColumnName("fBuyer");
@@ -438,10 +457,14 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FExpirationDate)
                 .HasColumnType("datetime")
                 .HasColumnName("fExpirationDate");
+            entity.Property(e => e.FExpirationDate).HasColumnName("fExpirationDate");
             entity.Property(e => e.FInvoiceForm)
                 .HasMaxLength(20)
                 .HasColumnName("fInvoiceForm");
             entity.Property(e => e.FIsTax).HasColumnName("fIsTax");
+            entity.Property(e => e.FIsTax)
+                .HasMaxLength(50)
+                .HasColumnName("fIsTax");
             entity.Property(e => e.FNote)
                 .HasMaxLength(100)
                 .HasColumnName("fNote");
@@ -462,6 +485,7 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TPurchaseDetail>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227C139A2819");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CEB972B08");
 
             entity.ToTable("tPurchaseDetail");
 

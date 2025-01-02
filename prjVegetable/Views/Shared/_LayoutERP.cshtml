@@ -110,8 +110,13 @@
                             <div id="panelsStayOpen-collapseFive" class="accordion-collapse collapse"
                                  aria-labelledby="panelsStayOpen-headingFive">
                                 <div class="accordion-body">
-                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">進貨作業管理</button>
-                                    <button type="button" class="btn btn-primary d-block mb-1 w-100">出貨作業管理</button>
+                                    <!-- 使用連結實現按鈕樣式 -->
+                                    <button onclick="location.href='@Url.Action("ProductBuying", "ERP")'" class="btn btn-primary d-block mb-1 w-100">
+                                        進貨作業管理
+                                    </button>
+                                    <button onclick="location.href='@Url.Action("ProductSelling", "ERP")'" class="btn btn-primary d-block mb-1 w-100">
+                                        出貨作業管理
+                                    </button>
                                 </div>
                             </div>
                         </div>
