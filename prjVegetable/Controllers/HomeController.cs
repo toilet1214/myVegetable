@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using System.Diagnostics;
 
@@ -36,15 +37,22 @@ namespace prjVegetable.Controllers
         public IActionResult ProductList()
         {
             DbVegetableContext db = new DbVegetableContext();
-            var products = db.TProducts.ToList();
-            var images = db.TImgs.ToList();
-            foreach (var product in products)
+            List<CProductWrap> list = new List<CProductWrap>();
+            var products = db.TProducts.Include(p => p.TImgs).ToList();
+            //var images = db.TImgs.ToList();
+
+            foreach (var p in products)
             {
-                var image = product.TImgs.FirstOrDefault(img => img.FProductId == product.FProductId);
+                CProductWrap pp = new CProductWrap() { product  = p};
+                list.Add(pp);
+            }
+            foreach (var product in list)
+            {
+                var image = product.product.TImgs.FirstOrDefault(img => img.FProductId == product.product.FProductId);
                 product.FImgName = image?.FImgName;
 
             }
-            return View(products);
+            return View(list);
         }
 
         public IActionResult Privacy()

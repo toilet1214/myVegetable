@@ -17,5 +17,6 @@ public partial class TImg
 
     public string FImgEditer { get; set; } = null!;
 
+
     public virtual TProduct FProduct { get; set; } = null!;
 }
