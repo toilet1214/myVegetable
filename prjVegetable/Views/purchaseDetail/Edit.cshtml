@@ -12,8 +12,8 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FId" class="control-label"></label>
+            <div class="form-group" hidden>
+                <label asp-for="FId" class="control-label" ></label>
                 <input asp-for="FId" class="form-control" />
                 <span asp-validation-for="FId" class="text-danger"></span>
             </div>
@@ -28,9 +28,9 @@
                 <span asp-validation-for="FProductName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FCount" class="control-label"></label>
-                <input asp-for="FCount" class="form-control" />
-                <span asp-validation-for="FCount" class="text-danger"></span>
+                <label asp-for="FConut" class="control-label"></label>
+                <input asp-for="FConut" class="form-control" />
+                <span asp-validation-for="FConut" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FPrice" class="control-label"></label>
@@ -50,7 +50,9 @@
 </div>
 
 <div>
-    <a asp-action="List">取消</a>
+    <form asp-action="List" method="post">
+        <button type="submit" class="btn btn-danger">取消</button>
+    </form>
 </div>
 
 @* @section Scripts {
