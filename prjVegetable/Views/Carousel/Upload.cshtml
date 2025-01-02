@@ -26,10 +26,11 @@
     <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
         @for (int i = 0; i < Model.ImagePaths.Count; i++)
         {
-            <div class="mb-3">
-                <label for="Image@(i + 1)">替換 Carousel @(i + 1)</label>
-                <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" />
+            <div class="mb-3 d-flex align-items-center">
                 <img id="preview@(i + 1)" src="@Model.ImagePaths[i]" style="max-width: 200px; display: block;" />
+                <div class="ms-3">
+                    <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" />
+                </div>
             </div>
         }
         <button type="submit" class="btn btn-primary">上傳圖片</button>
