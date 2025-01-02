@@ -6,16 +6,22 @@ namespace prjVegetable.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IWebHostEnvironment _environment;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IWebHostEnvironment environment)
         {
-            _logger = logger;
+            _environment = environment;
         }
 
         public IActionResult Index()
         {
-            return View();
+            // 讀取圖片檔案路徑
+            var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads");
+            var images = Directory.Exists(uploadsPath)
+                ? Directory.GetFiles(uploadsPath).Select(f => "/uploads/" + Path.GetFileName(f)).ToList()
+                : new List<string>();
+
+            return View(images); // 將圖片路徑清單傳遞到視圖
         }
 
         public IActionResult About()

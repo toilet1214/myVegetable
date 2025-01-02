@@ -6,6 +6,7 @@ namespace prjVegetable.Controllers
     public class CarouselController : Controller
     {
         private readonly IWebHostEnvironment _environment;
+        private const string UploadFolder = "uploads";
 
         public CarouselController(IWebHostEnvironment environment)
         {
@@ -15,31 +16,50 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Upload()
         {
-            return View();
+            // 假設我們從某個資料夾中載入當前的圖片路徑
+            var imagePaths = Directory.GetFiles(Path.Combine(_environment.WebRootPath, "uploads"))
+                                      .Select(path => "/uploads/" + Path.GetFileName(path))
+                                      .ToList();
+
+            var model = new CarouselImageViewModel
+            {
+                ImagePaths = imagePaths
+            };
+
+            return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Upload(CarouselImageViewModel model)
         {
-            if (ModelState.IsValid)
+            var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads");
+            Directory.CreateDirectory(uploadsPath);
+
+            var files = new[] { model.Image1, model.Image2, model.Image3 };
+
+            for (int i = 0; i < files.Length; i++)
             {
-                var files = new[] { model.Image1, model.Image2, model.Image3 };
-                foreach (var file in files)
+                if (files[i] != null && files[i].Length > 0)
                 {
-                    if (file != null && file.Length > 0)
+                    var fileName = $"Carousel{i + 1}.jpg";
+                    var filePath = Path.Combine(uploadsPath, fileName);
+
+                    // 刪除舊圖片
+                    if (System.IO.File.Exists(filePath))
                     {
-                        var uploads = Path.Combine(_environment.WebRootPath, "uploads");
-                        Directory.CreateDirectory(uploads); // 確保目錄存在
-                        var filePath = Path.Combine(uploads, Path.GetFileName(file.FileName));
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await file.CopyToAsync(stream);
-                        }
+                        System.IO.File.Delete(filePath);
+                    }
+
+                    // 儲存新圖片
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await files[i].CopyToAsync(stream);
                     }
                 }
-                return RedirectToAction("Upload");
             }
-            return View(model);
+
+            return RedirectToAction("Upload");
         }
     }
 }
+
