@@ -81,5 +81,6 @@ namespace prjVegetable.Models
         public string FImgName
         { get;set; }
 
+        public List<string> ImgList { get; set; }
     }
 }

@@ -91,17 +91,18 @@
 
     <!-- 產品列表 start -->
     <div class="row row-cols-1 row-cols-md-5 g-4 my-4 mx-5 hot-product-card">
-
+        
         @foreach (var item in Model)
         {
             count++;
             bool isSoldOut = item.FQuantity == 0;  // 檢查產品是否售完
 
 
-            <div class="col" href="#">
-                <a href="" class="text-decoration-none">
+            <div class="col" >
+                <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
+                
+                    <div class="card h-100 shadow-sm d-flex flex-column @((isSoldOut) ? "sold-out" : "")">                   
 
-                    <div class="card h-100 shadow-sm d-flex flex-column @((isSoldOut) ? "sold-out" : "")">
                         @if (isSoldOut)
                         {
                             <div class="position-absolute bottom-0 end-0 bg-dark text-light fw-bold p-2 m-3 opacity-75" style="border-radius: 5px;">
@@ -128,6 +129,7 @@
                 </a>
             </div>
         }
+    </div>
 
         <!-- 頁碼 start -->
         <div class="container d-flex align-item-end justify-content-center mt-3">
