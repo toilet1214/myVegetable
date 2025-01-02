@@ -1,0 +1,51 @@
+﻿@model CarouselImageViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<div class="container my-5">
+    <h2>請選擇圖片上傳</h2>
+
+    <!-- 顯示當前的圖片 -->
+    <div class="current-images mb-4">
+        <h3>目前圖片</h3>
+        <div class="row">
+            @for (int i = 0; i < Model.ImagePaths.Count; i++)
+            {
+                <div class="col-md-4 text-center">
+                    <img src="@Model.ImagePaths[i]" alt="Carousel Image @(i + 1)" style="max-width: 100%; height: auto;" />
+                    <p>Carousel @(i + 1)</p>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- 上傳新圖片表單 -->
+    <h3>請選擇新的圖片進行替換</h3>
+    <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
+        @for (int i = 0; i < Model.ImagePaths.Count; i++)
+        {
+            <div class="mb-3">
+                <label for="Image@(i + 1)">替換 Carousel @(i + 1)</label>
+                <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" />
+                <img id="preview@(i + 1)" src="@Model.ImagePaths[i]" style="max-width: 200px; display: block;" />
+            </div>
+        }
+        <button type="submit" class="btn btn-primary">上傳圖片</button>
+    </form>
+</div>
+
+<script>
+    // 預覽選擇的圖片
+    function previewImage(input, previewId) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                document.getElementById(previewId).src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
