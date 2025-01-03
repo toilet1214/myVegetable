@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -62,9 +62,9 @@ namespace prjVegetable.Controllers
                 }
             }
 
-            // 重新取得更新後的圖片路徑
+            // 取得圖片路徑並加上時間戳
             var imagePaths = Directory.GetFiles(uploadsPath)
-                                      .Select(path => "/uploads/" + Path.GetFileName(path))
+                                      .Select(path => $"/uploads/{Path.GetFileName(path)}?t={DateTime.UtcNow.Ticks}")
                                       .ToList();
 
             var updatedModel = new CarouselImageViewModel
@@ -76,4 +76,3 @@ namespace prjVegetable.Controllers
         }
     }
 }
-

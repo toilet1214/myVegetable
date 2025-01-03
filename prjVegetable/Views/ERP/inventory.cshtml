@@ -4,7 +4,29 @@
 @{
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-
+<!-- 工具列 start -->
+<div class="row  d-block mb-3">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-primary"><i class="bi bi-search me-2"></i>搜尋</button>
+        <button type="button" class="btn btn-primary">
+            <i class="bi bi-skip-start-fill me-2"></i>第一筆
+        </button>
+        <button type="button" class="btn btn-primary">
+            <i class="bi bi-caret-left-fill me-2"></i>上一筆
+        </button>
+        <button type="button" class="btn btn-primary">
+            <i class="bi bi-caret-right-fill me-2"></i>下一筆
+        </button>
+        <button type="button" class="btn btn-primary">
+            <i class="bi bi-skip-end-fill me-2"></i>最後一筆
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" id=" addButton" data-url="@ViewBag.AddUrl"><i class="bi bi-file-earmark me-2"></i>新增</button>
+        <button type="button" class="btn btn-primary"><i class="bi bi-pencil me-2"></i>修改</button>
+        <button type="button" class="btn btn-primary"><i class="bi bi-trash me-2"></i>刪除</button>
+        <button type="button" class="btn btn-primary"><i class="bi bi-floppy me-2"></i>儲存</button>
+    </div>
+</div>
+<!-- 工具列 end -->
 <div class="container my-5">
     <div class="row">
         <div class="row">

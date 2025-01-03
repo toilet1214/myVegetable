@@ -15,5 +15,5 @@ public partial class TInventoryMain
 
     public string FCreatorId { get; set; } = null!;
 
-    public string? FEditor { get; set; }
+    public string? FEditorId { get; set; }
 }

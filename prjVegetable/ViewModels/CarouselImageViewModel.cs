@@ -1,4 +1,4 @@
-﻿namespace prjVegetable.Models
+﻿namespace prjVegetable.ViewModels
 {
     public class CarouselImageViewModel
     {
