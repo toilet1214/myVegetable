@@ -2,6 +2,7 @@
 @using prjVegetable.Models
 @{ViewData["Title"] = "Cart";}
 @inject DbVegetableContext dbContext
+<link rel="stylesheet" href="./css/Cart.css">
 @{
     // 初始化購物車（Session）
     var cartJson = Context.Session.GetString("CartSession");
@@ -46,63 +47,12 @@
         Context.Response.Redirect(Url.Action("Cart", "Cart"));
     }
 }
-<style>
-    .h3 {
-        font-size: 50px;
-        position: relative;
-    }
-
-    .btn-primary {
-        background-color: #667b68;
-        border: none;
-        padding: 12px 20px;
-        font-size: 20px;
-    }
-
-        .btn-primary:active {
-            background-color: #5f624e;
-            border: none;
-        }
-
-        .btn-primary:hover {
-            background-color: #5f624e;
-            border: none;
-        }
-    .h6,
-    .h4{
-        font-size: 25px;
-    }
-
-    .large-checkbox {
-        width: 15px;
-        /* 設定寬度 */
-        height: 15px;
-        /* 設定高度 */
-        transform: scale(1.2);
-        /* 放大比例 */
-        margin-right: 5px;
-        /* 調整與文字間距 */
-        margin-left: 10px;
-    }
-
-    textarea {
-        height: 100px;
-        width: 370px !important;
-        resize: none;
-        text-align: left !important;
-    }
-
-    .small-textbox {
-        width: 50px;
-        text-align: center;
-        margin-top: 7px;
-    }
-</style>
-<body>
     <div class="container my-5">
         <!-- 購物車清單 -->
         <div class="py-4 mb-4 mb-lg-10" style="background-color: #a3b899">
-            <h1 class="h3 mb-0 text-center">購物車清單</h1>
+        <h1 class="h3 mb-0 text-center" style="font-size: 50px ;position: relative;">
+            購物車清單
+        </h1>
         </div>
         <div class="row g-4 g-lg-10">
             <!-- 商品列表 -->
@@ -120,7 +70,7 @@
                                 </div>
                                 <!-- 商品名稱與價格 -->
                                 <div class="col-4 text-start">
-                                    <h6 class="mb-0">@item.FProductName</h6>
+                                <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
                                     <span class="d-block text-danger">單價: $@item.FPrice</span>
                                 </div>
                                 <!-- 數量調整 -->
@@ -161,8 +111,8 @@
                     <div class="card-body">
                         <!-- 總金額 -->
                         <div class="d-flex align-items-center justify-content-between">
-                            <h4>總金額</h4>
-                            <h4>$@ViewBag.TotalPrice</h4>
+                        <h4 style="font-size: 25px;">總金額</h4>
+                        <h4 style="font-size: 25px;">$@ViewBag.TotalPrice</h4>
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
@@ -194,7 +144,7 @@
                             <!-- 備註 -->
                             <div class="mb-4">
                                 <label for="note">備註</label>
-                                <textarea id="note" name="note" class="form-control">無</textarea>
+                            <textarea id="note" name="note" class="form-control" style="height: 100px;width: 370px ;resize: none ;text-align: left ;">無</textarea>
                             </div>
 
                             <!-- 確認付款 -->
@@ -258,4 +208,3 @@
         }
     </script>
 
-</body>

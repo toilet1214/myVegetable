@@ -1,0 +1,40 @@
+﻿.btn-primary {
+    background-color: #667b68;
+    border: none;
+    padding: 12px 20px;
+    font-size: 20px;
+}
+
+    .btn-primary:active {
+        background-color: #5f624e;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        background-color: #5f624e;
+        border: none;
+    }
+.large-checkbox {
+    width: 15px;
+    /* 設定寬度 */
+    height: 15px;
+    /* 設定高度 */
+    transform: scale(1.2);
+    /* 放大比例 */
+    margin-right: 5px;
+    /* 調整與文字間距 */
+    margin-left: 10px;
+}
+
+textarea {
+    height: 100px;
+    width: 370px ;
+    resize: none ;
+    text-align: left ;
+}
+
+.small-textbox {
+    width: 50px;
+    text-align: center;
+    margin-top: 7px;
+}
