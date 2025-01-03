@@ -23,5 +23,5 @@ public partial class TInventoryDetail
 
     public string? FRemark { get; set; }
 
-    public string? FEditor { get; set; }
+    public string? FEditorId { get; set; }
 }
