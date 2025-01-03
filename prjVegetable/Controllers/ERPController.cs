@@ -24,14 +24,14 @@ namespace prjVegetable.Controllers
         }
 
         //盤點作業 by允7
-        public IActionResult inventory()
+        public IActionResult Inventory()
         {
             ViewBag.AddUrl = Url.Action("AddItem", "Inventory");
             var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
             return View(TInventoryDetail);
         }
 
-        public IActionResult inventory_adjustment()
+        public IActionResult InventoryAdjustment()
         {
             ViewBag.AddUrl = Url.Action("AddItem", "Inventory");
             var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
