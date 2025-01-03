@@ -21,7 +21,7 @@ namespace prjVegetable.Controllers
             _dbContext = dbContext;
             _environment = environment;
         }
-
+       
         public IActionResult Index()
         {
             // 讀取圖片檔案路徑
@@ -32,6 +32,8 @@ namespace prjVegetable.Controllers
 
             return View(images); // 將圖片路徑清單傳遞到視圖
         }
+
+
         public IActionResult Cart()
         {
             // 從 Session 中取得購物車資料
