@@ -13,6 +13,8 @@ builder.Services.AddDbContext<DbVegetableContext>(
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
+builder.Services.AddControllersWithViews()
+    .AddSessionStateTempDataProvider();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
