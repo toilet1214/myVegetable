@@ -40,13 +40,13 @@ namespace prjVegetable.Controllers
         }
 
         //----------create------------------------
-        public IActionResult create()
+        public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult create(TInvoice p)
+        public IActionResult Create(TInvoice p)
         {
             DbVegetableContext db = new DbVegetableContext();
             db.TInvoices.Add(p);
