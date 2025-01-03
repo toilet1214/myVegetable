@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {

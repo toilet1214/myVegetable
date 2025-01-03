@@ -145,7 +145,7 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FDifferenceQuantity).HasColumnName("fDifferenceQuantity");
             entity.Property(e => e.FEditorId)
                 .HasMaxLength(255)
-                .HasColumnName("fEditorId");
+                .HasColumnName("fEditor");
             entity.Property(e => e.FInventoryNo)
                 .HasMaxLength(50)
                 .HasColumnName("fInventoryNo");
@@ -174,7 +174,7 @@ public partial class DbVegetableContext : DbContext
                 .HasColumnName("fCreatorId");
             entity.Property(e => e.FEditorId)
                 .HasMaxLength(255)
-                .HasColumnName("fEditorId");
+                .HasColumnName("fEditor");
             entity.Property(e => e.FInventoryNo)
                 .HasMaxLength(50)
                 .HasColumnName("fInventoryNo");
