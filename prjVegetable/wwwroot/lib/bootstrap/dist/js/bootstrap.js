@@ -11,7 +11,7 @@
 
   function _interopNamespace(e) {
     if (e && e.__esModule) return e;
-    var n = Object.create(null);
+    var n = Object.Create(null);
     if (e) {
       Object.keys(e).forEach(function (k) {
         if (k !== 'default') {
@@ -593,7 +593,7 @@
       }
 
       if (isNative) {
-        evt = document.createEvent('HTMLEvents');
+        evt = document.CreateEvent('HTMLEvents');
         evt.initEvent(typeEvent, bubbles, true);
       } else {
         evt = new CustomEvent(event, {
@@ -2058,7 +2058,7 @@
       if (this._inNavbar) {
         Manipulator.setDataAttribute(this._menu, 'popper', 'none');
       } else {
-        this._createPopper(parent);
+        this._CreatePopper(parent);
       } // If this is a touch-enabled device we add extra
       // empty mouseover listeners to the body's immediate children;
       // only needed because of broken event delegation on iOS
@@ -2151,7 +2151,7 @@
       return config;
     }
 
-    _createPopper(parent) {
+    _CreatePopper(parent) {
       if (typeof Popper__namespace === 'undefined') {
         throw new TypeError('Bootstrap\'s dropdowns require Popper (https://popper.js.org)');
       }
@@ -2169,7 +2169,7 @@
       const popperConfig = this._getPopperConfig();
 
       const isDisplayStatic = popperConfig.modifiers.find(modifier => modifier.name === 'applyStyles' && modifier.enabled === false);
-      this._popper = Popper__namespace.createPopper(referenceElement, this._menu, popperConfig);
+      this._popper = Popper__namespace.CreatePopper(referenceElement, this._menu, popperConfig);
 
       if (isDisplayStatic) {
         Manipulator.setDataAttribute(this._menu, 'popper', 'static');
@@ -2580,7 +2580,7 @@
 
     _getElement() {
       if (!this._element) {
-        const backdrop = document.createElement('div');
+        const backdrop = document.CreateElement('div');
         backdrop.className = this._config.className;
 
         if (this._config.isAnimated) {
@@ -3502,9 +3502,9 @@
     }
 
     const domParser = new window.DOMParser();
-    const createdDocument = domParser.parseFromString(unsafeHtml, 'text/html');
+    const CreatedDocument = domParser.parseFromString(unsafeHtml, 'text/html');
     const allowlistKeys = Object.keys(allowList);
-    const elements = [].concat(...createdDocument.body.querySelectorAll('*'));
+    const elements = [].concat(...CreatedDocument.body.querySelectorAll('*'));
 
     for (let i = 0, len = elements.length; i < len; i++) {
       const el = elements[i];
@@ -3524,7 +3524,7 @@
       });
     }
 
-    return createdDocument.body.innerHTML;
+    return CreatedDocument.body.innerHTML;
   }
 
   /**
@@ -3756,7 +3756,7 @@
       if (this._popper) {
         this._popper.update();
       } else {
-        this._popper = Popper__namespace.createPopper(this._element, tip, this._getPopperConfig(attachment));
+        this._popper = Popper__namespace.CreatePopper(this._element, tip, this._getPopperConfig(attachment));
       }
 
       tip.classList.add(CLASS_NAME_SHOW$2);
@@ -3860,7 +3860,7 @@
         return this.tip;
       }
 
-      const element = document.createElement('div');
+      const element = document.CreateElement('div');
       element.innerHTML = this._config.template;
       const tip = element.children[0];
       this.setContent(tip);

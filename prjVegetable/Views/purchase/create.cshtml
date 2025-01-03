@@ -1,7 +1,7 @@
 ﻿@model prjVegetable.Models.CPurchaseWrap
 
 @{
-    ViewData["Title"] = "create";
+    ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
@@ -10,7 +10,7 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="create">
+        <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
                 <label asp-for="FId" class="control-label " ></label>

@@ -35,7 +35,7 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        //----------create------------------------
+        //----------Create------------------------
         public IActionResult Create()
         {
             return View();

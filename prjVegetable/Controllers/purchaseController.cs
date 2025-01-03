@@ -36,14 +36,14 @@ namespace prjVegetable.Controllers
 			return View(list);
 		}
 
-		//----------create------------------------
-		public IActionResult create()
+		//----------Create------------------------
+		public IActionResult Create()
 		{
 			return View();
 		}
 
 		[HttpPost]
-		public IActionResult create(TPurchase p)
+		public IActionResult Create(TPurchase p)
 		{
 			DbVegetableContext db = new DbVegetableContext();
 			db.TPurchases.Add(p);

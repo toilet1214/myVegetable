@@ -29,7 +29,7 @@ $.extend( $.fn, {
 			return;
 		}
 
-		// Check if a validator for this form was already created
+		// Check if a validator for this form was already Created
 		var validator = $.data( this[ 0 ], "validator" );
 		if ( validator ) {
 			return validator;
@@ -1358,7 +1358,7 @@ $.extend( $.validator, {
 
 		if ( $.validator.autoCreateRanges ) {
 
-			// Auto-create ranges
+			// Auto-Create ranges
 			if ( rules.min != null && rules.max != null ) {
 				rules.range = [ rules.min, rules.max ];
 				delete rules.min;

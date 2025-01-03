@@ -571,7 +571,7 @@
       }
 
       if (isNative) {
-        evt = document.createEvent('HTMLEvents');
+        evt = document.CreateEvent('HTMLEvents');
         evt.initEvent(typeEvent, bubbles, true);
       } else {
         evt = new CustomEvent(event, {
@@ -2213,7 +2213,7 @@
 
     while (isHTMLElement(currentNode) && ['html', 'body'].indexOf(getNodeName(currentNode)) < 0) {
       var css = getComputedStyle$1(currentNode); // This is non-exhaustive but covers the most common CSS properties that
-      // create a containing block.
+      // Create a containing block.
       // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
 
       if (css.transform !== 'none' || css.perspective !== 'none' || css.contain === 'paint' || ['transform', 'perspective'].indexOf(css.willChange) !== -1 || isFirefox && css.willChange === 'filter' || isFirefox && css.filter && css.filter !== 'none') {
@@ -3480,7 +3480,7 @@
         defaultModifiers = _generatorOptions$def === void 0 ? [] : _generatorOptions$def,
         _generatorOptions$def2 = _generatorOptions.defaultOptions,
         defaultOptions = _generatorOptions$def2 === void 0 ? DEFAULT_OPTIONS : _generatorOptions$def2;
-    return function createPopper(reference, popper, options) {
+    return function CreatePopper(reference, popper, options) {
       if (options === void 0) {
         options = defaultOptions;
       }
@@ -3644,15 +3644,15 @@
       return instance;
     };
   }
-  var createPopper$2 = /*#__PURE__*/popperGenerator(); // eslint-disable-next-line import/no-unused-modules
+  var CreatePopper$2 = /*#__PURE__*/popperGenerator(); // eslint-disable-next-line import/no-unused-modules
 
   var defaultModifiers$1 = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1];
-  var createPopper$1 = /*#__PURE__*/popperGenerator({
+  var CreatePopper$1 = /*#__PURE__*/popperGenerator({
     defaultModifiers: defaultModifiers$1
   }); // eslint-disable-next-line import/no-unused-modules
 
   var defaultModifiers = [eventListeners, popperOffsets$1, computeStyles$1, applyStyles$1, offset$1, flip$1, preventOverflow$1, arrow$1, hide$1];
-  var createPopper = /*#__PURE__*/popperGenerator({
+  var CreatePopper = /*#__PURE__*/popperGenerator({
     defaultModifiers: defaultModifiers
   }); // eslint-disable-next-line import/no-unused-modules
 
@@ -3660,9 +3660,9 @@
     __proto__: null,
     popperGenerator: popperGenerator,
     detectOverflow: detectOverflow,
-    createPopperBase: createPopper$2,
-    createPopper: createPopper,
-    createPopperLite: createPopper$1,
+    CreatePopperBase: CreatePopper$2,
+    CreatePopper: CreatePopper,
+    CreatePopperLite: CreatePopper$1,
     top: top,
     bottom: bottom,
     right: right,
@@ -3812,7 +3812,7 @@
       if (this._inNavbar) {
         Manipulator.setDataAttribute(this._menu, 'popper', 'none');
       } else {
-        this._createPopper(parent);
+        this._CreatePopper(parent);
       } // If this is a touch-enabled device we add extra
       // empty mouseover listeners to the body's immediate children;
       // only needed because of broken event delegation on iOS
@@ -3905,7 +3905,7 @@
       return config;
     }
 
-    _createPopper(parent) {
+    _CreatePopper(parent) {
       if (typeof Popper === 'undefined') {
         throw new TypeError('Bootstrap\'s dropdowns require Popper (https://popper.js.org)');
       }
@@ -3923,7 +3923,7 @@
       const popperConfig = this._getPopperConfig();
 
       const isDisplayStatic = popperConfig.modifiers.find(modifier => modifier.name === 'applyStyles' && modifier.enabled === false);
-      this._popper = createPopper(referenceElement, this._menu, popperConfig);
+      this._popper = CreatePopper(referenceElement, this._menu, popperConfig);
 
       if (isDisplayStatic) {
         Manipulator.setDataAttribute(this._menu, 'popper', 'static');
@@ -4334,7 +4334,7 @@
 
     _getElement() {
       if (!this._element) {
-        const backdrop = document.createElement('div');
+        const backdrop = document.CreateElement('div');
         backdrop.className = this._config.className;
 
         if (this._config.isAnimated) {
@@ -5256,9 +5256,9 @@
     }
 
     const domParser = new window.DOMParser();
-    const createdDocument = domParser.parseFromString(unsafeHtml, 'text/html');
+    const CreatedDocument = domParser.parseFromString(unsafeHtml, 'text/html');
     const allowlistKeys = Object.keys(allowList);
-    const elements = [].concat(...createdDocument.body.querySelectorAll('*'));
+    const elements = [].concat(...CreatedDocument.body.querySelectorAll('*'));
 
     for (let i = 0, len = elements.length; i < len; i++) {
       const el = elements[i];
@@ -5278,7 +5278,7 @@
       });
     }
 
-    return createdDocument.body.innerHTML;
+    return CreatedDocument.body.innerHTML;
   }
 
   /**
@@ -5510,7 +5510,7 @@
       if (this._popper) {
         this._popper.update();
       } else {
-        this._popper = createPopper(this._element, tip, this._getPopperConfig(attachment));
+        this._popper = CreatePopper(this._element, tip, this._getPopperConfig(attachment));
       }
 
       tip.classList.add(CLASS_NAME_SHOW$2);
@@ -5614,7 +5614,7 @@
         return this.tip;
       }
 
-      const element = document.createElement('div');
+      const element = document.CreateElement('div');
       element.innerHTML = this._config.template;
       const tip = element.children[0];
       this.setContent(tip);
