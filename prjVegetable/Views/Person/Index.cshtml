@@ -73,7 +73,7 @@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a> <br>
                 <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
-                @Html.ActionLink("移除", "Delete", "Tpersons", new { id = item.person.FId },
+                @Html.ActionLink("移除", "Delete", "Person", new { id = item.person.FId },
                              new { onclick = "return confirm('確定要刪除嗎?')" })
             </td>
         </tr>
