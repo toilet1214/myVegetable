@@ -43,7 +43,7 @@
         Context.Session.SetString("CartSession", updatedCartJson);
 
         //重導向避免重複執行邏輯
-        Context.Response.Redirect(Url.Action("Cart", "Home"));
+        Context.Response.Redirect(Url.Action("Cart", "Cart"));
     }
 }
 <style>
@@ -126,12 +126,12 @@
                                 <!-- 數量調整 -->
                                 <div class="col-4 text-center">
                                     <div class="d-flex justify-content-center align-items-center">
-                                        <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Home">
+                                        <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Cart">
                                             <input type="hidden" name="productId" value="@item.FProductId">
                                             <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmDecrease(@item.FProductId, @item.FCount)">-</button>
                                         </form>
                                         <span class="qty-value mx-2">@item.FCount</span>
-                                        <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Home">
+                                        <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Cart">
                                             <input type="hidden" name="productId" value="@item.FProductId">
                                             <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmIncrease(@item.FProductId, @item.FCount)">+</button>
                                         </form>
@@ -139,7 +139,7 @@
                                 </div>
                                 <!-- 移除按鈕 -->
                                 <div class="col-2 text-center">
-                                    <form method="post" asp-action="RemoveFromCart" asp-controller="Home">
+                                    <form method="post" asp-action="RemoveFromCart" asp-controller="Cart">
                                         <input type="hidden" name="productId" value="@item.FProductId">
                                         <button class="btn btn-link text-danger" type="submit">移除</button>
                                     </form>
@@ -166,7 +166,7 @@
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
-                        <form method="post" asp-action="Checkout" asp-controller="Home">
+                        <form method="post" asp-action="Checkout" asp-controller="Cart">
                             <!-- 同會員資料 -->
                             <div class="mb-4">
                                 <input type="checkbox" id="SameAsMember" class="large-checkbox" />
@@ -198,7 +198,7 @@
                             </div>
 
                             <!-- 確認付款 -->
-                            <button class="btn btn-primary w-100" type="submit">確認付款</button>
+                            <button asp-action="Order" asp-controller="Customer" class="btn btn-primary w-100" type="submit">確認付款</button>
                         </form>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
 
             if (this.checked) {
                 // 勾選時，透過 AJAX 獲取會員資料
-                fetch(`/Home/GetMemberInfo?memberId=${memberId}`)
+                fetch(`/Cart/GetMemberInfo?memberId=${memberId}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
