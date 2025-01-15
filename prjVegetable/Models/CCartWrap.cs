@@ -40,5 +40,11 @@
             set { _cart.FPersonId = value; }
         }
 
+        public int FTotalPrice
+        {
+            get;
+            set;
+        }
+
     }
 }

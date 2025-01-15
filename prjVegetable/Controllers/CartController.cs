@@ -22,7 +22,7 @@ namespace prjVegetable.Controllers
         {
             // 從 Session 中取得購物車資料
             var cart = GetCartFromSession();
-            //ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
+            ViewBag.TotalPrice = cart.Sum(item => item.FTotalPrice); // 計算總金額
             return View(cart); // 傳遞購物車資料到 View
         }
         private List<CCartWrap> GetCartFromSession()

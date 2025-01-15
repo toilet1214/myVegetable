@@ -4,48 +4,7 @@
 @inject DbVegetableContext dbContext
 <link rel="stylesheet" href="./css/Cart.css">
 @{
-    // 初始化購物車（Session）
-    var cartJson = Context.Session.GetString("CartSession");
-    var cart = string.IsNullOrEmpty(cartJson)
-        ? new List<TCart>()
-        : System.Text.Json.JsonSerializer.Deserialize<List<TCart>>(cartJson);
-
-    // 確保購物車中有範本產品
-    var product = dbContext.TProducts.FirstOrDefault(p => p.FId == 1); //查詢範本產品
-    var product2 = dbContext.TProducts.FirstOrDefault(p => p.FId == 2);
-    if (product != null && !cart.Any(c => c.FProductId == product.FId))
-    {
-    //     如果產品存在且尚未在購物車中，則新增
-        cart.Add(new TCart
-                {
-                    FId = cart.Count + 1, //假設 ID 自增
-                    FProductId = product.FId,
-                    //FProductName = product.FName,
-                    //FPrice = product.FPrice,
-                    //FCount = 1, //預設數量為 1
-                    //FImgId = 1, //假設圖片 ID 固定為 1
-                    FPersonId = 0 //預設 BuyerId
-                });
-        if (product2 != null && !cart.Any(c => c.FProductId == product2.FId))
-        {
-            cart.Add(new TCart
-                    {
-                        FId = cart.Count + 1, // 假設 ID 自增
-                        FProductId = product2.FId,
-                        //FProductName = product2.FName,
-                        //FPrice = product2.FPrice,
-                        FCount = 1, // 預設數量為 1
-                        //FImgId = 2, // 假設圖片 ID 固定為 2
-                        FPersonId = 0 // 預設 BuyerId
-                    });
-        }
-    //     保存購物車到 Session
-        var updatedCartJson = System.Text.Json.JsonSerializer.Serialize(cart);
-        Context.Session.SetString("CartSession", updatedCartJson);
-
-        //重導向避免重複執行邏輯
-        Context.Response.Redirect(Url.Action("Cart", "Cart"));
-    }
+    
 }
     <div class="container my-5">
         <!-- 購物車清單 -->
