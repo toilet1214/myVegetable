@@ -33,7 +33,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("採購日")]
-        public DateTime? FBuyDate
+        public DateTime FBuyDate
         {
 
             get { return _Purchase.FBuyDate; }
@@ -41,7 +41,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("供應商id")]
-        public int? FProviderId
+        public int FProviderId
         {
             get { return _Purchase.FProviderId; }
             set { _Purchase.FProviderId = value; }
@@ -61,13 +61,13 @@ namespace prjVegetable.Models
 
 
         [DisplayName("發票格式")]
-        public int? FInvoiceForm
+        public int FInvoiceForm
         {
             get { return _Purchase.FInvoiceForm; }
             set { _Purchase.FInvoiceForm = value; }
         }
         [DisplayName("支付方式")]
-        public int? FPayment
+        public int FPayment
         {
             get { return _Purchase.FPayment; }
             set { _Purchase.FPayment = value; }
