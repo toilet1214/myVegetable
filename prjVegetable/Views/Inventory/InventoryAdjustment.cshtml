@@ -1,6 +1,5 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model prjVegetable.ViewModels.CInventoryViewModel
+
 @{
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
@@ -74,83 +73,89 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var TInventoryDetail in Model)
+                @foreach (var item in Model.InventoryDetails)
                 {
                     <tr>
-                        <td>@TInventoryDetail.FProductId</td>
-                        <td>@TInventoryDetail.FProductName</td>
-                        <td>@TInventoryDetail.FSystemQuantity</td>
-                        <td>@TInventoryDetail.FActualQuantity</td>
-                        <td>@TInventoryDetail.FDifferenceQuantity</td>
-                        <td>@TInventoryDetail.FAmount</td>
-                        <td>@TInventoryDetail.FNote</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FInventoryNo)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FProductId)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FProductName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FSystemQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FActualQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FDifferenceQuantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FAmount)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FRemark)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FEditorId)
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <hr/>
+    <hr />
     <div class="d-flex justify-content-end">
         <button type="button" class="btn btn-primary">執行庫存調整</button>
     </div>
 </div>
-
-<!-- 新增視窗 -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">新增盤點單</h5>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group mb-3 row">
-                        <label for="BaseDate" class="col-form-label col-sm-3 pe-0">盤點基準日</label>
-                        <div class="col-sm-6 px-0">
-                            <input type="date" class="form-control" id="BaseDate" name="BaseDate">
-                       </div>
+<!-- 模態框 -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">新增盤點條件</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
                     </div>
-
-                    <div class="form-group mb-3 row">
-                        <label for="ProductStartCode" class="col-form-label col-sm-3 pe-0">商品編號</label>
-                        <div class="col-sm-4 px-0">
-                            <input type="text" class="form-control" id="ProductStartCode" name="ProductStartCode">
-                        </div>
-                        <div class="col-sm-1 d-flex justify-content-center align-items-center">
-                            <label for="ProductEndCode" class="col-form-label px-0">~</label>
-                        </div>
-                        <div class="col-sm-4 px-0">
-                            <input type="text" class="form-control" id="ProductEndCode" name="ProductEndCode">
-                        </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="BaseDate">盤點基準日</label>
+                                <select class="form-control" id="BaseDate" name="BaseDate">
+                                    <option value="2024-01-01">2024-01-01</option>
+                                    <option value="2024-01-02">2024-01-02</option>
+                                    <option value="2024-01-03">2024-01-03</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="ProductStartCode">商品編號區間 (起始)</label>
+                                <input type="text" class="form-control" id="ProductStartCode" name="ProductStartCode">
+                            </div>
+                            <div class="form-group">
+                                <label for="ProductEndCode">商品編號區間 (結束)</label>
+                                <input type="text" class="form-control" id="ProductEndCode" name="ProductEndCode">
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="form-group row">
-                       <label for="Category" class="col-form-label col-sm-3 pe-0">商品類別</label>
-                       <div class="col-sm-6 px-0">
-                         <select class="form-control" id="ProductCategory" name="ProductCategory">
-                            <option value="category1">類別 1</option>
-                            <option value="category2">類別 2</option>
-                            <option value="category3">類別 3</option>
-                            <option value="category4">類別 4</option>
-                         </select>
-                       </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary">確定</button>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary">確定</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-
-<script>
-        document.getElementById('addButton').addEventListener('click', function () {
-        const url = this.getAttribute('data-url');
-        // 根據 URL 打開對應的新增視窗
-        window.location.href = url;
-    });
-</script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+            document.getElementById('addButton').addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+            // 根據 URL 打開對應的新增視窗
+            window.location.href = url;
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>

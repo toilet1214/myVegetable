@@ -185,10 +185,10 @@ public partial class DbVegetableContext : DbContext
 
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FActualQuantity).HasColumnName("fActualQuantity");
-            entity.Property(e => e.FNote)
+            entity.Property(e => e.FRemark)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
-                .HasColumnName("fNote");
+                .HasColumnName("fRemark ");
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FSystemQuantity).HasColumnName("fSystemQuantity");
         });
@@ -202,7 +202,7 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FBaselineDate).HasColumnName("fBaselineDate");
             entity.Property(e => e.FCreatedAt).HasColumnName("fCreatedAt");
-            entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FEditorId).HasColumnName("fEditorId");
         });
 
         modelBuilder.Entity<TInvoice>(entity =>
