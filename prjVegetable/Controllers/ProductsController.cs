@@ -22,6 +22,7 @@ namespace prjVegetable.Controllers
         // GET: TProducts
         public async Task<IActionResult> Index(CKeywordViewModel vm)
         {
+            DbVegetableContext db = new DbVegetableContext();
             string keyword = vm.txtKeyword;
             IEnumerable<TProduct> datas = null;
             if (string.IsNullOrEmpty(keyword))
@@ -29,21 +30,26 @@ namespace prjVegetable.Controllers
                 datas = from p in _context.TProducts
                         select p;
             }
-            else 
+            else
             {
                 datas = _context.TProducts.Where(p =>
-                p.FName.Contains(keyword)||
+                p.FName.Contains(keyword) ||
                 p.FClassification.Contains(keyword) ||
                 p.FLaunchAt.ToString().Contains(keyword) ||
                 p.FOrigin.Contains(keyword)
                 );
             }
-            var data = _context.TProducts.ToList();
-            List<CProductWrap>list = new List<CProductWrap>();
-            foreach (var p in data) 
+            var data = datas.ToList();
+            List<CProductWrap> list = new List<CProductWrap>();
+            foreach (var p in data)
             {
-                list.Add(new CProductWrap() { product = p });
-            
+                CProductWrap pp = new CProductWrap() { product = p };
+                var image = db.TImgs.Where(img => img.FProductId == p.FId).ToList();
+                foreach (var img in image)
+                {
+                    pp.ImgList.Add(img.FName);
+                }
+                list.Add(pp);
             }
             return View(list);
         }
@@ -63,7 +69,7 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            return View(new CProductWrap() {product = tProduct });
+            return View(new CProductWrap() { product = tProduct });
         }
 
         // GET: TProducts/Create
@@ -96,7 +102,7 @@ namespace prjVegetable.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-            return View(new CProductWrap() {product = tProduct });
+            return View(new CProductWrap() { product = tProduct });
         }
 
         // POST: TProducts/Edit/5
@@ -109,7 +115,7 @@ namespace prjVegetable.Controllers
 
             if (e != null)
             {//拿掉不給使用者修改的欄位
-               e.FName = tProductwrap.FName;
+                e.FName = tProductwrap.FName;
                 e.FClassification = tProductwrap.FClassification;
                 e.FPrice = tProductwrap.FPrice;
                 e.FDescription = tProductwrap.FDescription;
@@ -143,6 +149,6 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        
+
     }
 }

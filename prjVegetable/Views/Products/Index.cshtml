@@ -23,6 +23,9 @@
                 @Html.DisplayNameFor(model => model.FName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FImgName)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FClassification)
             </th>
             <th>
@@ -50,42 +53,59 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.product.FName)
-            </td>
-            <td>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.product.FName)
+                </td>
+                <td>
+                    <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadImage", "Image")">
+                        <div>
+                            @foreach (var imgName in item.ImgList)
+                            {
+
+                                <div class="container d-flex align-items-center">
+                                    <img src="~/Images/@imgName" class="w-25 d-inline-block " alt="Product Image" />
+                                    <input type="file" id="" name="file@(imgName)" />
+                                </div>
+
+                            }
+                            <button type="submit" class="d-flex justify-content-end" style="width:auto">上傳圖片</button>
+                        </div>
+                    </form>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FClassification)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FPrice)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FDescription)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FQuantity)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FLaunchAt)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FStorage)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FOrigin)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FEditor)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
-                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
-                @Html.ActionLink("移除", "Delete", "Tproducts", new { id = item.product.FId },
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
+                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
+                    @Html.ActionLink("移除", "Delete", "TProducts", new { id = item.product.FId },
                              new { onclick = "return confirm('確定要刪除嗎?')" })
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

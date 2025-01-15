@@ -1,4 +1,6 @@
-﻿namespace prjVegetable.Models
+﻿using System.ComponentModel;
+
+namespace prjVegetable.Models
 {
     public class CImgWrap
     {
@@ -28,24 +30,28 @@
             set { img.FProductId = value; }
         }
 
+        [DisplayName("照片名稱")]
         public string FName
         {
             get { return img.FName; }
             set { img.FName = value; }
         }
 
+        [DisplayName("照片名稱")]
         public int FOrderBy
         {
             get { return img.FOrderBy; }
             set { img.FOrderBy = value; }
         }
 
+        [DisplayName("上傳日期")]
         public DateTime FUploadAt
         {
             get { return img.FUploadAt; }
             set { img.FUploadAt = value; }
         }
 
+        [DisplayName("修改人")]
         public int FEditor
         {
             get { return img.FEditor; }

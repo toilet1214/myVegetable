@@ -16,6 +16,7 @@ namespace prjVegetable.Models
         public CProductWrap()
         {
             _product = new TProduct();
+            ImgList = new List<string>();
         }
 
 
@@ -31,7 +32,7 @@ namespace prjVegetable.Models
             set { _product.FName = value; }
         }
 
-        [DisplayName("產品分類")]        
+        [DisplayName("產品分類")]
         public string FClassification
         {
             get { return _product.FClassification; }
@@ -80,6 +81,14 @@ namespace prjVegetable.Models
             set { _product.FOrigin = value; }
         }
 
+        [DisplayName("上架狀態")]
+        public int FLaunch
+        {
+            get { return _product.FLaunch; }
+            set { _product.FLaunch = value; }
+
+        }
+
         [DisplayName("修改人")]
         public int FEditor
         {
@@ -87,9 +96,9 @@ namespace prjVegetable.Models
             set { _product.FEditor = value; }
         }
 
-
+        [DisplayName("商品照片")]
         public string FImgName
-        { get;set; }
+        { get; set; }
 
         public List<string> ImgList { get; set; }
     }
