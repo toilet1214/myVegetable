@@ -93,7 +93,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("權限")]
-        public string FPermission
+        public int FPermission
         {
             get { return _person.FPermission; }
             set { _person.FPermission = value; }
@@ -114,14 +114,14 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("資料建立時間")]
-        public DateTime? FCreatedAt
+        public DateTime FCreatedAt
         {
             get { return _person.FCreatedAt; }
             set { _person.FCreatedAt = value; }
         }
 
         [DisplayName("修改人")]
-        public string FEditor
+        public int FEditor
         {
             get { return _person.FEditor; }
             set { _person.FEditor = value; }

@@ -45,7 +45,7 @@ namespace prjVegetable.Controllers
             DbVegetableContext db = new DbVegetableContext();
             IEnumerable<TOrder> datas = null;
             
-            datas = db.TOrders.Where(p => p.FBuyerId == UserId);
+            datas = db.TOrders.Where(p => p.FPersonId == UserId);
             List<COrderWrap> list = new List<COrderWrap>();
             foreach (var t in datas)
                 list.Add(new COrderWrap() { order = t });

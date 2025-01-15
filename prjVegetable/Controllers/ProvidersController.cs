@@ -116,7 +116,7 @@ namespace prjVegetable.Controllers
                 e.FAccountant = tProviderwrap.FAccountant;
                 e.FAddress = tProviderwrap.FAddress;
                 e.FDelivery = tProviderwrap.FDelivery;
-                e.FInvoiceadd = tProviderwrap.FInvoiceadd;
+                e.FInvoiceAdd = tProviderwrap.FInvoiceAdd;
                 _context.SaveChanges();
             }            
             return RedirectToAction(nameof(Index));

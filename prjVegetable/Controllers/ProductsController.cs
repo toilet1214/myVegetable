@@ -35,7 +35,6 @@ namespace prjVegetable.Controllers
                 p.FName.Contains(keyword)||
                 p.FClassification.Contains(keyword) ||
                 p.FLaunchAt.ToString().Contains(keyword) ||
-                p.FStorage.Contains(keyword) ||
                 p.FOrigin.Contains(keyword)
                 );
             }

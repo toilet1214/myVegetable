@@ -31,12 +31,7 @@ namespace prjVegetable.Models
             get { return _orderList.FProductId; }
             set { _orderList.FProductId = value; }
         }
-        [DisplayName("品名")]
-        public string FProductName
-        {
-            get { return _orderList.FProductName; }
-            set { _orderList.FProductName = value; }
-        }
+
         [DisplayName("單價")]
         public int FPrice
         {
@@ -44,13 +39,13 @@ namespace prjVegetable.Models
             set { _orderList.FPrice = value; }
         }
         [DisplayName("數量")]
-        public int? FCount
+        public int FCount
         {
             get { return _orderList.FCount; }
             set { _orderList.FCount = value; }
         }
         [DisplayName("總計")]
-        public int? FSum
+        public int FSum
         {
             get { return _orderList.FSum; }
             set { _orderList.FSum = value; }

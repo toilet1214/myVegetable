@@ -21,7 +21,7 @@ public partial class TProvider
 
     public string FDelivery { get; set; } = null!;
 
-    public string FInvoiceadd { get; set; } = null!;
+    public string FInvoiceAdd { get; set; } = null!;
 
     public int FEditor { get; set; }
 }

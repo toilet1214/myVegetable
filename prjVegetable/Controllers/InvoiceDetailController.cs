@@ -102,7 +102,7 @@ namespace prjVegetable.Controllers
             {
                 x.FNumber = p.FNumber;
                 x.FProductName = p.FProductName;
-                x.FConut = p.FConut;
+                x.FCount = p.FCount;
                 x.FPrice = p.FPrice;
                 x.FSum = p.FSum;
                 db.SaveChanges();

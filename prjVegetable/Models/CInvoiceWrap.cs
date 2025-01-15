@@ -34,7 +34,7 @@ namespace prjVegetable.Models
             set { _tInvoice.FNumber = value; }
         }
         [DisplayName("發票日期")]
-        public DateOnly? FDate
+        public DateTime FDate
         {
             get { return _tInvoice.FDate; }
             set { _tInvoice.FDate = value; }
@@ -46,7 +46,7 @@ namespace prjVegetable.Models
             set { _tInvoice.FForm = value; }
         }
         [DisplayName("會員編號")]
-        public int? FCustomerId
+        public int FCustomerId
         {
             get { return _tInvoice.FCustomerId; }
             set { _tInvoice.FCustomerId = value; }
@@ -58,37 +58,37 @@ namespace prjVegetable.Models
             set { _tInvoice.FCustomerUbn = value; }
         }
         [DisplayName("供應商單號")]
-        public int? FSupplierId
+        public int FProviderId
         {
-            get { return _tInvoice.FSupplierId; }
-            set { _tInvoice.FSupplierId = value; }
+            get { return _tInvoice.FProviderId; }
+            set { _tInvoice.FProviderId = value; }
         }
         [DisplayName("供應商統編")]
-        public string? FSupplierUbn
+        public string? FProviderUbn
         {
-            get { return _tInvoice.FSupplierUbn; }
-            set { _tInvoice.FSupplierUbn = value; }
+            get { return _tInvoice.FProviderUbn; }
+            set { _tInvoice.FProviderUbn = value; }
         }
         [DisplayName("銷項或進項")]
-        public int? FInOut
+        public int FInOut
         {
             get { return _tInvoice.FInOut; }
             set { _tInvoice.FInOut = value; }
         }
         [DisplayName("狀態")]
-        public int? FStatus
+        public int FStatus
         {
             get { return _tInvoice.FStatus; }
             set { _tInvoice.FStatus = value; }
         }
         [DisplayName("總額")]
-        public int? FTotal
+        public int FTotal
         {
             get { return _tInvoice.FTotal; }
             set { _tInvoice.FTotal = value; }
         }
         [DisplayName("修改人")]
-        public string? FEditor
+        public int FEditor
         {
             get { return _tInvoice.FEditor; }
             set { _tInvoice.FEditor = value; }

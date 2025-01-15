@@ -72,10 +72,10 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("廠商統編地址")]
-        public string FInvoiceadd
+        public string FInvoiceAdd
         {
-            get { return _provider.FInvoiceadd; }
-            set { _provider.FInvoiceadd = value; }
+            get { return _provider.FInvoiceAdd; }
+            set { _provider.FInvoiceAdd = value; }
         }
 
         [DisplayName("資料修改人")]

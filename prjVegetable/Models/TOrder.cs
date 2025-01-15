@@ -7,13 +7,15 @@ public partial class TOrder
 {
     public int FId { get; set; }
 
-    public int FBuyerId { get; set; }
+    public int FPersonId { get; set; }
 
-    public int FTotal { get; set; }
+    public int FStatus { get; set; }
 
-    public string FStatus { get; set; } = null!;
+    public int FPay { get; set; }
 
     public DateTime FOrderAt { get; set; }
+
+    public int FTotal { get; set; }
 
     public string FAddress { get; set; } = null!;
 
@@ -21,5 +23,5 @@ public partial class TOrder
 
     public string FPhone { get; set; } = null!;
 
-    public string FRemark { get; set; } = null!;
+    public string FNote { get; set; } = null!;
 }

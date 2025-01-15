@@ -28,10 +28,10 @@
             set { img.FProductId = value; }
         }
 
-        public string FImgName
+        public string FName
         {
-            get { return img.FImgName; }
-            set { img.FImgName = value; }
+            get { return img.FName; }
+            set { img.FName = value; }
         }
 
         public int FOrderBy
@@ -40,13 +40,13 @@
             set { img.FOrderBy = value; }
         }
 
-        public DateTime? FUploadAt
+        public DateTime FUploadAt
         {
             get { return img.FUploadAt; }
             set { img.FUploadAt = value; }
         }
 
-        public string FEditor
+        public int FEditor
         {
             get { return img.FEditor; }
             set { img.FEditor = value; }

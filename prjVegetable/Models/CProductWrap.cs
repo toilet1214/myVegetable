@@ -67,7 +67,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("藏溫方式")]
-        public string FStorage
+        public int FStorage
         {
             get { return _product.FStorage; }
             set { _product.FStorage = value; }
@@ -81,7 +81,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("修改人")]
-        public string FEditor
+        public int FEditor
         {
             get { return _product.FEditor; }
             set { _product.FEditor = value; }

@@ -13,7 +13,7 @@
                 @Html.DisplayNameFor(model => model.FId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FBuyerId)
+                @Html.DisplayNameFor(model => model.FPersonId)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FTotal)
@@ -34,7 +34,7 @@
                 @Html.DisplayNameFor(model => model.FPhone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FRemark)
+                @Html.DisplayNameFor(model => model.FNote)
             </th>
             <th></th>
         </tr>
@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.FId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FBuyerId)
+                @Html.DisplayFor(modelItem => item.FPersonId)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FTotal)
@@ -67,7 +67,7 @@
                 @Html.DisplayFor(modelItem => item.FPhone)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.FRemark)
+                @Html.DisplayFor(modelItem => item.FNote)
             </td>
             <td>
                 @Html.ActionLink("修改", "Edit", new { id=item.FId})

@@ -24,10 +24,8 @@ namespace prjVegetable.Controllers
 						select t;
 			else
 				datas = db.TPurchases.Where(
-				 p => p.FSupplierId.Contains(keyword)
-				|| p.FSupplierName.Contains(keyword)
-				|| p.FBuyer.Contains(keyword)
-				|| p.FId.ToString().Contains(keyword));
+				 p => p.FEditor.ToString().Contains(keyword)
+                || p.FId.ToString().Contains(keyword));
 
 			//原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
 			List<CPurchaseWrap> list = new List<CPurchaseWrap>();
@@ -104,14 +102,9 @@ namespace prjVegetable.Controllers
 			if (x != null)
 			{
 				x.FBuyDate = p.FBuyDate;
-				x.FSupplierId = p.FSupplierId;
-				x.FSupplierName = p.FSupplierName;
-				x.FBuyer = p.FBuyer;
-				x.FExpirationDate = p.FExpirationDate;
-				x.FIsTax = p.FIsTax;
+				x.FProviderId = p.FProviderId;
 				x.FInvoiceForm = p.FInvoiceForm;
 				x.FPayment = p.FPayment;
-				x.FCreater = p.FCreater;
 				x.FEditor = p.FEditor;
 				x.FPreTax = p.FPreTax;
 				x.FTax = p.FTax;

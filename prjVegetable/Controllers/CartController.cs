@@ -22,7 +22,7 @@ namespace prjVegetable.Controllers
         {
             // 從 Session 中取得購物車資料
             var cart = GetCartFromSession();
-            ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
+            //ViewBag.TotalPrice = cart.Sum(item => item.TotalPrice); // 計算總金額
             return View(cart); // 傳遞購物車資料到 View
         }
         private List<CCartWrap> GetCartFromSession()
@@ -139,19 +139,19 @@ namespace prjVegetable.Controllers
                 {
                     return BadRequest("購物車是空的，無法完成結帳。");
                 }
-                int totalAmount = cart.Sum(item => item.FPrice * item.FCount);
+                //int totalAmount = cart.Sum(item => item.FPrice * item.FCount);
 
                 // 1. 建立 TOrder
                 var newOrder = new TOrder
                 {
-                    FBuyerId = currentUserId,
-                    FTotal = totalAmount,
-                    FStatus = "未完成",
+                    FPersonId = currentUserId,
+                   // FTotal = totalAmount,
+                    FStatus = 0,
                     FOrderAt = DateTime.Now,
                     FAddress = shippingAddress,
                     FReceiverName = shippingName,
                     FPhone = shippingPhone,
-                    FRemark = note
+                    FNote = note
                 };
 
                 _dbContext.TOrders.Add(newOrder);
@@ -164,10 +164,10 @@ namespace prjVegetable.Controllers
                     {
                         FOrderId = newOrder.FId, // 關聯剛剛新增的 TOrder
                         FProductId = cartItem.FProductId,
-                        FProductName = cartItem.FProductName,
-                        FPrice = cartItem.FPrice,
-                        FCount = cartItem.FCount,
-                        FSum = cartItem.FPrice * cartItem.FCount
+                        //FProductName = cartItem.FProductName,
+                        //FPrice = cartItem.FPrice,
+                        //FCount = cartItem.FCount,
+                        //FSum = cartItem.FPrice * cartItem.FCount
                     };
 
                     _dbContext.TOrderLists.Add(orderListItem);

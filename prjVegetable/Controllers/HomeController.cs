@@ -77,7 +77,7 @@ namespace prjVegetable.Controllers
             {
                 CProductWrap pp = new CProductWrap() { product = p };
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
-                pp.FImgName = image?.FImgName;
+                pp.FImgName = image?.FName;
                 list.Add(pp);
             }
 

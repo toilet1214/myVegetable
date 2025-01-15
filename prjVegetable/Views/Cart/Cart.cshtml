@@ -20,11 +20,11 @@
                 {
                     FId = cart.Count + 1, //假設 ID 自增
                     FProductId = product.FId,
-                    FProductName = product.FName,
-                    FPrice = product.FPrice,
-                    FCount = 1, //預設數量為 1
-                    FImgId = 1, //假設圖片 ID 固定為 1
-                    FBuyerId = 0 //預設 BuyerId
+                    //FProductName = product.FName,
+                    //FPrice = product.FPrice,
+                    //FCount = 1, //預設數量為 1
+                    //FImgId = 1, //假設圖片 ID 固定為 1
+                    FPersonId = 0 //預設 BuyerId
                 });
         if (product2 != null && !cart.Any(c => c.FProductId == product2.FId))
         {
@@ -32,11 +32,11 @@
                     {
                         FId = cart.Count + 1, // 假設 ID 自增
                         FProductId = product2.FId,
-                        FProductName = product2.FName,
-                        FPrice = product2.FPrice,
+                        //FProductName = product2.FName,
+                        //FPrice = product2.FPrice,
                         FCount = 1, // 預設數量為 1
-                        FImgId = 2, // 假設圖片 ID 固定為 2
-                        FBuyerId = 0 // 預設 BuyerId
+                        //FImgId = 2, // 假設圖片 ID 固定為 2
+                        FPersonId = 0 // 預設 BuyerId
                     });
         }
     //     保存購物車到 Session
@@ -66,12 +66,12 @@
                             <div class="row align-items-center">
                                 <!-- 商品圖片 -->
                                 <div class="col-2 text-center">
-                                    <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName">
+                                    @* <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName"> *@
                                 </div>
                                 <!-- 商品名稱與價格 -->
                                 <div class="col-4 text-start">
-                                <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
-                                    <span class="d-block text-danger">單價: $@item.FPrice</span>
+                               @*  <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
+                                    <span class="d-block text-danger">單價: $@item.FPrice</span> *@
                                 </div>
                                 <!-- 數量調整 -->
                                 <div class="col-4 text-center">

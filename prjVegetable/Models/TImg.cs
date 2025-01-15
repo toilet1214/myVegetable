@@ -9,11 +9,11 @@ public partial class TImg
 
     public int FProductId { get; set; }
 
-    public string FImgName { get; set; } = null!;
+    public string FName { get; set; } = null!;
 
     public int FOrderBy { get; set; }
 
-    public DateTime? FUploadAt { get; set; }
+    public DateTime FUploadAt { get; set; }
 
-    public string FEditor { get; set; } = null!;
+    public int FEditor { get; set; }
 }

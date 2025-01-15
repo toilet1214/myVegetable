@@ -29,36 +29,31 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("採購號碼")]
-        public string? FPurchaseId
+        public int FPurchaseId
         {
             get { return _PurchaseDetail.FPurchaseId; }
             set { _PurchaseDetail.FPurchaseId = value; }
         }
 
-        [DisplayName("品名")]
-        public string? FProductName
-        {
-            get { return _PurchaseDetail.FProductName; }
-            set { _PurchaseDetail.FProductName = value; }
-        }
+
 
         [DisplayName("數量")]
-        public int? FConut
+        public int FCount
         {
-            get { return _PurchaseDetail.FConut; }
-            set { _PurchaseDetail.FConut = value; }
+            get { return _PurchaseDetail.FCount; }
+            set { _PurchaseDetail.FCount = value; }
         }
 
 
         [DisplayName("單價")]
-        public int? FPrice
+        public int FPrice
         {
             get { return _PurchaseDetail.FPrice; }
             set { _PurchaseDetail.FPrice = value; }
         }
 
         [DisplayName("小計")]
-        public int? FSum
+        public int FSum
         {
             get { return _PurchaseDetail.FSum; }
             set { _PurchaseDetail.FSum = value; }

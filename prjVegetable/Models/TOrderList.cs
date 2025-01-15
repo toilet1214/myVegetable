@@ -11,11 +11,9 @@ public partial class TOrderList
 
     public int FProductId { get; set; }
 
-    public string FProductName { get; set; } = null!;
-
     public int FPrice { get; set; }
 
-    public int? FCount { get; set; }
+    public int FCount { get; set; }
 
-    public int? FSum { get; set; }
+    public int FSum { get; set; }
 }

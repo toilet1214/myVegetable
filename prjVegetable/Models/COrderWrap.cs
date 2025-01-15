@@ -20,10 +20,10 @@ namespace prjVegetable.Models
             set { _order.FId = value; }
         }
         [DisplayName("會員ID")]
-        public int FBuyerId
+        public int FPersonId
         {
-            get { return _order.FBuyerId; }
-            set { _order.FBuyerId = value; }
+            get { return _order.FPersonId; }
+            set { _order.FPersonId = value; }
         }
         [DisplayName("總金額")]
         public int FTotal
@@ -32,7 +32,7 @@ namespace prjVegetable.Models
             set { _order.FTotal = value; }
         }
         [DisplayName("訂單狀態")]
-        public string FStatus
+        public int FStatus
         {
             get { return _order.FStatus; }
             set { _order.FStatus = value; }
@@ -62,10 +62,10 @@ namespace prjVegetable.Models
             set { _order.FPhone = value; }
         }
         [DisplayName("備註")]
-        public string FRemark
+        public string FNote
         {
-            get { return _order.FRemark; }
-            set { _order.FRemark = value; }
+            get { return _order.FNote; }
+            set { _order.FNote = value; }
         }
     }
 }

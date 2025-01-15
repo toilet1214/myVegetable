@@ -24,11 +24,6 @@
             set { _cart.FProductId = value; } 
         }
 
-        public string FProductName 
-        { 
-            get { return _cart.FProductName; } 
-            set { _cart.FProductName = value; } 
-        }
 
         public int FCount 
         { 
@@ -36,29 +31,14 @@
             set { _cart.FCount = value; } 
         }
 
-        public int FPrice 
-        { 
-            get { return _cart.FPrice; } 
-            set { _cart.FPrice = value; } 
+
+
+
+        public int FPersonId
+        {
+            get { return _cart.FPersonId; }
+            set { _cart.FPersonId = value; }
         }
 
-        public int FImgId
-        { 
-            get { return _cart.FImgId; } 
-            set { _cart.FImgId = value; } 
-        }
-
-        public int FBuyerId
-        {
-            get { return _cart.FBuyerId; }
-            set { _cart.FBuyerId = value; }
-        }
-        public int TotalPrice
-        {
-            get
-            {
-                return FPrice * FCount; // 總價格 = 單價 * 數量
-            }
-        }
     }
 }

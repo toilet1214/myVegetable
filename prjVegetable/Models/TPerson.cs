@@ -27,13 +27,13 @@ public partial class TPerson
 
     public string FUbn { get; set; } = null!;
 
-    public string FPermission { get; set; } = null!;
+    public int FPermission { get; set; }
 
     public string FEmp { get; set; } = null!;
 
     public string FEmpTel { get; set; } = null!;
 
-    public DateTime? FCreatedAt { get; set; }
+    public DateTime FCreatedAt { get; set; }
 
-    public string FEditor { get; set; } = null!;
+    public int FEditor { get; set; }
 }

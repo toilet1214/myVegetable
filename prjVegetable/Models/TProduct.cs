@@ -19,9 +19,11 @@ public partial class TProduct
 
     public DateTime FLaunchAt { get; set; }
 
-    public string FStorage { get; set; } = null!;
+    public int FStorage { get; set; }
 
     public string FOrigin { get; set; } = null!;
 
-    public string FEditor { get; set; } = null!;
+    public int FLaunch { get; set; }
+
+    public int FEditor { get; set; }
 }

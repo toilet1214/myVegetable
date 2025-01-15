@@ -26,8 +26,8 @@ namespace prjVegetable.Controllers
                 datas = db.TInvoices.Where(
                  p => p.FCustomerId.ToString().Contains(keyword)
                 || p.FCustomerUbn.Contains(keyword)
-                || p.FSupplierId.ToString().Contains(keyword)
-                || p.FSupplierUbn.Contains(keyword)
+                || p.FProviderId.ToString().Contains(keyword)
+                || p.FProviderUbn.Contains(keyword)
                 || p.FDate.ToString().Contains(keyword)
                 || p.FNumber.Contains(keyword)
                 || p.FId.ToString().Contains(keyword));
@@ -111,8 +111,8 @@ namespace prjVegetable.Controllers
                 x.FForm = p.FForm;
                 x.FCustomerId = p.FCustomerId;
                 x.FCustomerUbn = p.FCustomerUbn;
-                x.FSupplierId = p.FSupplierId;
-                x.FSupplierUbn = p.FSupplierUbn;
+                x.FProviderId = p.FProviderId;
+                x.FProviderUbn = p.FProviderUbn;
                 x.FInOut = p.FInOut;
                 x.FStatus = p.FStatus;
                 x.FTotal = p.FTotal;

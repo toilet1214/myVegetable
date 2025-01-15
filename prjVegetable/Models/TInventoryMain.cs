@@ -7,13 +7,9 @@ public partial class TInventoryMain
 {
     public int FId { get; set; }
 
-    public string FInventoryNo { get; set; } = null!;
-
     public DateOnly FBaselineDate { get; set; }
 
-    public DateTime FCreatedAt { get; set; }
+    public DateOnly FCreatedAt { get; set; }
 
-    public string FCreatorId { get; set; } = null!;
-
-    public string? FEditorId { get; set; }
+    public int FEditor { get; set; }
 }
