@@ -97,31 +97,31 @@
 <div class="bg-primary">
     <div class="container mt-5 py-2 fs-5 w-50">
         <div class="row">
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 根莖"">
+            <div class="imgicon col-12 col-md-2 me-1 " data-category="根莖">
                 <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
                 <div class="mt-1 d-flex justify-content-center align-items-end">
                     <p>根莖</p>
                 </div>
             </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 葉菜"">
+            <div class="imgicon col-12 col-md-2 me-1 " data-category="葉菜">
                 <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
                 <div class="mt-1 d-flex justify-content-center align-items-end">
                     <p>葉菜</p>
                 </div>
             </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 水果"">
+            <div class="imgicon col-12 col-md-2 me-1 " data-category="水果">
                 <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
                 <div class="mt-1 d-flex justify-content-center align-items-end">
                     <p>水果</p>
                 </div>
             </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 蕈菇"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+            <div class="imgicon col-12 col-md-2 me-1 ">
+                <img src="~/Images/icon玉米1.png" alt="" class="w-100" data-category="蕈菇" />
                 <div class="mt-1 d-flex justify-content-center align-items-end">
                     <p>蕈菇</p>
                 </div>
             </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 蔬菜箱"">
+            <div class="imgicon col-12 col-md-2 me-1 " data-category=" 蔬菜箱">
                 <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
                 <div class="mt-1 d-flex justify-content-center align-items-end">
                     <p>蔬菜箱</p>
@@ -246,6 +246,47 @@
     {
 
     <script>
+        // 篩選類種//
+                document.querySelectorAll('.imgicon').forEach(item => {
+            item.addEventListener('click', function () {
+                const category = this.getAttribute('data-category'); // 取得點擊區塊的分類
+                fetchProductsByCategory(category); // 呼叫函數，載入對應分類的商品
+            });
+        });
+
+        function fetchProductsByCategory(category) {
+            // 假設有一個 API 可以根據分類回傳商品資料
+            fetch(`/api/products?category=${category}`)
+                .then(response => response.json())
+                .then(data => {
+                    displayProducts(data); // 顯示商品
+                })
+                .catch(error => {
+                    console.error('Error fetching products:', error);
+                });
+        }
+
+        function displayProducts(products) {
+            const productListElement = document.getElementById('product-list');
+            productListElement.innerHTML = ''; // 清空目前的商品列表
+
+            if (products.length === 0) {
+                productListElement.innerHTML = '<p>目前沒有商品。</p>';
+                return;
+            }
+
+            products.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.classList.add('product');
+                productElement.innerHTML = `
+                    <h3>${product.name}</h3>
+                    <p>${product.description}</p>
+                    <p>價格: $${product.price}</p>
+                `;
+                productListElement.appendChild(productElement);
+            });
+        }
+
         // 篩選價格start//
         $(function () {
 
