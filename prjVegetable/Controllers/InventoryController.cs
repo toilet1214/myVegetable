@@ -40,7 +40,6 @@ namespace prjVegetable.Controllers
             var inventoryMainWrap = new CInventoryMainWrap
             {
                 FId = inventoryMain.FId,
-                FInventoryNo = inventoryMain.FInventoryNo,
                 FBaselineDate = inventoryMain.FBaselineDate,
                 FCreatedAt = inventoryMain.FCreatedAt,
                 FCreatorId = inventoryMain.FCreatorId,
@@ -51,7 +50,6 @@ namespace prjVegetable.Controllers
             var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
             {
                 FId = detail.FId,
-                FInventoryNo = detail.FInventoryNo,
                 FProductId = detail.FProductId,
                 FProductName = detail.FProductName,
                 FSystemQuantity = detail.FSystemQuantity,
@@ -72,14 +70,44 @@ namespace prjVegetable.Controllers
             return View(viewModel);
         }
 
+        /*--------------- + Create + ----------------*/
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /*------------ + 排版參考用頁面 + -------------*/
         //GET Inventory/InventoryAdjustment
         public IActionResult InventoryAdjustment()
         {
-            // 查詢 InventoryMain 和 InventoryDetails
             var inventoryMain = _context.TInventoryMains.FirstOrDefault();
             var inventoryDetails = _context.TInventoryDetails.ToList();
-
-            // 將 TInventoryMain 轉換為 CInventoryMainWrap
             var inventoryMainWrap = new CInventoryMainWrap
             {
                 FId = inventoryMain.FId,
@@ -89,8 +117,6 @@ namespace prjVegetable.Controllers
                 FCreatorId = inventoryMain.FCreatorId,
                 FEditorId = inventoryMain.FEditorId
             };
-
-            // 將 TInventoryDetail 轉換為 CInventoryDetailWrap
             var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
             {
                 FId = detail.FId,
@@ -104,14 +130,11 @@ namespace prjVegetable.Controllers
                 FRemark = detail.FRemark,
                 FEditorId = detail.FEditorId
             }).ToList();
-
-            // 創建 ViewModel 並傳遞到視圖
             var viewModel = new CInventoryViewModel
             {
                 InventoryMain = inventoryMainWrap,
                 InventoryDetails = inventoryDetailWraps
             };
-
             return View(viewModel);
         }
     }

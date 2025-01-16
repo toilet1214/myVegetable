@@ -81,14 +81,6 @@ namespace prjVegetable.Models
             set { _product.FOrigin = value; }
         }
 
-        [DisplayName("上架狀態")]
-        public int FLaunch
-        {
-            get { return _product.FLaunch; }
-            set { _product.FLaunch = value; }
-
-        }
-
         [DisplayName("修改人")]
         public int FEditor
         {
