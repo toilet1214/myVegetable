@@ -6,7 +6,7 @@
 }
 
 <!-- 工具列 start -->
-<form method="get">
+<form method="post">
     <div class="row d-block mb-3">
         <div class="btn-group" role="group" aria-label="Basic example">
             <button type="button" class="btn btn-primary">
@@ -27,14 +27,14 @@
             <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 <i class="bi bi-file-earmark me-2"></i>新增
             </button>
-            <button type="button" class="btn btn-primary">
+            <button type="button" class="btn btn-primary" id="editButton">
                 <i class="bi bi-pencil me-2"></i>修改
+            </button>
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-floppy me-2"></i>儲存
             </button>
             <button type="button" class="btn btn-primary">
                 <i class="bi bi-trash me-2"></i>刪除
-            </button>
-            <button type="button" class="btn btn-primary">
-                <i class="bi bi-floppy me-2"></i>儲存
             </button>
             <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
         </div>
@@ -83,27 +83,45 @@
     <table class="table">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.InventoryDetails.First().FInventoryDetailId)</th>
-                <th>@Html.DisplayNameFor(model => model.InventoryDetails.First().FProductId)</th>
-                <th>@Html.DisplayNameFor(model => model.InventoryDetails.First().FSystemQuantity)</th>
-                <th>@Html.DisplayNameFor(model => model.InventoryDetails.First().FActualQuantity)</th>
+                <th>商品Id</th>
+                <th>商品名稱</th>
+                <th>系統庫存數量</th>
+                <th>實際庫存數量(填入數量)</th>
+                <th>差異數量</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.InventoryDetails)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.FInventoryDetailId)</td>
                     <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FName)</td>
                     <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FActualQuantity)</td>
+                    <td>
+                        <input type="number"
+                               class="form-control form-control-sm"
+                               name="InventoryDetails[@item.FId].FActualQuantity"
+                               value="@item.FActualQuantity"
+                               disabled="disabled"
+                       />
+                    </td>
+                    <td>
+                        @if (item.FActualQuantity.HasValue)
+                        {
+                            @(item.FActualQuantity.Value - item.FSystemQuantity)
+                        }
+                        else
+                        {
+                            @("")
+                        }
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
-<!-- 新增的模態框 -->
+<!-- 新增 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -112,7 +130,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form>
+                <form id="inventoryForm" method="post" action="@Url.Action("Create", "Inventory")">
                     <div class="form-group">
                         <label for="BaseDate">盤點基準日</label>
                         <input type="date" class="form-control" id="BaseDate" name="BaseDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
@@ -141,7 +159,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary">確定</button>
+                <button type="submit" class="btn btn-primary" form="inventoryForm">確定</button>
             </div>
         </div>
     </div>
@@ -150,5 +168,15 @@
 <script>
         document.getElementById('addButton').addEventListener('click', function () {
         const url = this.getAttribute('data-url');
+    });
+</script>
+
+<!-- 修改 -->
+<script>
+    document.getElementById("editButton").addEventListener("click", function() {
+        var inputs = document.querySelectorAll('table input[type="number"]');
+        inputs.forEach(function(input) {
+            input.disabled = false;  // 使每個輸入框可編輯
+        });
     });
 </script>

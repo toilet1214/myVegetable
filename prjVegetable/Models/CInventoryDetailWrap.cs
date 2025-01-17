@@ -39,10 +39,23 @@
             set { _inventoryDetail.FSystemQuantity = value; }
         }
 
-        public int FActualQuantity
+        public int? FActualQuantity
         {
             get { return _inventoryDetail.FActualQuantity; }
             set { _inventoryDetail.FActualQuantity = value; }
+        }
+
+        public string FName { get; set; }
+        public int? DifferenceQuantity
+        {
+            get
+            {
+                if (FActualQuantity.HasValue)
+                {
+                    return FActualQuantity.Value - FSystemQuantity;
+                }
+                return null;
+            }
         }
     }
 }
