@@ -20,25 +20,22 @@ namespace prjVegetable.Controllers
         }
 
         //GET Inventory/Detail
-        public IActionResult Detail()
+        public IActionResult Detail(int id)
         {
-
-            /*
-                為什麼需要將資料庫模型 TInventoryMain 和 TInventoryDetail
-                轉換為在視圖中使用的 CInventoryMainWrap 和 CInventoryDetailWrap ?
-
-                1. 可以選擇只將必要的欄位傳遞到視圖，避免資料庫模型過於直接地暴露給用戶界面
-                2. 如果需要對 TInventoryMain 或 TInventoryDetail 進行結構調整（例如新增欄位或移除欄位）
-                   不需要直接修改視圖中的資料結構，只需在 ViewModel 中進行調整。
-            */
-
-
-            // 查詢
-            var inventoryMain = _context.TInventoryMains.FirstOrDefault();
+            // 查詢所有的 InventoryMain
+            var inventoryMains = _context.TInventoryMains.OrderBy(m => m.FId).ToList();
             var inventoryDetails = _context.TInventoryDetails.ToList();
             var products = _context.TProducts.ToList();
 
-            // 將 TInventoryMain 轉換為 CInventoryMainWrap
+            // 查詢當前的 inventoryMain
+            var inventoryMain = inventoryMains.FirstOrDefault(im => im.FId == id);
+
+            if (inventoryMain == null)
+            {
+                return NotFound();  // 如果找不到，回傳 404 錯誤
+            }
+
+            // 根據傳入的 id 查找相關資料
             var inventoryMainWrap = new CInventoryMainWrap
             {
                 FId = inventoryMain.FId,
@@ -49,14 +46,15 @@ namespace prjVegetable.Controllers
             };
 
             // 將 TInventoryDetail 轉換為 CInventoryDetailWrap
-            var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
-            {
-                FId = detail.FId,
-                FInventoryDetailId = detail.FInventoryDetailId,
-                FProductId = detail.FProductId,
-                FSystemQuantity = detail.FSystemQuantity,
-                FActualQuantity = detail.FActualQuantity
-            }).ToList();
+            var inventoryDetailWraps = inventoryDetails.Where(detail => detail.FInventoryDetailId == inventoryMain.FId)
+                .Select(detail => new CInventoryDetailWrap
+                {
+                    FId = detail.FId,
+                    FInventoryDetailId = detail.FInventoryDetailId,
+                    FProductId = detail.FProductId,
+                    FSystemQuantity = detail.FSystemQuantity,
+                    FActualQuantity = detail.FActualQuantity
+                }).ToList();
 
             // 將 TProduct 轉換為 CProductWrap
             var productWraps = products.Select(product => new CProductWrap
@@ -73,11 +71,26 @@ namespace prjVegetable.Controllers
             {
                 InventoryMain = inventoryMainWrap,
                 InventoryDetails = inventoryDetailWraps,
-                Products = productWraps  // 將 CProductWrap 列表傳遞到視圖
+                Products = productWraps
             };
 
+            // 查找下一筆和上一筆
+            var currentIndex = inventoryMains.FindIndex(im => im.FId == id);
+
+            var nextId = currentIndex < inventoryMains.Count - 1 ? inventoryMains[currentIndex + 1].FId : id;
+            var previousId = currentIndex > 0 ? inventoryMains[currentIndex - 1].FId : id;
+
+            // 處理最後一筆的情況，確保 inventoryMains 不為空
+            var lastId = inventoryMains.Any() ? inventoryMains.Last().FId : id;
+
+            ViewData["NextId"] = nextId;
+            ViewData["PreviousId"] = previousId;
+            ViewData["LastId"] = lastId;  // 傳遞最後一筆的 id
+
+            // 返回視圖
             return View(viewModel);
         }
+
 
 
         /*--------------- + Create + ----------------*/
