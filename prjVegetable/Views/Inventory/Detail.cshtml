@@ -44,9 +44,9 @@
         <div class="col-5">
             <!-- 庫存盤點單號 -->
             <div class="d-flex mb-0 align-items-center">
-                <label asp-for="InventoryMain.FInventoryNo" class="pe-1 mb-3">庫存盤點單號</label>
-                <input asp-for="InventoryMain.FInventoryNo" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
-                <span asp-validation-for="InventoryMain.FInventoryNo" class="text-danger"></span>
+                <label asp-for="InventoryMain.FId" class="pe-1 mb-3">庫存盤點單號</label>
+                <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
+                <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
             </div>
             <!-- 盤點基準日 -->
             <div class="d-flex mb-0 align-items-center">
@@ -79,31 +79,16 @@
         <thead>
             <tr>
                 <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FInventoryNo)
+                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FInventoryDetailId)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.InventoryDetails.First().FProductId)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FProductName)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.InventoryDetails.First().FSystemQuantity)
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.InventoryDetails.First().FActualQuantity)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FDifferenceQuantity)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FAmount)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FRemark)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.InventoryDetails.First().FEditorId)
                 </th>
             </tr>
         </thead>
@@ -112,37 +97,22 @@
             {
                 <tr>
                     <td>
-                    @Html.DisplayFor(modelItem => item.FInventoryNo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FProductId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FProductName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FSystemQuantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FActualQuantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FDifferenceQuantity)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FAmount)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FRemark)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FEditorId)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.FId">Edit</a>
-                    <a asp-action="Details" asp-route-id="@item.FId">Details</a>
-                    <a asp-action="Delete" asp-route-id="@item.FId">Delete</a>
-                </td>
+                        @Html.DisplayFor(modelItem => item.FInventoryDetailId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FProductId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSystemQuantity)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FActualQuantity)
+                    </td>
+                    @* <td> *@
+                    @*     <a asp-action="Edit" asp-route-id="@item.FId">Edit</a> *@
+                    @*     <a asp-action="Details" asp-route-id="@item.FId">Details</a> *@
+                    @*     <a asp-action="Delete" asp-route-id="@item.FId">Delete</a> *@
+                    @* </td> *@
                 </tr>
             }
         </tbody>
@@ -163,6 +133,7 @@
                         <label for="BaseDate">盤點基準日</label>
                         <input type="date" class="form-control" id="BaseDate" name="BaseDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
                     </div>
+
                     <div class="form-group">
                         <label for="ProductStartCode">商品編號區間 (起始)</label>
                         <select class="form-control" id="ProductStartCode" name="ProductStartCode">
@@ -172,6 +143,7 @@
                             }
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="ProductEndCode">商品編號區間 (結束)</label>
                         <select class="form-control" id="ProductEndCode" name="ProductEndCode">
