@@ -51,13 +51,37 @@
             @Html.DisplayNameFor(model => model.FStorage)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FStorage)
+            @if (Model.FStorage == 0)
+            {
+                @:冷凍
+            }
+            else if (Model.FStorage == 1)
+            {
+                @:冷藏
+            }
+            else if (Model.FStorage == 2)
+            {
+                @:常溫
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FOrigin)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.product.FOrigin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.FLaunch)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.FLaunch == 0)
+            {
+                @:下架
+            }
+            else if (Model.FLaunch == 1)
+            {
+                @:上架
+            }
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FEditor)

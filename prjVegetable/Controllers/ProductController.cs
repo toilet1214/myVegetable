@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
 using System.Diagnostics;
 
 namespace prjVegetable.Controllers
@@ -14,14 +15,46 @@ namespace prjVegetable.Controllers
         }
 
         //商品列表
-        public IActionResult ProductList()
+        public IActionResult ProductList(ProductViewModel pvm)
         {
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
-            var products = db.TProducts.ToList();
+            string keyword = pvm.category;
+            IEnumerable<TProduct> datas = null;
+
+            // 取得篩選的最低價格和最高價格
+            decimal? minPrice = pvm.MinPrice;
+            decimal? maxPrice = pvm.MaxPrice;
+
+            if (string.IsNullOrEmpty(keyword))
+            {
+                datas = db.TProducts;
+            }
+            else {
+                datas = db.TProducts.Where(p => p.FClassification.Contains(keyword)); 
+            
+            }
 
 
-            foreach (var p in products)
+            // 根據價格範圍進行篩選
+            if (minPrice.HasValue && maxPrice.HasValue)
+            {
+                datas = datas.Where(p => p.FPrice >= minPrice.Value && p.FPrice <= maxPrice.Value);
+            }
+            else if (minPrice.HasValue)
+            {
+                datas = datas.Where(p => p.FPrice >= minPrice.Value);
+            }
+            else if (maxPrice.HasValue)
+            {
+                datas = datas.Where(p => p.FPrice <= maxPrice.Value);
+            }
+
+
+            var products = datas.ToList();
+
+
+            foreach (var p in products)     
             {
                 CProductWrap pp = new CProductWrap() { product = p };
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
@@ -32,21 +65,7 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        //篩選 Classification分類
-        [HttpGet]
-        public IActionResult GetProductsByCategory(string category)
-        {
-            if (string.IsNullOrEmpty(category))
-            {
-                return Content("查無商品！");
-            }
-
-            var products = _context.TProducts
-                            .Where(p => p.FClassification == category)
-                            .ToList();
-
-            return View(products);
-        }
+        
 
 
 

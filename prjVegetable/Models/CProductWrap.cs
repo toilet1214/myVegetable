@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace prjVegetable.Models
@@ -25,6 +26,8 @@ namespace prjVegetable.Models
             get { return _product.FId; }
             set { _product.FId = value; }
         }
+
+        [Required (ErrorMessage = "必填")]
         [DisplayName("產品名稱")]
         public string FName
         {
@@ -32,6 +35,8 @@ namespace prjVegetable.Models
             set { _product.FName = value; }
         }
 
+
+        [Required(ErrorMessage = "必填")]
         [DisplayName("產品分類")]
         public string FClassification
         {
@@ -39,6 +44,7 @@ namespace prjVegetable.Models
             set { _product.FClassification = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("產品價格")]
         public int FPrice
         {
@@ -46,6 +52,7 @@ namespace prjVegetable.Models
             set { _product.FPrice = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("產品描述")]
         public string FDescription
         {
@@ -53,6 +60,7 @@ namespace prjVegetable.Models
             set { _product.FDescription = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("庫存數量")]
         public int FQuantity
         {
@@ -60,6 +68,7 @@ namespace prjVegetable.Models
             set { _product.FQuantity = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("上架日期")]
         public DateTime FLaunchAt
         {
@@ -67,6 +76,7 @@ namespace prjVegetable.Models
             set { _product.FLaunchAt = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("藏溫方式")]
         public int FStorage
         {
@@ -74,6 +84,7 @@ namespace prjVegetable.Models
             set { _product.FStorage = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("產地")]
         public string FOrigin
         {
@@ -81,6 +92,7 @@ namespace prjVegetable.Models
             set { _product.FOrigin = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("上架狀態")]
         public int FLaunch
         {
@@ -89,6 +101,7 @@ namespace prjVegetable.Models
 
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("修改人")]
         public int FEditor
         {
@@ -96,6 +109,7 @@ namespace prjVegetable.Models
             set { _product.FEditor = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("商品照片")]
         public string FImgName
         { get; set; }
