@@ -14,6 +14,7 @@ namespace prjVegetable.Models
         {
             _order = new TOrder();
         }
+        [DisplayName("訂單編號")]
         public int FId
         {
             get { return _order.FId; }
