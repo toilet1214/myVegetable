@@ -24,7 +24,7 @@
 
                             <div class="row align-items-center">
                                 <!-- 商品圖片 -->
-                                <div class="col-2 text-center">
+                            <img src="~/Images/@item.FName" class="card-img-top img-fluid" alt="Image">
                                     @* <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName"> *@
                                 </div>
                                 <!-- 商品名稱與價格 -->
@@ -53,7 +53,7 @@
                                         <button class="btn btn-link text-danger" type="submit">移除</button>
                                     </form>
                                 </div>
-                            </div>
+                            
                             <hr class="mb-4">
                         }
                     }
@@ -117,7 +117,7 @@
     <script>
         // 模擬會員資料與訂購人資料
         document.getElementById('SameAsMember').addEventListener('change', function () {
-            const memberId = 1; // 預設的會員 FId = 1
+            const memberId = 1;
 
             if (this.checked) {
                 // 勾選時，透過 AJAX 獲取會員資料
@@ -165,5 +165,15 @@
         function confirmIncrease(productId, currentCount) {
             return true; // 始終允許提交表單
         }
+    @foreach (var item in Model)
+    {
+            <tr>
+                <!-- 假設你在 CCartWrap 裡新增了 FProductName 這個屬性 -->
+                <td>@item.FProductName</td>
+                <td>@item.FPrice</td>
+                <td>@item.FCount</td>
+                <td>@item.FTotalPrice</td>
+            </tr>
+    }
     </script>
 

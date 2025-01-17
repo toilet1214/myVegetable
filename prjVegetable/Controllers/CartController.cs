@@ -12,6 +12,7 @@ namespace prjVegetable.Controllers
         private readonly ILogger<CartController> _logger;
         private readonly DbVegetableContext _dbContext;
         private readonly IWebHostEnvironment _environment;
+
         public CartController(ILogger<CartController> logger, DbVegetableContext dbContext, IWebHostEnvironment environment)
         {
             _logger = logger;
@@ -20,10 +21,53 @@ namespace prjVegetable.Controllers
         }
         public IActionResult Cart()
         {
-            // 從 Session 中取得購物車資料
-            var cart = GetCartFromSession();
-            ViewBag.TotalPrice = cart.Sum(item => item.FTotalPrice); // 計算總金額
-            return View(cart); // 傳遞購物車資料到 View
+            // 從 Session 中獲取登入的用戶 ID
+            if (!Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                TempData["ErrorMessage"] = "帳號或密碼錯誤，請再試一次";
+                return RedirectToAction("Index", "Home"); // 如果未登入，跳轉到登入頁面
+            }
+
+            List<CCartWrap> cartWrapList = new List<CCartWrap>();
+            int totalPrice = 0;
+
+            // 查詢購物車數據
+            var cartDatas = _dbContext.TCarts
+                .Where(c => c.FPersonId == userId)
+                .ToList();
+
+            // 迭代購物車數據，查詢對應的商品和圖片
+            foreach (var cartData in cartDatas)
+            {
+                var productData = _dbContext.TProducts
+                    .FirstOrDefault(p => p.FId == cartData.FProductId);
+
+                var imgData = _dbContext.TImgs
+                    .FirstOrDefault(img => img.FProductId == cartData.FProductId);
+
+                // 包裝購物車項目
+                var wrap = new CCartWrap
+                {
+                    Cart = cartData,
+                    FPrice = productData.FPrice,
+                    FCount = cartData.FCount,
+                    FProductName = productData.FName,
+                    FName = imgData.FName
+                };
+
+                // 計算小計
+                totalPrice += wrap.FPrice * wrap.FCount;
+
+                // 加入購物車清單
+                cartWrapList.Add(wrap);
+            }
+
+            // 設置總金額到 ViewBag
+            ViewBag.TotalPrice = totalPrice;
+
+            // 傳遞購物車清單到 View
+            return View(cartWrapList);
+
         }
         private List<CCartWrap> GetCartFromSession()
         {
@@ -99,9 +143,15 @@ namespace prjVegetable.Controllers
             return RedirectToAction("Cart");
         }
         [HttpGet]
-        public IActionResult GetMemberInfo(int? memberId)
+        public IActionResult GetMemberInfo()
         {
-            // 假設 dbContext 已注入
+            // 從 Session 中獲取登入的用戶 ID
+            if (!Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int memberId))
+            {
+                return Json(new { success = false, message = "用戶未登入。" });
+            }
+
+            // 根據 ID 查詢會員資料
             var member = _dbContext.TPeople.FirstOrDefault(p => p.FId == memberId);
 
             if (member == null)
@@ -109,6 +159,7 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, message = "會員資料不存在。" });
             }
 
+            // 返回會員資料
             return Json(new
             {
                 success = true,
