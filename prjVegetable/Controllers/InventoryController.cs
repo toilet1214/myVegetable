@@ -143,6 +143,57 @@ namespace prjVegetable.Controllers
 
 
         // 更新實際庫存數量
+        /*--------------- + Delete + ----------------*/
+        [HttpGet]
+        public IActionResult Delete(int id)
+        {
+            // 根據 ID 查找要刪除的盤點主單
+            var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == id);
+            if (inventoryMain == null)
+            {
+                return NotFound();  // 找不到資料則返回 404 錯誤
+            }
+
+            // 創建 ViewModel 並傳遞資料至視圖
+            return View(inventoryMain);
+        }
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            try
+            {
+                // 查找要刪除的盤點主單
+                var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == id);
+                if (inventoryMain == null)
+                {
+                    return NotFound();
+                }
+
+                // 刪除相關的 TInventoryDetail 資料
+                var inventoryDetails = _context.TInventoryDetails.Where(detail => detail.FInventoryDetailId == id).ToList();
+                _context.TInventoryDetails.RemoveRange(inventoryDetails);
+                _context.TInventoryMains.Remove(inventoryMain);
+
+                // 提交變更
+                _context.SaveChanges();
+
+                // 查找前一筆資料（ID 小於當前資料的最大值）
+                var previousInventoryMain = _context.TInventoryMains
+                    .Where(im => im.FId < id)
+                    .OrderByDescending(im => im.FId)  // 降序排列
+                    .FirstOrDefault();  // 取得最新的一筆
+
+                // 返回一個包含重定向 URL 的 JSON 響應
+                return Json(new { success = true, redirectTo = Url.Action("Detail", new { id = previousInventoryMain?.FId }) });
+            }
+            catch (Exception ex)
+            {
+                // 發生錯誤，返回失敗狀態
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
+
 
     }
 }
