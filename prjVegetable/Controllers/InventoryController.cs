@@ -96,6 +96,7 @@ namespace prjVegetable.Controllers
 
 
         /*--------------- + Create + ----------------*/
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
@@ -142,7 +143,7 @@ namespace prjVegetable.Controllers
         }
 
 
-        // 更新實際庫存數量
+
         /*--------------- + Delete + ----------------*/
         [HttpGet]
         public IActionResult Delete(int id)
@@ -194,7 +195,8 @@ namespace prjVegetable.Controllers
         }
 
 
-
+        /*----------------- + Save + ------------------*/
+        
     }
 }
 
@@ -221,39 +223,40 @@ namespace prjVegetable.Controllers
 
 
 
+
     /*------------ + 排版參考用頁面 + -------------*/
-    //GET Inventory/InventoryAdjustment
-    //public IActionResult InventoryAdjustment()
-    //{
-    //    var inventoryMain = _context.TInventoryMains.FirstOrDefault();
-    //    var inventoryDetails = _context.TInventoryDetails.ToList();
-    //    var inventoryMainWrap = new CInventoryMainWrap
-    //    {
-    //        FId = inventoryMain.FId,
-    //        FInventoryNo = inventoryMain.FInventoryNo,
-    //        FBaselineDate = inventoryMain.FBaselineDate,
-    //        FCreatedAt = inventoryMain.FCreatedAt,
-    //        FCreatorId = inventoryMain.FCreatorId,
-    //        FEditorId = inventoryMain.FEditorId
-    //    };
-    //    var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
-    //    {
-    //        FId = detail.FId,
-    //        FInventoryNo = detail.FInventoryNo,
-    //        FProductId = detail.FProductId,
-    //        FProductName = detail.FProductName,
-    //        FSystemQuantity = detail.FSystemQuantity,
-    //        FActualQuantity = detail.FActualQuantity,
-    //        FDifferenceQuantity = detail.FDifferenceQuantity,
-    //        FAmount = detail.FAmount,
-    //        FRemark = detail.FRemark,
-    //        FEditorId = detail.FEditorId
-    //    }).ToList();
-    //    var viewModel = new CInventoryViewModel
-    //    {
-    //        InventoryMain = inventoryMainWrap,
-    //        InventoryDetails = inventoryDetailWraps
-    //    };
-    //    return View(viewModel);
-    //}
+//GET Inventory/InventoryAdjustment
+//public IActionResult InventoryAdjustment()
+//{
+//    var inventoryMain = _context.TInventoryMains.FirstOrDefault();
+//    var inventoryDetails = _context.TInventoryDetails.ToList();
+//    var inventoryMainWrap = new CInventoryMainWrap
+//    {
+//        FId = inventoryMain.FId,
+//        FInventoryNo = inventoryMain.FInventoryNo,
+//        FBaselineDate = inventoryMain.FBaselineDate,
+//        FCreatedAt = inventoryMain.FCreatedAt,
+//        FCreatorId = inventoryMain.FCreatorId,
+//        FEditorId = inventoryMain.FEditorId
+//    };
+//    var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
+//    {
+//        FId = detail.FId,
+//        FInventoryNo = detail.FInventoryNo,
+//        FProductId = detail.FProductId,
+//        FProductName = detail.FProductName,
+//        FSystemQuantity = detail.FSystemQuantity,
+//        FActualQuantity = detail.FActualQuantity,
+//        FDifferenceQuantity = detail.FDifferenceQuantity,
+//        FAmount = detail.FAmount,
+//        FRemark = detail.FRemark,
+//        FEditorId = detail.FEditorId
+//    }).ToList();
+//    var viewModel = new CInventoryViewModel
+//    {
+//        InventoryMain = inventoryMainWrap,
+//        InventoryDetails = inventoryDetailWraps
+//    };
+//    return View(viewModel);
+//}
 
