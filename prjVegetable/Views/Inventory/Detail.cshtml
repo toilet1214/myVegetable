@@ -176,7 +176,7 @@
 
         var inputs = document.querySelectorAll('table input[type="number"]');
         inputs.forEach(function(input) {
-            input.disabled = false;  // 使每個輸入框可編輯
+            input.disabled = false;
         });
     });
 </script>
@@ -184,23 +184,20 @@
 <!-- 刪除 -->
 <script>
     document.getElementById('deletebutton').addEventListener('click', function () {
-        // 從隱藏的 input 中獲取 currentId
         const inventoryId = document.querySelector('input[name="currentId"]').value;
 
         if (confirm('您確定要刪除此盤點資料嗎？此操作無法撤銷！')) {
-            // 發送 POST 請求到刪除方法
             fetch('@Url.Action("DeleteConfirmed", "Inventory")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `id=${inventoryId}`,  // 使用 currentId 作為刪除的參數，正確的格式
+                body: `id=${inventoryId}`, 
             })
-            .then(response => response.json())  // 正確解析為 JSON 格式
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // 如果刪除成功，跳轉到最新一筆資料
-                    window.location.href = data.redirectTo;  // 使用來自後端的重定向 URL
+                    window.location.href = data.redirectTo;
                 } else {
                     alert('刪除失敗，請稍後再試。');
                 }
@@ -224,12 +221,12 @@
         const rows = document.querySelectorAll('table tbody tr');
 
         rows.forEach(row => {
-            const systemQuantity = row.querySelector('td:nth-child(3)');  // 系統庫存數量欄位
-            const actualQuantityInput = row.querySelector('td:nth-child(4) input');  // 實際庫存數量輸入框
+            const systemQuantity = row.querySelector('td:nth-child(3)');
+            const actualQuantityInput = row.querySelector('td:nth-child(4) input');
 
             if (systemQuantity && actualQuantityInput) {
-                const systemQuantityValue = systemQuantity.textContent.trim();  // 取得系統庫存數量的文字
-                actualQuantityInput.value = systemQuantityValue;  // 把系統庫存數量填入實際庫存數量欄位
+                const systemQuantityValue = systemQuantity.textContent.trim();
+                actualQuantityInput.value = systemQuantityValue;
             }
         });
     });
@@ -244,7 +241,7 @@
             const actualQuantityInput = row.querySelector('td:nth-child(4) input');
 
             if (actualQuantityInput) {
-                actualQuantityInput.value = 0;  // 將實際庫存數量設定為 0
+                actualQuantityInput.value = 0;
             }
         });
     });

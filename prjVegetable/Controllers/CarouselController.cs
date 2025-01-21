@@ -20,7 +20,7 @@ namespace prjVegetable.Controllers
 
             // 取得目前資料夾中所有圖片的路徑
             var imagePaths = Directory.GetFiles(uploadsPath)
-                                      .Select(path => "/uploads/" + Path.GetFileName(path))
+                                      .Select(path => $"/uploads/{Path.GetFileName(path)}?t={DateTime.UtcNow.Ticks}")
                                       .ToList();
 
             var model = new CarouselImageViewModel

@@ -61,7 +61,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("上架日期")]
-        public DateTime FLaunchAt
+        public DateOnly FLaunchAt
         {
             get { return _product.FLaunchAt; }
             set { _product.FLaunchAt = value; }

@@ -47,16 +47,17 @@ namespace prjVegetable.Controllers
             };
 
             // 將 TInventoryDetail 轉換為 CInventoryDetailWrap
-            var inventoryDetailWraps = inventoryDetails.Where(detail => detail.FInventoryDetailId == inventoryMain.FId)
+            var inventoryDetailWraps = inventoryDetails.Where(detail => detail.FInventoryMainId == inventoryMain.FId)
                 .Select(detail => new CInventoryDetailWrap
                 {
                     FId = detail.FId,
-                    FInventoryDetailId = detail.FInventoryDetailId,
+                    FInventoryDetailId = detail.FId,
                     FProductId = detail.FProductId,
-                    FSystemQuantity = detail.FSystemQuantity,
+                    FSystemQuantity = (int)detail.FSystemQuantity,
                     FActualQuantity = detail.FActualQuantity,
                     FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
                 }).ToList();
+
 
             // 將 TProduct 轉換為 CProductWrap
             var productWraps = products.Select(product => new CProductWrap
@@ -64,8 +65,7 @@ namespace prjVegetable.Controllers
                 FId = product.FId,
                 FName = product.FName,
                 FQuantity = product.FQuantity,
-                FLaunchAt = product.FLaunchAt,
-                FOrigin = product.FOrigin
+                FPrice = product.FPrice // 暫時先用此欄位當作成本計算
             }).ToList();
 
             // 創建 ViewModel 並傳遞到視圖
@@ -126,7 +126,7 @@ namespace prjVegetable.Controllers
             {
                 var inventoryDetail = new TInventoryDetail
                 {
-                    FInventoryDetailId = inventoryMain.FId,
+                    FInventoryMainId = inventoryMain.FId,
                     FProductId = product.FId,
                     FSystemQuantity = product.FQuantity,
                     FActualQuantity = null
@@ -171,7 +171,7 @@ namespace prjVegetable.Controllers
                 }
 
                 // 刪除相關的 TInventoryDetail 資料
-                var inventoryDetails = _context.TInventoryDetails.Where(detail => detail.FInventoryDetailId == id).ToList();
+                var inventoryDetails = _context.TInventoryDetails.Where(detail => detail.FId == id).ToList();
                 _context.TInventoryDetails.RemoveRange(inventoryDetails);
                 _context.TInventoryMains.Remove(inventoryMain);
 

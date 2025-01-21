@@ -23,8 +23,10 @@
     > 下一步：資料表調整 與 庫存盤點作業儲存 1/26 前
 
     > 資料表調整
-	    - 庫存盤點單
-	    - 庫存調整單
+	    V 庫存盤點單
+	    V 庫存調整單
+		V 更新Model
+		> 建 Wrap
 	
     > 庫存盤點作業
 	    - 儲存
@@ -42,21 +44,23 @@
 		V 將系統庫存帶入實際庫存數量、將實際庫存數量歸零 V (1/20)
 		- 列印庫存盤點單
 
+
 	- 庫存調整作業 Inventory/Adjustment
 
 		- 新增
-		- 刪除
+		- 刪除tInventoryAdjustmentDetail
 		- 修改 (需能填寫備註)
 		- 儲存
 		- 第一筆、上一筆、下一筆、最新一筆
+		- 列印庫存調整單
 
-	> 資料表調整
-		- 庫存盤點單
-			- InventoryMain
-			- InventoryDetail
-		- 庫存調整單
-			- InventoryAdjustment
-			- InventoryAdjustmentDetail
+
+	> 資料表調整 (1/21)
+		V 庫存盤點單
+		V 庫存調整單
+		V 更新Model
+		> 建 Wrap
+
 
 	- Home/Index
 		- 圖片輪播
@@ -70,6 +74,7 @@
 		- 聯繫我們
 			- UI
 			- 按下送出，將意見寄送至 mail
+
 
 	- css
 		V 整理 Layout (1/17)

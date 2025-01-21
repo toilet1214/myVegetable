@@ -23,8 +23,8 @@
 
         public int FInventoryDetailId
         {
-            get { return _inventoryDetail.FInventoryDetailId; }
-            set { _inventoryDetail.FInventoryDetailId = value; }
+            get { return _inventoryDetail.FId; }
+            set { _inventoryDetail.FId = value; }
         }
 
         public int FProductId
@@ -35,7 +35,7 @@
 
         public int FSystemQuantity
         {
-            get { return _inventoryDetail.FSystemQuantity; }
+            get { return (int)_inventoryDetail.FSystemQuantity; }
             set { _inventoryDetail.FSystemQuantity = value; }
         }
 

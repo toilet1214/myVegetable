@@ -20,13 +20,15 @@ namespace prjVegetable.Controllers
             _dbContext = dbContext;
             _environment = environment;
         }
-       
+
         public IActionResult Index()
         {
             // 讀取圖片檔案路徑
             var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads");
             var images = Directory.Exists(uploadsPath)
-                ? Directory.GetFiles(uploadsPath).Select(f => "/uploads/" + Path.GetFileName(f)).ToList()
+                ? Directory.GetFiles(uploadsPath)
+                    .Select(path => $"/uploads/{Path.GetFileName(path)}?t={DateTime.UtcNow.Ticks}")
+                    .ToList()
                 : new List<string>();
 
             var model = new CarouselImageViewModel
@@ -36,8 +38,8 @@ namespace prjVegetable.Controllers
 
             return View(model); // 將圖片路徑清單傳遞到視圖
         }
-        
-        
+
+
         public IActionResult About()
         {
             return View();
