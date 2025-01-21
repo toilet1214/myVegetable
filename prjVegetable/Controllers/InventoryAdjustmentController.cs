@@ -2,15 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
-using static prjVegetable.ViewModels.CInventoryViewModel;
+using static prjVegetable.ViewModels.CInventoryAdjustmentViewModel;
 
 namespace prjVegetable.Controllers
 {
-    public class InventoryController : Controller
+    public class InventoryAdjustmentController : Controller
     {
         public readonly DbVegetableContext _context;
 
-        public InventoryController(DbVegetableContext Context)
+        public InventoryAdjustmentController(DbVegetableContext Context)
         {
             _context = Context;
         }
@@ -22,44 +22,55 @@ namespace prjVegetable.Controllers
 
         /*--------------- + Detail + ----------------*/
 
-        //GET Inventory/Detail
-        public IActionResult Detail(int id)
+        //GET InventoryAdjustment/Detail
+        public IActionResult Detail(int? id)
         {
-            // 查詢所有的 InventoryMain
-            var inventoryMains = _context.TInventoryMains.OrderBy(m => m.FId).ToList();
-            var inventoryDetails = _context.TInventoryDetails.ToList();
+            // 如果沒有提供 id，則自動顯示第一筆調整單
+            if (!id.HasValue || id <= 0)
+            {
+                var firstAdjustment = _context.TInventoryAdjustments.OrderBy(a => a.FId).FirstOrDefault();
+                if (firstAdjustment != null)
+                {
+                    return RedirectToAction("Detail", new { id = firstAdjustment.FId });
+                }
+
+                return NotFound("目前沒有任何調整單記錄。");
+            }
+
+            // 查詢所有的調整單
+            var adjustments = _context.TInventoryAdjustments.OrderBy(a => a.FId).ToList();
+            var adjustmentDetails = _context.TInventoryAdjustmentDetails.ToList();
             var products = _context.TProducts.ToList();
 
-            // 查詢當前的 inventoryMain
-            var inventoryMain = inventoryMains.FirstOrDefault(im => im.FId == id);
+            // 查詢當前的調整單
+            var adjustment = adjustments.FirstOrDefault(a => a.FId == id);
 
-            if (inventoryMain == null)
+            if (adjustment == null)
             {
-                return NotFound();  // 如果找不到，回傳 404 錯誤
+                return NotFound(); // 如果找不到，返回 404
             }
 
             // 根據傳入的 id 查找相關資料
-            var inventoryMainWrap = new CInventoryMainWrap
+            var adjustmentWrap = new CInventoryAdjustmentWrap
             {
-                FId = inventoryMain.FId,
-                FBaselineDate = inventoryMain.FBaselineDate,
-                FCreatedAt = inventoryMain.FCreatedAt,
-                FEditor = inventoryMain.FEditor,
-                FNote = inventoryMain.FNote,
+                FId = adjustment.FId,
+                FAdjustmentDate = adjustment.FadjustmentDate,
+                FCreatedAt = adjustment.FCreatedAt,
+                FEditor = adjustment.FEditor,
+                FNote = adjustment.FNote,
+                FCheckerId = adjustment.FCheckerId
             };
 
-            // 將 TInventoryDetail 轉換為 CInventoryDetailWrap
-            var inventoryDetailWraps = inventoryDetails.Where(detail => detail.FInventoryMainId == inventoryMain.FId)
-                .Select(detail => new CInventoryDetailWrap
+            // 將 TInventoryAdjustmentDetail 轉換為 CInventoryAdjustmentDetailWrap
+            var adjustmentDetailWraps = adjustmentDetails.Where(detail => detail.FInventoryAdjustmentId == adjustment.FId)
+                .Select(detail => new CInventoryAdjustmentDetailWrap
                 {
                     FId = detail.FId,
-                    FInventoryDetailId = detail.FId,
                     FProductId = detail.FProductId,
-                    FSystemQuantity = (int)detail.FSystemQuantity,
-                    FActualQuantity = detail.FActualQuantity,
-                    FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
+                    FQuantity = (int)detail.FQuantity,
+                    FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName,
+                    FCost = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FPrice ?? 0
                 }).ToList();
-
 
             // 將 TProduct 轉換為 CProductWrap
             var productWraps = products.Select(product => new CProductWrap
@@ -67,29 +78,29 @@ namespace prjVegetable.Controllers
                 FId = product.FId,
                 FName = product.FName,
                 FQuantity = product.FQuantity,
-                FPrice = product.FPrice // 暫時先用此欄位當作成本計算
+                FPrice = product.FPrice
             }).ToList();
 
             // 創建 ViewModel 並傳遞到視圖
-            var viewModel = new CInventoryViewModel
+            var viewModel = new CInventoryAdjustmentViewModel
             {
-                InventoryMain = inventoryMainWrap,
-                InventoryDetails = inventoryDetailWraps,
+                InventoryAdjustment = adjustmentWrap,
+                InventoryAdjustmentDetail = adjustmentDetailWraps,
                 Products = productWraps
             };
 
             // 查找下一筆和上一筆
-            var currentIndex = inventoryMains.FindIndex(im => im.FId == id);
+            var currentIndex = adjustments.FindIndex(a => a.FId == id);
 
-            var nextId = currentIndex < inventoryMains.Count - 1 ? inventoryMains[currentIndex + 1].FId : id;
-            var previousId = currentIndex > 0 ? inventoryMains[currentIndex - 1].FId : id;
+            var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : id;
+            var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : id;
 
-            // 處理最後一筆的情況，確保 inventoryMains 不為空
-            var lastId = inventoryMains.Any() ? inventoryMains.Last().FId : id;
+            // 處理最後一筆的情況，確保 adjustments 不為空
+            var lastId = adjustments.Any() ? adjustments.Last().FId : id;
 
             ViewData["NextId"] = nextId;
             ViewData["PreviousId"] = previousId;
-            ViewData["LastId"] = lastId;  // 傳遞最後一筆的 id
+            ViewData["LastId"] = lastId; // 傳遞最後一筆的 id
 
             // 返回視圖
             return View(viewModel);
@@ -140,7 +151,7 @@ namespace prjVegetable.Controllers
             _context.SaveChanges();
 
             // 使用創建的 inventoryMain.FId 作為重定向的 ID
-            return RedirectToAction("Detail", "Inventory", new { id = inventoryMain.FId });
+            return RedirectToAction("Detail", "InventoryAdjustment", new { id = inventoryMain.FId });
         }
 
 
@@ -195,8 +206,5 @@ namespace prjVegetable.Controllers
             }
         }
 
-
-        /*----------------- + Save + ------------------*/
-        
     }
 }

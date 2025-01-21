@@ -35,7 +35,7 @@
 
         public int FQuantity
         {
-            get { return _inventoryAdjustmentDetail.FQuantity; }
+            get { return (int)_inventoryAdjustmentDetail.FQuantity; }
             set { _inventoryAdjustmentDetail.FQuantity = value; }
         }
 
@@ -44,5 +44,7 @@
             get { return _inventoryAdjustmentDetail.FCost; }
             set { _inventoryAdjustmentDetail.FCost = value; }
         }
+
+        public string FName { get; set; }
     }
 }
