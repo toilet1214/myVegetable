@@ -29,7 +29,12 @@ namespace prjVegetable.Controllers
                 ? Directory.GetFiles(uploadsPath).Select(f => "/uploads/" + Path.GetFileName(f)).ToList()
                 : new List<string>();
 
-            return View(images); // 將圖片路徑清單傳遞到視圖
+            var model = new CarouselImageViewModel
+            {
+                ImagePaths = images
+            };
+
+            return View(model); // 將圖片路徑清單傳遞到視圖
         }
         
         
