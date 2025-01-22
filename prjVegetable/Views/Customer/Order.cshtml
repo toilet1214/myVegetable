@@ -4,7 +4,7 @@
     ViewData["Title"] = "Order";
 }
 
-<h1 class="mt-2">訂單紀錄</h1>
+<h1 class="mt-5">訂單紀錄</h1>
 <hr />
 <div class="container mt-5">
     <div class="row">
@@ -23,13 +23,10 @@
                             序
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.FPersonId)
+                            @Html.DisplayNameFor(model => model.FStatus)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.FTotal)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.FStatus)
                         </th>
                         <th>
                             @Html.DisplayNameFor(model => model.FOrderAt)
@@ -59,15 +56,32 @@
                                 <td>
                                     @count
                                 </td>
+                                @switch(item.FStatus){
+                                    case 0:
+                                        <td>
+                                            處理中
+                                        </td>
+                                        break;
+                                    case 1:
+                                        <td>
+                                            已確認
+                                        </td>
+                                        break;
+                                    case 2:
+                                        <td>
+                                            已完成
+                                        </td>
+                                        break;
+                                    case 3:
+                                        <td>
+                                            已取消
+                                        </td>
+                                        break;
+                                }
+                                
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.FPersonId)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FTotal)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FStatus)
-                                </td>
+                                    @Html.DisplayFor(modelItem => item.FTotal)元
+                                </td> 
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FOrderAt)
                                 </td>
@@ -84,8 +98,7 @@
                                     @Html.DisplayFor(modelItem => item.FNote)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("修改", "Edit", new { id = item.FId })
-                                    @Html.ActionLink("訂單詳細資料", "OrderDetail", new { id = item.FId }) |
+                                    @Html.ActionLink("訂單詳細資料", "OrderDetail", new { id = item.FId })
                                 </td>
                             </tr>
                         }
@@ -96,3 +109,8 @@
     </div>
 </div>
 
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
