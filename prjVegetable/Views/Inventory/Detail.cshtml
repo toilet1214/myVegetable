@@ -57,7 +57,7 @@
             <!-- 盤點基準日 -->
             <div class="d-flex mb-0 align-items-center">
                 <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-3">盤點基準日</label>
-                <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
+                <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly id="FBaselineDate" />
                 <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
             </div>
             <!-- 建檔日期 -->
@@ -102,7 +102,7 @@
                                name="InventoryDetails[@item.FId].FActualQuantity"
                                value="@item.FActualQuantity"
                                disabled="disabled"
-                       />
+                               data-id="@item.FId" />
                     </td>
                     <td>
                         @if (item.FActualQuantity.HasValue)
@@ -214,8 +214,57 @@
 
 <!-- 儲存 -->
 <script>
+        // 儲存操作
+    document.getElementById("saveButton").addEventListener("click", function () {
+        // 獲取表單資料
+        var currentId = document.querySelector('input[name="currentId"]').value;
+
+        var inventoryMain = {
+            FBaselineDate: document.getElementById('FBaselineDate').value,
+            FCreatedAt: new Date().toISOString().split('T')[0],
+            FEditor: 1,
+        };
+
+        var inventoryDetails = [];
+        document.querySelectorAll('table input[name="FSystemQuantity"]').forEach(function(input, index) {
+            inventoryDetails.push({
+                FId: input.getAttribute('data-id'),
+                FSystemQuantity: input.value,
+                FActualQuantity: document.querySelectorAll('table input[name="FActualQuantity"]')[index].value
+            });
+        });
+
+        var requestData = {
+            currentId: currentId,
+            inventoryMain: inventoryMain,
+            inventoryDetails: inventoryDetails
+        };
+
+        // 打印出請求的URL進行調試
+        console.log("Request URL: /Inventory/Save/" + currentId);
+
+        // 發送 AJAX 請求
+        $.ajax({
+            url: '/Inventory/Save/' + currentId,  // 用URL傳遞currentId
+            method: 'POST',  // 使用 POST 請求
+            data: JSON.stringify(requestData),  // 將資料轉換為 JSON 字串
+            contentType: 'application/json',  // 設定 Content-Type 為 application/json
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.redirectTo;  // 重定向
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error: " + error);
+            }
+        });
+    });
 
 </script>
+
+
 
 <!-- 將系統庫存數量帶入實際庫存數量 -->
 <script>

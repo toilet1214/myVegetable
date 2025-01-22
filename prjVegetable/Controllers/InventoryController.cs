@@ -197,6 +197,82 @@ namespace prjVegetable.Controllers
 
 
         /*----------------- + Save + ------------------*/
-        
+        [HttpPost]
+        [Route("Inventory/Save/{currentId}")]
+        public IActionResult Save(int currentId, [FromBody] CInventoryViewModel viewModel)
+        {
+            try
+            {
+                var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == currentId);
+                if (inventoryMain == null)
+                {
+                    return NotFound();
+                }
+
+                // 更新 TInventoryMain
+                inventoryMain.FBaselineDate = viewModel.InventoryMain.FBaselineDate;
+                inventoryMain.FCreatedAt = viewModel.InventoryMain.FCreatedAt;
+                inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
+                inventoryMain.FNote = viewModel.InventoryMain.FNote;
+
+                // 更新 TInventoryDetail
+                foreach (var detail in viewModel.InventoryDetails)
+                {
+                    var inventoryDetail = _context.TInventoryDetails.FirstOrDefault(id => id.FId == detail.FId);
+                    if (inventoryDetail != null)
+                    {
+                        inventoryDetail.FSystemQuantity = detail.FSystemQuantity;
+                        inventoryDetail.FActualQuantity = detail.FActualQuantity;
+                    }
+                }
+
+                // 更新 TProduct（例如，根據盤點結果更新庫存）
+                foreach (var productWrap in viewModel.Products)
+                {
+                    var product = _context.TProducts.FirstOrDefault(p => p.FId == productWrap.FId);
+                    if (product != null)
+                    {
+                        product.FQuantity = productWrap.FQuantity;
+                    }
+                }
+
+                // 保存變更
+                _context.SaveChanges();
+
+                // 新增一筆到 TInventoryAdjustment
+                var inventoryAdjustment = new TInventoryAdjustment
+                {
+                    FadjustmentDate = DateOnly.FromDateTime(DateTime.Now),
+                    FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                    FEditor = 1, // 假設目前登入的使用者 ID 是 1
+                    FNote = "盤點調整記錄"
+                };
+                _context.TInventoryAdjustments.Add(inventoryAdjustment);
+                _context.SaveChanges();
+
+                // 新增對應的 TInventoryAdjustmentDetail
+                var adjustmentDetails = viewModel.InventoryDetails.Select(detail => new TInventoryAdjustmentDetail
+                {
+                    FInventoryAdjustmentId = inventoryAdjustment.FId,
+                    FProductId = detail.FProductId,
+                    FQuantity = detail.FActualQuantity.HasValue
+                        ? detail.FActualQuantity.Value - detail.FSystemQuantity
+                        : -detail.FSystemQuantity, // 計算調整數量
+                    FCost = viewModel.Products.FirstOrDefault(p => p.FId == detail.FProductId)?.FPrice ?? 0
+                }).ToList();
+
+                _context.TInventoryAdjustmentDetails.AddRange(adjustmentDetails);
+                _context.SaveChanges();
+
+                // 返回成功信息
+                return Json(new { success = true, redirectTo = Url.Action("Detail", "InventoryAdjustment", new { id = inventoryAdjustment.FId }) });
+            }
+            catch (Exception ex)
+            {
+                // 處理異常情況
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
+
     }
 }
