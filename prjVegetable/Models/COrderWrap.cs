@@ -62,6 +62,12 @@ namespace prjVegetable.Models
             get { return _order.FPhone; }
             set { _order.FPhone = value; }
         }
+        [DisplayName("付款狀態")]
+        public int FPay
+        {
+            get { return _order.FPay; }
+            set { _order.FPay = value; }
+        }
         [DisplayName("備註")]
         public string FNote
         {

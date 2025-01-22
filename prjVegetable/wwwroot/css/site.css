@@ -642,12 +642,12 @@ h1 {
     outline: none;
 }
 
-.form-control {
+/*.form-control {
     border: 1px solid white;
     font-size: 18px;
     width: 50px;
     text-align: center;
-}
+}*/
 
 .text-primary {
     font-family: LXGW WenKai Mono TC, Tahoma, sans-serif !important;

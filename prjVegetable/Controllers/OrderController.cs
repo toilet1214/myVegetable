@@ -36,5 +36,7 @@ namespace prjVegetable.Controllers
                 list.Add(new COrderListWrap() { orderList = t });
             return View(list);
         }
+
+        
     }
 }

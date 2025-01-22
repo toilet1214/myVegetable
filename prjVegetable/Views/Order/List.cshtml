@@ -29,6 +29,9 @@
                 @Html.DisplayNameFor(model => model.FStatus)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FPay)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FOrderAt)
             </th>
             <th>
@@ -47,40 +50,48 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPersonId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FOrderAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FReceiverName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPhone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FNote)
-            </td>
-            <td>
-                    @Html.ActionLink("訂單詳細資料", "OrderList", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FPersonId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FTotal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FPay)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FOrderAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FReceiverName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FPhone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FNote)
+                </td>
+                <td>
+                    @Html.ActionLink("訂單詳細資料", "OrderList", new { id = item.FId })
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
