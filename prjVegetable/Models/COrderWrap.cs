@@ -14,6 +14,7 @@ namespace prjVegetable.Models
         {
             _order = new TOrder();
         }
+        [DisplayName("訂單編號")]
         public int FId
         {
             get { return _order.FId; }
@@ -60,6 +61,12 @@ namespace prjVegetable.Models
         {
             get { return _order.FPhone; }
             set { _order.FPhone = value; }
+        }
+        [DisplayName("付款狀態")]
+        public int FPay
+        {
+            get { return _order.FPay; }
+            set { _order.FPay = value; }
         }
         [DisplayName("備註")]
         public string FNote

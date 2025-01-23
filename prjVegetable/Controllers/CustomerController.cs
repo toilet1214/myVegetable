@@ -37,7 +37,14 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
-
+        [HttpPost]
+        public IActionResult Report(TReport P)
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            db.TReports.Add(P);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
         public IActionResult Order()
         {

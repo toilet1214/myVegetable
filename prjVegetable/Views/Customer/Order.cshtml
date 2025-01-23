@@ -4,76 +4,113 @@
     ViewData["Title"] = "Order";
 }
 
-<h1>Order</h1>
+<h1 class="mt-5">訂單紀錄</h1>
+<hr />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <nav class="nav flex-column align-items-start">
+                <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
+            </nav>
+        </div>
+        <div class="col-md-9">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            序
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FStatus)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FTotal)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FOrderAt)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FAddress)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FReceiverName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FPhone)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.FNote)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        int count = 0;
+                        foreach (var item in Model)
+                        {
+                            count++;
+                            <tr>
+                                <td>
+                                    @count
+                                </td>
+                                @switch(item.FStatus){
+                                    case 0:
+                                        <td>
+                                            處理中
+                                        </td>
+                                        break;
+                                    case 1:
+                                        <td>
+                                            已確認
+                                        </td>
+                                        break;
+                                    case 2:
+                                        <td>
+                                            已完成
+                                        </td>
+                                        break;
+                                    case 3:
+                                        <td>
+                                            已取消
+                                        </td>
+                                        break;
+                                }
+                                
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FTotal)元
+                                </td> 
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FOrderAt)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FAddress)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FReceiverName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FPhone)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FNote)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("訂單詳細資料", "OrderDetail", new { id = item.FId })
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPersonId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FTotal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FStatus)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FOrderAt)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FReceiverName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPhone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FNote)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPersonId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FStatus)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FOrderAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FReceiverName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPhone)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FNote)
-            </td>
-            <td>
-                @Html.ActionLink("修改", "Edit", new { id=item.FId})
-                @Html.ActionLink("訂單詳細資料", "OrderDetail", new {  id=item.FId  }) |
-            </td>
-        </tr>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
-    </tbody>
-</table>

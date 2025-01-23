@@ -1,0 +1,75 @@
+﻿@model IEnumerable<prjVegetable.Models.COrderListWrap>
+
+@{
+    ViewData["Title"] = "OrderDetail";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>訂單內容</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                序
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FOrderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FSum)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FOrderId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FProductId)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPrice)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FCount)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FSum)
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<div>
+    <a asp-action="List">返回</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

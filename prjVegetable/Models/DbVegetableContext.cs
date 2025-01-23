@@ -57,6 +57,8 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TReceiptReversalDetail> TReceiptReversalDetails { get; set; }
 
+    public virtual DbSet<TReport> TReports { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=dbVegetable;Integrated Security=True;Encrypt=False");
@@ -534,6 +536,31 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
             entity.Property(e => e.FReceiptReversalId).HasColumnName("fReceiptReversalId");
+        });
+
+        modelBuilder.Entity<TReport>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tReport__D9F8227C00D71EF5");
+
+            entity.ToTable("tReport");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FClass)
+                .HasMaxLength(10)
+                .HasDefaultValue("其他")
+                .HasColumnName("fClass");
+            entity.Property(e => e.FDescription)
+                .HasDefaultValue("")
+                .HasColumnName("fDescription");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("fTime");
+            entity.Property(e => e.FTitle)
+                .HasMaxLength(100)
+                .HasDefaultValue("")
+                .HasColumnName("fTitle");
         });
 
         OnModelCreatingPartial(modelBuilder);
