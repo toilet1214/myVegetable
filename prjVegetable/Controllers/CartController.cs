@@ -38,10 +38,10 @@ namespace prjVegetable.Controllers
                 cartWrapList.Add(new CCartWrap
                 {
                     Cart = cartData,
-                    FPrice = productData?.FPrice ?? 0,
+                    FPrice = productData.FPrice,
                     FCount = cartData.FCount,
-                    FProductName = productData?.FName ?? "",
-                    FName = imgData?.FName ?? ""
+                    FProductName = productData.FName,
+                    FName = imgData.FName
                 });
             }
             return cartWrapList;

@@ -21,16 +21,15 @@
                     {
                         foreach (var item in Model)
                         {
-
-                            <div class="row align-items-center">
-                                <!-- 商品圖片 -->
-                            <img src="~/Images/@item.FName" class="card-img-top img-fluid" alt="Image">
-                                    @* <img class="d-block mx-auto" width="80" src="assets/img/product-placeholder.png" alt="@item.FProductName"> *@
-                                </div>
+                            <div class="col-auto" style="width: 80px;">
+                                <img class="d-block mx-auto img-fluid"
+                                     src="~/Images/@item.FName"
+                                     alt="@item.FProductName" />
+                            </div>
                                 <!-- 商品名稱與價格 -->
                                 <div class="col-4 text-start">
-                               @*  <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
-                                    <span class="d-block text-danger">單價: $@item.FPrice</span> *@
+                                 <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
+                                    <span class="d-block text-danger">單價: $@item.FPrice</span> 
                                 </div>
                                 <!-- 數量調整 -->
                                 <div class="col-4 text-center">
