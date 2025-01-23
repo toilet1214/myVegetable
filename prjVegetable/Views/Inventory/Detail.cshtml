@@ -95,14 +95,11 @@
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
                     <td>@Html.DisplayFor(modelItem => item.FName)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
                     <td>
-                        <input type="number"
-                               class="form-control form-control-sm"
-                               name="InventoryDetails[@item.FId].FActualQuantity"
-                               value="@item.FActualQuantity"
-                               disabled="disabled"
-                               data-id="@item.FId" />
+                        @Html.DisplayFor(modelItem => item.FSystemQuantity)
+                    </td>
+                    <td>
+                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" value="@item.FActualQuantity">
                     </td>
                     <td>
                         @if (item.FActualQuantity.HasValue)
@@ -119,6 +116,73 @@
         </tbody>
     </table>
 </div>
+
+
+<!-- 儲存 -->
+<script>
+    // 儲存操作
+    document.getElementById("saveButton").addEventListener("click", function () {
+        // 獲取表單資料
+        var currentId = document.querySelector('input[name="currentId"]').value;
+
+        var inventoryMain = {
+            FBaselineDate: document.getElementById('FBaselineDate').value,
+            FCreatedAt: new Date().toISOString().split('T')[0],
+            FEditor: 1,
+        };
+
+        var inventoryDetails = [];
+        var products = [];  // 新增一個產品資料陣列
+
+    @foreach (var item in Model.InventoryDetails)
+    {
+        <text>
+                var actualQuantityInput = document.getElementById('FActualQuantity_@item.FId');
+
+                // 將 FActualQuantity 轉換為數字
+                var actualQuantity = parseInt(actualQuantityInput.value, 10);  // 使用 base 10 來轉換為整數
+
+                inventoryDetails.push({
+                    FActualQuantity: actualQuantity,  // 確保這裡是數字
+                    FProductId: @item.FProductId
+                });
+
+                products.push({
+                    FId: @item.FProductId,  // 假設 FProductId 是唯一識別碼
+                    FQuantity: actualQuantity  // 確保傳送的是數字
+                });
+        </text>
+    }
+
+        var requestData = {
+            currentId: currentId,
+            inventoryMain: inventoryMain,
+            inventoryDetails: inventoryDetails,
+            products: products
+        };
+
+        console.log(requestData);
+
+        // 發送 AJAX 請求
+        $.ajax({
+            url: '/Inventory/Save/' + currentId,
+            method: 'POST',
+            data: JSON.stringify(requestData), // 使用 JSON 字串化
+            contentType: 'application/json',  // 設定 Content-Type
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.redirectTo;  // 重定向
+                } else {
+                    alert('Error: ' + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("Error: " + error);
+            }
+        });
+    });
+</script>
+
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -210,58 +274,6 @@
             });
         }
     });
-</script>
-
-<!-- 儲存 -->
-<script>
-        // 儲存操作
-    document.getElementById("saveButton").addEventListener("click", function () {
-        // 獲取表單資料
-        var currentId = document.querySelector('input[name="currentId"]').value;
-
-        var inventoryMain = {
-            FBaselineDate: document.getElementById('FBaselineDate').value,
-            FCreatedAt: new Date().toISOString().split('T')[0],
-            FEditor: 1,
-        };
-
-        var inventoryDetails = [];
-        document.querySelectorAll('table input[name="FSystemQuantity"]').forEach(function(input, index) {
-            inventoryDetails.push({
-                FId: input.getAttribute('data-id'),
-                FSystemQuantity: input.value,
-                FActualQuantity: document.querySelectorAll('table input[name="FActualQuantity"]')[index].value
-            });
-        });
-
-        var requestData = {
-            currentId: currentId,
-            inventoryMain: inventoryMain,
-            inventoryDetails: inventoryDetails
-        };
-
-        // 打印出請求的URL進行調試
-        console.log("Request URL: /Inventory/Save/" + currentId);
-
-        // 發送 AJAX 請求
-        $.ajax({
-            url: '/Inventory/Save/' + currentId,  // 用URL傳遞currentId
-            method: 'POST',  // 使用 POST 請求
-            data: JSON.stringify(requestData),  // 將資料轉換為 JSON 字串
-            contentType: 'application/json',  // 設定 Content-Type 為 application/json
-            success: function(response) {
-                if (response.success) {
-                    window.location.href = response.redirectTo;  // 重定向
-                } else {
-                    alert('Error: ' + response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("Error: " + error);
-            }
-        });
-    });
-
 </script>
 
 

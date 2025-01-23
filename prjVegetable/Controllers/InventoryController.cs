@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using static prjVegetable.ViewModels.CInventoryViewModel;
@@ -8,12 +9,20 @@ namespace prjVegetable.Controllers
 {
     public class InventoryController : Controller
     {
-        public readonly DbVegetableContext _context;
 
-        public InventoryController(DbVegetableContext Context)
+        private readonly DbVegetableContext _context;
+        private readonly ILogger<InventoryController> _logger;  // 新增 ILogger
+
+        // 修改建構函數，加入 ILogger
+        public InventoryController(DbVegetableContext context, ILogger<InventoryController> logger)
         {
-            _context = Context;
+            _context = context;
+            _logger = logger;  // 注入 ILogger
         }
+
+
+
+
 
         public IActionResult Index()
         {
@@ -199,8 +208,9 @@ namespace prjVegetable.Controllers
         /*----------------- + Save + ------------------*/
         [HttpPost]
         [Route("Inventory/Save/{currentId}")]
-        public IActionResult Save(int currentId, [FromBody] CInventoryViewModel viewModel)
+        public async Task<IActionResult> Save(int currentId, [FromBody] CInventoryViewModel viewModel)
         {
+            _logger.LogInformation("Test log entry.");
             try
             {
                 var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == currentId);
@@ -213,7 +223,6 @@ namespace prjVegetable.Controllers
                 inventoryMain.FBaselineDate = viewModel.InventoryMain.FBaselineDate;
                 inventoryMain.FCreatedAt = viewModel.InventoryMain.FCreatedAt;
                 inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
-                inventoryMain.FNote = viewModel.InventoryMain.FNote;
 
                 // 更新 TInventoryDetail
                 foreach (var detail in viewModel.InventoryDetails)
@@ -221,14 +230,20 @@ namespace prjVegetable.Controllers
                     var inventoryDetail = _context.TInventoryDetails.FirstOrDefault(id => id.FId == detail.FId);
                     if (inventoryDetail != null)
                     {
-                        inventoryDetail.FSystemQuantity = detail.FSystemQuantity;
                         inventoryDetail.FActualQuantity = detail.FActualQuantity;
                     }
                 }
 
-                // 更新 TProduct（例如，根據盤點結果更新庫存）
+                // 更新 TProduct（根據盤點結果更新庫存）
                 foreach (var productWrap in viewModel.Products)
                 {
+                    var inventoryDetail = viewModel.InventoryDetails.FirstOrDefault(id => id.FProductId == productWrap.FId);
+
+                    if (inventoryDetail != null)
+                    {
+                        productWrap.FQuantity = (int)inventoryDetail.FActualQuantity;
+                    }
+
                     var product = _context.TProducts.FirstOrDefault(p => p.FId == productWrap.FId);
                     if (product != null)
                     {
@@ -236,7 +251,6 @@ namespace prjVegetable.Controllers
                     }
                 }
 
-                // 保存變更
                 _context.SaveChanges();
 
                 // 新增一筆到 TInventoryAdjustment
