@@ -14,46 +14,58 @@
         </h1>
         </div>
         <div class="row g-4 g-lg-10">
-            <!-- 商品列表 -->
+            <!-- 左邊商品列表 (col-lg-8) -->
             <div class="col-lg-8">
                 <div class="border rounded-3 p-4">
                     @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
-                            <div class="col-auto" style="width: 80px;">
-                                <img class="d-block mx-auto img-fluid"
-                                     src="~/Images/@item.FName"
-                                     alt="@item.FProductName" />
-                            </div>
-                                <!-- 商品名稱與價格 -->
-                                <div class="col-4 text-start">
-                                 <h6 class="mb-0" style="font-size: 20px;">@item.FProductName</h6>
-                                    <span class="d-block text-danger">單價: $@item.FPrice</span> 
+                            <!-- 一個商品用一個 .row 或者 .d-flex 來排 -->
+                            <div class="row align-items-center mb-4">
+
+                                <!-- 圖片區 + 商品名稱/價格 -->
+                                <div class="col-auto" style="width:80px;">
+                                    <img class="img-fluid d-block mx-auto"
+                                         src="~/Images/@item.FName"
+                                         alt="@item.FProductName"
+                                         style="max-width:80px;" />
                                 </div>
-                                <!-- 數量調整 -->
-                                <div class="col-4 text-center">
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Cart">
+                                <div class="col-6">
+                                    <h6 class="mb-1" style="font-size:20px;">@item.FProductName</h6>
+                                    <span class="text-danger">單價: $@item.FPrice</span>
+                                </div>
+
+                                <!-- 數量調整 + 移除按鈕 放右邊 -->
+                                <div class="col-4 text-end">
+                                    <div class="d-flex justify-content-end align-items-center mb-2">
+                                        <form method="post" style="display:inline;"
+                                              asp-action="DecreaseQuantity" asp-controller="Cart">
                                             <input type="hidden" name="productId" value="@item.FProductId">
-                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmDecrease(@item.FProductId, @item.FCount)">-</button>
+                                            <button class="btn btn-outline-secondary btn-sm" type="submit"
+                                                    onclick="return confirmDecrease(@item.FProductId, @item.FCount)">
+                                                -
+                                            </button>
                                         </form>
-                                        <span class="qty-value mx-2">@item.FCount</span>
-                                        <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Cart">
+                                        <span class="mx-2">@item.FCount</span>
+                                        <form method="post" style="display:inline;"
+                                              asp-action="IncreaseQuantity" asp-controller="Cart">
                                             <input type="hidden" name="productId" value="@item.FProductId">
-                                            <button class="btn btn-outline-secondary btn-sm qty-btn" type="submit" onclick="return confirmIncrease(@item.FProductId, @item.FCount)">+</button>
+                                            <button class="btn btn-outline-secondary btn-sm" type="submit"
+                                                    onclick="return confirmIncrease(@item.FProductId, @item.FCount)">
+                                                +
+                                            </button>
                                         </form>
                                     </div>
-                                </div>
-                                <!-- 移除按鈕 -->
-                                <div class="col-2 text-center">
                                     <form method="post" asp-action="RemoveFromCart" asp-controller="Cart">
                                         <input type="hidden" name="productId" value="@item.FProductId">
-                                        <button class="btn btn-link text-danger" type="submit">移除</button>
+                                        <button class="btn btn-link text-danger p-0" type="submit">
+                                            移除
+                                        </button>
                                     </form>
                                 </div>
-                            
-                            <hr class="mb-4">
+                            </div>
+                            <hr />
                         }
                     }
                     else
@@ -62,16 +74,15 @@
                     }
                 </div>
             </div>
-        
 
-            <!-- 收貨人資料與結帳資訊 -->
+            <!-- 右邊會員資料 (col-lg-4) -->
             <div class="col-lg-4">
                 <div class="card border" style="background-color:#dde6d5">
                     <div class="card-body">
                         <!-- 總金額 -->
                         <div class="d-flex align-items-center justify-content-between">
-                        <h4 style="font-size: 25px;">總金額</h4>
-                        <h4 style="font-size: 25px;">$@ViewBag.TotalPrice</h4>
+                            <h4 style="font-size:25px;">總金額</h4>
+                            <h4 style="font-size:25px;">$@ViewBag.TotalPrice</h4>
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
@@ -103,17 +114,17 @@
                             <!-- 備註 -->
                             <div class="mb-4">
                                 <label for="note">備註</label>
-                            <textarea id="note" name="note" class="form-control" style="height: 100px;width: 370px ;resize: none ;text-align: left ;">無</textarea>
+                                <textarea id="note" name="note" class="form-control"
+                                          style="height:100px;width:100%;resize:none;text-align:left;">無</textarea>
                             </div>
 
                             <!-- 確認付款 -->
-                            <button asp-action="Checkout" asp-controller="Cart" class="btn btn-primary w-100" type="submit">確認付款</button>
+                            <button  asp-action="Order" asp-controller="Customer" class="btn btn-primary w-100" type="submit">確認付款</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
 
 
