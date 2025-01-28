@@ -2,7 +2,7 @@
 @using prjVegetable.Models
 @{ViewData["Title"] = "Cart";}
 @inject DbVegetableContext dbContext
-<link rel="stylesheet" href="./css/Cart.css">
+<link rel="stylesheet" href="~/css/Cart.css">
 @{
     
 }
@@ -62,6 +62,7 @@
                     }
                 </div>
             </div>
+        
 
             <!-- 收貨人資料與結帳資訊 -->
             <div class="col-lg-4">
@@ -106,18 +107,21 @@
                             </div>
 
                             <!-- 確認付款 -->
-                            <button asp-action="Order" asp-controller="Customer" class="btn btn-primary w-100" type="submit">確認付款</button>
+                            <button asp-action="Checkout" asp-controller="Cart" class="btn btn-primary w-100" type="submit">確認付款</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+
+
     <script>
     // 「同會員資料」勾選
     document.getElementById('SameAsMember').addEventListener('change', function () {
         if (this.checked) {
-            // 不帶 memberId，後端已經會從 Session 取
+            // 從後端抓取會員資料 (GetMemberInfo)
             fetch('/Cart/GetMemberInfo')
                 .then(response => response.json())
                 .then(data => {
@@ -126,6 +130,8 @@
                         document.getElementById('shippingName').value = data.data.name || '';
                         document.getElementById('shippingPhone').value = data.data.phone || '';
                         document.getElementById('shippingAddress').value = data.data.address || '';
+                        // 如果後端真的有 remark 屬性，就放：
+                        // document.getElementById('note').value = data.data.remark || '';
                     } else {
                         alert(data.message || '載入會員資料失敗');
                     }
@@ -139,36 +145,28 @@
             document.getElementById('shippingName').value = '';
             document.getElementById('shippingPhone').value = '';
             document.getElementById('shippingAddress').value = '';
+            document.getElementById('note').value = '無';
         }
     });
-        document.getElementById('shippingName').value = data.data.name;
-        document.getElementById('shippingPhone').value = data.data.phone;
-        document.getElementById('shippingAddress').value = data.data.address;
-        document.getElementById('note').value = data.data.remark;
-        document.querySelector('form').addEventListener('submit', function (e) {
-            console.log("收件人姓名:", document.getElementById('shippingName').value);
-            console.log("收件人電話:", document.getElementById('shippingPhone').value);
-            console.log("收件人地址:", document.getElementById('shippingAddress').value);
-            
-        });
+    // 測試送出時能否讀到表單資料
+    document.querySelector('form').addEventListener('submit', function (e) {
+        console.log("收件人姓名:", document.getElementById('shippingName').value);
+        console.log("收件人電話:", document.getElementById('shippingPhone').value);
+        console.log("收件人地址:", document.getElementById('shippingAddress').value);
+    });
+        
     // Decrease 時，若已經是 1，就跳出提示是否移除
     function confirmDecrease(productId, currentCount) {
         if (currentCount === 1) {
             return confirm("數量已經是 1，是否確定要移除該商品？");
         }
         return true; // 不是 1 就直接回傳 true，送出表單
+    } 
+    function confirmIncrease(productId, currentCount) {
+        return true;
     }
 
 
-    @foreach (var item in Model)
-    {
-            <tr>
-                <!-- 假設你在 CCartWrap 裡新增了 FProductName 這個屬性 -->
-                <td>@item.FProductName</td>
-                <td>@item.FPrice</td>
-                <td>@item.FCount</td>
-                <td>@item.FTotalPrice</td>
-            </tr>
-    }
+    
     </script>
 
