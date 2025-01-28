@@ -114,36 +114,33 @@
         </div>
     </div>
     <script>
-        // 模擬會員資料與訂購人資料
-        document.getElementById('SameAsMember').addEventListener('change', function () {
-            const memberId = 1;
-
-            if (this.checked) {
-                // 勾選時，透過 AJAX 獲取會員資料
-                fetch(`/Cart/GetMemberInfo?memberId=${memberId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // 填充表單字段
-                            document.getElementById('shippingName').value = data.data.name;
-                            document.getElementById('shippingPhone').value = data.data.phone;
-                            document.getElementById('shippingAddress').value = data.data.address;
-                            
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('無法獲取會員資料:', error);
-                        alert('無法抓取會員資料，請稍後再試。');
-                    });
-            } else {
-                // 取消勾選時清空表單
-                document.getElementById('shippingName').value = '';
-                document.getElementById('shippingPhone').value = '';
-                document.getElementById('shippingAddress').value = '';
-            }
-        });
+    // 「同會員資料」勾選
+    document.getElementById('SameAsMember').addEventListener('change', function () {
+        if (this.checked) {
+            // 不帶 memberId，後端已經會從 Session 取
+            fetch('/Cart/GetMemberInfo')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // 成功拿到會員資料，就填入欄位
+                        document.getElementById('shippingName').value = data.data.name || '';
+                        document.getElementById('shippingPhone').value = data.data.phone || '';
+                        document.getElementById('shippingAddress').value = data.data.address || '';
+                    } else {
+                        alert(data.message || '載入會員資料失敗');
+                    }
+                })
+                .catch(error => {
+                    console.error('無法獲取會員資料:', error);
+                    alert('無法抓取會員資料，請稍後再試。');
+                });
+        } else {
+            // 取消勾選時，清空表單
+            document.getElementById('shippingName').value = '';
+            document.getElementById('shippingPhone').value = '';
+            document.getElementById('shippingAddress').value = '';
+        }
+    });
         document.getElementById('shippingName').value = data.data.name;
         document.getElementById('shippingPhone').value = data.data.phone;
         document.getElementById('shippingAddress').value = data.data.address;
@@ -154,16 +151,15 @@
             console.log("收件人地址:", document.getElementById('shippingAddress').value);
             
         });
-        function confirmDecrease(productId, currentCount) {
-            if (currentCount === 1) {
-                const confirmDelete = confirm("數量已經是 1，是否確定要移除該商品？");
-                return confirmDelete; // 如果確認，返回 true，表單將提交
-            }
-            return true; // 如果數量大於 1，直接提交表單
+    // Decrease 時，若已經是 1，就跳出提示是否移除
+    function confirmDecrease(productId, currentCount) {
+        if (currentCount === 1) {
+            return confirm("數量已經是 1，是否確定要移除該商品？");
         }
-        function confirmIncrease(productId, currentCount) {
-            return true; // 始終允許提交表單
-        }
+        return true; // 不是 1 就直接回傳 true，送出表單
+    }
+
+
     @foreach (var item in Model)
     {
             <tr>
