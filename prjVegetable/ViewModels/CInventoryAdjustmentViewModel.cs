@@ -6,7 +6,15 @@ namespace prjVegetable.ViewModels
     {
         public IEnumerable<CInventoryAdjustmentDetailWrap> InventoryAdjustmentDetail { get; set; }
         public CInventoryAdjustmentWrap InventoryAdjustment { get; set; }
-        public IEnumerable<CProductWrap> Products { get; set; }
+        public IEnumerable<CProductUpdateWrap> Products { get; set; }
+
+
+        public class CProductUpdateWrap
+        {
+            public int FId { get; set; }
+            public string FName { get; set; }
+            public int FQuantity { get; set; }
+        }
 
     }
 }

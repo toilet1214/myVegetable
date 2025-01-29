@@ -1,4 +1,6 @@
-﻿namespace prjVegetable.Models
+﻿using System.ComponentModel;
+
+namespace prjVegetable.Models
 {
     public class CInventoryMainWrap
     {
@@ -21,13 +23,13 @@
             set { _inventoryMain.FId = value; }
         }
 
-        public DateOnly FBaselineDate
+        public DateTime FBaselineDate  // 改為 DateTime
         {
             get { return _inventoryMain.FBaselineDate; }
             set { _inventoryMain.FBaselineDate = value; }
         }
 
-        public DateOnly FCreatedAt
+        public DateTime FCreatedAt  // 改為 DateTime
         {
             get { return _inventoryMain.FCreatedAt; }
             set { _inventoryMain.FCreatedAt = value; }
@@ -39,10 +41,14 @@
             set { _inventoryMain.FEditor = value; }
         }
 
-        public string FNote
+        public string? FNote
         {
             get { return _inventoryMain.FNote; }
             set { _inventoryMain.FNote = value; }
         }
+
+
     }
+
+
 }

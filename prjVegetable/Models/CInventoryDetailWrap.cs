@@ -21,7 +21,7 @@
             set { _inventoryDetail.FId = value; }
         }
 
-        public int FInventoryDetailId
+        public int FInventoryMainId
         {
             get { return _inventoryDetail.FId; }
             set { _inventoryDetail.FId = value; }

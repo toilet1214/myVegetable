@@ -94,14 +94,7 @@
                     <td>@item.InventoryAdjustmentDetail.FQuantity</td>
                     <td>@item.FCost</td>
                     <td>
-                        @if (item.InventoryAdjustmentDetail.FQuantity.HasValue)
-                        {
-                            @(item.InventoryAdjustmentDetail.FQuantity.Value * item.FCost)
-                        }
-                        else
-                        {
-                            @("0")
-                        }
+                        @item.FCost
                     </td>
                 </tr>
             }

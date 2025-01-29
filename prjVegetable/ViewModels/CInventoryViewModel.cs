@@ -1,4 +1,5 @@
-﻿using prjVegetable.Models;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using prjVegetable.Models;
 
 namespace prjVegetable.ViewModels
 {
@@ -6,7 +7,15 @@ namespace prjVegetable.ViewModels
     {
         public IEnumerable<CInventoryDetailWrap> InventoryDetails { get; set; }
         public CInventoryMainWrap InventoryMain { get; set; }
-        public IEnumerable<CProductWrap> Products { get; set; }
+        public IEnumerable<CProductUpdateWrap> Products { get; set; }
+
+
+        public class CProductUpdateWrap
+        {
+            public int FId { get; set; }
+            public string FName { get; set; }
+            public int FQuantity { get; set; }
+        }
 
     }
 }

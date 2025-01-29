@@ -39,7 +39,6 @@
         <button type="button" class="btn btn-primary" id="deletebutton">
             <i class="bi bi-trash me-2"></i>刪除
         </button>
-        <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
     </div>
 </div>
 
@@ -57,13 +56,13 @@
             <!-- 盤點基準日 -->
             <div class="d-flex mb-0 align-items-center">
                 <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-3">盤點基準日</label>
-                <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly id="FBaselineDate" />
+                <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
                 <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
             </div>
             <!-- 建檔日期 -->
             <div class="d-flex align-items-center">
                 <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-3">建檔日期</label>
-                <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
+                <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
                 <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger"></span>
             </div>
         </div>
@@ -71,6 +70,10 @@
             <div class="p-3 border border-primary rounded w-100">盤點單摘述。</div>
         </div>
         <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
+        @foreach (var item in Model.InventoryDetails)
+        {
+            <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+        }
     </div>
 </div>
 <hr />
@@ -99,7 +102,7 @@
                         @Html.DisplayFor(modelItem => item.FSystemQuantity)
                     </td>
                     <td>
-                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" value="@item.FActualQuantity">
+                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
                     </td>
                     <td>
                         @if (item.FActualQuantity.HasValue)
@@ -111,76 +114,120 @@
                             @("")
                         }
                     </td>
+                    <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
                 </tr>
             }
         </tbody>
     </table>
 </div>
 
-
-<!-- 儲存 -->
 <script>
-    // 儲存操作
-    document.getElementById("saveButton").addEventListener("click", function () {
-        // 獲取表單資料
-        var currentId = document.querySelector('input[name="currentId"]').value;
+        // 格式化日期為 YYYY-MM-DD 格式
+    function formatDate(date) {
+        // 移除毫秒部分
+        var formattedDate = date.split('.')[0]; // 去掉 .000
+        var d = new Date(formattedDate); // 創建日期對象
 
-        var inventoryMain = {
-            FBaselineDate: document.getElementById('FBaselineDate').value,
-            FCreatedAt: new Date().toISOString().split('T')[0],
-            FEditor: 1,
-        };
+        // 確保日期有效
+        if (isNaN(d.getTime())) {
+            alert('Invalid date format');
+            return '';
+        }
 
-        var inventoryDetails = [];
-        var products = [];  // 新增一個產品資料陣列
-
-    @foreach (var item in Model.InventoryDetails)
-    {
-        <text>
-                var actualQuantityInput = document.getElementById('FActualQuantity_@item.FId');
-
-                // 將 FActualQuantity 轉換為數字
-                var actualQuantity = parseInt(actualQuantityInput.value, 10);  // 使用 base 10 來轉換為整數
-
-                inventoryDetails.push({
-                    FActualQuantity: actualQuantity,  // 確保這裡是數字
-                    FProductId: @item.FProductId
-                });
-
-                products.push({
-                    FId: @item.FProductId,  // 假設 FProductId 是唯一識別碼
-                    FQuantity: actualQuantity  // 確保傳送的是數字
-                });
-        </text>
+        var year = d.getFullYear();
+        var month = ("0" + (d.getMonth() + 1)).slice(-2);  // 確保是兩位數
+        var day = ("0" + d.getDate()).slice(-2);  // 確保是兩位數
+        return year + "-" + month + "-" + day;
     }
 
-        var requestData = {
-            currentId: currentId,
-            inventoryMain: inventoryMain,
-            inventoryDetails: inventoryDetails,
-            products: products
-        };
+</script>
+<!-- 儲存 -->
+<script>
+   document.getElementById("saveButton").addEventListener("click", function () {
+    var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
+    var FBaselineDate = document.getElementById('FBaselineDate').value;
+    
+    // 確保日期格式正確
+    var dateObj = new Date(FBaselineDate);
+    if (isNaN(dateObj.getTime())) {
+        alert("Invalid date format. Please enter a valid date.");
+        return;  // 如果日期無效，終止操作
+    }
 
-        console.log(requestData);
+    var formattedDate = dateObj.toISOString();  // 轉換為 ISO 字符串格式
 
-        // 發送 AJAX 請求
-        $.ajax({
-            url: '/Inventory/Save/' + currentId,
-            method: 'POST',
-            data: JSON.stringify(requestData), // 使用 JSON 字串化
-            contentType: 'application/json',  // 設定 Content-Type
-            success: function(response) {
-                if (response.success) {
-                    window.location.href = response.redirectTo;  // 重定向
-                } else {
-                    alert('Error: ' + response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("Error: " + error);
-            }
+    var inventoryMain = {
+        FBaselineDate: formattedDate,  // 日期
+        FCreatedAt: new Date().toISOString(),  // 當前日期
+        FEditor: 1  // 設定編輯者
+    };
+
+    // 記錄有變動的資料
+    var inventoryDetails = [];
+    var products = [];
+
+    // 檢查並處理每一行資料
+    var inventoryDetails = [];
+    var products = [];
+
+    var rows = document.querySelectorAll("table tbody tr");
+    rows.forEach(function(row) {
+        var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
+        var productId = parseInt(row.querySelector("td:nth-child(1)").innerText, 10);
+        var actualQuantity = parseInt(row.querySelector("input[name='FActualQuantity']").value, 10);
+        var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText, 10);
+        var productName = row.querySelector("td:nth-child(2)").innerText;
+
+        inventoryDetails.push({
+            FInventoryMainId: inventoryMainId,
+            FActualQuantity: actualQuantity,
+            FProductId: productId,
+            FSystemQuantity: systemQuantity,
+            FName: productName
+        });
+
+        products.push({
+            FId: productId,
+            FQuantity: actualQuantity,
+            FName: productName
         });
     });
+
+    // 如果沒有資料變動，則不發送請求
+    if (inventoryDetails.length === 0 && products.length === 0 && !inventoryMain.FBaselineDate) {
+        alert("No changes detected.");
+        return;  // 如果沒有變動資料，終止操作
+    }
+
+    // 組合請求資料，只包含變動的欄位
+    var requestData = {
+        currentId: currentId,
+        InventoryMain: inventoryMain,
+        InventoryDetails: inventoryDetails,
+        Products: products
+    };
+
+    console.log(requestData);  // 查看請求資料是否正確組裝
+
+    // 發送 AJAX 請求
+    $.ajax({
+        url: '/Inventory/Save/' + currentId,
+        method: 'POST',
+        data: JSON.stringify(requestData),
+        contentType: 'application/json',
+        success: function(response) {
+            if (response.success) {
+                window.location.href = response.redirectTo;
+            } else {
+                alert('Error: ' + response.error);
+            }
+        },
+        error: function(xhr, status, error) {
+            alert("Error: " + error);
+        }
+    });
+});
+
 </script>
 
 <!-- 選擇條件來新增 -->

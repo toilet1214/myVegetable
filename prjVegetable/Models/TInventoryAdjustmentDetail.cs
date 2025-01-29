@@ -11,7 +11,7 @@ public partial class TInventoryAdjustmentDetail
 
     public int FProductId { get; set; }
 
-    public int? FQuantity { get; set; }
+    public int FQuantity { get; set; }
 
     public decimal FCost { get; set; }
 }

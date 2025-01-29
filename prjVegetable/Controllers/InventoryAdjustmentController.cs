@@ -119,8 +119,8 @@ namespace prjVegetable.Controllers
         {
             var inventoryMain = new TInventoryMain
             {
-                FBaselineDate = DateOnly.FromDateTime(BaseDate),
-                FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                FBaselineDate = DateTime.Now, // 直接使用 DateTime 來指定日期
+                FCreatedAt = DateTime.Now,    // 使用當前時間
                 FEditor = 1,
                 FNote = "新增盤點條件"
             };
