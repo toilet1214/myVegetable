@@ -23,13 +23,13 @@ namespace prjVegetable.Models
             set { _inventoryMain.FId = value; }
         }
 
-        public DateTime FBaselineDate  // 改為 DateTime
+        public DateOnly FBaselineDate  // 改為 DateTime
         {
             get { return _inventoryMain.FBaselineDate; }
             set { _inventoryMain.FBaselineDate = value; }
         }
 
-        public DateTime FCreatedAt  // 改為 DateTime
+        public DateOnly FCreatedAt  // 改為 DateTime
         {
             get { return _inventoryMain.FCreatedAt; }
             set { _inventoryMain.FCreatedAt = value; }

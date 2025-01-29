@@ -7,9 +7,9 @@ public partial class TInventoryMain
 {
     public int FId { get; set; }
 
-    public DateTime FBaselineDate { get; set; }
+    public DateOnly FBaselineDate { get; set; }
 
-    public DateTime FCreatedAt { get; set; }
+    public DateOnly FCreatedAt { get; set; }
 
     public int FEditor { get; set; }
 

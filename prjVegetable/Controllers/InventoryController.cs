@@ -9,20 +9,14 @@ namespace prjVegetable.Controllers
 {
     public class InventoryController : Controller
     {
-
         private readonly DbVegetableContext _context;
-        private readonly ILogger<InventoryController> _logger;  // 新增 ILogger
+        private readonly ILogger<InventoryController> _logger;
 
-        // 修改建構函數，加入 ILogger
         public InventoryController(DbVegetableContext context, ILogger<InventoryController> logger)
         {
             _context = context;
-            _logger = logger;  // 注入 ILogger
+            _logger = logger;
         }
-
-
-
-
 
         public IActionResult Index()
         {
@@ -30,24 +24,28 @@ namespace prjVegetable.Controllers
         }
 
         /*--------------- + Detail + ----------------*/
-
         //GET Inventory/Detail
         public IActionResult Detail(int id)
         {
-            // 查詢所有的 InventoryMain
-            var inventoryMains = _context.TInventoryMains.OrderBy(m => m.FId).ToList();
-            var inventoryDetails = _context.TInventoryDetails.ToList();
-            var products = _context.TProducts.ToList();
+            // 直接查詢符合 id 的盤點資料
+            var inventoryMain = _context.TInventoryMains
+                .FirstOrDefault(im => im.FId == id);
 
-            // 查詢當前的 inventoryMain
-            var inventoryMain = inventoryMains.FirstOrDefault(im => im.FId == id);
-
+            // 如果找不到對應的盤點資料，返回空資料頁面
             if (inventoryMain == null)
             {
-                return NotFound();  // 如果找不到，回傳 404 錯誤
+                return View("DetailEmpty", new CInventoryViewModel
+                {
+                    InventoryMain = new CInventoryMainWrap(),
+                    InventoryDetails = new List<CInventoryDetailWrap>(),
+                    Products = _context.TProducts.Select(product => new CProductUpdateWrap
+                    {
+                        FId = product.FId,
+                        FQuantity = product.FQuantity
+                    }).ToList()
+                });
             }
 
-            // 根據傳入的 id 查找相關資料
             var inventoryMainWrap = new CInventoryMainWrap
             {
                 FId = inventoryMain.FId,
@@ -57,48 +55,44 @@ namespace prjVegetable.Controllers
                 FNote = inventoryMain.FNote,
             };
 
-            // 將 TInventoryDetail 轉換為 CInventoryDetailWrap
-            var inventoryDetailWraps = inventoryDetails.Where(detail => detail.FInventoryMainId == inventoryMain.FId)
-                .Select(detail => new CInventoryDetailWrap
-                {
-                    FId = detail.FId,
-                    FInventoryMainId = detail.FId,
-                    FProductId = detail.FProductId,
-                    FSystemQuantity = (int)detail.FSystemQuantity,
-                    FActualQuantity = detail.FActualQuantity,
-                    FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
-                }).ToList();
+            var inventoryDetails = _context.TInventoryDetails
+                .Where(detail => detail.FInventoryMainId == inventoryMain.FId)
+                .ToList();
 
+            var products = _context.TProducts.ToList();
 
-            // 將 TProduct 轉換為 CProductUpdateWrap
-            var productUpdateWraps = products.Select(product => new CProductUpdateWrap
+            var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
             {
-                FId = product.FId,
-                FQuantity = product.FQuantity
+                FId = detail.FId,
+                FInventoryMainId = detail.FInventoryMainId,
+                FProductId = detail.FProductId,
+                FSystemQuantity = (int)detail.FSystemQuantity,
+                FActualQuantity = detail.FActualQuantity,
+                FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
             }).ToList();
 
-            // 創建 ViewModel 並傳遞到視圖
             var viewModel = new CInventoryViewModel
             {
                 InventoryMain = inventoryMainWrap,
-                InventoryDetails = inventoryDetailWraps,
-                Products = productUpdateWraps // 使用轉換後的 productUpdateWraps
+                InventoryDetails = inventoryDetailWraps.Any() ? inventoryDetailWraps : new List<CInventoryDetailWrap>(),
+                Products = products.Select(product => new CProductUpdateWrap
+                {
+                    FId = product.FId,
+                    FQuantity = product.FQuantity
+                }).ToList()
             };
 
-            // 查找下一筆和上一筆
+            // 計算下一個、上一個以及最後一個 id
+            var inventoryMains = _context.TInventoryMains.ToList();
             var currentIndex = inventoryMains.FindIndex(im => im.FId == id);
-
             var nextId = currentIndex < inventoryMains.Count - 1 ? inventoryMains[currentIndex + 1].FId : id;
             var previousId = currentIndex > 0 ? inventoryMains[currentIndex - 1].FId : id;
-
-            // 處理最後一筆的情況，確保 inventoryMains 不為空
             var lastId = inventoryMains.Any() ? inventoryMains.Last().FId : id;
 
             ViewData["NextId"] = nextId;
             ViewData["PreviousId"] = previousId;
-            ViewData["LastId"] = lastId;  // 傳遞最後一筆的 id
+            ViewData["LastId"] = lastId;
 
-            // 返回視圖
             return View(viewModel);
         }
 
@@ -111,12 +105,12 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(DateTime BaseDate, int ProductStartCode, int ProductEndCode)
+        public IActionResult Create(DateOnly BaseDate, int ProductStartCode, int ProductEndCode)
         {
             var inventoryMain = new TInventoryMain
             {
-                FBaselineDate = DateTime.Now, // 直接使用 DateTime 來指定日期
-                FCreatedAt = DateTime.Now,    // 使用當前時間
+                FBaselineDate = BaseDate,
+                FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
                 FEditor = 1,
                 FNote = "新增盤點條件"
             };
@@ -146,11 +140,8 @@ namespace prjVegetable.Controllers
             _context.TInventoryDetails.AddRange(inventoryDetails);
             _context.SaveChanges();
 
-            // 使用創建的 inventoryMain.FId 作為重定向的 ID
             return RedirectToAction("Detail", "Inventory", new { id = inventoryMain.FId });
         }
-
-
 
         /*--------------- + Delete + ----------------*/
         [HttpGet]
@@ -160,7 +151,7 @@ namespace prjVegetable.Controllers
             var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == id);
             if (inventoryMain == null)
             {
-                return NotFound();  // 找不到資料則返回 404 錯誤
+                return NotFound();
             }
 
             // 創建 ViewModel 並傳遞資料至視圖
@@ -189,10 +180,9 @@ namespace prjVegetable.Controllers
                 // 查找前一筆資料（ID 小於當前資料的最大值）
                 var previousInventoryMain = _context.TInventoryMains
                     .Where(im => im.FId < id)
-                    .OrderByDescending(im => im.FId)  // 降序排列
-                    .FirstOrDefault();  // 取得最新的一筆
+                    .OrderByDescending(im => im.FId)
+                    .FirstOrDefault();
 
-                // 返回一個包含重定向 URL 的 JSON 響應
                 return Json(new { success = true, redirectTo = Url.Action("Detail", new { id = previousInventoryMain?.FId }) });
             }
             catch (Exception ex)
@@ -249,7 +239,7 @@ namespace prjVegetable.Controllers
                 inventoryMain.FBaselineDate = viewModel.InventoryMain.FBaselineDate;
                 inventoryMain.FCreatedAt = viewModel.InventoryMain.FCreatedAt;
                 inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
-                inventoryMain.FNote = "自動更新";  // 填入 FNote 預設值
+                inventoryMain.FNote = "自動更新";
 
                 // 更新 TInventoryDetail
                 foreach (var detail in viewModel.InventoryDetails)
@@ -257,15 +247,11 @@ namespace prjVegetable.Controllers
                     var inventoryDetail = _context.TInventoryDetails.FirstOrDefault(id => id.FId == detail.FId);
                     if (inventoryDetail != null)
                     {
-                        // 確保更新 FSystemQuantity 為 FActualQuantity
                         inventoryDetail.FSystemQuantity = detail.FActualQuantity;
-
-                        // 確保實際庫存被修改
                         _logger.LogInformation("Updating FSystemQuantity for product {FProductId}, new value: {FSystemQuantity}", detail.FProductId, inventoryDetail.FSystemQuantity);
                     }
                     else
                     {
-                        // 如果找不到資料，記錄錯誤或警告
                         _logger.LogWarning("InventoryDetail not found for FId: {FId}", detail.FId);
                     }
                 }
@@ -289,7 +275,6 @@ namespace prjVegetable.Controllers
 
                 try
                 {
-                    // 保存所有變更
                     _context.SaveChanges();
                     _logger.LogInformation("Changes saved successfully.");
                 }
@@ -299,13 +284,11 @@ namespace prjVegetable.Controllers
                     return Json(new { success = false, error = ex.Message });
                 }
 
-
                 return Json(new { success = true, redirectTo = $"/Inventory/Detail/{currentId}" });
 
             }
             catch (Exception ex)
             {
-                // 記錄錯誤訊息
                 _logger.LogError("Error occurred while saving inventory data: {ErrorMessage}", ex.Message);
                 return Json(new { success = false, error = ex.Message });
             }

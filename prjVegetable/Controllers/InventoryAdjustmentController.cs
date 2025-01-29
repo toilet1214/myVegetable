@@ -86,8 +86,13 @@ namespace prjVegetable.Controllers
             {
                 InventoryAdjustment = adjustmentWrap,
                 InventoryAdjustmentDetail = adjustmentDetailWraps,
-                Products = productWraps
+                Products = productWraps.Select(p => new CProductUpdateWrap
+                {
+                    FId = p.FId,
+                    FQuantity = p.FQuantity
+                }).ToList() // 轉換並且確保是 List<CProductUpdateWrap>
             };
+
 
             // 查找下一筆和上一筆
             var currentIndex = adjustments.FindIndex(a => a.FId == id);
@@ -115,12 +120,12 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(DateTime BaseDate, int ProductStartCode, int ProductEndCode)
+        public IActionResult Create(DateOnly BaseDate, int ProductStartCode, int ProductEndCode)
         {
             var inventoryMain = new TInventoryMain
             {
-                FBaselineDate = DateTime.Now, // 直接使用 DateTime 來指定日期
-                FCreatedAt = DateTime.Now,    // 使用當前時間
+                FBaselineDate = BaseDate,
+                FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
                 FEditor = 1,
                 FNote = "新增盤點條件"
             };

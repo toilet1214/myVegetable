@@ -16,6 +16,5 @@ namespace prjVegetable.ViewModels
             public string FName { get; set; }
             public int FQuantity { get; set; }
         }
-
     }
 }

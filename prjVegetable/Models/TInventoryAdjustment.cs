@@ -13,7 +13,7 @@ public partial class TInventoryAdjustment
 
     public int FEditor { get; set; }
 
-    public string FNote { get; set; } = null!;
+    public string? FNote { get; set; }
 
     public int? FCheckerId { get; set; }
 }
