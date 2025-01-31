@@ -36,27 +36,26 @@
                                     <span class="text-danger">單價: $@item.FPrice</span>
                                 </div>
 
-                                <!-- 數量調整 + 移除按鈕 放右邊 -->
-                                <div class="col-4 text-end">
-                                    <div class="d-flex justify-content-end align-items-center mb-2">
-                                        <form method="post" style="display:inline;"
-                                              asp-action="DecreaseQuantity" asp-controller="Cart">
-                                            <input type="hidden" name="productId" value="@item.FProductId">
-                                            <button class="btn btn-outline-secondary btn-sm" type="submit"
-                                                    onclick="return confirmDecrease(@item.FProductId, @item.FCount)">
-                                                -
-                                            </button>
-                                        </form>
-                                        <span class="mx-2">@item.FCount</span>
-                                        <form method="post" style="display:inline;"
-                                              asp-action="IncreaseQuantity" asp-controller="Cart">
-                                            <input type="hidden" name="productId" value="@item.FProductId">
-                                            <button class="btn btn-outline-secondary btn-sm" type="submit"
-                                                    onclick="return confirmIncrease(@item.FProductId, @item.FCount)">
-                                                +
-                                            </button>
-                                        </form>
-                                    </div>
+                            <!-- 數量調整 + 移除按鈕 放右邊 -->
+                            <div class="col-4 text-end">
+                                <div class="d-flex justify-content-end align-items-center mb-2">
+                                    <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Cart">
+                                        <input type="hidden" name="productId" value="@item.FProductId">
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                            -
+                                        </button>
+                                    </form>
+
+                                    <span class="mx-2" id="qty-@item.FProductId">@item.FCount</span>
+
+                                    <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Cart">
+                                        <input type="hidden" name="productId" value="@item.FProductId">
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">
+                                            +
+                                        </button>
+                                    </form>
+                                </div>
+                            
                                     <form method="post" asp-action="RemoveFromCart" asp-controller="Cart">
                                         <input type="hidden" name="productId" value="@item.FProductId">
                                         <button class="btn btn-link text-danger p-0" type="submit">
@@ -82,7 +81,7 @@
                         <!-- 總金額 -->
                         <div class="d-flex align-items-center justify-content-between">
                             <h4 style="font-size:25px;">總金額</h4>
-                            <h4 style="font-size:25px;">$@ViewBag.TotalPrice</h4>
+                            <h4 style="font-size: 25px;" id="totalPrice">$@ViewBag.TotalPrice</h4>
                         </div>
                         <hr class="mb-4">
                         <!-- 收貨人資料表單 -->
@@ -165,17 +164,47 @@
         console.log("收件人電話:", document.getElementById('shippingPhone').value);
         console.log("收件人地址:", document.getElementById('shippingAddress').value);
     });
-        
-    // Decrease 時，若已經是 1，就跳出提示是否移除
-    function confirmDecrease(productId, currentCount) {
-        if (currentCount === 1) {
-            return confirm("數量已經是 1，是否確定要移除該商品？");
-        }
-        return true; // 不是 1 就直接回傳 true，送出表單
-    } 
-    function confirmIncrease(productId, currentCount) {
-        return true;
-    }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll("form").forEach(form => {
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault(); // 阻止表單提交
+
+                    const formData = new FormData(this);
+                    const productId = formData.get("productId");
+                    const url = this.action; // 確保獲取正確的請求 URL
+
+                    fetch(url, {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // 更新數量
+                                const qtyElement = document.getElementById(`qty-${productId}`);
+                                if (qtyElement) {
+                                    qtyElement.innerText = data.newCount;
+                                }
+
+                                // 更新總金額
+                                document.getElementById("totalPrice").innerText = `$${data.totalPrice}`;
+
+                                // 如果數量變 0，移除該商品
+                                if (data.newCount === 0) {
+                                    this.closest(".row").remove();
+                                }
+                            } else {
+                                alert("更新失敗：" + data.message);
+                            }
+                        })
+                        .catch(error => console.error("更新數量失敗:", error));
+                });
+            });
+        });
+
+
+
 
 
     
