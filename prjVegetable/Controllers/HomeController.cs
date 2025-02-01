@@ -32,7 +32,6 @@ namespace prjVegetable.Controllers
             return View(images); // 將圖片路徑清單傳遞到視圖
         }
         
-        
         public IActionResult About()
         {
             return View();
@@ -48,26 +47,8 @@ namespace prjVegetable.Controllers
             return View();
         }
 
-        public IActionResult Register()
-        {
-            return View();
-        }
-        [HttpPost]
-        public IActionResult Register(TPerson P)
-        {
-            DbVegetableContext db = new DbVegetableContext();
-            db.TPeople.Add(P);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
-
-        public IActionResult Forgot()
-        {
-            return View();
-        }
         
-
+        
         public IActionResult Privacy()
         {
             return View();

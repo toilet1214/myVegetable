@@ -25,5 +25,23 @@ namespace prjVegetable.Controllers
             TempData["ErrorMessage"] = "帳號或密碼錯誤，請再試一次";
             return Redirect(returnUrl);
         }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Register(TPerson P)
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            db.TPeople.Add(P);
+            db.SaveChanges();
+            return RedirectToAction("Index","Home");
+        }
+
+        public IActionResult Forgot()
+        {
+            return View();
+        }
     }
 }
