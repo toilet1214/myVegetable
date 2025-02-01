@@ -7,56 +7,69 @@
 
 <h1>進出貨資料列表</h1>
 <br />
-@using (Html.BeginForm("Index", "TGoodsInAndOut", FormMethod.Get))
+
+<!-- 搜尋表單 -->
+@using (Html.BeginForm("Index", "GoodsInAndOut", FormMethod.Get))
 {
     <label for="txtKeyword">搜尋：</label>
     @Html.TextBox("txtKeyword", ViewBag.CurrentFilter as string, new { id = "txtKeyword" })
     <input type="submit" value="查詢" class="btn btn-primary">
 }
 <br />
+
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
+
 <table class="table table-striped">
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(model => model.First().fId)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fInOut)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fDate)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fInvoiceId)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fProviderId)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fPersonId)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fProductId)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fCount)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fPrice)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fTotal)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fEditor)</th>
-            <th>@Html.DisplayNameFor(model => model.First().fNote)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FId)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FInOut)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FDate)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FInvoiceId)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FProviderId)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FPersonId)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FProductId)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FCount)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FPrice)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FTotal)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FEditor)</th>
+            <th>@Html.DisplayNameFor((prjVegetable.Models.CGoodsInAndOutWrap m) => m.FNote)</th>
             <th>操作</th>
         </tr>
     </thead>
     <tbody>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>@Html.DisplayFor(modelItem => item.fId)</td>
-            <td>@Html.DisplayFor(modelItem => item.fInOut)</td>
-            <td>@Html.DisplayFor(modelItem => item.fDate)</td>
-            <td>@Html.DisplayFor(modelItem => item.fInvoiceId)</td>
-            <td>@Html.DisplayFor(modelItem => item.fProviderId)</td>
-            <td>@Html.DisplayFor(modelItem => item.fPersonId)</td>
-            <td>@Html.DisplayFor(modelItem => item.fProductId)</td>
-            <td>@Html.DisplayFor(modelItem => item.fCount)</td>
-            <td>@Html.DisplayFor(modelItem => item.fPrice)</td>
-            <td>@Html.DisplayFor(modelItem => item.fTotal)</td>
-            <td>@Html.DisplayFor(modelItem => item.fEditor)</td>
-            <td>@Html.DisplayFor(modelItem => item.fNote)</td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.fId">編輯</a> |
-                <a asp-action="Details" asp-route-id="@item.fId">詳細</a> |
-                <a asp-action="Delete" asp-route-id="@item.fId" onclick="return confirm('確定要刪除嗎?');">移除</a>
-            </td>
-        </tr>
-    }
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FInOut)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FDate)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FInvoiceId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FProviderId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FPersonId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FCount)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FPrice)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FTotal)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FEditor)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FNote)</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.FId">編輯</a> |
+                        <a asp-action="Details" asp-route-id="@item.FId">詳細</a> |
+                        <a asp-action="Delete" asp-route-id="@item.FId" onclick="return confirm('確定要刪除嗎?');">移除</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="13">目前沒有資料。</td>
+            </tr>
+        }
     </tbody>
 </table>
