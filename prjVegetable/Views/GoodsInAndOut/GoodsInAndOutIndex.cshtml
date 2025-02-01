@@ -1,4 +1,62 @@
-﻿
+﻿@model IEnumerable<prjVegetable.Models.CGoodsInAndOutWrap>
+
 @{
+    ViewData["Title"] = "進出貨資料列表";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
+
+<h1>進出貨資料列表</h1>
+<br />
+@using (Html.BeginForm("Index", "TGoodsInAndOut", FormMethod.Get))
+{
+    <label for="txtKeyword">搜尋：</label>
+    @Html.TextBox("txtKeyword", ViewBag.CurrentFilter as string, new { id = "txtKeyword" })
+    <input type="submit" value="查詢" class="btn btn-primary">
+}
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
+</p>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.First().fId)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fInOut)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fDate)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fInvoiceId)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fProviderId)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fPersonId)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fProductId)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fCount)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fPrice)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fTotal)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fEditor)</th>
+            <th>@Html.DisplayNameFor(model => model.First().fNote)</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.fId)</td>
+            <td>@Html.DisplayFor(modelItem => item.fInOut)</td>
+            <td>@Html.DisplayFor(modelItem => item.fDate)</td>
+            <td>@Html.DisplayFor(modelItem => item.fInvoiceId)</td>
+            <td>@Html.DisplayFor(modelItem => item.fProviderId)</td>
+            <td>@Html.DisplayFor(modelItem => item.fPersonId)</td>
+            <td>@Html.DisplayFor(modelItem => item.fProductId)</td>
+            <td>@Html.DisplayFor(modelItem => item.fCount)</td>
+            <td>@Html.DisplayFor(modelItem => item.fPrice)</td>
+            <td>@Html.DisplayFor(modelItem => item.fTotal)</td>
+            <td>@Html.DisplayFor(modelItem => item.fEditor)</td>
+            <td>@Html.DisplayFor(modelItem => item.fNote)</td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.fId">編輯</a> |
+                <a asp-action="Details" asp-route-id="@item.fId">詳細</a> |
+                <a asp-action="Delete" asp-route-id="@item.fId" onclick="return confirm('確定要刪除嗎?');">移除</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
