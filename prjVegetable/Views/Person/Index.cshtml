@@ -5,78 +5,106 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>人員資料列表</h1><br />
-@using (Html.BeginForm()) 
-{ 
-    @:搜尋 @Html.TextBox("txtKeyword") <input type="submit" value="查詢" class="btn btn-primary">
-}<br />
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FName)
-            </th>            
-            <th>
-                @Html.DisplayNameFor(model => model.FGender)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FBirth)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPhone)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FTel)
-            </th>            
-            <th>
-                @Html.DisplayNameFor(model => model.FEmail)
-            </th>            
-            <th>
-                @Html.DisplayNameFor(model => model.FEmp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FEmpTel)
-            </th>            
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FName)
-            </td>            
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FGender)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FBirth)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FPhone)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FTel)
-            </td>            
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FEmail)
-            </td>            
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FEmp)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.person.FEmpTel)
-            </td>            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a> <br>
-                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
-                @Html.ActionLink("移除", "Delete", "Person", new { id = item.person.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
-            </td>
-        </tr>
+<h1>人員資料列表</h1>
+<br />
+<div id="app">
+    <div>
+        <label class="form-label">搜尋</label>
+        <input v-model="keyword" placeholder="請輸入搜尋" />
+        <button type="button" class="btn btn-primary" @@click="search">查詢</button>
+    </div>
+    <!-- 新增資料 -->
+    <p>
+        <a href="/Person/Create" class="btn btn-outline-primary" @@click.prevent="redirectToCreate">新增資料</a>
+    </p>
+    <!-- 顯示資料 -->
+    <table class="table">
+        <thead>
+            <tr>
+                <th>序號</th>
+                <th>姓名</th>
+                <th>性別</th>
+                <th>生日</th>
+                <th>電話</th>
+                <th>電子郵件</th>
+                <th>權限</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(person, index) in filterPeople" :key="person.FId">
+                <td>{{ index + 1 }}</td>
+                <td>{{ person.FName }}</td>
+                <td>{{ person.FGender }}</td>
+                <td>{{ person.FBirth }}</td>
+                <td>{{ person.FPhone }}</td>
+                <td>{{ person.FEmail }}</td>
+                <td>{{ person.FPermission }}</td>
+                <td>
+                    <a :href="'/Person/Edit/' + person.FId">編輯資料</a><br />
+                    <a :href="'/Person/Details/' + person.FId">詳細資料</a><br />
+                    <a :href="'/Person/Delete?id=' + person.FId" @@click.prevent="confirmDelete(person.FId)">移除</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    people: [], // 儲存所有人員資料
+                    filterPeople:[],
+                    keyword: "" // 搜尋關鍵字
+                };
+            },
+            mounted() {
+                this.loadPeople(); // 頁面加載時拉取所有人員資料
+            },
+            methods: {
+                // 透過API獲取所有人員資料
+                loadPeople() {
+                    axios.get('/Person/GetPeople')
+                    .then(response => {
+                        this.people = response.data || []; // 確保資料為空陣列（若返回 null 或 undefined）                        
+                        })
+                    .catch(error => {
+                        console.error('資料載入錯誤', error);
+                    });
+                },
+                search() {
+                    if (this.keyword === '') {
+                        this.filterPeople = [...this.people]; // 沒有關鍵字時顯示所有資料
+                    } else {
+                        this.filterPeople = this.people.filter(person =>
+                        person.FName.includes(this.keyword) ||
+                        person.FPhone.includes(this.keyword) ||
+                        person.FEmail.includes(this.keyword) ||
+                        person.FAddress.includes(this.keyword)
+                        );
+                        }
+                },
+                // 刪除人員資料
+                confirmDelete(id) {
+                    if (confirm('確定要刪除這筆資料嗎?')) {
+                        axios.delete(`/Person/Delete?id=${id}`)
+                        .then(() => {
+                            // 刪除後重新載入資料
+                            this.loadPeople(); // 重新加載資料
+                        })
+                        .catch(error => {
+                            console.error('刪除失敗', error);
+                        });
+                    }
+                },
+        
+            }@*methods*@
+        });
+
+app.mount('#app'); // 使用 Vue 3 創建並掛載應用
+    </script>
 }
-    </tbody>
-</table>

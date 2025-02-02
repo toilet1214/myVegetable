@@ -20,31 +20,29 @@ namespace prjVegetable.Controllers
         }
 
         // GET: TPersons
-        public IActionResult Index(CKeywordViewModel vm)
+        public IActionResult Index()
         {
-            string keyword = vm.txtKeyword;
-            IEnumerable<TPerson> datas = null;
-            if (string.IsNullOrEmpty(keyword)) 
-            {
-                datas = from p in _context.TPeople
-                        select p;
+            return View();
+        }
+        //API:獲取所有人員資料
+        [HttpGet]
+        public JsonResult GetPeople() 
+        {
+            var poeple = _context.TPeople.ToList();
+            return Json(poeple);
+        }
+        //API刪除人員資料
+        [HttpDelete]
+        public IActionResult Delete(int id) 
+        {
+            var person = _context.TPeople.Find(id);
+            if (person == null) 
+            { 
+                return NotFound();
             }
-            else
-            {
-                datas = _context.TPeople.Where(p => 
-                p.FName.Contains(keyword)||
-                p.FPhone.Contains(keyword)||
-                p.FAddress.Contains(keyword)||
-                p.FEmail.Contains(keyword)
-                );
-            }
-            var data = _context.TPeople.ToList();  
-            List<CPersonWrap>list = new List<CPersonWrap>();
-            foreach (var p in data) 
-            {
-                list.Add(new CPersonWrap() { person = p });
-            }
-            return View(list);
+            _context.TPeople.Remove(person);
+            _context.SaveChanges();
+            return Ok();
         }
 
         // GET: TPersons/Details/5
