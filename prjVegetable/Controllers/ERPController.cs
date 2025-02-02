@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -9,14 +10,33 @@ namespace prjVegetable.Controllers
 
         public readonly DbVegetableContext _VegetableContext;
 
-        public ERPController (DbVegetableContext VegetableContext) 
+        public ERPController(DbVegetableContext VegetableContext)
         {
             _VegetableContext = VegetableContext;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var viewmodel = new CERPIndexViewModel
+            {
+                TotalMembers =  1           ,
+                TotalVisitors =   1         ,
+                TotalOrdersYear =   1       ,
+                TotalOrdersMonth =1,
+                TotalOrdersWeek =1,
+                BestSellingProductYear = ""  ,
+                BestSellingProductMonth ="",
+                BestSellingProductWeek ="",
+
+                MostPopularProductYear ="",
+                MostPopularProductMonth ="",
+                MostPopularProductWeek ="",
+
+                BestSellingClassYear ="",
+                BestSellingClassMonth ="",
+                BestSellingClassWeek =""
+    };
+            return View(viewmodel);
         }
         public IActionResult ProductBuying()
         {
