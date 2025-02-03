@@ -28,7 +28,7 @@ namespace prjVegetable.Models
         }
 
         [Required (ErrorMessage = "必填")]
-        [DisplayName("產品名稱")]
+        [DisplayName("商品名稱")]
         public string FName
         {
             get { return _product.FName; }
@@ -37,7 +37,7 @@ namespace prjVegetable.Models
 
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("產品分類")]
+        [DisplayName("商品分類")]
         public string FClassification
         {
             get { return _product.FClassification; }
@@ -45,7 +45,7 @@ namespace prjVegetable.Models
         }
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("產品價格")]
+        [DisplayName("商品價格")]
         public int FPrice
         {
             get { return _product.FPrice; }
@@ -53,7 +53,7 @@ namespace prjVegetable.Models
         }
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("產品描述")]
+        [DisplayName("商品描述")]
         public string FDescription
         {
             get { return _product.FDescription; }
@@ -70,7 +70,7 @@ namespace prjVegetable.Models
 
         [Required(ErrorMessage = "必填")]
         [DisplayName("上架日期")]
-        public DateTime FLaunchAt
+        public DateOnly FLaunchAt
         {
             get { return _product.FLaunchAt; }
             set { _product.FLaunchAt = value; }
@@ -112,6 +112,12 @@ namespace prjVegetable.Models
         [Required(ErrorMessage = "必填")]
         [DisplayName("商品照片")]
         public string FImgName
+        { get; set; }
+
+        public bool IsFavorite
+        { get; set; }
+
+        public bool IsInCart
         { get; set; }
 
 

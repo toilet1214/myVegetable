@@ -49,7 +49,7 @@ namespace prjVegetable.Models
 
         [Required(ErrorMessage = "必填")]
         [DisplayName("上傳日期")]
-        public DateTime FUploadAt
+        public DateOnly FUploadAt
         {
             get { return img.FUploadAt; }
             set { img.FUploadAt = value; }

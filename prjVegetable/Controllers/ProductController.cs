@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace prjVegetable.Controllers
 {
@@ -34,10 +35,10 @@ namespace prjVegetable.Controllers
             //篩選分類
             if (string.IsNullOrEmpty(keyword))
             {
-                datas = db.TProducts;
+                datas = db.TProducts.Where(p=>p.FLaunch ==1);
             }
             else {
-                datas = db.TProducts.Where(p => p.FClassification.Contains(keyword)); 
+                datas = db.TProducts.Where(p => p.FClassification.Contains(keyword) && p.FLaunch == 1); 
             
             }
 
@@ -59,6 +60,22 @@ namespace prjVegetable.Controllers
 
             var products = datas.ToList();
 
+
+            var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+            var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
+
+
+            var favoriteProductIds = db.TFavorites
+                                    .Where(f=>f.FPersonId == personId)
+                                    .Select(f=>f.FProductId)
+                                    .ToList();
+            var cartProductIds = db.TCarts
+                                .Where(c=>c.FPersonId==personId)
+                                .Select(c=>c.FProductId)
+                                .ToList();
+
+
+
             //頁碼排序
             int pagesize = 10;
             int totalProducts = datas.Count();
@@ -71,6 +88,8 @@ namespace prjVegetable.Controllers
                 CProductWrap pp = new CProductWrap() { product = p };
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
                 pp.FImgName = image?.FName;
+                pp.IsFavorite = favoriteProductIds.Contains(p.FId);
+                pp.IsInCart = cartProductIds.Contains(p.FId);
                 list.Add(pp);
             }
            
@@ -78,30 +97,61 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        //public ActionResult Index(int page = 1)
-        //{
-        //    int pageSize = 10; // 每頁顯示10筆
-        //    int skipCount = (page - 1) * pageSize; // 計算要跳過的數量
+        [HttpPost]
+        public IActionResult AddToFavorites(int productId)
+        {
+            var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+            var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
+            var favorite = _context.TFavorites.FirstOrDefault(f=>f.FPersonId ==personId && f.FProductId == productId);
 
-        //    // 取得產品列表並進行分頁
-        //    var products = _context.TProducts
-        //                            .Skip(skipCount)
-        //                            .Take(pageSize)
-        //                            .ToList();
+            bool isFavorite = false;
 
-        //    // 總產品數量
-        //    int totalProducts = _context.TProducts.Count();
+            if (favorite == null)
+            {
+                _context.TFavorites.Add(new TFavorite { FPersonId = personId, FProductId = productId });
+                isFavorite = true;
+            }
+            else 
+            {
+                _context.TFavorites.Remove(favorite);
+                isFavorite = false;
+            }
+            _context.SaveChanges();
+            return Json(new {success = true, isFavorite = isFavorite});
+        }
 
-        //    // 計算總頁數
-        //    int totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
 
-        //    // 傳遞分頁資料到視圖
-        //    ViewBag.TotalPages = totalPages;
-        //    ViewBag.CurrentPage = page;
 
-        //    return View(products);
-        //}
+        [HttpPost]
+        public IActionResult AddToCart(int productId)
+        {
+            var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+            var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
 
+            if (personId == 0)
+            {
+                return Json(new { success = false, message = "請先登入" });
+            }
+
+            var product = _context.TProducts.FirstOrDefault(p => p.FId == productId);
+            if (product == null)
+            {
+                return Json(new { success = false, message = "商品不存在" });
+            }
+
+            // 檢查是否已經加入購物車，若已存在則不再加入
+            var existingCartItem = _context.TCarts.FirstOrDefault(c => c.FPersonId == personId && c.FProductId == productId);
+            if (existingCartItem != null)
+            {
+                return Json(new { success = false, message = "此商品已在購物車中" });
+            }
+
+            // 將商品加入購物車
+            _context.TCarts.Add(new TCart { FPersonId = personId, FProductId = productId });
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
 
 
 
