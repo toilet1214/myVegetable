@@ -1,74 +1,73 @@
-﻿@model prjVegetable.Models.CProductWrap
+﻿@model prjVegetable.Models.CProviderWrap
 
 @{
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>詳細資料</h1>
+<h1>廠商詳細資料</h1>
 
 <div>
-    <h4>TProduct</h4>
+    <h4>TProvider</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FName)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FName)
+            @Html.DisplayFor(model => model.provider.FName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FClassification)
+            @Html.DisplayNameFor(model => model.FUbn)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FClassification)
+            @Html.DisplayFor(model => model.provider.FUbn)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FPrice)
+            @Html.DisplayNameFor(model => model.FTel)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FPrice)
+            @Html.DisplayFor(model => model.provider.FTel)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FDescription)
+            @Html.DisplayNameFor(model => model.FConnect)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FDescription)
+            @Html.DisplayFor(model => model.provider.FConnect)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FQuantity)
+            @Html.DisplayNameFor(model => model.FAccountant)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FQuantity)
+            @Html.DisplayFor(model => model.provider.FAccountant)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FLaunchAt)
+            @Html.DisplayNameFor(model => model.FAddress)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FLaunchAt)
+            @Html.DisplayFor(model => model.provider.FAddress)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FStorage)
+            @Html.DisplayNameFor(model => model.FDelivery)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FStorage)
+            @Html.DisplayFor(model => model.provider.FDelivery)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FOrigin)
+            @Html.DisplayNameFor(model => model.FInvoiceAdd)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FOrigin)
+            @Html.DisplayFor(model => model.provider.FInvoiceAdd)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.FEditor)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FEditor)
+            @Html.DisplayFor(model => model.provider.FEditor)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Index" class="btn btn-outline-primary">回商品列表</a>
-    <a asp-action="Edit" asp-route-id="@Model?.FId" class="btn btn-primary">編輯資料</a> |
-    
+    <a asp-action="Index">回廠商列表</a>
+    <a asp-action="Edit" asp-route-id="@Model?.FId">編輯資料</a> |
 </div>

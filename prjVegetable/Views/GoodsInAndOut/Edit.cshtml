@@ -1,4 +1,4 @@
-﻿@model prjVegetable.Models.CProductWrap
+﻿@model prjVegetable.Models.CProviderWrap
 
 @{
     ViewData["Title"] = "Edit";
@@ -6,8 +6,6 @@
 }
 
 <h1>編輯資料</h1>
-
-<h4>TProduct</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -20,54 +18,49 @@
                 <span asp-validation-for="FName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FClassification" class="control-label"></label>
-                <input asp-for="FClassification" class="form-control" />
-                <span asp-validation-for="FClassification" class="text-danger"></span>
+                <label asp-for="FUbn" class="control-label"></label>
+                <input asp-for="FUbn" class="form-control" />
+                <span asp-validation-for="FUbn" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FPrice" class="control-label"></label>
-                <input asp-for="FPrice" class="form-control" />
-                <span asp-validation-for="FPrice" class="text-danger"></span>
+                <label asp-for="FTel" class="control-label"></label>
+                <input asp-for="FTel" class="form-control" />
+                <span asp-validation-for="FTel" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FDescription" class="control-label"></label>
-                <input asp-for="FDescription" class="form-control" />
-                <span asp-validation-for="FDescription" class="text-danger"></span>
+                <label asp-for="FConnect" class="control-label"></label>
+                <input asp-for="FConnect" class="form-control" />
+                <span asp-validation-for="FConnect" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FQuantity" class="control-label"></label>
-                <input asp-for="FQuantity" class="form-control" />
-                <span asp-validation-for="FQuantity" class="text-danger"></span>
+                <label asp-for="FAccountant" class="control-label"></label>
+                <input asp-for="FAccountant" class="form-control" />
+                <span asp-validation-for="FAccountant" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FLaunchAt" class="control-label"></label>
-                <input asp-for="FLaunchAt" class="form-control" />
-                <span asp-validation-for="FLaunchAt" class="text-danger"></span>
+                <label asp-for="FAddress" class="control-label"></label>
+                <input asp-for="FAddress" class="form-control" />
+                <span asp-validation-for="FAddress" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FStorage" class="control-label"></label>
-                <input asp-for="FStorage" class="form-control" />
-                <span asp-validation-for="FStorage" class="text-danger"></span>
+                <label asp-for="FDelivery" class="control-label"></label>
+                <input asp-for="FDelivery" class="form-control" />
+                <span asp-validation-for="FDelivery" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FOrigin" class="control-label"></label>
-                <input asp-for="FOrigin" class="form-control" />
-                <span asp-validation-for="FOrigin" class="text-danger"></span>
-            </div>
+                <label asp-for="FInvoiceAdd" class="control-label"></label>
+                <input asp-for="FInvoiceAdd" class="form-control" />
+                <span asp-validation-for="FInvoiceAdd" class="text-danger"></span>
+            </div>            
             <div class="form-group">
-                <label asp-for="FEditor" class="control-label"></label>
-                <input asp-for="FEditor" class="form-control" />
-                <span asp-validation-for="FEditor" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="儲存" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">回產品列表</a>
+    <a asp-action="Index">回廠商列表</a>
 </div>
 
 @* @section Scripts { *@

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using prjVegetable.ViewModels;
 
 namespace prjVegetable.Controllers
 {
@@ -23,19 +24,40 @@ namespace prjVegetable.Controllers
         }
 
         // GET: GoodsInAndOut
-        public IActionResult GoodsInAndOutIndex(string txtKeyword)
+        public IActionResult GoodsInAndOutIndex(CKeywordViewModel vm)
         {
-            // 使用 _dbContext.Set<CGoodsInAndOutWrap>() 來取得資料集合
-            var query = _dbContext.Set<CGoodsInAndOutWrap>().AsQueryable();
-
-            if (!string.IsNullOrEmpty(txtKeyword))
+            string keyword = vm.txtKeyword;
+            IEnumerable<TGoodsInAndOut> datas = null;
+            if (string.IsNullOrEmpty(keyword))
             {
-                query = query.Where(x => x.FNote.Contains(txtKeyword));
-                ViewBag.CurrentFilter = txtKeyword;
+                datas = from p in _dbContext.TGoodsInAndOuts
+                        select p;
             }
+            else
+            {
+                datas = _dbContext.TGoodsInAndOuts.Where(p =>
+                p.FInOut.Contains(keyword) ||
+                p.FDate.Contains(keyword) ||
+                p.FInvoiceId.Contains(keyword) ||
+                p.FProviderId.Contains(keyword) ||
+                p.FPersonId.Contains(keyword) ||
+                p.FProductId.Contains(keyword) ||
+                p.FCount.Contains(keyword) ||
+                p.FPrice.Contains(keyword) ||
+                p.FTotal.Contains(keyword) ||
+                p.FEditor.Contains(keyword) ||
+                p.FNote.Contains(keyword) 
 
-            var list = query.ToList();
-            return View(list); // 傳入的 Model 為 IEnumerable<CGoodsInAndOutWrap>
+
+                );
+            }
+            var data = _dbContext.TGoodsInAndOuts.ToList();
+            List<CProviderWrap> list = new List<CProviderWrap>();
+            foreach (var p in data)
+            {
+                list.Add(new CProviderWrap() { provider = p });
+            }
+            return View(list);
         }
 
         // GET: GoodsInAndOut/Create

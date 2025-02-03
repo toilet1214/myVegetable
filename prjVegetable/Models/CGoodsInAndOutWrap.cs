@@ -4,7 +4,7 @@ namespace prjVegetable.Models
 {
     public class CGoodsInAndOutWrap
     {
-        public TPerson person { get; set; }
+        //public TPerson person { get; set; }
 
         private TGoodsInAndOut _GoodsInAndOut = null;
         public TGoodsInAndOut GoodsInAndOut
@@ -14,7 +14,7 @@ namespace prjVegetable.Models
         }
 
         // 新增一個使用者屬性
-        public TPerson Person { get; set; }
+        //public TPerson Person { get; set; }
 
         public CGoodsInAndOutWrap()
         {
