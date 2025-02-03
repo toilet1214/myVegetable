@@ -1,212 +1,197 @@
 ﻿@model List<prjVegetable.Models.CCartWrap>
 @using prjVegetable.Models
-@{ViewData["Title"] = "Cart";}
+@{
+    ViewData["Title"] = "Cart";
+}
 @inject DbVegetableContext dbContext
 <link rel="stylesheet" href="~/css/Cart.css">
-@{
-    
-}
-    <div class="container my-5">
-        <!-- 購物車清單 -->
-        <div class="py-4 mb-4 mb-lg-10" style="background-color: #a3b899">
-        <h1 class="h3 mb-0 text-center" style="font-size: 50px ;position: relative;">
+
+<div class="container my-5">
+    <!-- 購物車清單標題 -->
+    <div class="py-4 mb-4 mb-lg-10" style="background-color: #a3b899">
+        <h1 class="h3 mb-0 text-center" style="font-size: 50px; position: relative;">
             購物車清單
         </h1>
-        </div>
-        <div class="row g-4 g-lg-10">
-            <!-- 左邊商品列表 (col-lg-8) -->
-            <div class="col-lg-8">
-                <div class="border rounded-3 p-4">
-                    @if (Model != null && Model.Any())
+    </div>
+
+    <div class="row g-4 g-lg-10">
+        <!-- 左邊商品列表 (col-lg-8) -->
+        <div class="col-lg-8">
+            <div class="border rounded-3 p-4" id="cart-container">
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
                     {
-                        foreach (var item in Model)
-                        {
-                            <!-- 一個商品用一個 .row 或者 .d-flex 來排 -->
-                            <div class="row align-items-center mb-4">
-
-                                <!-- 圖片區 + 商品名稱/價格 -->
-                                <div class="col-auto" style="width:80px;">
-                                    <img class="img-fluid d-block mx-auto"
-                                         src="~/Images/@item.FName"
-                                         alt="@item.FProductName"
-                                         style="max-width:80px;" />
-                                </div>
-                                <div class="col-6">
-                                    <h6 class="mb-1" style="font-size:20px;">@item.FProductName</h6>
-                                    <span class="text-danger">單價: $@item.FPrice</span>
-                                </div>
-
+                        <div class="row align-items-center mb-4 cart-item" data-product-id="@item.FProductId">
+                            <!-- 圖片區 + 商品名稱/價格 -->
+                            <div class="col-auto" style="width:80px;">
+                                <img class="img-fluid d-block mx-auto"
+                                     src="~/Images/@item.FName"
+                                     alt="@item.FProductName"
+                                     style="max-width:80px;" />
+                            </div>
+                            <div class="col-6">
+                                <h6 class="mb-1" style="font-size:20px;">@item.FProductName</h6>
+                                <span class="text-danger">單價: $@item.FPrice</span>
+                            </div>
                             <!-- 數量調整 + 移除按鈕 放右邊 -->
                             <div class="col-4 text-end">
                                 <div class="d-flex justify-content-end align-items-center mb-2">
-                                    <form method="post" style="display:inline;" asp-action="DecreaseQuantity" asp-controller="Cart">
-                                        <input type="hidden" name="productId" value="@item.FProductId">
-                                        <button class="btn btn-outline-secondary btn-sm" type="submit">
-                                            -
-                                        </button>
+                                    <!-- 減少數量表單 (AJAX 攔截) -->
+                                    <form method="post" style="display:inline;" 
+                                          asp-action="DecreaseQuantity" asp-controller="Cart" class="ajax-qty-form">
+                                        <input type="hidden" name="productId" value="@item.FProductId" />
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">-</button>
                                     </form>
-
+                                    
                                     <span class="mx-2" id="qty-@item.FProductId">@item.FCount</span>
-
-                                    <form method="post" style="display:inline;" asp-action="IncreaseQuantity" asp-controller="Cart">
-                                        <input type="hidden" name="productId" value="@item.FProductId">
-                                        <button class="btn btn-outline-secondary btn-sm" type="submit">
-                                            +
-                                        </button>
+                                    
+                                    <!-- 增加數量表單 (AJAX 攔截) -->
+                                    <form method="post" style="display:inline;" 
+                                          asp-action="IncreaseQuantity" asp-controller="Cart" class="ajax-qty-form">
+                                        <input type="hidden" name="productId" value="@item.FProductId" />
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">+</button>
                                     </form>
                                 </div>
-                            
-                                    <form method="post" asp-action="RemoveFromCart" asp-controller="Cart">
-                                        <input type="hidden" name="productId" value="@item.FProductId">
-                                        <button class="btn btn-link text-danger p-0" type="submit">
-                                            移除
-                                        </button>
-                                    </form>
-                                </div>
+                                <!-- 移除商品表單，正常提交 -->
+                                <form method="post" asp-action="RemoveFromCart" asp-controller="Cart" style="display:inline;">
+                                    <input type="hidden" name="productId" value="@item.FProductId" />
+                                    <button class="btn btn-link text-danger p-0" type="submit">移除</button>
+                                </form>
                             </div>
-                            <hr />
-                        }
-                    }
-                    else
-                    {
-                        <p class="text-center">購物車目前沒有商品。</p>
-                    }
-                </div>
-            </div>
-
-            <!-- 右邊會員資料 (col-lg-4) -->
-            <div class="col-lg-4">
-                <div class="card border" style="background-color:#dde6d5">
-                    <div class="card-body">
-                        <!-- 總金額 -->
-                        <div class="d-flex align-items-center justify-content-between">
-                            <h4 style="font-size:25px;">總金額</h4>
-                            <h4 style="font-size: 25px;" id="totalPrice">$@ViewBag.TotalPrice</h4>
                         </div>
-                        <hr class="mb-4">
-                        <!-- 收貨人資料表單 -->
-                        <form method="post" asp-action="Checkout" asp-controller="Cart">
-                            <!-- 同會員資料 -->
-                            <div class="mb-4">
-                                <input type="checkbox" id="SameAsMember" class="large-checkbox" />
-                                <label for="SameAsMember">同會員資料</label>
-                            </div>
-
-                            <!-- 收貨人姓名 -->
-                            <div class="mb-4">
-                                <label for="shippingName">收貨人姓名</label>
-                                <input type="text" id="shippingName" name="shippingName" class="form-control" style="width:100%;" required />
-                            </div>
-
-                            <!-- 收貨人電話 -->
-                            <div class="mb-4">
-                                <label for="shippingPhone">收貨人電話</label>
-                                <input type="text" id="shippingPhone" name="shippingPhone" class="form-control" style="width:100%;" required />
-                            </div>
-
-                            <!-- 收貨人地址 -->
-                            <div class="mb-4">
-                                <label for="shippingAddress">收貨人地址</label>
-                                <textarea id="shippingAddress" name="shippingAddress" class="form-control" style="width:100%;" required></textarea>
-                            </div>
-
-                            <!-- 備註 -->
-                            <div class="mb-4">
-                                <label for="note">備註</label>
-                                <textarea id="note" name="note" class="form-control"
-                                          style="height:100px;width:100%;resize:none;text-align:left;">無</textarea>
-                            </div>
-
-                            <!-- 確認付款 -->
-                            <button  asp-action="Order" asp-controller="Customer" class="btn btn-primary w-100" type="submit">確認付款</button>
-                        </form>
-                    </div>
-                </div>
+                        <hr />
+                    }
+                }
+                else
+                {
+                    <p class="text-center">購物車目前沒有商品。</p>
+                }
             </div>
         </div>
 
+        <!-- 右邊會員資料與結帳資訊 (col-lg-4) -->
+        <div class="col-lg-4">
+            <div class="card border" style="background-color:#dde6d5">
+                <div class="card-body">
+                    <!-- 總金額（重複顯示） -->
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h4 style="font-size:25px;">總金額</h4>
+                        <h4 style="font-size:25px;" id="totalPrice2">$@ViewBag.TotalPrice</h4>
+                    </div>
+                    <hr class="mb-4">
+                    <!-- 收貨人資料表單（結帳表單），正常提交 -->
+                    <form method="post" asp-action="Checkout" asp-controller="Cart" id="checkoutForm">
+                        <!-- 同會員資料 -->
+                        <div class="mb-4">
+                            <input type="checkbox" id="SameAsMember" class="large-checkbox" />
+                            <label for="SameAsMember">同會員資料</label>
+                        </div>
+                        <!-- 收貨人姓名 -->
+                        <div class="mb-4">
+                            <label for="shippingName">收貨人姓名</label>
+                            <input type="text" id="shippingName" name="shippingName" class="form-control" style="width:100%;" required />
+                        </div>
+                        <!-- 收貨人電話 -->
+                        <div class="mb-4">
+                            <label for="shippingPhone">收貨人電話</label>
+                            <input type="text" id="shippingPhone" name="shippingPhone" class="form-control" style="width:100%;" required />
+                        </div>
+                        <!-- 收貨人地址 -->
+                        <div class="mb-4">
+                            <label for="shippingAddress">收貨人地址</label>
+                            <textarea id="shippingAddress" name="shippingAddress" class="form-control" style="width:100%;" required></textarea>
+                        </div>
+                        <!-- 備註 -->
+                        <div class="mb-4">
+                            <label for="note">備註</label>
+                            <textarea id="note" name="note" class="form-control" style="height:100px;width:100%;resize:none;text-align:left;">無</textarea>
+                        </div>
+                        <!-- 前往結帳按鈕，正常提交 -->
+                        <button class="btn btn-primary w-100" type="submit">
+                            前往結帳
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-
-    <script>
-    // 「同會員資料」勾選
-    document.getElementById('SameAsMember').addEventListener('change', function () {
-        if (this.checked) {
-            // 從後端抓取會員資料 (GetMemberInfo)
-            fetch('/Cart/GetMemberInfo')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // 成功拿到會員資料，就填入欄位
-                        document.getElementById('shippingName').value = data.data.name || '';
-                        document.getElementById('shippingPhone').value = data.data.phone || '';
-                        document.getElementById('shippingAddress').value = data.data.address || '';
-                        // 如果後端真的有 remark 屬性，就放：
-                        // document.getElementById('note').value = data.data.remark || '';
-                    } else {
-                        alert(data.message || '載入會員資料失敗');
-                    }
-                })
-                .catch(error => {
-                    console.error('無法獲取會員資料:', error);
-                    alert('無法抓取會員資料，請稍後再試。');
-                });
-        } else {
-            // 取消勾選時，清空表單
-            document.getElementById('shippingName').value = '';
-            document.getElementById('shippingPhone').value = '';
-            document.getElementById('shippingAddress').value = '';
-            document.getElementById('note').value = '無';
-        }
-    });
-    // 測試送出時能否讀到表單資料
-    document.querySelector('form').addEventListener('submit', function (e) {
-        console.log("收件人姓名:", document.getElementById('shippingName').value);
-        console.log("收件人電話:", document.getElementById('shippingPhone').value);
-        console.log("收件人地址:", document.getElementById('shippingAddress').value);
-    });
-
-        document.addEventListener("DOMContentLoaded", function () {
-            document.querySelectorAll("form").forEach(form => {
-                form.addEventListener("submit", function (event) {
-                    event.preventDefault(); // 阻止表單提交
-
-                    const formData = new FormData(this);
-                    const productId = formData.get("productId");
-                    const url = this.action; // 確保獲取正確的請求 URL
-
-                    fetch(url, {
-                        method: "POST",
-                        body: formData
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 同會員資料功能
+    var sameAsMemberCheckbox = document.getElementById('SameAsMember');
+    if(sameAsMemberCheckbox) {
+        sameAsMemberCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                fetch('/Cart/GetMemberInfo')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById('shippingName').value = data.data.name || '';
+                            document.getElementById('shippingPhone').value = data.data.phone || '';
+                            document.getElementById('shippingAddress').value = data.data.address || '';
+                        } else {
+                            alert(data.message || '載入會員資料失敗');
+                        }
                     })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                // 更新數量
-                                const qtyElement = document.getElementById(`qty-${productId}`);
-                                if (qtyElement) {
-                                    qtyElement.innerText = data.newCount;
-                                }
-
-                                // 更新總金額
-                                document.getElementById("totalPrice").innerText = `$${data.totalPrice}`;
-
-                                // 如果數量變 0，移除該商品
-                                if (data.newCount === 0) {
-                                    this.closest(".row").remove();
-                                }
-                            } else {
-                                alert("更新失敗：" + data.message);
-                            }
-                        })
-                        .catch(error => console.error("更新數量失敗:", error));
-                });
-            });
+                    .catch(error => {
+                        console.error('無法獲取會員資料:', error);
+                        alert('無法抓取會員資料，請稍後再試。');
+                    });
+            } else {
+                document.getElementById('shippingName').value = '';
+                document.getElementById('shippingPhone').value = '';
+                document.getElementById('shippingAddress').value = '';
+                document.getElementById('note').value = '無';
+            }
         });
+    } else {
+        console.error("找不到 ID 為 'SameAsMember' 的 checkbox 元素");
+    }
 
-
-
-
-
-    
-    </script>
-
+    // AJAX 攔截數量更新表單（僅針對帶有 ajax-qty-form 的表單）
+    document.querySelectorAll("form.ajax-qty-form").forEach(function(form) {
+        form.addEventListener("submit", function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+            const productId = formData.get("productId");
+            const url = this.action;
+            fetch(url, {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 更新該商品數量
+                    const qtyElement = document.getElementById("qty-" + productId);
+                    if (qtyElement) {
+                        qtyElement.innerText = data.newCount;
+                    }
+                    // 更新總金額 (兩處)
+                    const totalPriceElement = document.getElementById("totalPrice");
+                    if (totalPriceElement) {
+                        totalPriceElement.innerText = "$" + data.totalPrice;
+                    }
+                    const totalPrice2Element = document.getElementById("totalPrice2");
+                    if (totalPrice2Element) {
+                        totalPrice2Element.innerText = "$" + data.totalPrice;
+                    }
+                    // 如果數量變 0，移除該商品區塊
+                    if (data.newCount === 0) {
+                        const cartItemRow = this.closest(".cart-item");
+                        if (cartItemRow) {
+                            cartItemRow.remove();
+                        }
+                    }
+                } else {
+                    alert("更新失敗：" + data.message);
+                }
+            })
+            .catch(error => console.error("更新數量失敗:", error));
+        });
+    });
+});
+</script>

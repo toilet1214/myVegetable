@@ -181,12 +181,23 @@ namespace prjVegetable.Controllers
                 if (!cartItems.Any())
                     return BadRequest("購物車是空的，無法完成結帳。");
 
+                // 計算購物車中的總金額
+                int totalAmount = 0;
+                foreach (var cartItem in cartItems)
+                {
+                    // 從 TProducts 查詢該商品資訊
+                    var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == cartItem.FProductId);
+                    int price = product != null ? product.FPrice : 0;
+                    totalAmount += price * cartItem.FCount;
+                }
                 // 建立 TOrder
                 var newOrder = new TOrder
                 {
                     FPersonId = currentUserId,
                     FStatus = 0,
+                    FPay=0,
                     FOrderAt = DateTime.Now,
+                    FTotal=totalAmount,
                     FAddress = shippingAddress,
                     FReceiverName = shippingName,
                     FPhone = shippingPhone,
@@ -198,20 +209,29 @@ namespace prjVegetable.Controllers
                 // 建立 TOrderList
                 foreach (var cartItem in cartItems)
                 {
+                    // 從 TProducts 查詢該商品資訊
+                    var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == cartItem.FProductId);
+
                     var orderListItem = new TOrderList
                     {
                         FOrderId = newOrder.FId,
-                        FProductId = cartItem.FProductId
+                        FProductId = cartItem.FProductId,
+                        // 使用 product 的欄位取得價格與名稱
+                        FPrice = product != null ? product.FPrice : 0,
+                        FCount = cartItem.FCount,
+                        FSum = (product != null ? product.FPrice : 0) * cartItem.FCount
                     };
                     _dbContext.TOrderLists.Add(orderListItem);
                 }
                 _dbContext.SaveChanges();
 
+
+
                 // 清空購物車（直接刪除 TCart）
                 _dbContext.TCarts.RemoveRange(cartItems);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("Index", new { orderId = newOrder.FId });
+                return RedirectToAction("Order", "Customer", new { orderId = newOrder.FId });
             }
             catch (Exception ex)
             {
