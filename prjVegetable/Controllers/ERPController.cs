@@ -17,25 +17,29 @@ namespace prjVegetable.Controllers
 
         public IActionResult Index()
         {
+            int TotalOrdersYear = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddYears(-1));
+            int TotalOrdersMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddMonths(-1));
+            int TotalOrdersWeek = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddDays(-7));
+
             var viewmodel = new CERPIndexViewModel
             {
-                TotalMembers =  1           ,
-                TotalVisitors =   1         ,
-                TotalOrdersYear =   1       ,
-                TotalOrdersMonth =1,
-                TotalOrdersWeek =1,
-                BestSellingProductYear = ""  ,
-                BestSellingProductMonth ="",
-                BestSellingProductWeek ="",
+                TotalMembers = _VegetableContext.TPeople.Count(p => p.FPermission == 0),
+                TotalVisitors = 1,//待修改
+                TotalOrdersYear = TotalOrdersYear,
+                TotalOrdersMonth = TotalOrdersMonth,
+                TotalOrdersWeek = TotalOrdersWeek,
+                //BestSellingProductYear = ""  ,
+                //BestSellingProductMonth ="",
+                //BestSellingProductWeek ="",
 
-                MostPopularProductYear ="",
-                MostPopularProductMonth ="",
-                MostPopularProductWeek ="",
+                //MostPopularProductYear ="",
+                //MostPopularProductMonth ="",
+                //MostPopularProductWeek ="",
 
-                BestSellingClassYear ="",
-                BestSellingClassMonth ="",
-                BestSellingClassWeek =""
-    };
+                //BestSellingClassYear ="",
+                //BestSellingClassMonth ="",
+                //BestSellingClassWeek =""
+            };
             return View(viewmodel);
         }
         public IActionResult ProductBuying()

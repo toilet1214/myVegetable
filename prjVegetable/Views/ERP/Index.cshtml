@@ -6,14 +6,58 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 @section Styles {
-    <!-- Favicon icon -->
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon.png">
-    <title>Nice admin Template - The Ultimate Multipurpose admin template</title>
-    <!-- Custom CSS -->
-    <link href="/assets/libs/chartist/dist/chartist.min.css" rel="stylesheet">
-    <link href="/assets/extra-libs/c3/c3.min.css" rel="stylesheet">
-    <link href="/assets/extra-libs/jvector/jquery-jvectormap-2.0.2.css" rel="stylesheet" />
-    <!-- Custom CSS -->
-    <link href="/dist/css/style.min.css" rel="stylesheet">
-    <link href="/css/ERPIndex.css" rel="stylesheet">
+    <style>
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+}
+
+
+<div class="container my-4">
+    <h2 class="mb-4">Dashboard</h2>
+
+    <!-- 數據卡片 -->
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card p-3 text-center">
+                <h5>瀏覽人數</h5>
+                <h2 id="visitors">0</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 text-center">
+                <h5>會員人數</h5>
+                <h2 id="members">0</h2>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card p-3 text-center">
+                <h5>訂單數</h5>
+                <h2 id="orders">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- 圖表區域 -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h5>銷售趨勢</h5>
+                <canvas id="salesChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card p-3">
+                <h5>暢銷種類占比</h5>
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+
 }
