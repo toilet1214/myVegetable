@@ -19,7 +19,7 @@ namespace prjVegetable.Controllers
         {
             int TotalOrdersYear = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddYears(-1));
             int TotalOrdersMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddMonths(-1));
-            int TotalOrdersWeek = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddDays(-7));
+            int TotalOrdersDay = _VegetableContext.TOrders.Count(o => o.FOrderAt >= DateTime.Now.AddDays(-7));
 
             var viewmodel = new CERPIndexViewModel
             {
@@ -27,18 +27,18 @@ namespace prjVegetable.Controllers
                 TotalVisitors = 1,//待修改
                 TotalOrdersYear = TotalOrdersYear,
                 TotalOrdersMonth = TotalOrdersMonth,
-                TotalOrdersWeek = TotalOrdersWeek,
+                TotalOrdersDay = TotalOrdersDay,
                 //BestSellingProductYear = ""  ,
                 //BestSellingProductMonth ="",
-                //BestSellingProductWeek ="",
+                //BestSellingProductDay ="",
 
                 //MostPopularProductYear ="",
                 //MostPopularProductMonth ="",
-                //MostPopularProductWeek ="",
+                //MostPopularProductDay ="",
 
                 //BestSellingClassYear ="",
                 //BestSellingClassMonth ="",
-                //BestSellingClassWeek =""
+                //BestSellingClassDay =""
             };
             return View(viewmodel);
         }

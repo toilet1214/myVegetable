@@ -14,10 +14,17 @@ namespace prjVegetable.ViewModels
         public List<string> BestSellingProductMonth { get; set; }
         public List<string> MostPopularProductMonth { get; set; }
         public List<string> BestSellingClassMonth { get; set; }
-        public int TotalOrdersWeek { get; set; }
-        public List<string> BestSellingProductWeek { get; set; }
-        public List<string> MostPopularProductWeek { get; set; }
-        public List<string> BestSellingClassWeek { get; set; }
+        public int TotalOrdersDay { get; set; }
+        public List<string> BestSellingProductDay { get; set; }
+        public List<string> MostPopularProductDay { get; set; }
+        public List<string> BestSellingClassDay { get; set; }
 
+        public List<int> SellingChangeDay { get; set; }
+        public List<int> SellingChangeMonth { get; set; }
+        public List<int> SellingChangeYear { get; set; }
+
+        public List<int> MemberChangeDay { get; set; }
+        public List<int> MemberChangeMonth { get; set; }
+        public List<int> MemberChangeYear { get; set; }
     }
 }

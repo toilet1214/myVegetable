@@ -13,51 +13,181 @@
         }
     </style>
 }
-
-
-<div class="container my-4">
-    <h2 class="mb-4">Dashboard</h2>
-
-    <!-- 數據卡片 -->
+<section class="section dashboard p-4">
     <div class="row">
-        <div class="col-md-4">
-            <div class="card p-3 text-center">
-                <h5>瀏覽人數</h5>
-                <h2 id="visitors">0</h2>
+
+        <!-- Left side columns -->
+        <div class="col-lg-7 ms-auto">
+            <div class="row">
+                <!-- 會員 -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold fs-5">會員 <span id="Sales_Date">| 今天</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-cart"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 id="Members"></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End 會員 -->
+                <!-- 瀏覽人次 -->
+                <div class="col-xxl-4 col-md-6">
+                    <div class="card info-card  position-relative mt-3">
+                        <!-- 篩選器放到右上角 -->
+                        <div class="filter position-absolute top-0 end-0 p-2">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
+                                <li class="dropdown-header text-start">
+                                    <h6>篩選</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('day', '今天')">今天</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('month', '這個月')">這個月</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('year', '今年')">今年</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold fs-5">瀏覽人次 <span id="Revenue_Date">| 今天</span></h5>
+
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-currency-dollar"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 id="Revenue"></h6>
+                                    <span class="text-success small pt-1 fw-bold" id="Revenue_Percentage"></span> <span class="text-muted small pt-2 ps-1" id="Revenue_Compare"></span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- End 瀏覽人次 -->
+                <!-- 訂單 -->
+                <div class="col-xxl-4 col-xl-12">
+                    <div class="card info-card sales-card position-relative mt-3">
+                        <!-- 篩選器放到右上角 -->
+                        <div class="filter position-absolute top-0 end-0 p-2">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
+                                <li class="dropdown-header text-start">
+                                    <h6>篩選</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('day', '今天')">今天</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('month', '這個月')">這個月</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateOrdersData('year', '今年')">今年</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold fs-5">訂單數 <span id="Orders_Date">| 今天</span></h5>
+                            <div class="d-flex align-items-center">
+                                <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-cart"></i>
+                                </div>
+                                <div class="ps-3">
+                                    <h6 id="Orders">0</h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End 訂單 -->
             </div>
+            <!-- Start 折線圖一年會員數 -->
+
+            <!-- End 折線圖一年會員數 -->
         </div>
-        <div class="col-md-4">
-            <div class="card p-3 text-center">
-                <h5>會員人數</h5>
-                <h2 id="members">0</h2>
+        <!-- End Left side columns -->
+        <!-- Right side columns -->
+        <div class="col-lg-3 me-auto">
+            <!-- 通知 -->
+            <div class="card" >
+                <div class="card-body pb-1">
+                    <div class="d-flex align-items-center pt-4 pb-3">
+                        <h5 class="card-title fs-5 fw-bold py-0 mb-0">通知</h5>
+                    </div>
+                    <div id="notification" style="height: 250px; overflow-y: auto;">
+                    </div>
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card p-3 text-center">
-                <h5>訂單數</h5>
-                <h2 id="orders">0</h2>
+            <!-- End 通知 -->
+            <!-- 類別銷量 -->
+            <div class="card">
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="sales_filter">
+                        <li class="dropdown-header text-start">
+                            <h6>篩選</h6>
+                        </li>
+
+                        <li><a class="dropdown-item" href="#">今天</a></li>
+                        <li><a class="dropdown-item" href="#">這個月</a></li>
+                        <li><a class="dropdown-item" href="#">今年</a></li>
+                    </ul>
+                </div>
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title fw-bold fs-5">類別銷量 <span id="sales_date">| 今天</span></h5>
+
+                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+
+                </div>
             </div>
-        </div>
+            <!-- End 類別銷量 -->
+            <!-- 銷售排行 -->
+
+            <div class="card top-selling overflow-auto" style="min-height:220px;">
+
+                <div class="filter">
+                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="sales_filter">
+                        <li class="dropdown-header text-start">
+                            <h6>篩選</h6>
+                        </li>
+
+                        <li><a class="dropdown-item" href="#">今天</a></li>
+                        <li><a class="dropdown-item" href="#">這個月</a></li>
+                        <li><a class="dropdown-item" href="#">今年</a></li>
+                    </ul>
+                </div>
+
+
+
+
+                <div class="card-body pb-0">
+                    <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRanking_Date">| 今天</span></h5>
+
+                    <table class="table table-borderless">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="fs-6">圖片</th>
+                                <th scope="col" class="fs-6">產品</th>
+                                <th scope="col" class="fs-6">數量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="SalesRanking">
+                        </tbody>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- End 銷售排行 -->
+        </div><!-- End Right side columns -->
+
     </div>
-
-    <!-- 圖表區域 -->
-    <div class="row mt-4">
-        <div class="col-md-6">
-            <div class="card p-3">
-                <h5>銷售趨勢</h5>
-                <canvas id="salesChart"></canvas>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="card p-3">
-                <h5>暢銷種類占比</h5>
-                <canvas id="categoryChart"></canvas>
-            </div>
-        </div>
-    </div>
-</div>
+</section>
 
 
-@section Scripts{
+
+@section Scripts {
 
 }
