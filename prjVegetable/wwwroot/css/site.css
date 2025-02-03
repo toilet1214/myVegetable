@@ -1,8 +1,10 @@
-﻿main {
+﻿
+main {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     padding-top: 43px;
+    flex-shrink: 0;
 }
 
 .navbar {
@@ -59,6 +61,7 @@ a {
 
 .footer {
     background-color: #8D8266;
+
 }
 
 .carousel {

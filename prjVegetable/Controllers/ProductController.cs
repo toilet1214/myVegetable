@@ -15,17 +15,23 @@ namespace prjVegetable.Controllers
         }
 
         //商品列表
-        public IActionResult ProductList(ProductViewModel pvm)
+        public IActionResult ProductList(ProductViewModel pvm, int page =1)
         {
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
             string keyword = pvm.category;
+
+            // 設置 ViewBag.Category，用來在麵包屑顯示
+            ViewBag.Category = string.IsNullOrEmpty(keyword) ? "產品列表" : keyword;
+
             IEnumerable<TProduct> datas = null;
 
             // 取得篩選的最低價格和最高價格
+            //decimal精確數值的資料型別，小數點後兩位
             decimal? minPrice = pvm.MinPrice;
             decimal? maxPrice = pvm.MaxPrice;
 
+            //篩選分類
             if (string.IsNullOrEmpty(keyword))
             {
                 datas = db.TProducts;
@@ -53,6 +59,12 @@ namespace prjVegetable.Controllers
 
             var products = datas.ToList();
 
+            //頁碼排序
+            int pagesize = 10;
+            int totalProducts = datas.Count();
+            int totalPages = (int)Math.Ceiling((double)totalProducts / pagesize);
+            datas = datas.Skip((page - 1) * pagesize).Take(pagesize);
+
 
             foreach (var p in products)     
             {
@@ -61,11 +73,37 @@ namespace prjVegetable.Controllers
                 pp.FImgName = image?.FName;
                 list.Add(pp);
             }
+           
 
             return View(list);
         }
 
-        
+        //public ActionResult Index(int page = 1)
+        //{
+        //    int pageSize = 10; // 每頁顯示10筆
+        //    int skipCount = (page - 1) * pageSize; // 計算要跳過的數量
+
+        //    // 取得產品列表並進行分頁
+        //    var products = _context.TProducts
+        //                            .Skip(skipCount)
+        //                            .Take(pageSize)
+        //                            .ToList();
+
+        //    // 總產品數量
+        //    int totalProducts = _context.TProducts.Count();
+
+        //    // 計算總頁數
+        //    int totalPages = (int)Math.Ceiling((double)totalProducts / pageSize);
+
+        //    // 傳遞分頁資料到視圖
+        //    ViewBag.TotalPages = totalPages;
+        //    ViewBag.CurrentPage = page;
+
+        //    return View(products);
+        //}
+
+
+
 
 
 

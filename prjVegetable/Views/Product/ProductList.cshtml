@@ -3,122 +3,158 @@
 @{
     ViewData["Title"] = "ProductList";
 
-
 }
+
+
 
 <style>
 
     .dropdown-menu {
-    margin: 0 !important; /* 去除外邊距 */
-    padding: 0 !important; /* 去除內邊距 */
+        margin: 0 !important; /* 去除外邊距 */
+        padding: 0 !important; /* 去除內邊距 */
     }
 
 
     .imgicon {
-    border-radius: 50%;
-    color: white;
-    background-color: #8D8266;
-    transition: all 0.3s;
+        border-radius: 50%;
+        color: white;
+        background-color: #8D8266;
+        transition: all 0.3s;
     }
 
-    .imgicon:hover {
-    background-color: rgb(174, 146, 105);
-    width: 17%;
+        .imgicon:hover {
+            background-color: rgb(174, 146, 105);
+            width: 17%;
+        }
+
+
+
+
+    #dropdownMenuButton1 {
+        white-space: nowrap;
+        padding: 10px 10px;
+        font-size: 16px;
+        width: auto;
     }
+
+    #collapseExample {
+        position: absolute;
+        top: 42px;
+        right: 0px;
+        z-index: 1050;
+        width: 300px;
+    }
+
+        #collapseExample .modal-body {
+            padding: 5px 5px;
+            margin: 10px;
+        }
+
+    .lightbox-close {
+        color: black;
+        text-shadow: 1px 1px 1px #333;
+        font-size: 30px;
+        position: absolute;
+        top: 1px;
+        right: 0px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
 
 
 
     .range_container {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    margin-top: 30px;
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        margin-top: 30px;
     }
 
     .sliders_control {
-    position: relative;
-    min-height: 30px;
+        position: relative;
+        min-height: 30px;
     }
 
     .form_control {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    font-size: 24px;
-    color: #635a5a;
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        font-size: 24px;
+        color: #635a5a;
     }
 
     input[type=range]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    pointer-events: all;
-    width: 24px;
-    height: 24px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 1px #C6C6C6;
-    cursor: pointer;
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
     }
 
     input[type=range]::-moz-range-thumb {
-    -webkit-appearance: none;
-    pointer-events: all;
-    width: 24px;
-    height: 24px;
-    background-color: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 0 1px #C6C6C6;
-    cursor: pointer;
+        -webkit-appearance: none;
+        pointer-events: all;
+        width: 24px;
+        height: 24px;
+        background-color: #fff;
+        border-radius: 50%;
+        box-shadow: 0 0 0 1px #C6C6C6;
+        cursor: pointer;
     }
 
     input[type=range]::-webkit-slider-thumb:hover {
-    background: #f7f7f7;
+        background: #f7f7f7;
     }
 
     input[type=range]::-webkit-slider-thumb:active {
-    box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-    -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
     }
 
     input[type="number"] {
-    color: #8a8383;
-    width: 70px;
-    height: 30px;
-    font-size: 20px;
-    border: none;
+        color: #8a8383;
+        width: 70px;
+        height: 30px;
+        font-size: 20px;
+        border: none;
     }
 
     input[type=number]::-webkit-inner-spin-button,
     input[type=number]::-webkit-outer-spin-button {
-    opacity: 1;
+        opacity: 1;
     }
 
     input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    height: 4px;
-    width: 100%;
-    position: absolute;
-    background-color: #C6C6C6;
-    pointer-events: none;
+        -webkit-appearance: none;
+        appearance: none;
+        height: 4px;
+        width: 100%;
+        position: absolute;
+        background-color: #C6C6C6;
+        pointer-events: none;
     }
 
     #fromSlider {
-    height: 0;
-    z-index: 1;
+        height: 0;
+        z-index: 1;
     }
+
 </style>
 
 @{
     int count = 0;
 }
 
-
 <!--產品分類 start -->
 @using (Html.BeginForm("ProductList", "Product", FormMethod.Get))
 {
     <input type="hidden" name="category" id="categoryInput" />
     <div class="bg-primary">
-        <div class="container mt-5 py-2 fs-5 w-50">
+        <div class="container mt-5 pt-3 fs-5 w-50">
             <div class="row">
                 <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="根莖" onclick="submitCategory(this)">
                     <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
@@ -158,48 +194,77 @@
 
 
 
-<div class="container d-flex flex-column  margin-top: auto ">
+<div class=" m-0 position-relative">
 
-    @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm" }))
-    {
-        <!-- 篩選價格 start -->
-        <input type="hidden" id="minPriceInput" name="MinPrice" />
-        <input type="hidden" id="maxPriceInput" name="MaxPrice" />
-        <div class="dropdown position-absolute top-1 end-0">
-            <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                篩選價格
-            </button>
-            <ul class="dropdown-menu" style="width: 450px;" aria-labelledby="dropdownMenuButton1">
-                <li>
-                    <a class="dropdown-item" href="#"></a>
-                    <div class="modal-body">
-                        <p>建議區間: NT$300 ~ NT$700</p>
-                        <div class="range_container">
-                            <div class="sliders_control">
-                                <input id="fromSlider" type="range" value="300" min="0" max="1000" />
-                                <input id="toSlider" type="range" value="700" min="0" max="1000" />
-                            </div>
-                            <div class="form_control">
-                                <div class="form_control_container">
-                                    <div class="form_control_container__time">最低$$</div>
-                                    <input class="form_control_container__time__input" type="number" id="fromInput" value="300" min="0" max="1000" step="10" />
+    <div class="row ">
+        @using (Html.BeginForm())
+        {
+            @Html.TextBox("txtKeyword")
+            <input type="submit" value="查詢" />
+        }
+
+
+        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm" }))
+        {
+            <!-- 篩選價格 start -->
+            <input type="hidden" id="maxPriceInput" name="MaxPrice" />
+            <div class="dropdown position-absolute top-1 end-0">
+                <p>
+                    <button class="btn btn-primary position-absolute top-0 end-0" type="button" id="dropdownMenuButton1" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        篩選價格
+                    </button>
+                </p>
+                <div class="collapse " id="collapseExample">
+                    <div class="card card-body ">
+                        <a class="dropdown-item " href="#"></a>
+                        <span class="lightbox-close">&times;</span>
+                        <div class="modal-body">
+                            <p>建議區間: NT$100 ~ NT$500</p>
+                            <div class="range_container">
+                                <div class="sliders_control">
+                                    <input id="fromSlider" type="range" value="100" min="0" max="1000" step="10" />
+                                    <input id="toSlider" type="range" value="500" min="0" max="1000" step="10" />
                                 </div>
-                                <div class="form_control_container">
-                                    <div class="form_control_container__time">最高$$</div>
-                                    <input class="form_control_container__time__input" type="number" id="toInput" value="700" min="0" max="1000" step="10" />
+                                <div class="form_control">
+                                    <div class="form_control_container">
+                                        <div class="form_control_container__time">最低$$</div>
+                                        <input class="form_control_container__time__input" type="number" id="fromInput" value="100" min="0" max="1000" step="10" />
+                                    </div>
+                                    <div class="form_control_container">
+                                        <div class="form_control_container__time">最高$$</div>
+                                        <input class="form_control_container__time__input" type="number" id="toInput" value="500" min="0" max="1000" step="10" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="d-flex justify-content-end ">
-                        <button id="applyFilter" class="btn btn-secondary btn-sm me-3 ms-3 ">確定</button>
+                        <div class="d-flex justify-content-end ">
+                            <button id="applyFilter" class="btn btn-secondary btn-sm me-3 ms-3 ">確定</button>
+                        </div>
                     </div>
+                </div>
+            </div>
+        }
 
+        <!-- 麵包屑 start -->
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")">首頁</a>
                 </li>
-            </ul>
-        </div>
-    }
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="@Url.Action("ProductList", "Product")">產品列表</a>
+                </li>
+                @if (ViewBag.Category != null && ViewBag.Category != "產品列表")
+                {
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a>@ViewBag.Category</a>
+                    </li>
+                }
+            </ol>
+        </nav>
+    </div>
+
 
     <!-- 產品列表 start -->
     <div class="col-12">
@@ -213,7 +278,7 @@
                 bool isSoldOut = item.FQuantity == 0;  // 檢查產品是否售完
 
 
-                <div class="col">
+                <div class="col product-item">
                     <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
 
                         <div class="card h-100 shadow-sm d-flex flex-column @((isSoldOut) ? "sold-out" : "")">
@@ -233,37 +298,42 @@
                             <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid @((isSoldOut) ? "sold-out-img" : "")" alt="Image">
                             <div class="card-body d-flex flex-column justify-content-center align-items-center">
                                 <h5 class="card-title">@Html.DisplayFor(modelItem => item.FName)</h5>
-                                <p class="card-text">【@Html.DisplayFor(modelItem => item.FDescription)】《宅配含運》</p>
+                                <p class="card-text">【@Html.DisplayFor(modelItem => item.FDescription)】</p>
                                 <p class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</p>
-                                <div class="d-flex">
-                                    <button class="btn"><i class="bi bi-heart"></i></button>
-                                    <button class="btn @((isSoldOut) ? "disabled" : "")"><i class="bi bi-cart"></i>加入購物車</button>
-                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent border-primary">
+                                <button class="btn heartButton" id="">
+                                    <i class="bi bi-heart heart-icon"></i>
+                                </button>
+                                <button class="btn @((isSoldOut) ? "disabled" : "")">
+                                    <i class="bi bi-cart"></i>加入購物車
+                                </button>
                             </div>
                         </div>
                     </a>
                 </div>
             }
 
+
+
         </div>
-
-
-
-        <!-- 頁碼 start -->
-        <div class="container my-auto">
+    </div>
+    <!-- 分頁控制 start -->
+    <footer style="margin-top: auto;">
+        <div class="container my-auto ">
             <div class="d-flex align-item-end justify-content-center mt-3">
 
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end">
-                        <li class="page-item">
+                    <ul class="pagination justify-content-end" id="pagination">
+                        <li class="page-item" id="prevPage">
                             <a class="page-link" href="#" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
+                        <li class="page-item active"><a class="page-link" href="#" data-page="1">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#" data-page="2">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#" data-page="3">3</a></li>
+                        <li class="page-item" id="nextPage">
                             <a class="page-link" href="#" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
@@ -274,8 +344,9 @@
             </div>
         </div>
 
-    </div>
+    </footer>
 </div>
+
 
 
 
@@ -294,44 +365,40 @@
             function submitCategory(button) {
                 // 取得按鈕的 data-category 屬性值
                 var category = button.getAttribute('data-category');
-
                 // 將選中的 category 值設置到隱藏的輸入框中
                 document.getElementById('categoryInput').value = category;
-
                 // 提交表單
-                document.forms[0].submit();
+                document.querySelector("form").submit();
             }
 
             // 停止按鈕的默認提交行為，並用 JavaScript 提交
-            $('.imgicon').on('click', function(event) {
+            $('.imgicon').on('click', function (event) {
                 event.preventDefault();  // 阻止表單提交
                 submitCategory(this);  // 呼叫 submitCategory
             });
 
 
 
-
-                 // 禁用自動關閉的功能
-            const dropdownMenu = document.querySelector('.dropdown-menu');
-            const dropdownButton = document.querySelector('#dropdownMenuButton1');
-
-            // 阻止 dropdown 自動關閉
-            dropdownButton.addEventListener('click', function (event) {
-                event.stopPropagation(); // 阻止點擊後觸發隱藏行為
-            
-            });
-
-            // 這段代碼會避免點擊區域外的地方關閉下拉選單
-            document.addEventListener('click', function (event) {
-                if (!dropdownMenu.contains(event.target) && !dropdownButton.contains(event.target)) {
-                    dropdownMenu.classList.remove('show'); // 點擊區域外部，隱藏下拉選單
+            // collapse隱藏/顯示
+            let isVisible = false;
+            $('#dropdownMenuButton1, .lightbox-close').on('click', function () {
+                if (this.id === 'dropdownMenuButton1') {
+                    if (isVisible) {
+                        $('#collapseExample').hide();
+                    } else {
+                        $('#collapseExample').show();
+                    }
+                    isVisible = !isVisible;
+                } else if (this.classList.contains('lightbox-close')) {
+                    $('#collapseExample').fadeOut();
+                    isVisible = false;
                 }
             });
 
 
 
 
-            // 篩選價格start//
+            // 篩選價格Slider Range start//
             function controlFromInput(fromSlider, fromInput, toInput, controlSlider) {
                 const [from, to] = getParsed(fromInput, toInput);
                 fillSlider(fromInput, toInput, '#C6C6C6', '#25daa5', controlSlider);
@@ -390,13 +457,13 @@
                 const fromPosition = from.value - to.min;
                 const toPosition = to.value - to.min;
                 controlSlider.style.background = `linear-gradient(
-                     to right,
-                     ${sliderColor} 0%,
-                     ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
-                     ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
-                     ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
-                     ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
-                     ${sliderColor} 100%)`;
+                                     to right,
+                                     ${sliderColor} 0%,
+                                     ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
+                                     ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
+                                     ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                     ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                     ${sliderColor} 100%)`;
             }
 
             function setToggleAccessible(currentTarget) {
@@ -419,29 +486,115 @@
             toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
             fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
             toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
-            // 篩選價格end //
+            // 篩選價格Slider Range end //
 
 
 
-
-        
-
-        
-        
-          
-
-        // 點擊 "確定" 按鈕時觸發篩選
-        $('#applyFilter').on('click', function () {
+            //挑選最大最小值
+            // 點擊 "確定" 按鈕時觸發篩選
+            $('#applyFilter').on('click', function () {
                 const minPrice = parseInt(fromSlider.value);
-        const maxPrice = parseInt(toSlider.value);
+                const maxPrice = parseInt(toSlider.value);
 
-        // 假設你有一個表單來提交數據
-        $('#minPriceInput').val(minPrice);
-        $('#maxPriceInput').val(maxPrice);
+                // 假設你有一個表單來提交數據
+                $('#minPriceInput').val(minPrice);
+                $('#maxPriceInput').val(maxPrice);
 
-        // 提交表單
-        $('#filterForm').submit();
-        });
+                // 提交表單
+                $('#filterForm').submit();
+            });
+
+
+
+            //我的最愛
+            let isHeartClicked = false;
+            $(".heartButton").click(function (event) {
+                event.stopPropagation(); //阻止事件冒泡，防止觸發 <a> 的點擊事件
+
+                var heartIcon = $(this).find(".heart-icon");
+
+                if (isHeartClicked) {
+                    heartIcon.removeClass("bi-heart-fill text-danger");
+                    heartIcon.addClass("bi-heart");
+                } else {
+                    heartIcon.removeClass("bi-heart");
+                    heartIcon.addClass("bi-heart-fill text-danger");
+                }
+                isHeartClicked = !isHeartClicked;
+
+                //阻止 <a> 點擊，避免跳轉到 ProductItem 頁面
+                event.preventDefault();
+            });
+
+
+
+            // 分頁控制 //
+            var itemsPerPage = 10;
+            var totalItems = $(".product-item").length;  // 總共的產品數量
+            var totalPages = Math.ceil(totalItems / itemsPerPage); // 總頁數
+            var currentPage = 1;
+
+            // 顯示指定頁碼的產品
+            function showPage(page) {
+                var startIndex = (page - 1) * itemsPerPage;
+                var endIndex = startIndex + itemsPerPage;
+
+                $(".product-item").hide(); // 隱藏所有產品
+                $(".product-item").slice(startIndex, endIndex).show(); // 顯示當前頁面的產品
+
+                // 更新頁碼樣式
+                $("#pagination .page-item").removeClass("active");
+                $("#pagination .page-item[data-page=" + page + "]").addClass("active");
+
+                // 更新上一頁和下一頁的可用性
+                if (page == 1) {
+                    $("#prevPage").addClass("disabled");
+                } else {
+                    $("#prevPage").removeClass("disabled");
+                }
+
+                if (page == totalPages) {
+                    $("#nextPage").addClass("disabled");
+                } else {
+                    $("#nextPage").removeClass("disabled");
+                }
+            }
+
+            // 點擊頁碼
+            $("#pagination .page-link").click(function (e) {
+                e.preventDefault();
+                var page = $(this).data("page");
+                if (page) {
+                    currentPage = page;
+                    showPage(currentPage);
+                }
+            });
+
+            // 上一頁
+            $("#prevPage").click(function (e) {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            // 下一頁
+            $("#nextPage").click(function (e) {
+                e.preventDefault();
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // 初始顯示第一頁
+            showPage(currentPage);
+
+            // 防止整個卡片點擊跳轉
+            $("a#productLink").click(function (event) {
+                event.stopPropagation();  // 防止點擊鏈接時跳轉
+            });
 
         });//end function
 
