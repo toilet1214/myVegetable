@@ -5,97 +5,9 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>詳細資料</h1>
+<h1>人員詳細資料</h1>
 <br />
-<div id="app">
-    <!-- 當 personData 存在時顯示表單 -->
-    <div v-if="personData">
-        <template>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>姓名</label>
-                    <label>{{personData.fName}}</label>                    
-                </div>
-                <div class="col-6">
-                    <label>權限</label>
-                    <label>{{personData.fPermission}}</label>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>帳號</label>
-                    <label>{{personData.fAccount}}</label>
-                </div>
-                <div class="col-6">
-                    <label>密碼</label>
-                    <label>{{personData.fPassword}}</label>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>性別</label>
-                    <label>{{personData.fGender}}</label>
-                </div>
-                <div class="col-6">
-                    <label>生日</label>
-                    <label>{{personData.fBitrh}}</label>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>手機</label>
-                    <label>{{personData.fPhone}}</label>
-                </div>
-                <div class="col-6">
-                    <label>家用電話</label>
-                    <label>{{personData.fTel}}</label>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>緊急連絡人</label>
-                    <label>{{personData.fEmp}}</label>
-                </div>
-                <div class="col-6">
-                    <label>緊急聯絡人電話</label>
-                    <label>{{personData.fEmpTel}}</label>
-                </div>
-            </div>
-            <div class="row mb-3">
-                <label>地址</label>
-                <label>{{personData.fAddress}}</label>
-            </div>
-            <div class="row mb-3">
-                <label>電子郵件</label>
-                <label>{{personData.fEmail}}</label>
-            </div>
-            <div class="row mb-3">
-                <div class="col-6">
-                    <label>建檔時間</label>
-                    <label>{{personData.fCreatedAt}}</label>
-                </div>
-                <div class="col-6">
-                    <label>建檔人</label>
-                    <label>{{personData.fEditor}}</label>
-                </div>
-            </div>            
-        </template>
-        <!-- 編輯資料按鈕 -->
-        <div>
-            <a href="/TPersons/Index" class="btn btn-outline-primary">回員工與會員列表</a>
-            <a :href="'/TPersons/Edit/' + personData.fId" class="btn btn-primary">編輯資料</a>
-        </div>
-    </div>
-
-    <!-- 當 personData 不存在時顯示資料載入中訊息 -->
-    <div v-else>
-        <p>載入資料中...</p>
-    </div>
-</div>
-
-
-
-@*<div>
+<div>
    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -189,40 +101,11 @@
             @Html.DisplayFor(model => model.person.FEditor)
         </dd>
     </dl>
-</div>*@
+</div>
+<div>
+  
+    <a asp-action="Index" class="btn btn-outline-primary">回員工與會員列表</a>
+    <a asp-action="Edit" asp-route-id="@Model?.FId" class="btn btn-primary">編輯資料</a>
+</div>
 
-@section Scripts {
 
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    personData: null,  // 儲存單一人員資料
-                };
-            },
-            mounted() {
-                const personId = new URLSearchParams(window.location.search).get('id');
-                if (personId) {
-                    this.loadPersonData(personId);
-                }
-            },
-            methods: {
-                async loadPersonData(id) {
-                    try {
-                        const response = await axios.get(`/TPersons/Details/${id}`);
-                        // 確保返回的資料中包含 `person` 屬性
-                        if (response.data && response.data.person) {
-                            this.personData = response.data.person;
-                        } else {
-                            console.error('未找到資料');
-                        }
-                    } catch (error) {
-                        console.error('資料載入錯誤', error);
-                    }
-                }
-            }
-        });
-
-        app.mount('#app');
-    </script>
-}

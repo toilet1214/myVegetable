@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.DotNet.Scaffolding.Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using prjVegetable.Models;
@@ -69,6 +70,7 @@ namespace prjVegetable.Controllers
             return Ok();
         }
 
+
         // GET: TPersons/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -77,13 +79,15 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
-            if (x == null)
+            var tPerson = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+            if (tPerson == null)
+            {
                 return RedirectToAction(nameof(Index));
+            }
 
-            var personWrap = new CPersonWrap() { person = x };
-            return Json(personWrap);  // 返回 JSON 格式的資料
-        }        
+            return View(new CPersonWrap() { person = tPerson });
+        }
+
 
 
         // GET: TPersons/Create
@@ -135,7 +139,7 @@ namespace prjVegetable.Controllers
             {   //拿掉不給使用者修改的欄位
                 e.FName = tPersonwrap.FName;
                 e.FAccount = tPersonwrap.FAccount;
-                e.FPassword = tPersonwrap.FPassword;
+                //e.FPassword = tPersonwrap.FPassword;
                 e.FBirth = tPersonwrap.FBirth;
                 e.FPhone = tPersonwrap.FPhone;
                 e.FTel = tPersonwrap.FTel;
