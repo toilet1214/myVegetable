@@ -5,16 +5,18 @@ namespace prjVegetable.ViewModels
     public class CERPIndexViewModel
     {
         public int TotalMembers { get; set; }
-        public int TotalVisitors { get; set; }
+        public int TotalVisitorsYear { get; set; }
+        public int TotalVisitorsMonth { get; set; }
+        public int TotalVisitorsDay { get; set; }
         public int TotalOrdersYear { get; set; }
+        public int TotalOrdersMonth { get; set; }
+        public int TotalOrdersDay { get; set; }
         public List<string> BestSellingProductYear { get; set; }
         public List<string> MostPopularProductYear { get; set; }
         public List<string> BestSellingClassYear { get; set; }
-        public int TotalOrdersMonth { get; set; }
         public List<string> BestSellingProductMonth { get; set; }
         public List<string> MostPopularProductMonth { get; set; }
         public List<string> BestSellingClassMonth { get; set; }
-        public int TotalOrdersDay { get; set; }
         public List<string> BestSellingProductDay { get; set; }
         public List<string> MostPopularProductDay { get; set; }
         public List<string> BestSellingClassDay { get; set; }
