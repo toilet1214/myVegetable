@@ -1,4 +1,4 @@
-﻿@model prjVegetable.Models.CProviderWrap
+﻿@model prjVegetable.Models.CGoodsInAndOutWrap
 
 @{
     ViewData["Title"] = "Create";
@@ -13,41 +13,45 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FName" class="control-label"></label>
-                <input asp-for="FName" class="form-control" />
-                <span asp-validation-for="FName" class="text-danger"></span>
+                <label asp-for="FInOut" class="control-label"></label>
+                <select asp-for="FInOut" class="form-control">
+                    <option value="0">進貨</option>
+                    <option value="1">出貨</option>
+                </select>
+                <span asp-validation-for="FInOut" class="text-danger"></span>
             </div>
         </div>
+
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FUbn" class="control-label"></label>
-                <input asp-for="FUbn" class="form-control" />
-                <span asp-validation-for="FUbn" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FConnect" class="control-label"></label>
-                <input asp-for="FConnect" class="form-control" />
-                <span asp-validation-for="FConnect" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FTel" class="control-label"></label>
-                <input asp-for="FTel" class="form-control" />
-                <span asp-validation-for="FTel" class="text-danger"></span>
+                <label asp-for="FDate" class="control-label"></label>
+                <input asp-for="FDate" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="FDate" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FAccountant" class="control-label"></label>
-                <input asp-for="FAccountant" class="form-control" />
-                <span asp-validation-for="FAccountant" class="text-danger"></span>
+                <label asp-for="FInvoiceId" class="control-label"></label>
+                <input asp-for="FInvoiceId" class="form-control" />
+                <span asp-validation-for="FInvoiceId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FProviderId" class="control-label"></label>
+                <input asp-for="FProviderId" class="form-control" />
+                <span asp-validation-for="FProviderId" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FPersonId" class="control-label"></label>
+                <input asp-for="FPersonId" class="form-control" />
+                <span asp-validation-for="FPersonId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
@@ -56,34 +60,25 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="form-group">
-                <label asp-for="FAddress" class="control-label"></label>
-                <input asp-for="FAddress" class="form-control" />
-                <span asp-validation-for="FAddress" class="text-danger"></span>
+                <label asp-for="FTotal" class="control-label"></label>
+                <input asp-for="FTotal" class="form-control" />
+                <span asp-validation-for="FTotal" class="text-danger"></span>
             </div>
         </div>        
     </div>
     <div class="row mb-3">
         <div class="col-12">
             <div class="form-group">
-                <label asp-for="FDelivery" class="control-label"></label>
-                <input asp-for="FDelivery" class="form-control" />
-                <span asp-validation-for="FDelivery" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="form-group">
-                <label asp-for="FInvoiceAdd" class="control-label"></label>
-                <input asp-for="FInvoiceAdd" class="form-control" />
-                <span asp-validation-for="FInvoiceAdd" class="text-danger"></span>
+                <label asp-for="FNote" class="control-label"></label>
+                <input asp-for="FNote" class="form-control" />
+                <span asp-validation-for="FNote" class="text-danger"></span>
             </div>
         </div>
     </div>
     <div class="row mb-3">
         <div class="col-6">
             <div>
-                <a asp-action="Index">回廠商列表</a>
+                <a asp-action="GoodsInAndOutIndex">回進出貨列表</a>
             </div>
         </div>
         <div class="col-6">
@@ -92,15 +87,4 @@
             </div>
         </div>
     </div>
-
-
-
-
 </form>
-
-
-
-
-@* @section Scripts { *@
-@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
-@* } *@

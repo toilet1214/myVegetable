@@ -156,32 +156,22 @@ namespace prjVegetable.Controllers
         }
 
         // GET: GoodsInAndOut/Delete/5
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().FirstOrDefault(m => m.FId == id);
-            if (goodsInAndOutWrap == null)
+            var tGoods = await _dbContext.TGoodsInAndOuts
+                .FirstOrDefaultAsync(m => m.FId == id);
+            if (tGoods == null)
             {
                 return NotFound();
             }
-            return View(goodsInAndOutWrap);
-        }
+            _dbContext.TGoodsInAndOuts.Remove(tGoods);
+            _dbContext.SaveChanges();
 
-        // POST: GoodsInAndOut/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().Find(id);
-            if (goodsInAndOutWrap != null)
-            {
-                _dbContext.Set<CGoodsInAndOutWrap>().Remove(goodsInAndOutWrap);
-                _dbContext.SaveChanges();
-            }
             return RedirectToAction(nameof(Index));
         }
     }
