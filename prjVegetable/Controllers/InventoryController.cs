@@ -25,13 +25,13 @@ namespace prjVegetable.Controllers
 
         /*--------------- + Detail + ----------------*/
         //GET Inventory/Detail
+        [HttpGet]
         public IActionResult Detail(int id)
         {
-            // 直接查詢符合 id 的盤點資料
             var inventoryMain = _context.TInventoryMains
-                .FirstOrDefault(im => im.FId == id);
+                .Where(im => im.FId == id && im.FBaselineDate != null)
+                .FirstOrDefault();
 
-            // 如果找不到對應的盤點資料，返回空資料頁面
             if (inventoryMain == null)
             {
                 return View("DetailEmpty", new CInventoryViewModel
@@ -71,6 +71,21 @@ namespace prjVegetable.Controllers
                 FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
             }).ToList();
 
+            // 總 InventoryMain 筆數
+            int totalItemCount = _context.TInventoryMains
+                .Where(im => im.FBaselineDate != null)
+                .Count();
+
+            // 獲取所有有效的 InventoryMain Id 列表
+            var validIds = _context.TInventoryMains
+                .Where(im => im.FBaselineDate != null)
+                .OrderBy(i => i.FId)
+                .Select(i => i.FId)
+                .ToList();
+
+            // 當前顯示的 InventoryMain Id
+            int currentIndex = validIds.IndexOf(id) + 1; 
+
             var viewModel = new CInventoryViewModel
             {
                 InventoryMain = inventoryMainWrap,
@@ -78,20 +93,22 @@ namespace prjVegetable.Controllers
                 Products = products.Select(product => new CProductUpdateWrap
                 {
                     FId = product.FId,
+                    FName = product.FName,
                     FQuantity = product.FQuantity
-                }).ToList()
+                }).ToList(),
+                TotalItemCount = validIds.Count, // 所有有效的 InventoryMain 總數
+                CurrentItemCount = currentIndex // 當前顯示的 InventoryMain 是第幾筆
             };
 
-            // 計算下一個、上一個以及最後一個 id
-            var inventoryMains = _context.TInventoryMains.ToList();
-            var currentIndex = inventoryMains.FindIndex(im => im.FId == id);
-            var nextId = currentIndex < inventoryMains.Count - 1 ? inventoryMains[currentIndex + 1].FId : id;
-            var previousId = currentIndex > 0 ? inventoryMains[currentIndex - 1].FId : id;
-            var lastId = inventoryMains.Any() ? inventoryMains.Last().FId : id;
+            var firstId = validIds.FirstOrDefault();
+            var lastId = validIds.LastOrDefault();
+            var previousId = validIds.Where(i => i < id).LastOrDefault(id);
+            var nextId = validIds.Where(i => i > id).FirstOrDefault(id);
 
-            ViewData["NextId"] = nextId;
-            ViewData["PreviousId"] = previousId;
+            ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
+            ViewData["PreviousId"] = previousId;
+            ViewData["NextId"] = nextId;
 
             return View(viewModel);
         }
@@ -193,7 +210,7 @@ namespace prjVegetable.Controllers
         }
 
 
-        /*----------------- + Save + ------------------*/
+        /*---------------- + Save + ------------------*/
         [HttpPost]
         [Route("Inventory/Save/{currentId}")]
         public async Task<IActionResult> Save(int currentId, [FromBody] CInventoryViewModel viewModel)
@@ -202,33 +219,14 @@ namespace prjVegetable.Controllers
             {
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
                 {
-                    _logger.LogError(error.ErrorMessage);
+                    _logger.LogError($"Property: {error.ErrorMessage}");
                 }
-                return BadRequest("Invalid model.");
+                _logger.LogError($"Invalid model data: {JsonConvert.SerializeObject(viewModel)}");
+                return BadRequest(new { message = "Invalid model data.", details = ModelState.Values.SelectMany(v => v.Errors.Select(e => e.ErrorMessage)) });
             }
-            _logger.LogInformation("Received data: InventoryMain = {InventoryMain}, InventoryDetails = {InventoryDetails}, Products = {Products}",
-            viewModel.InventoryMain, viewModel.InventoryDetails, viewModel.Products);
-            
+
             try
             {
-                // 記錄 InventoryMain 資料
-                _logger.LogInformation("InventoryMain: FBaselineDate = {FBaselineDate}, FCreatedAt = {FCreatedAt}, FEditor = {FEditor}",
-                    viewModel.InventoryMain.FBaselineDate, viewModel.InventoryMain.FCreatedAt, viewModel.InventoryMain.FEditor);
-
-                // 記錄 InventoryDetails
-                foreach (var detail in viewModel.InventoryDetails)
-                {
-                    _logger.LogInformation("InventoryDetail: FProductId = {FProductId}, FActualQuantity = {FActualQuantity}, FSystemQuantity = {FSystemQuantity}",
-                        detail.FProductId, detail.FActualQuantity, detail.FSystemQuantity);
-                }
-
-                // 記錄 Products
-                foreach (var product in viewModel.Products)
-                {
-                    _logger.LogInformation("Product: FId = {FId}, FQuantity = {FQuantity}", product.FId, product.FQuantity);
-                }
-
-                // 業務邏輯
                 var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == currentId);
                 if (inventoryMain == null)
                 {
@@ -241,51 +239,76 @@ namespace prjVegetable.Controllers
                 inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
                 inventoryMain.FNote = "自動更新";
 
-                // 更新 TInventoryDetail
-                foreach (var detail in viewModel.InventoryDetails)
+                // 保存 TInventoryMain
+                _context.SaveChanges();
+
+                // 更新每個 InventoryDetail 的實際庫存數量
+                foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
-                    var inventoryDetail = _context.TInventoryDetails.FirstOrDefault(id => id.FId == detail.FId);
-                    if (inventoryDetail != null)
-                    {
-                        inventoryDetail.FSystemQuantity = detail.FActualQuantity;
-                        _logger.LogInformation("Updating FSystemQuantity for product {FProductId}, new value: {FSystemQuantity}", detail.FProductId, inventoryDetail.FSystemQuantity);
-                    }
-                    else
-                    {
-                        _logger.LogWarning("InventoryDetail not found for FId: {FId}", detail.FId);
-                    }
-                }
+                    var detailToUpdate = _context.TInventoryDetails
+                        .FirstOrDefault(id => id.FId == inventoryDetail.FId);
 
-                // 更新 TProduct（根據盤點結果更新庫存）
-                foreach (var productWrap in viewModel.Products)
-                {
-                    var inventoryDetail = viewModel.InventoryDetails.FirstOrDefault(id => id.FProductId == productWrap.FId);
-
-                    if (inventoryDetail != null)
+                    if (detailToUpdate != null)
                     {
-                        productWrap.FQuantity = (int)inventoryDetail.FActualQuantity;
-                    }
-
-                    var product = _context.TProducts.FirstOrDefault(p => p.FId == productWrap.FId);
-                    if (product != null)
-                    {
-                        product.FQuantity = productWrap.FQuantity;
+                        // 更新實際庫存數量
+                        detailToUpdate.FActualQuantity = inventoryDetail.FActualQuantity;
                     }
                 }
 
-                try
+                // 保存更新的 TInventoryDetail
+                _context.SaveChanges();
+
+                // 處理 TInventoryAdjustment
+                var inventoryAdjustmentList = new List<TInventoryAdjustment>();
+                foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
-                    _context.SaveChanges();
-                    _logger.LogInformation("Changes saved successfully.");
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Error while saving changes to database: {ErrorMessage}", ex.Message);
-                    return Json(new { success = false, error = ex.Message });
+                    if (inventoryDetail.FActualQuantity != inventoryDetail.FSystemQuantity)
+                    {
+                        var inventoryAdjustment = new TInventoryAdjustment
+                        {
+                            FadjustmentDate = inventoryMain.FBaselineDate,
+                            FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
+                            FEditor = 1,
+                            FNote = "庫存調整",
+                            FCheckerId = 1
+                        };
+
+                        _context.TInventoryAdjustments.Add(inventoryAdjustment);
+                        _context.SaveChanges();  // Save to get the Id
+                        inventoryAdjustmentList.Add(inventoryAdjustment);
+                    }
                 }
 
-                return Json(new { success = true, redirectTo = $"/Inventory/Detail/{currentId}" });
+                // 處理 TInventoryAdjustmentDetail
+                foreach (var inventoryDetail in viewModel.InventoryDetails)
+                {
+                    if (inventoryDetail.FActualQuantity != inventoryDetail.FSystemQuantity)
+                    {
+                        var linkedAdjustment = inventoryAdjustmentList.FirstOrDefault();
+                        if (linkedAdjustment != null)
+                        {
+                            var goodsDetail = _context.TGoodsInAndOutDetails.FirstOrDefault(g => g.FProductId == inventoryDetail.FProductId);
+                            decimal cost = goodsDetail?.FPrice ?? 0;
 
+                            var inventoryAdjustmentDetail = new TInventoryAdjustmentDetail
+                            {
+                                FInventoryAdjustmentId = linkedAdjustment.FId, // use the correct adjustment ID
+                                FProductId = inventoryDetail.FProductId,
+                                FQuantity = (int)(inventoryDetail.FActualQuantity - inventoryDetail.FSystemQuantity),
+                                FCost = cost
+                            };
+
+                            _context.TInventoryAdjustmentDetails.Add(inventoryAdjustmentDetail);
+                        }
+                    }
+                }
+
+                // 保存所有變更
+                _context.SaveChanges();
+
+                // 跳轉到新增的 InventoryAdjustment 詳細頁
+                var newAdjustmentId = inventoryAdjustmentList.FirstOrDefault()?.FId;
+                return Json(new { success = true, redirectTo = $"/InventoryAdjustment/Detail/{newAdjustmentId}" });
             }
             catch (Exception ex)
             {
@@ -293,6 +316,10 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
-    }
 
+
+        /*---------------- + Search + ----------------*/
+       
+
+    }
 }

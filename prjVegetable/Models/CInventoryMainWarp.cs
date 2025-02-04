@@ -23,13 +23,13 @@ namespace prjVegetable.Models
             set { _inventoryMain.FId = value; }
         }
 
-        public DateOnly FBaselineDate  // 改為 DateTime
+        public DateOnly FBaselineDate
         {
             get { return _inventoryMain.FBaselineDate; }
             set { _inventoryMain.FBaselineDate = value; }
         }
 
-        public DateOnly FCreatedAt  // 改為 DateTime
+        public DateOnly FCreatedAt
         {
             get { return _inventoryMain.FCreatedAt; }
             set { _inventoryMain.FCreatedAt = value; }
@@ -47,7 +47,11 @@ namespace prjVegetable.Models
             set { _inventoryMain.FNote = value; }
         }
 
-
+        public DateOnly? FBaselineStartDate { get; set; }
+        public DateOnly? FBaselineEndDate { get; set; }
+       
+        public DateOnly? FCreatedStartDate { get; set; }
+        public DateOnly? FCreatedEndDate { get; set; }
     }
 
 

@@ -8,6 +8,11 @@ namespace prjVegetable.ViewModels
         public CInventoryAdjustmentWrap InventoryAdjustment { get; set; }
         public IEnumerable<CProductUpdateWrap> Products { get; set; }
 
+        public class TGoodsInAndOutDetail
+        {
+            public int FProductId { get; set; }
+            public int FPrice { get; set; }
+        }
 
         public class CProductUpdateWrap
         {

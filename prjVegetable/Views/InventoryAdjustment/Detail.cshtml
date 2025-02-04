@@ -94,7 +94,7 @@
                     <td>@item.InventoryAdjustmentDetail.FQuantity</td>
                     <td>@item.FCost</td>
                     <td>
-                        @item.FCost
+                        @(@item.FCost * item.InventoryAdjustmentDetail.FQuantity)
                     </td>
                 </tr>
             }

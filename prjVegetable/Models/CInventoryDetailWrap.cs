@@ -23,8 +23,8 @@
 
         public int FInventoryMainId
         {
-            get { return _inventoryDetail.FId; }
-            set { _inventoryDetail.FId = value; }
+            get { return _inventoryDetail.FInventoryMainId; }
+            set { _inventoryDetail.FInventoryMainId = value; }
         }
 
         public int FProductId
@@ -46,6 +46,7 @@
         }
 
         public string FName { get; set; }
+
         public int? DifferenceQuantity
         {
             get

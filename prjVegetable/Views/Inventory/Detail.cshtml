@@ -12,9 +12,10 @@
 <!-- 工具列 start -->
 <div class="row d-block mb-3">
     <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">
-            <i class="bi bi-search me-2"></i>搜尋
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            搜尋
         </button>
+
         <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
             <i class="bi bi-skip-start-fill me-2"></i>第一筆
         </a>
@@ -27,7 +28,7 @@
         <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
             <i class="bi bi-skip-end-fill me-2"></i>最後一筆
         </a>
-        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
             <i class="bi bi-file-earmark me-2"></i>新增
         </button>
         <button type="button" class="btn btn-primary" id="editButton">
@@ -83,125 +84,103 @@
         <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
         <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
     </div>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>商品Id</th>
-                <th>商品名稱</th>
-                <th>系統庫存數量</th>
-                <th>實際庫存數量(填入數量)</th>
-                <th>差異數量</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.InventoryDetails)
-            {
+    <div class="table-responsive" style="max-height: 50%;">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FName)</td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FSystemQuantity)
-                    </td>
-                    <td>
-                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
-                    </td>
-                    <td>
-                        @if (item.FActualQuantity.HasValue)
-                        {
-                            @(item.FActualQuantity.Value - item.FSystemQuantity)
-                        }
-                        else
-                        {
-                            @("")
-                        }
-                    </td>
-                    <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+                    <th>商品Id</th>
+                    <th>商品名稱</th>
+                    <th>系統庫存數量</th>
+                    <th>實際庫存數量(填入數量)</th>
+                    <th>差異數量</th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InventoryDetails)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
+                        <td>@Html.DisplayFor(modelItem => item.FName)</td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.FSystemQuantity)
+                        </td>
+                        <td>
+                            <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
+                        </td>
+                        <td>
+                            @if (item.FActualQuantity.HasValue)
+                            {
+                                @(item.FActualQuantity.Value - item.FSystemQuantity)
+                            }
+                            else
+                            {
+                                @("")
+                            }
+                        </td>
+                        <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+                        <input type="hidden" name="FInventoryDetailId" value="@item.FId" />
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<hr/>
+<div class="d-flex mb-3 align-items-center">
+    <span class="ms-auto">共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆</span>
 </div>
 
-<!-- 儲存 -->
+<!-- 選擇條件來查詢 -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">新增盤點條件</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- 庫存盤點單號 -->
+                <div class="d-flex mb-3 align-items-center">
+                    <label asp-for="InventoryMain.FId" class="pe-1 mb-0" style="width: 150px;">庫存盤點單號</label>
+                    <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" value="" />
+                    <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
+                </div>
+
+                <!-- 盤點基準日範圍 -->
+                <div class="d-flex mb-3 align-items-center">
+                    <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0" style="width: 150px;">盤點基準日範圍</label>
+                    <input asp-for="InventoryMain.FBaselineStartDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineStartDate" />
+                    <span class="mx-2">至</span>
+                    <input asp-for="InventoryMain.FBaselineEndDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineEndDate" />
+                    <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
+                </div>
+
+                <!-- 建檔日期範圍 -->
+                <div class="d-flex align-items-center">
+                    <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0" style="width: 150px;">建檔日期範圍</label>
+                    <input asp-for="InventoryMain.FCreatedStartDate" class="form-control form-control-sm w-auto" type="date" id="FCreatedStartDate" />
+                    <span class="mx-2">至</span>
+                    <input asp-for="InventoryMain.FCreatedEndDate" class="form-control form-control-sm w-auto" type="date" id="FCreatedEndDate" />
+                    <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" form="inventoryForm">確定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 查詢 -->
 <script>
-      document.getElementById("saveButton").addEventListener("click", function () {
-        var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
-        var FBaselineDate = document.getElementById('FBaselineDate').value;
 
-        var formattedBaselineDate = FBaselineDate;
-        var formattedCreatedAt = new Date().toISOString().split("T")[0];
 
-        var inventoryMain = {
-            FBaselineDate: formattedBaselineDate,
-            FCreatedAt: formattedCreatedAt,
-            FEditor: 1
-        };
-
-        // 記錄有變動的資料
-        var inventoryDetails = [];
-        var products = [];
-
-        var rows = document.querySelectorAll("table tbody tr");
-        rows.forEach(function(row) {
-            var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
-            var productId = parseInt(row.querySelector("td:nth-child(1)").innerText, 10);
-            var actualQuantity = parseInt(row.querySelector("input[name='FActualQuantity']").value, 10);
-            var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText, 10);
-            var productName = row.querySelector("td:nth-child(2)").innerText;
-
-            inventoryDetails.push({
-                FInventoryMainId: inventoryMainId,
-                FActualQuantity: actualQuantity,
-                FProductId: productId,
-                FSystemQuantity: systemQuantity,
-                FName: productName
-            });
-
-            products.push({
-                FId: productId,
-                FQuantity: actualQuantity,
-                FName: productName
-            });
-        });
-
-        // 如果沒有資料變動，則不發送請求
-        if (inventoryDetails.length === 0 && products.length === 0 && !inventoryMain.FBaselineDate) {
-            alert("沒有變動的資料。");
-            return;
-        }
-
-        // 組合請求資料
-        var requestData = {
-            currentId: currentId,
-            InventoryMain: inventoryMain,
-            InventoryDetails: inventoryDetails,
-            Products: products
-        };
-
-        console.log(requestData);
-
-        // 發送 AJAX 請求
-        $.ajax({
-            url: '/Inventory/Save/' + currentId,
-            method: 'POST',
-            data: JSON.stringify(requestData),
-            contentType: 'application/json',
-            success: function(response) {
-                if (response.success) {
-                    window.location.href = response.redirectTo;
-                } else {
-                    alert('錯誤: ' + response.error);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert("錯誤: " + error);
-            }
-        });
-    });
 </script>
 
+
 <!-- 選擇條件來新增 -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -224,13 +203,12 @@
                             }
                         </select>
                     </div>
-
                     <div class="form-group">
                         <label for="ProductEndCode">商品編號區間 (結束)</label>
                         <select class="form-control" id="ProductEndCode" name="ProductEndCode">
                             @foreach (var product in Model.Products)
                             {
-                                <option value="@product.FId">@product.FId - @product.FName</option>
+                                <option value="@product.FId">@product.FId - @(string.IsNullOrEmpty(product.FName) ? "名稱未設定" : product.FName)</option>
                             }
                         </select>
                     </div>
@@ -264,6 +242,95 @@
     });
 </script>
 
+<!-- 儲存 -->
+<script>
+    document.getElementById("saveButton").addEventListener("click", function () {
+        var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
+        var FBaselineDate = document.getElementById('FBaselineDate').value;
+
+        var formattedBaselineDate = FBaselineDate;
+        var formattedCreatedAt = new Date().toISOString().split("T")[0];
+
+        var inventoryMain = {
+            FBaselineDate: formattedBaselineDate,
+            FCreatedAt: formattedCreatedAt,
+            FEditor: 1
+        };
+
+        var products = [];
+        var inventoryDetails = [];
+        var rows = document.querySelectorAll("table tbody tr");
+
+        rows.forEach(function(row) {
+            var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
+            var productId = parseInt(row.querySelector("td:nth-child(1)").innerText, 10);
+            var actualQuantity = parseInt(row.querySelector("input[name='FActualQuantity']").value, 10);
+            var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText, 10);
+            var productName = row.querySelector("td:nth-child(2)").innerText;
+            var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10);  // 從表單中正確獲取 FId
+
+            // 計算差異數量
+            var differenceQuantity = actualQuantity - systemQuantity;
+
+            // 確保 FId 正確傳遞
+            inventoryDetails.push({
+                InventoryDetail: {
+                    FId: fId,  // 確保傳遞 FId
+                    FInventoryMainId: inventoryMainId,
+                    FInventoryDetailId: fId,  // 也保留 FInventoryDetailId
+                    FActualQuantity: actualQuantity,
+                    FProductId: productId,
+                    FSystemQuantity: systemQuantity
+                },
+                FName: productName,
+                DifferenceQuantity: differenceQuantity // 差異數量
+            });
+
+            products.push({
+                FId: productId,
+                FQuantity: actualQuantity,
+                FName: productName
+            });
+        });
+
+        // 組合請求資料
+        var requestData = {
+            currentId: currentId,
+            InventoryMain: {
+                FId: currentId,
+                FBaselineDate: formattedBaselineDate,
+                FCreatedAt: formattedCreatedAt,
+                FEditor: 1,
+                FNote: null
+            },
+            InventoryDetails: inventoryDetails,
+            Products: products,
+            InventoryAdjustmentDetail: [],
+            InventoryAdjustment: []
+        };
+
+        console.log(requestData);
+
+        // 發送 AJAX 請求
+        $.ajax({
+            url: '/Inventory/Save/' + currentId,
+            method: 'POST',
+            data: JSON.stringify(requestData),
+            contentType: 'application/json',
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.redirectTo;
+                } else {
+                    alert('錯誤: ' + response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert("錯誤: " + error);
+            }
+        });
+    });
+</script>
+
 <!-- 刪除 -->
 <script>
     document.getElementById('deletebutton').addEventListener('click', function () {
@@ -292,8 +359,6 @@
         }
     });
 </script>
-
-
 
 <!-- 將系統庫存數量帶入實際庫存數量 -->
 <script>
