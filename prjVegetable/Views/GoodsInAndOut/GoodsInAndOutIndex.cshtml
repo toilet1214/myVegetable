@@ -1,0 +1,88 @@
+﻿@model IEnumerable<prjVegetable.Models.CGoodsInAndOutWrap>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+
+<h1>進出貨資料列表</h1><br />
+@using(Html.BeginForm())
+{
+    @:搜尋 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢" class="btn btn-primary">
+
+}<br />
+
+<p>
+    <a asp-action="Create" class="btn btn-outline-primary">新增進出貨貨單資料</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FInvoiceId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProviderId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPersonId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FProductId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FCount)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.FPrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTotal)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FEditor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FNote)
+            </th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FInOutText)</td> <!-- 顯示進出貨狀態的對應文字 -->
+                <td>@Html.DisplayFor(modelItem => item.FDate)</td>
+                <td>@Html.DisplayFor(modelItem => item.FInvoiceId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FProviderName)</td> <!-- 顯示供應商名稱 -->
+                <td>@Html.DisplayFor(modelItem => item.FPersonName)</td> <!-- 顯示顧客名稱 -->
+                <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FCount)</td>
+                <td>@Html.DisplayFor(modelItem => item.FPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.FTotal)</td>
+                <td>@Html.DisplayFor(modelItem => item.FEditor)</td>
+                <td>@Html.DisplayFor(modelItem => item.FNote)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
+                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
+                    @Html.ActionLink("移除", "Delete", "TGoodsInAndOut", new { id = item.FId },
+                             new { onclick = "return confirm('確定要刪除嗎?')" })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,73 @@
+﻿@model prjVegetable.Models.CProviderWrap
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<h1>廠商詳細資料</h1>
+
+<div>
+    <h4>TProvider</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FUbn)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FUbn)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FTel)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FTel)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FConnect)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FConnect)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FAccountant)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FAccountant)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FAddress)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FAddress)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FDelivery)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FDelivery)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FInvoiceAdd)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FInvoiceAdd)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.FEditor)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.provider.FEditor)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">回廠商列表</a>
+    <a asp-action="Edit" asp-route-id="@Model?.FId">編輯資料</a> |
+</div>

@@ -2,9 +2,9 @@
 <html lang="zh-TW" class="h-100">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>首頁</title>
+     <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>LEGO_HERE 首頁</title>
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
@@ -140,54 +140,8 @@
         <div class="offcanvas-body">
             <div class="order-md-last">
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">購物車(3)</span>
+                    <span class="text-primary">購物車</span>
                 </h4>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/06.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-body">
-                                <h5 class="card-title px-3 mb-1">暖纖毛室內拖鞋/棕</h5>
-                                <p class="card-price px-3">NT$200</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/02.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-body">
-                                <h5 class="card-title px-3 mb-1">烏龍茶</h5>
-                                <p class="card-price px-3">NT$280</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="cart-card my-2">
                     <div class="row g-0 d-flex align-items-center px-2 py-2">
                         <div class="col-md-2 image-container">
@@ -199,18 +153,9 @@
                                 <p class="card-price px-3">NT$150</p>
                             </div>
                         </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                        <hr class="w-100 mt-4">
-                        <button onclick="location.href='@Url.Action("Cart", "Cart")'" class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
+                            <hr class="w-100 mt-4">
+                            <a asp-action="Cart" asp-controller="Cart" class="w-100 btn btn-primary btn-lg">查看購物車</a>
+                        
                     </div>
                 </div>
             </div>
@@ -383,7 +328,7 @@
         {
             <script>
 
-                alert("帳號密碼錯誤，請重試一次");
+                alert("登入失敗，請重試一次");
 
                 var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
                 myModal.show();
