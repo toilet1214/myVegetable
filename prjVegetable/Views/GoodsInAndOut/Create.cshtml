@@ -1,90 +1,148 @@
-﻿@model prjVegetable.Models.CGoodsInAndOutWrap
+﻿@model prjVegetable.Models.CGoodsInAndOutViewModel
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
+
+    if (Model.GoodsInAndOutDetails == null)
+    {
+        Model.GoodsInAndOutDetails = new List<TGoodsInAndOutDetail> { new TGoodsInAndOutDetail() };
+    }
 }
 
-<h1>新增資料</h1>
-
+<h1>新增進出貨資料</h1>
 <hr />
-<form asp-action="Create">
+
+<form asp-action="Create" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <!-- TGoodsInAndOut (進出貨主表) -->
+    <h3>進出貨基本資料</h3>
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FInOut" class="control-label"></label>
-                <select asp-for="FInOut" class="form-control">
+                <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
+                <select asp-for="GoodsInAndOut.FInOut" class="form-control">
                     <option value="0">進貨</option>
                     <option value="1">出貨</option>
                 </select>
-                <span asp-validation-for="FInOut" class="text-danger"></span>
+                <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
             </div>
         </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
+                <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <span asp-validation-for="GoodsInAndOut.FDate" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
 
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FDate" class="control-label"></label>
-                <input asp-for="FDate" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                <span asp-validation-for="FDate" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FInvoiceId" class="control-label"></label>
-                <input asp-for="FInvoiceId" class="form-control" />
-                <span asp-validation-for="FInvoiceId" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票ID</label>
+                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" />
+                <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FProviderId" class="control-label"></label>
-                <input asp-for="FProviderId" class="form-control" />
-                <span asp-validation-for="FProviderId" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商ID</label>
+                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" />
+                <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
             </div>
         </div>
-    </div>
-    <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="FPersonId" class="control-label"></label>
-                <input asp-for="FPersonId" class="form-control" />
-                <span asp-validation-for="FPersonId" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶ID</label>
+                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" />
+                <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
+            <div class="form-group">
+                <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
+                <input asp-for="GoodsInAndOut.FTotal" class="form-control" />
+                <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
+                <input asp-for="GoodsInAndOut.FNote" class="form-control" />
+                <span asp-validation-for="GoodsInAndOut.FNote" class="text-danger"></span>
+            </div>
         </div>
     </div>
+
+    <!-- TGoodsInAndOutDetail (進出貨明細表) -->
+    <h3>進出貨明細</h3>
+    <div id="details">
+        @for (int i = 0; i < Model.GoodsInAndOutDetails.Count; i++)
+        {
+            <div class="row mb-3 detail-entry">
+                <input type="hidden" asp-for="GoodsInAndOutDetails[i].FGoodsInandOutId" />
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="GoodsInAndOutDetails[i].FProductId" class="control-label">產品ID</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FProductId" class="form-control" />
+                        <span asp-validation-for="GoodsInAndOutDetails[i].FProductId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="GoodsInAndOutDetails[i].FCount" class="control-label">商品數量</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" />
+                        <span asp-validation-for="GoodsInAndOutDetails[i].FCount" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="GoodsInAndOutDetails[i].FPrice" class="control-label">進出貨單價(含稅)</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" />
+                        <span asp-validation-for="GoodsInAndOutDetails[i].FPrice" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="form-group">
+                        <label asp-for="GoodsInAndOutDetails[i].FSum" class="control-label">小計</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" />
+                        <span asp-validation-for="GoodsInAndOutDetails[i].FSum" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
     <div class="row mb-3">
         <div class="col-12">
-            <div class="form-group">
-                <label asp-for="FTotal" class="control-label"></label>
-                <input asp-for="FTotal" class="form-control" />
-                <span asp-validation-for="FTotal" class="text-danger"></span>
-            </div>
-        </div>        
-    </div>
-    <div class="row mb-3">
-        <div class="col-12">
-            <div class="form-group">
-                <label asp-for="FNote" class="control-label"></label>
-                <input asp-for="FNote" class="form-control" />
-                <span asp-validation-for="FNote" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-6">
-            <div>
-                <a asp-action="GoodsInAndOutIndex">回進出貨列表</a>
-            </div>
-        </div>
-        <div class="col-6">
             <div class="form-group d-grid justify-content-md-end">
-                <input type="submit" value="新增資料" class="btn btn-primary" />
+                <input type="submit" value="提交" class="btn btn-primary" />
             </div>
         </div>
     </div>
 </form>
+
+<script>
+    document.getElementById("addDetail").addEventListener("click", function () {
+        var index = document.querySelectorAll(".detail-entry").length;
+        var newRow = `
+                <div class="row mb-3 detail-entry">
+                    <input type="hidden" name="GoodsInAndOutDetails[${index}].FGoodsInandOutId" value="0" />
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>產品 ID</label>
+                            <input type="text" name="GoodsInAndOutDetails[${index}].FProductId" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-group">
+                            <label>數量</label>
+                            <input type="text" name="GoodsInAndOutDetails[${index}].FCount" class="form-control" />
+                        </div>
+                    </div>
+                </div>`;
+        document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
+    });
+</script>

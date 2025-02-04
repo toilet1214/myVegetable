@@ -85,24 +85,43 @@ namespace prjVegetable.Controllers
 
 
         // GET: GoodsInAndOut/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            var viewModel = new CGoodsInAndOutViewModel
+            {
+                GoodsInAndOut = new TGoodsInAndOut(),
+                GoodsInAndOutDetails = new List<TGoodsInAndOutDetail> { new TGoodsInAndOutDetail() }
+            };
+
+            return View(viewModel);
         }
+
 
         // POST: GoodsInAndOut/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(CGoodsInAndOutWrap goodsInAndOutWrap)
+        public IActionResult Create(CGoodsInAndOutViewModel model)
         {
             if (ModelState.IsValid)
             {
-                _dbContext.Set<CGoodsInAndOutWrap>().Add(goodsInAndOutWrap);
+                // 新增 TGoodsInAndOut（主表）
+                _dbContext.TGoodsInAndOuts.Add(model.GoodsInAndOut);
                 _dbContext.SaveChanges();
-                return RedirectToAction(nameof(Index));
+
+                // 設定明細的關聯 ID
+                foreach (var detail in model.GoodsInAndOutDetails)
+                {
+                    detail.FGoodsInandOutId = model.GoodsInAndOut.FId;
+                    _dbContext.TGoodsInAndOutDetails.Add(detail);
+                }
+
+                _dbContext.SaveChanges();
+                return RedirectToAction("GoodsInAndOutIndex");
             }
-            return View(goodsInAndOutWrap);
+            return View(model);
         }
+
 
         // GET: GoodsInAndOut/Edit/5
         public IActionResult Edit(int? id)
