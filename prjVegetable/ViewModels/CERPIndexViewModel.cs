@@ -5,6 +5,10 @@ namespace prjVegetable.ViewModels
     public class CERPIndexViewModel
     {
         public int TotalMembers { get; set; }
+        public List<int> TotalMembersAll { get; set; }
+        public List<int> TotalMembersYear { get; set; }
+        public List<int> TotalMembersMonth { get; set; }
+        public List<string> AllMembersLabels { get; set; }
         public int TotalVisitorsYear { get; set; }
         public int TotalVisitorsMonth { get; set; }
         public int TotalVisitorsDay { get; set; }

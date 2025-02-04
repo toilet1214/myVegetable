@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace prjVegetable.Controllers
@@ -44,9 +45,38 @@ namespace prjVegetable.Controllers
             ViewBag.VisitorsPercentageDay = 100;
             ViewBag.VisitorsPercentageMonth = 80;
             ViewBag.VisitorsPercentageYear = 70;
+
+            List<int> TotalMembersMonth = _VegetableContext.TPeople.Where(p => p.FPermission == 0 && p.FCreatedAt >= DateTime.Now.Date.AddMonths(-1)).GroupBy(p => p.FCreatedAt.Day).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
+            for (int i = 1; i < TotalMembersMonth.Count; i++)
+            {
+                TotalMembersMonth[i] += TotalMembersMonth[i - 1];  // 每一天的數字加上前一天的數字
+            }
+            while (TotalMembersMonth.Count < 30)
+            {
+                TotalMembersMonth.Insert(0,0);
+            }
+            List<int> TotalMembersYear = _VegetableContext.TPeople.Where(p => p.FPermission == 0 && p.FCreatedAt >= DateTime.Now.Date.AddYears(-1)).GroupBy(p => p.FCreatedAt.Month).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
+            for (int i = 1; i < TotalMembersYear.Count; i++)
+            {
+                TotalMembersYear[i] += TotalMembersYear[i - 1];  // 每一天的數字加上前一天的數字
+            }
+            while (TotalMembersYear.Count < 12)
+            {
+                TotalMembersYear.Insert(0, 0);
+            }
+            List<int> TotalMembersAll = _VegetableContext.TPeople.Where(p => p.FPermission == 0).GroupBy(p => p.FCreatedAt.Year).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
+            for (int i = 1; i < TotalMembersAll.Count; i++)
+            {
+                TotalMembersAll[i] += TotalMembersAll[i - 1];  // 每一天的數字加上前一天的數字
+            }
+            TotalMembersAll.Insert(0, 0);
             var viewmodel = new CERPIndexViewModel
             {
+                AllMembersLabels = _VegetableContext.TPeople.Where(p => p.FPermission == 0).GroupBy(m => m.FCreatedAt.Year).Select(g => g.Key.ToString()).ToList(),
                 TotalMembers = _VegetableContext.TPeople.Count(p => p.FPermission == 0),
+                TotalMembersAll = TotalMembersAll,
+                TotalMembersYear = TotalMembersYear,
+                TotalMembersMonth = TotalMembersMonth,
                 TotalVisitorsYear = 100,//待修改
                 TotalVisitorsMonth = 10,//待修改
                 TotalVisitorsDay = 1,//待修改

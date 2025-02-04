@@ -5,6 +5,7 @@
     ViewData["Title"] = "Index";
 }
 @section Styles {
+
     <style>
         .card {
             border-radius: 10px;
@@ -19,7 +20,7 @@
         <div class="col-lg-7 ms-auto">
             <div class="row">
                 <!-- 會員 -->
-                <div class="col-xxl-4 col-md-6 ">
+                <div class="col-md-4">
                     <div class="card info-card mt-3 h-100">
                         <div class="card-body ">
                             <h5 class="card-title fw-bold fs-5">會員</h5>
@@ -34,7 +35,7 @@
                 </div>
                 <!-- End 會員 -->
                 <!-- 瀏覽人次 -->
-                <div class="col-xxl-4 col-md-6">
+                <div class="col-md-4">
                     <div class="card info-card  position-relative mt-3 h-100">
                         <!-- 篩選器放到右上角 -->
                         <div class="filter position-absolute top-0 end-0 p-2">
@@ -64,9 +65,8 @@
                 </div>
                 <!-- End 瀏覽人次 -->
                 <!-- 訂單 -->
-                <div class="col-xxl-4 col-xl-12">
+                <div class="col-md-4">
                     <div class="card info-card sales-card position-relative mt-3 h-100">
-                        <!-- 篩選器放到右上角 -->
                         <div class="filter position-absolute top-0 end-0 p-2">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="OrdersList">
@@ -98,19 +98,92 @@
             <!-- 會員人數 -->
             <div class="col-12 mt-4">
                 <div class="card">
-
+                    <div class="filter position-absolute top-0 end-0 p-2">
+                        <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                        <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="MembersList">
+                            <li class="dropdown-header text-start">
+                                <h6>篩選</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#">最近一個月內</a></li>
+                            <li><a class="dropdown-item" href="#">最近一年內</a></li>
+                            <li><a class="dropdown-item" href="#">全部</a></li>
+                        </ul>
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title fs-5 fw-bold">
-                            會員註冊人數
+                            會員數
                         </h5>
                         <!-- Line Chart -->
-                        <div id="lineChart"></div>
-
+                        <div id="LineChart"></div>
                         <!-- End Line Chart -->
                     </div>
                 </div>
             </div>
             <!-- End 折線圖一年會員數 -->
+            <div class="row">
+                <!-- 銷售排行 -->
+                <div class="col-md-6">
+                    <div class="card top-selling overflow-auto mt-3" style="min-height:220px;">
+                        <div class="filter position-absolute top-0 end-0 p-2">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
+                                <li class="dropdown-header text-start">
+                                    <h6>篩選</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('day', '今天')">今天</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('month', '這個月')">這個月</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('year', '今年')">今年</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRanking_Date">| 今天</span></h5>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="fs-6">圖片</th>
+                                        <th scope="col" class="fs-6">產品</th>
+                                        <th scope="col" class="fs-6">數量</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="SalesRanking">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- End 銷售排行 -->
+                </div>
+                <!-- 最受歡迎 -->
+                <div class="col-md-6">
+                    <div class="card top-like overflow-auto mt-3" style="min-height:220px;">
+                        <div class="filter position-absolute top-0 end-0 p-2">
+                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="LikesList">
+                                <li class="dropdown-header text-start">
+                                    <h6>篩選</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">今天</a></li>
+                                <li><a class="dropdown-item" href="#">這個月</a></li>
+                                <li><a class="dropdown-item" href="#">今年</a></li>
+                            </ul>
+                        </div>
+                        <div class="card-body pb-0">
+                            <h5 class="card-title fw-bold fs-5">最受歡迎 <span id="LikesDate">| 今天</span></h5>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col" class="fs-6">圖片</th>
+                                        <th scope="col" class="fs-6">產品</th>
+                                        <th scope="col" class="fs-6">收藏數</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="LikesRanking">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- End 最受歡迎 -->
+                </div>
+            </div>
         </div>
         <!-- End Left side columns -->
         <!-- Right side columns -->
@@ -143,40 +216,18 @@
                 </div>
             </div>
             <!-- End 類別銷量 -->
-            <!-- 銷售排行 -->
-            <div class="card top-selling overflow-auto mt-3" style="min-height:220px;">
-                <div class="filter position-absolute top-0 end-0 p-2">
-                    <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
-                        <li class="dropdown-header text-start">
-                            <h6>篩選</h6>
-                        </li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('day', '今天')">今天</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('month', '這個月')">這個月</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('year', '今年')">今年</a></li>
-                    </ul>
-                </div>
-                <div class="card-body pb-0">
-                    <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRanking_Date">| 今天</span></h5>
-                    <table class="table table-borderless">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="fs-6">圖片</th>
-                                <th scope="col" class="fs-6">產品</th>
-                                <th scope="col" class="fs-6">數量</th>
-                            </tr>
-                        </thead>
-                        <tbody id="SalesRanking">
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- End 銷售排行 -->
         </div><!-- End Right side columns -->
     </div>
 </section>
-
+@{
+    var maxValue = Math.Max(Model.TotalMembersMonth.Max(), 5); // 避免 maxValue 為 0
+    var baseValue = Math.Pow(10, Math.Floor(Math.Log10(maxValue / 5))); // 取得 10 的倍數
+    var stepOptions = new[] { 1, 2, 5 }; // 1-2-5 規則
+    var stepSize = stepOptions.Select(s => s * baseValue).First(s => s >= maxValue / 5); // 選擇最接近的刻度
+    var maxY = stepSize * 5; // 確保 maxY 是 5 個 stepSize
+}
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- 數據卡片 -->
     <script>
         function SetCardData(ClassPer, Percentage, Color, Icon) {
@@ -265,17 +316,158 @@
     <!--會員數折線圖-->
     <script>
 
+        let TotalMembersAll = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersAll));
+        let TotalMembersYear = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersYear));
+        let TotalMembersMonth = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersMonth));
+        let AllLabel = @Html.Raw(JsonSerializer.Serialize(Model.AllMembersLabels));
+        let MonthLabel = @Html.Raw(JsonSerializer.Serialize(
+        Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select(date => { return (date.Day == 1) ? date.ToString("MM/dd") : date.ToString("dd"); }).ToList()));
+        let YearLabel = @Html.Raw(JsonSerializer.Serialize(
+        Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => { return (date.Month == 1) ? date.ToString("yyyy/MM") : date.ToString("MM"); }).ToList()));
+
+            let chart;
+        function MemberCountMonth() {
+            if (chart) chart.destroy();
+            chart = new ApexCharts(document.querySelector("#LineChart"), {
+                series: [{
+                    name: "會員",
+                    data: TotalMembersMonth
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    toolbar: {
+                        show: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: MonthLabel
+                },
+                yaxis: {
+                    min: 0, // 最小值固定為 1
+                    max: @maxY, // 由 Razor 計算出來
+                    tickAmount: 5, // 總共 5 個刻度
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value); // 確保是整數
+                        }
+                    }
+                }
+            });
+            chart.render();
+        }
+        function MemberCountYear() {
+            if (chart) chart.destroy();
+            chart = new ApexCharts(document.querySelector("#LineChart"), {
+                series: [{
+                    name: "會員",
+                    data: TotalMembersYear
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    toolbar: {
+                        show: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: YearLabel
+                },
+                yaxis: {
+                    min: 0, // 最小值固定為 1
+                    max: @maxY, // 由 Razor 計算出來
+                    tickAmount: 5, // 總共 5 個刻度
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value); // 確保是整數
+                        }
+                    }
+                }
+            });
+            chart.render();
+        }
+        function MemberCountAll() {
+            if (chart) chart.destroy();
+            chart = new ApexCharts(document.querySelector("#LineChart"), {
+                series: [{
+                    name: "會員",
+                    data: TotalMembersAll
+                }],
+                chart: {
+                    height: 350,
+                    type: 'line',
+                    zoom: {
+                        enabled: false
+                    },
+                    toolbar: {
+                        show: false
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'straight'
+                },
+                grid: {
+                    row: {
+                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+                        opacity: 0.5
+                    },
+                },
+                xaxis: {
+                    categories: AllLabel
+                },
+                yaxis: {
+                    min: 0, // 最小值固定為 1
+                    max: @maxY, // 由 Razor 計算出來
+                    tickAmount: 5, // 總共 5 個刻度
+                    labels: {
+                        formatter: function (value) {
+                            return Math.round(value); // 確保是整數
+                        }
+                    }
+                }
+            });
+            chart.render();
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            MemberCountAll();
+        })
     </script>
     <!--通知-->
-    <script>
-
-    </script>
     <!--圓餅圖-->
-    <script>
-
-    </script>
     <!--銷售排行-->
-    <script>
-
-    </script>
+    <!--最受歡迎-->
 }
