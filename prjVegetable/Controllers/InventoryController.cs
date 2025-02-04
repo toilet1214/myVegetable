@@ -18,10 +18,6 @@ namespace prjVegetable.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
-        {
-            return View();
-        }
 
         /*--------------- + Detail + ----------------*/
         //GET Inventory/Detail
@@ -292,7 +288,7 @@ namespace prjVegetable.Controllers
 
                             var inventoryAdjustmentDetail = new TInventoryAdjustmentDetail
                             {
-                                FInventoryAdjustmentId = linkedAdjustment.FId, // use the correct adjustment ID
+                                FInventoryAdjustmentId = linkedAdjustment.FId,
                                 FProductId = inventoryDetail.FProductId,
                                 FQuantity = (int)(inventoryDetail.FActualQuantity - inventoryDetail.FSystemQuantity),
                                 FCost = cost
@@ -303,7 +299,6 @@ namespace prjVegetable.Controllers
                     }
                 }
 
-                // 保存所有變更
                 _context.SaveChanges();
 
                 // 跳轉到新增的 InventoryAdjustment 詳細頁
@@ -319,7 +314,63 @@ namespace prjVegetable.Controllers
 
 
         /*---------------- + Search + ----------------*/
-       
+        public IActionResult Index()
+        {
+            return View();
+        }
 
+        public IActionResult Search(int? fId, DateOnly? fBaselineStartDate, DateOnly? fBaselineEndDate, DateOnly? fCreatedStartDate, DateOnly? fCreatedEndDate)
+        {
+            var query = _context.TInventoryMains.AsQueryable();
+
+            // 根據 fId 進行篩選
+            if (fId.HasValue)
+            {
+                query = query.Where(x => x.FId == fId.Value);
+            }
+
+            // 根據盤點基準日範圍進行篩選
+            if (fBaselineStartDate.HasValue)
+            {
+                query = query.Where(x => x.FBaselineDate >= fBaselineStartDate.Value);
+            }
+
+            if (fBaselineEndDate.HasValue)
+            {
+                query = query.Where(x => x.FBaselineDate <= fBaselineEndDate.Value);
+            }
+
+            // 根據建檔日期範圍進行篩選
+            if (fCreatedStartDate.HasValue)
+            {
+                query = query.Where(x => x.FCreatedAt >= fCreatedStartDate.Value);
+            }
+
+            if (fCreatedEndDate.HasValue)
+            {
+                query = query.Where(x => x.FCreatedAt <= fCreatedEndDate.Value);
+            }
+
+            // 使用 Join 進行手動聯結
+            var inventoryDetails = (from main in query
+                                    join detail in _context.TInventoryDetails on main.FId equals detail.FInventoryMainId
+                                    select detail)
+                                    .ToList();
+
+            // 返回查詢結果
+            var result = new
+            {
+                InventoryDetails = inventoryDetails.Select(item => new
+                {
+                    item.FProductId,
+                    item.FSystemQuantity,
+                    item.FActualQuantity
+                }).ToList(),
+                TotalItemCount = inventoryDetails.Count,
+                CurrentItemCount = inventoryDetails.Count
+            };
+
+            return Json(result);
+        }
     }
 }

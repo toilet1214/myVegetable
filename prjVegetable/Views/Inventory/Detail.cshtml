@@ -12,8 +12,8 @@
 <!-- 工具列 start -->
 <div class="row d-block mb-3">
     <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            搜尋
+        <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            查詢
         </button>
 
         <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
@@ -135,14 +135,14 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">新增盤點條件</h5>
+                <h5 class="modal-title" id="exampleModalLabel">輸入盤點條件查詢</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <!-- 庫存盤點單號 -->
                 <div class="d-flex mb-3 align-items-center">
                     <label asp-for="InventoryMain.FId" class="pe-1 mb-0" style="width: 150px;">庫存盤點單號</label>
-                    <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" value="" />
+                    <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" id="searchFId" />
                     <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
                 </div>
 
@@ -166,7 +166,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="submit" class="btn btn-primary" form="inventoryForm">確定</button>
+                <button type="button" class="btn btn-primary" id="modalSearchButton">確定</button>
             </div>
         </div>
     </div>
@@ -174,8 +174,17 @@
 
 <!-- 查詢 -->
 <script>
+    document.getElementById('modalSearchButton').addEventListener('click', function () {
+        const fId = document.getElementById('searchFId').value.trim();
 
-
+        if (fId) {
+            // 將頁面跳轉到相對應的查詢結果
+            const queryUrl = '@Url.Action("Detail", "Inventory", new { id = "__FId__" })'.replace('__FId__', fId);
+            window.location.href = queryUrl;
+        } else {
+            alert('請輸入庫存盤點單號');
+        }
+    });
 </script>
 
 
