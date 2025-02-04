@@ -27,5 +27,6 @@ namespace prjVegetable.Models
             { 1, "付款失敗" },
             { 2, "付款成功" }
         };
+
     }
 }

@@ -28,37 +28,61 @@ namespace prjVegetable.Controllers
         {
             string keyword = vm.txtKeyword;
             IEnumerable<TGoodsInAndOut> datas = null;
+
             if (string.IsNullOrEmpty(keyword))
             {
-                datas = from p in _dbContext.TGoodsInAndOuts
-                        select p;
+                datas = _dbContext.TGoodsInAndOuts;
             }
             else
             {
-                datas = _dbContext.TGoodsInAndOuts.Where(p =>
-                p.FInOut.Contains(keyword) ||
-                p.FDate.Contains(keyword) ||
-                p.FInvoiceId.Contains(keyword) ||
-                p.FProviderId.Contains(keyword) ||
-                p.FPersonId.Contains(keyword) ||
-                p.FProductId.Contains(keyword) ||
-                p.FCount.Contains(keyword) ||
-                p.FPrice.Contains(keyword) ||
-                p.FTotal.Contains(keyword) ||
-                p.FEditor.Contains(keyword) ||
-                p.FNote.Contains(keyword) 
+                // 先從 TPerson 和 TProvider 查詢對應的 FId
+                var personIds = _dbContext.TPeople
+                    .Where(p => p.FName.Contains(keyword))
+                    .Select(p => p.FId)
+                    .ToList();
 
+                var providerIds = _dbContext.TProviders
+                    .Where(p => p.FName.Contains(keyword))
+                    .Select(p => p.FId)
+                    .ToList();
 
-                );
+                datas = _dbContext.TGoodsInAndOuts
+                    .Where(p =>
+                        (LookupDictionary.InOutMapping.ContainsKey(p.FInOut) && LookupDictionary.InOutMapping[p.FInOut].Contains(keyword)) ||
+                        p.FId.ToString().Contains(keyword) ||
+                        p.FInvoiceId.ToString().Contains(keyword) ||
+                        personIds.Contains(p.FPersonId) ||
+                        providerIds.Contains(p.FProviderId) ||
+                        p.FDate.ToString().Contains(keyword) ||
+                        p.FProductId.ToString().Contains(keyword) ||
+                        p.FCount.ToString().Contains(keyword) ||
+                        p.FPrice.ToString().Contains(keyword) ||
+                        p.FTotal.ToString().Contains(keyword) ||
+                        p.FEditor.ToString().Contains(keyword) ||
+                        p.FNote.Contains(keyword)
+                    );
             }
-            var data = _dbContext.TGoodsInAndOuts.ToList();
-            List<CProviderWrap> list = new List<CProviderWrap>();
-            foreach (var p in data)
+            // **先將資料轉換為 List，確保 EF Core 連線已經關閉**
+            var dataList = datas.ToList();
+
+            // **查詢 TPerson 和 TProvider 並轉為字典，避免多次查詢**
+            var personDict = _dbContext.TPeople
+                .ToDictionary(p => p.FId, p => p.FName);
+
+            var providerDict = _dbContext.TProviders
+                .ToDictionary(p => p.FId, p => p.FName);
+            var result = dataList.Select(d => new CGoodsInAndOutWrap
             {
-                list.Add(new CProviderWrap() { provider = p });
-            }
-            return View(list);
+                GoodsInAndOut = d,
+                FInOutText = LookupDictionary.InOutMapping.ContainsKey(d.FInOut) ? LookupDictionary.InOutMapping[d.FInOut] : "未知",
+                FPersonName = personDict.ContainsKey(d.FPersonId) ? personDict[d.FPersonId] : "未知",
+                FProviderName = providerDict.ContainsKey(d.FProviderId) ? providerDict[d.FProviderId] : "未知"
+            }).ToList();
+
+            return View(result);
         }
+
+
 
         // GET: GoodsInAndOut/Create
         public IActionResult Create()

@@ -109,6 +109,14 @@ namespace prjVegetable.Models
         }
 
 
+        // 轉換 FInOut 為對應的文字
+        public string FInOutText { get; set; }
+
+        // 轉換 FPersonId 為對應的顧客名稱
+        public string FPersonName { get; set; }
+
+        // 轉換 FProviderId 為對應的供應商名稱
+        public string FProviderName { get; set; }
     }
 
     
