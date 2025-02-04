@@ -22,24 +22,30 @@
         <thead>
             <tr>
                 <th>序號</th>
+                <th>ID</th>
                 <th>姓名</th>
+                <th>帳號</th>
+                <th>密碼</th>
                 <th>性別</th>
                 <th>生日</th>
-                <th>電話</th>
-                <th>電子郵件</th>
-                <th>權限</th>
+                <th>手機</th>
+                <th>家用電話</th>
+                <th>電子郵件</th> 
                 <th>操作</th>
             </tr>
         </thead>
         <tbody v-if="CPersonWrap.length > 0">
             <tr v-for="(item, index) in CPersonWrap" :key="item.fId">
                 <td>{{ index + 1 }}</td>
+                <th>{{item.fId}}</th>
                 <td>{{ item.fName }}</td>
+                <th>{{item.fAccount}}</th>
+                <th>{{item.fPassword}}</th>                
                 <td>{{ item.fGender }}</td>
                 <td>{{ item.fBirth }}</td>
                 <td>{{ item.fPhone }}</td>
+                <td>{{ item.fTel }}</td>
                 <td>{{ item.fEmail }}</td>
-                <td>{{ item.fPermission }}</td>
                 <td>
                     <a :href="'/Person/Edit/' + item.fId">編輯資料</a><br />
                     <a :href="'/Person/Details/' + item.fId">詳細資料</a><br />
