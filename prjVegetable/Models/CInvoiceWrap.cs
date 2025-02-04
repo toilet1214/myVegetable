@@ -28,7 +28,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("發票號碼")]
-        public string? FNumber
+        public string FNumber
         {
             get { return _tInvoice.FNumber; }
             set { _tInvoice.FNumber = value; }
@@ -40,7 +40,7 @@ namespace prjVegetable.Models
             set { _tInvoice.FDate = value; }
         }
         [DisplayName("發票格式")]
-        public string? FForm
+        public string FForm
         {
             get { return _tInvoice.FForm; }
             set { _tInvoice.FForm = value; }
@@ -52,7 +52,7 @@ namespace prjVegetable.Models
             set { _tInvoice.FCustomerId = value; }
         }
         [DisplayName("會員統編")]
-        public string? FCustomerUbn
+        public string FCustomerUbn
         {
             get { return _tInvoice.FCustomerUbn; }
             set { _tInvoice.FCustomerUbn = value; }
@@ -64,7 +64,7 @@ namespace prjVegetable.Models
             set { _tInvoice.FProviderId = value; }
         }
         [DisplayName("供應商統編")]
-        public string? FProviderUbn
+        public string FProviderUbn
         {
             get { return _tInvoice.FProviderUbn; }
             set { _tInvoice.FProviderUbn = value; }
@@ -81,12 +81,14 @@ namespace prjVegetable.Models
             get { return _tInvoice.FStatus; }
             set { _tInvoice.FStatus = value; }
         }
+
         [DisplayName("總額")]
         public int FTotal
         {
             get { return _tInvoice.FTotal; }
             set { _tInvoice.FTotal = value; }
         }
+
         [DisplayName("修改人")]
         public int FEditor
         {
