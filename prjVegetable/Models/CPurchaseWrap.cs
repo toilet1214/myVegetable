@@ -47,25 +47,13 @@ namespace prjVegetable.Models
             set { _Purchase.FProviderId = value; }
         }
 
-
-
-        [DisplayName("資料異動人員")]
-        public int FEditor
-        {
-            get { return _Purchase.FEditor; }
-            set { _Purchase.FEditor = value; }
-        }
-
-
-
-
-
         [DisplayName("發票格式")]
         public int FInvoiceForm
         {
             get { return _Purchase.FInvoiceForm; }
             set { _Purchase.FInvoiceForm = value; }
         }
+
         [DisplayName("支付方式")]
         public int FPayment
         {
@@ -73,6 +61,12 @@ namespace prjVegetable.Models
             set { _Purchase.FPayment = value; }
         }
 
+        [DisplayName("資料異動人員")]
+        public int FEditor
+        {
+            get { return _Purchase.FEditor; }
+            set { _Purchase.FEditor = value; }
+        }
 
 
         [DisplayName("採購金額")]
@@ -97,7 +91,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("備註")]
-        public string? FNote
+        public string FNote
         {
             get { return _Purchase.FNote; }
             set { _Purchase.FNote = value; }
