@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using static prjVegetable.ViewModels.CInventoryAdjustmentViewModel;
@@ -8,11 +9,13 @@ namespace prjVegetable.Controllers
 {
     public class InventoryAdjustmentController : Controller
     {
-        public readonly DbVegetableContext _context;
+        private readonly DbVegetableContext _context;
+        private readonly ILogger<InventoryAdjustmentController> _logger;
 
-        public InventoryAdjustmentController(DbVegetableContext Context)
+        public InventoryAdjustmentController(DbVegetableContext context, ILogger<InventoryAdjustmentController> logger)
         {
-            _context = Context;
+            _context = context;
+            _logger = logger;
         }
 
         public IActionResult Index()
@@ -211,5 +214,41 @@ namespace prjVegetable.Controllers
             }
         }
 
+
+        /*---------------- + Save + ------------------*/
+        [HttpPost]
+        [Route("InventoryAdjustment/Save/{currentId}")]
+        public async Task<IActionResult> Save(int currentId, [FromBody] IEnumerable<CInventoryAdjustmentUpdateWrap> adjustmentUpdate)
+        {
+            if (adjustmentUpdate == null || !adjustmentUpdate.Any())
+            {
+                _logger.LogError("No adjustment data provided.");
+                return BadRequest(new { message = "No adjustment data provided." });
+            }
+
+            try
+            {
+                var inventoryAdjustment = _context.TInventoryAdjustments.FirstOrDefault(ia => ia.FId == currentId);
+                if (inventoryAdjustment == null)
+                {
+                    return NotFound(new { message = "Inventory Adjustment record not found." });
+                }
+
+                // 只處理 AdjustmentUpdate 資料
+                var updateData = adjustmentUpdate.FirstOrDefault();
+                if (updateData != null && updateData.FId == currentId)
+                {
+                    inventoryAdjustment.FNote = updateData.FNote;
+                    await _context.SaveChangesAsync();
+                }
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error occurred while saving InventoryAdjustment FNote: {ErrorMessage}", ex.Message);
+                return Json(new { success = false, error = ex.Message });
+            }
+        }
     }
 }

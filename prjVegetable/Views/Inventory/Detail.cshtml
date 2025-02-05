@@ -30,7 +30,7 @@
         <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
             <i class="bi bi-file-earmark me-2"></i>新增
         </button>
-        <button type="button" class="btn btn-primary" id="editButton">
+        <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
             <i class="bi bi-pencil me-2"></i>編輯
         </button>
         <button type="button" class="btn btn-primary d-none" id="saveButton">
@@ -71,7 +71,8 @@
             </div>
         </div>
         <div class="col-7 d-flex">
-            <div class="p-3 border border-primary rounded w-100">盤點單摘述。</div>
+            <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryMain.FNote</div>
+            <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryMain.FNote</textarea>
         </div>
         <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
         @foreach (var item in Model.InventoryDetails)
@@ -189,7 +190,6 @@
     });
 </script>
 
-
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -242,43 +242,84 @@
 
 <!-- 編輯/儲存 -->
 <script>
-    let isEditing = false; // 用來判斷是否進入編輯模式
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始設定：讓所有輸入框、按鈕、備註欄處於唯讀狀態
+        setEditable(false);
 
-    document.getElementById("editButton").addEventListener("click", function () {
-        isEditing = true;
+        // 監聽「編輯」按鈕
+        document.getElementById("editButton").addEventListener("click", function () {
+            isEditing = true;
+            setEditable(true);
 
-        // 啟用按鈕與輸入框
-        document.getElementById('syncStockButton').disabled = false;
-        document.getElementById('resetStockButton').disabled = false;
-
-        var inputs = document.querySelectorAll('table input[type="number"]');
-        inputs.forEach(function (input) {
-            input.disabled = false;
+            // 切換按鈕顯示
+            this.classList.add("d-none"); // 隱藏修改按鈕
+            document.getElementById("saveButton").classList.remove("d-none"); // 顯示儲存按鈕
         });
 
-        // 切換按鈕顯示
-        this.classList.add("d-none"); // 隱藏修改按鈕
-        document.getElementById("saveButton").classList.remove("d-none"); // 顯示儲存按鈕
+        // 監聽「儲存」按鈕
+        document.getElementById("saveButton").addEventListener("click", function () {
+            isEditing = false;
+
+            // 取得新的備註內容
+            var noteText = document.getElementById("inventoryNoteEdit").value;
+
+            // 執行 AJAX 提交邏輯
+            saveData(noteText);
+
+            // 變回唯讀模式
+            setEditable(false);
+
+            // 更新備註顯示內容
+            document.getElementById("inventoryNoteView").innerText = noteText;
+
+            // 切換回 div 顯示，隱藏 textarea
+            document.getElementById("inventoryNoteView").classList.remove("d-none");
+            document.getElementById("inventoryNoteEdit").classList.add("d-none");
+
+            // 切換按鈕顯示
+            this.classList.add("d-none"); // 隱藏儲存按鈕
+            document.getElementById("editButton").classList.remove("d-none"); // 顯示修改按鈕
+        });
     });
 
-    document.getElementById("saveButton").addEventListener("click", function () {
-        isEditing = false; // 儲存後結束編輯模式
+    // 控制欄位的可編輯狀態
+    function setEditable(editable) {
+        var inputs = document.querySelectorAll('table input[type="number"]');
+        inputs.forEach(function (input) {
+            input.disabled = !editable;
+        });
 
+        document.getElementById('syncStockButton').disabled = !editable;
+        document.getElementById('resetStockButton').disabled = !editable;
+
+        // 切換備註欄的顯示方式
+        if (editable) {
+            document.getElementById("inventoryNoteView").classList.add("d-none");
+            document.getElementById("inventoryNoteEdit").classList.remove("d-none");
+        } else {
+            document.getElementById("inventoryNoteView").classList.remove("d-none");
+            document.getElementById("inventoryNoteEdit").classList.add("d-none");
+        }
+    }
+
+        function saveData(noteText) {
         var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
         var FBaselineDate = document.getElementById('FBaselineDate').value;
-
         var formattedBaselineDate = FBaselineDate;
         var formattedCreatedAt = new Date().toISOString().split("T")[0];
 
         var inventoryMain = {
             FBaselineDate: formattedBaselineDate,
             FCreatedAt: formattedCreatedAt,
-            FEditor: 1
+            FEditor: 1,
+            FNote: noteText // 只更新 FNote
         };
 
         var products = [];
         var inventoryDetails = [];
         var rows = document.querySelectorAll("table tbody tr");
+
+        var hasQuantityChange = false; // 判斷是否有數量變更
 
         rows.forEach(function (row) {
             var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
@@ -289,6 +330,10 @@
             var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10);
 
             var differenceQuantity = actualQuantity - systemQuantity;
+
+            if (differenceQuantity !== 0) {
+                hasQuantityChange = true; // 如果有數量變更，設定為 true
+            }
 
             inventoryDetails.push({
                 InventoryDetail: {
@@ -312,87 +357,43 @@
 
         var requestData = {
             currentId: currentId,
-            InventoryMain: {
-                FId: currentId,
-                FBaselineDate: formattedBaselineDate,
-                FCreatedAt: formattedCreatedAt,
-                FEditor: 1,
-                FNote: null
-            },
-            InventoryDetails: inventoryDetails,
-            Products: products,
-            InventoryAdjustmentDetail: [],
-            InventoryAdjustment: []
+            InventoryMain: inventoryMain
         };
+
+        if (hasQuantityChange) {
+            // 如果有數量變動，則包含完整的 InventoryDetails 和調整單
+            requestData.InventoryDetails = inventoryDetails;
+            requestData.Products = products;
+            requestData.InventoryAdjustmentDetail = [];
+            requestData.InventoryAdjustment = [];
+        }
 
         console.log(requestData);
 
-        $.ajax({
-            url: '/Inventory/Save/' + currentId,
-            method: 'POST',
-            data: JSON.stringify(requestData),
-            contentType: 'application/json',
-            success: function (response) {
-                if (response.success) {
-                    window.location.href = response.redirectTo;
+           $.ajax({
+        url: '/Inventory/Save/' + currentId,
+        method: 'POST',
+        data: JSON.stringify(requestData),
+        contentType: 'application/json',
+        success: function (response) {
+            if (response.success) {
+                if (response.redirectTo) {
+                    window.location.href = response.redirectTo; // 有跳轉頁面
+                    alert("檢測到庫存數量變更，將儲存並跳轉到盤點調整作業");
                 } else {
-                    alert('錯誤: ' + response.error);
+                    alert("備註更新成功！"); // 只更新 FNote，不跳轉
                 }
-            },
-            error: function (xhr, status, error) {
-                alert("錯誤: " + error);
+            } else {
+                alert('錯誤: ' + response.error);
             }
-        });
-
-        // 提交後，切換回修改按鈕
-        this.classList.add("d-none"); // 隱藏儲存按鈕
-        document.getElementById("editButton").classList.remove("d-none"); // 顯示修改按鈕
-
-        // 禁用輸入框
-        document.getElementById('syncStockButton').disabled = true;
-        document.getElementById('resetStockButton').disabled = true;
-        var inputs = document.querySelectorAll('table input[type="number"]');
-        inputs.forEach(function (input) {
-            input.disabled = true;
-        });
-    });
-
-    // 監聽點擊表格外的事件
-    document.addEventListener("click", function (event) {
-        if (isEditing) {
-            var table = document.querySelector("table");
-            var editButton = document.getElementById("editButton");
-            var saveButton = document.getElementById("saveButton");
-            var syncStockButton = document.getElementById("syncStockButton"); // 系統數量帶入按鈕
-            var resetStockButton = document.getElementById("resetStockButton"); // 數量歸零按鈕
-
-            // 確保點擊區域不在表格內、修改/儲存按鈕、或其他允許的按鈕上
-            if (
-                !table.contains(event.target) &&
-                event.target !== editButton &&
-                event.target !== saveButton &&
-                event.target !== syncStockButton &&
-                event.target !== resetStockButton
-            ) {
-                var confirmExit = confirm("您尚未儲存變更，確定要離開編輯模式嗎？");
-                if (confirmExit) {
-                    isEditing = false; // 退出編輯模式
-
-                    // 切換回修改按鈕
-                    saveButton.classList.add("d-none");
-                    editButton.classList.remove("d-none");
-
-                    // 禁用輸入框
-                    document.getElementById('syncStockButton').disabled = true;
-                    document.getElementById('resetStockButton').disabled = true;
-                    var inputs = document.querySelectorAll('table input[type="number"]');
-                    inputs.forEach(function (input) {
-                        input.disabled = true;
-                    });
-                }
-            }
+        },
+        error: function (xhr, status, error) {
+            alert("錯誤: " + error);
         }
     });
+
+    }
+
 </script>
 
 <!-- 刪除 -->

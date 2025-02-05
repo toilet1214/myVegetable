@@ -229,16 +229,21 @@ namespace prjVegetable.Controllers
                     return NotFound();
                 }
 
-                // 更新 TInventoryMain
+                // 取得原始 FActualQuantity
+                var originalQuantities = _context.TInventoryDetails
+                    .Where(d => viewModel.InventoryDetails.Select(vd => vd.FId).Contains(d.FId))
+                    .ToDictionary(d => d.FId, d => d.FActualQuantity);
+
+                // 只更新 TInventoryMain
                 inventoryMain.FBaselineDate = viewModel.InventoryMain.FBaselineDate;
                 inventoryMain.FCreatedAt = viewModel.InventoryMain.FCreatedAt;
                 inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
-                inventoryMain.FNote = "自動更新";
-
-                // 保存 TInventoryMain
+                inventoryMain.FNote = viewModel.InventoryMain.FNote;
                 _context.SaveChanges();
 
-                // 更新每個 InventoryDetail 的實際庫存數量
+                // 變更 TInventoryDetail，並檢查數量是否變更
+                bool hasQuantityChange = false;
+
                 foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
                     var detailToUpdate = _context.TInventoryDetails
@@ -246,19 +251,31 @@ namespace prjVegetable.Controllers
 
                     if (detailToUpdate != null)
                     {
+                        // 若 FActualQuantity 有變更，標記 hasQuantityChange 為 true
+                        if (originalQuantities.ContainsKey(detailToUpdate.FId) &&
+                            originalQuantities[detailToUpdate.FId] != inventoryDetail.FActualQuantity)
+                        {
+                            hasQuantityChange = true;
+                        }
+
                         // 更新實際庫存數量
                         detailToUpdate.FActualQuantity = inventoryDetail.FActualQuantity;
                     }
                 }
 
-                // 保存更新的 TInventoryDetail
                 _context.SaveChanges();
+
+                // 若數量沒有變更，則不新增調整單，直接回傳成功
+                if (!hasQuantityChange)
+                {
+                    return Json(new { success = true });
+                }
 
                 // 處理 TInventoryAdjustment
                 var inventoryAdjustmentList = new List<TInventoryAdjustment>();
                 foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
-                    if (inventoryDetail.FActualQuantity != inventoryDetail.FSystemQuantity)
+                    if (originalQuantities[inventoryDetail.FId] != inventoryDetail.FActualQuantity)
                     {
                         var inventoryAdjustment = new TInventoryAdjustment
                         {
@@ -270,7 +287,7 @@ namespace prjVegetable.Controllers
                         };
 
                         _context.TInventoryAdjustments.Add(inventoryAdjustment);
-                        _context.SaveChanges();  // Save to get the Id
+                        _context.SaveChanges();
                         inventoryAdjustmentList.Add(inventoryAdjustment);
                     }
                 }
@@ -278,7 +295,7 @@ namespace prjVegetable.Controllers
                 // 處理 TInventoryAdjustmentDetail
                 foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
-                    if (inventoryDetail.FActualQuantity != inventoryDetail.FSystemQuantity)
+                    if (originalQuantities[inventoryDetail.FId] != inventoryDetail.FActualQuantity)
                     {
                         var linkedAdjustment = inventoryAdjustmentList.FirstOrDefault();
                         if (linkedAdjustment != null)
@@ -303,7 +320,13 @@ namespace prjVegetable.Controllers
 
                 // 跳轉到新增的 InventoryAdjustment 詳細頁
                 var newAdjustmentId = inventoryAdjustmentList.FirstOrDefault()?.FId;
-                return Json(new { success = true, redirectTo = $"/InventoryAdjustment/Detail/{newAdjustmentId}" });
+                return Json(new
+                {
+                    success = true,
+                    redirectTo = newAdjustmentId.HasValue
+                        ? $"/InventoryAdjustment/Detail/{newAdjustmentId}"
+                        : $"/Inventory/Detail/{currentId}"
+                });
             }
             catch (Exception ex)
             {
@@ -311,6 +334,7 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
 
 
         /*---------------- + Search + ----------------*/

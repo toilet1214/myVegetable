@@ -12,34 +12,37 @@
 <!-- 工具列 start -->
 <div class="row d-block mb-3">
     <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-primary">
-            <i class="bi bi-search me-2"></i>搜尋
+        <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            查詢
         </button>
-        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = 1 })" class="btn btn-primary">
+
+        <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
             <i class="bi bi-skip-start-fill me-2"></i>第一筆
         </a>
-        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
             <i class="bi bi-caret-left-fill me-2"></i>上一筆
         </a>
-        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })" class="btn btn-primary">
             <i class="bi bi-caret-right-fill me-2"></i>下一筆
         </a>
-        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
             <i class="bi bi-skip-end-fill me-2"></i>最後一筆
         </a>
-        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
             <i class="bi bi-file-earmark me-2"></i>新增
         </button>
-        <button type="button" class="btn btn-primary" id="editButton">
-            <i class="bi bi-pencil me-2"></i>修改
+        <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
+            <i class="bi bi-pencil me-2"></i>編輯
         </button>
-        <button type="button" class="btn btn-primary" id="saveButton">
+        <button type="button" class="btn btn-primary d-none" id="saveButton">
             <i class="bi bi-floppy me-2"></i>儲存
         </button>
         <button type="button" class="btn btn-primary" id="deletebutton">
             <i class="bi bi-trash me-2"></i>刪除
         </button>
-        <input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
+        <button type="button" class="btn btn-primary me-2" id="printButton" onclick="printTable()">
+            <i class="bi bi-printer me-2"></i>列印
+        </button>
     </div>
 </div>
 
@@ -68,14 +71,15 @@
             </div>
         </div>
         <div class="col-7 d-flex">
-            <div class="p-3 border border-primary rounded w-100">盤點單摘述。</div>
+            <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryAdjustment.FNote</div>
+            <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryAdjustment.FNote</textarea>
         </div>
         <input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
     </div>
 </div>
 <hr />
 <div>
-    <table class="table">
+    <table class="table" id="printTable">
         <thead>
             <tr>
                 <th>商品Id</th>
@@ -101,6 +105,7 @@
         </tbody>
     </table>
 </div>
+
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -152,19 +157,6 @@
     });
 </script>
 
-<!-- 修改 -->
-<script>
-    document.getElementById("editButton").addEventListener("click", function() {
-        document.getElementById('syncStockButton').disabled = false;
-        document.getElementById('resetStockButton').disabled = false;
-
-        var inputs = document.querySelectorAll('table input[type="number"]');
-        inputs.forEach(function(input) {
-            input.disabled = false;
-        });
-    });
-</script>
-
 <!-- 刪除 -->
 <script>
     document.getElementById('deletebutton').addEventListener('click', function () {
@@ -194,7 +186,84 @@
     });
 </script>
 
-<!-- 儲存 -->
+<!-- 編輯/儲存 -->
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // 初始設定：讓備註欄處於唯讀狀態
+        setEditable(false);
 
+        // 監聽「編輯」按鈕
+        document.getElementById("editButton").addEventListener("click", function () {
+            setEditable(true);
+            this.classList.add("d-none"); // 隱藏修改按鈕
+            document.getElementById("saveButton").classList.remove("d-none"); // 顯示儲存按鈕
+        });
+
+        // 監聽「儲存」按鈕
+        document.getElementById("saveButton").addEventListener("click", function () {
+            // 取得新的 FNote 內容
+            var noteText = document.getElementById("inventoryNoteEdit").value;
+
+            // 執行 AJAX 提交
+            saveFNote(noteText);
+        });
+    });
+
+    // 切換備註欄的可編輯狀態
+    function setEditable(editable) {
+        if (editable) {
+            document.getElementById("inventoryNoteView").classList.add("d-none");
+            document.getElementById("inventoryNoteEdit").classList.remove("d-none");
+        } else {
+            document.getElementById("inventoryNoteView").classList.remove("d-none");
+            document.getElementById("inventoryNoteEdit").classList.add("d-none");
+        }
+    }
+
+        function saveFNote(noteText) {
+        var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
+
+        var requestData = [
+        {
+            FId: currentId,
+            FNote: noteText
+        }];
+
+
+        console.log(requestData);
+
+        $.ajax({
+            url: '/InventoryAdjustment/Save/' + currentId,
+            method: 'POST',
+            data: JSON.stringify(requestData),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    document.getElementById("inventoryNoteView").innerText = noteText;
+                    setEditable(false);
+                    document.getElementById("saveButton").classList.add("d-none");
+                    document.getElementById("editButton").classList.remove("d-none");
+                    alert("備註更新成功！");
+                } else {
+                    alert('錯誤: ' + response.error);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert("錯誤: " + error);
+            }
+        });
+    }
+
+</script>
+
+
+<!-- 列印 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+<script>
+    function printTable() {
+            printJS({
+                printable: 'printTable',
+                type: 'html'
+            });
+        }
 </script>
