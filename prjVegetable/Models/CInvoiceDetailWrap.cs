@@ -28,13 +28,13 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("發票號碼")]
-        public string? FNumber
+        public string FNumber
         {
             get { return _InvoiceDetail.FNumber; }
             set { _InvoiceDetail.FNumber = value; }
         }
         [DisplayName("品名")]
-        public string? FProductName
+        public string FProductName
         {
             get { return _InvoiceDetail.FProductName; }
             set { _InvoiceDetail.FProductName = value; }

@@ -15,6 +15,14 @@ public partial class TGoodsInAndOut
 
     public int FProviderId { get; set; }
 
+    public int FPersonId { get; set; }
+
+    public int FProductId { get; set; }
+
+    public int FCount { get; set; }
+
+    public int FPrice { get; set; }
+
     public int FTotal { get; set; }
 
     public int FEditor { get; set; }

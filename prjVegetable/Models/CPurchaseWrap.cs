@@ -97,7 +97,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("備註")]
-        public string? FNote
+        public string FNote
         {
             get { return _Purchase.FNote; }
             set { _Purchase.FNote = value; }
