@@ -46,54 +46,198 @@ namespace prjVegetable.Controllers
             ViewBag.VisitorsPercentageMonth = 80;
             ViewBag.VisitorsPercentageYear = 70;
 
-            List<int> TotalMembersMonth = _VegetableContext.TPeople.Where(p => p.FPermission == 0 && p.FCreatedAt >= DateTime.Now.Date.AddMonths(-1)).GroupBy(p => p.FCreatedAt.Day).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
-            for (int i = 1; i < TotalMembersMonth.Count; i++)
+            var members = _VegetableContext.TPeople.Where(p => p.FPermission == 0).ToList();
+            var startDate = DateTime.Now.Date.AddDays(-29);  // 確保範圍涵蓋完整30天
+            // 初始化字典，確保每一天都有數據 (預設為 0)
+            Dictionary<string, int> TotalMembersMonth = Enumerable.Range(0, 30)
+                .Select(i => startDate.AddDays(i).ToString("MM/dd"))  // 轉成 "月/日" 格式
+                .ToDictionary(d => d, d => 0);
+
+            // 取出過去 30 天內的會員數據，按日期分組
+            var groupedDataDay = members
+                .Where(p => p.FCreatedAt >= startDate)  // 限制在過去 30 天內
+                .GroupBy(p => p.FCreatedAt.ToString("MM/dd")) // 按 "月/日" 分組
+                .OrderBy(g => g.Key) // 確保按照日期排序
+                .ToList();
+
+            // 填入實際數據
+            foreach (var g in groupedDataDay)
             {
-                TotalMembersMonth[i] += TotalMembersMonth[i - 1];  // 每一天的數字加上前一天的數字
+                TotalMembersMonth[g.Key] = g.Count();
             }
-            while (TotalMembersMonth.Count < 30)
+
+            // **累積計算**
+            int cumulativeCountMonth = 0;
+            foreach (var key in TotalMembersMonth.Keys.OrderBy(k => k))
             {
-                TotalMembersMonth.Insert(0,0);
+                cumulativeCountMonth += TotalMembersMonth[key];  // 累積總數
+                TotalMembersMonth[key] = cumulativeCountMonth;
             }
-            List<int> TotalMembersYear = _VegetableContext.TPeople.Where(p => p.FPermission == 0 && p.FCreatedAt >= DateTime.Now.Date.AddYears(-1)).GroupBy(p => p.FCreatedAt.Month).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
-            for (int i = 1; i < TotalMembersYear.Count; i++)
+            var startMonth = DateTime.Now.AddMonths(-11); // 往前推 11 個月，加上當月總共 12 個月
+            // 初始化字典，確保每個月份都有數據 (預設為 0)
+            Dictionary<string, int> TotalMembersYear = Enumerable.Range(0, 12)
+                .Select(i => startMonth.AddMonths(i).ToString("yyyy/MM"))
+                .ToDictionary(m => m, m => 0);
+            // 取出過去 12 個月內的會員數據，按月份分組
+            var groupedDataYear = members
+                .Where(p => p.FCreatedAt >= startMonth)  // 限制在過去 12 個月內
+                .GroupBy(p => p.FCreatedAt.ToString("yyyy/MM")) // 按照"年/月"分組
+                .OrderBy(g => g.Key) // 確保按年月排序
+                .ToList();
+            foreach (var g in groupedDataYear)
             {
-                TotalMembersYear[i] += TotalMembersYear[i - 1];  // 每一天的數字加上前一天的數字
+                TotalMembersYear[g.Key] = g.Count(); // 記錄該月份的新增會員數
             }
-            while (TotalMembersYear.Count < 12)
+            int cumulativeCountYear = 0;
+            foreach (var key in TotalMembersYear.Keys.OrderBy(k => k))
             {
-                TotalMembersYear.Insert(0, 0);
+                cumulativeCountYear += TotalMembersYear[key]; // 加上前面的累積數
+                TotalMembersYear[key] = cumulativeCountYear;  // 更新為累積總數
             }
-            List<int> TotalMembersAll = _VegetableContext.TPeople.Where(p => p.FPermission == 0).GroupBy(p => p.FCreatedAt.Year).OrderBy(g => g.Key).Select(g => g.Count()).ToList();
-            for (int i = 1; i < TotalMembersAll.Count; i++)
+            var minYear = members.Select(p => p.FCreatedAt.Year).DefaultIfEmpty(DateTime.Now.Year).Min();
+            var memberCounts = members.Where(p => p.FPermission == 0).GroupBy(p => p.FCreatedAt.Year).OrderBy(g => g.Key).ToDictionary(g => g.Key, g => g.Count());
+            Dictionary<int, int> TotalMembersAll = new Dictionary<int, int>();
+            int cumulativeCount = 0;
+            for (int year = Math.Min(minYear, DateTime.Now.Year - 4); year <= DateTime.Now.Year; year++)
             {
-                TotalMembersAll[i] += TotalMembersAll[i - 1];  // 每一天的數字加上前一天的數字
+                if (memberCounts.ContainsKey(year))
+                    cumulativeCount += memberCounts[year]; // 加上該年新註冊的會員數
+
+                TotalMembersAll[year] = cumulativeCount; // 儲存累積會員數
             }
-            TotalMembersAll.Insert(0, 0);
+
+            var BestSellingProductYear = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
+            { ol, p }).Join(_VegetableContext.TOrders, b => b.ol.FOrderId, o => o.FId, (b, o) => new
+            {
+                Total = b.ol.FCount,
+                TotalSum = b.p.FPrice * b.ol.FCount,
+                b.p.FName,
+                o.FStatus,
+                Time = o.FOrderAt
+            }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year).GroupBy(x => x.FName).Select(g => new
+            {
+                ProductName = g.Key,
+                Total = g.Sum(x => x.Total),       // 總銷售量
+                TotalSum = g.Sum(x => x.TotalSum) // 總營收
+            })
+            .OrderByDescending(x => x.Total) // 按銷量排序
+            .Take(5)  // 取前 5 名
+            .ToList();
+            var BestSellingProductMonth = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
+            { ol, p }).Join(_VegetableContext.TOrders, b => b.ol.FOrderId, o => o.FId, (b, o) => new
+            {
+                Total = b.ol.FCount,
+                TotalSum = b.p.FPrice * b.ol.FCount,
+                b.p.FName,
+                o.FStatus,
+                Time = o.FOrderAt
+            }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year && x.Time.Month == DateTime.Now.Month).GroupBy(x => x.FName).Select(g => new
+            {
+                ProductName = g.Key,
+                Total = g.Sum(x => x.Total),       // 總銷售量
+                TotalSum = g.Sum(x => x.TotalSum) // 總營收
+            });
+            var BestSellingProductDay = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
+            { ol, p }).Join(_VegetableContext.TOrders, b => b.ol.FOrderId, o => o.FId, (b, o) => new
+            {
+                Total = b.ol.FCount,
+                TotalSum = b.p.FPrice * b.ol.FCount,
+                b.p.FName,
+                o.FStatus,
+                Time = o.FOrderAt
+            }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year && x.Time.Month == DateTime.Now.Month && x.Time.Date == DateTime.Now.Date).GroupBy(x => x.FName).Select(g => new
+            {
+                ProductName = g.Key,
+                Total = g.Sum(x => x.Total),       // 總銷售量
+                TotalSum = g.Sum(x => x.TotalSum) // 總營收
+            });
+
+            var MostPopularProductYear = new List<string>();
+            var MostPopularProductMonth = new List<string>();
+            var MostPopularProductDay = new List<string>();
+
+            List<int> SellingClassYear = _VegetableContext.TOrderLists
+                .Join(_VegetableContext.TProducts,
+                ol => ol.FProductId,
+                p => p.FId,
+                (ol, p) => new { ol, p })
+                .Join(_VegetableContext.TOrders,
+                o => o.ol.FOrderId,
+                order => order.FId,
+                (o, order) => new
+                {
+                    Classification = o.p.FClassification,
+                    Count = o.ol.FCount,
+                    Time = order.FOrderAt,
+                    State = order.FStatus
+                })
+                .Where(t => t.Time.Year == DateTime.Now.Year && t.State == 2)
+                .GroupBy(x => x.Classification)
+                .Select(g => g.Sum(x => x.Count))
+                .ToList();
+            List<int> SellingClassMonth = _VegetableContext.TOrderLists
+                .Join(_VegetableContext.TProducts,
+                ol => ol.FProductId,
+                p => p.FId,
+                (ol, p) => new { ol, p })
+                .Join(_VegetableContext.TOrders,
+                o => o.ol.FOrderId,
+                order => order.FId,
+                (o, order) => new
+                {
+                    Classification = o.p.FClassification,
+                    Count = o.ol.FCount,
+                    Time = order.FOrderAt,
+                    State = order.FStatus
+                })
+                .Where(t => t.Time.Month == DateTime.Now.Month && t.Time.Year == DateTime.Now.Year && t.State == 2)
+                .GroupBy(x => x.Classification)
+                .Select(g => g.Sum(x => x.Count))
+                .ToList();
+            List<int> SellingClassDay = _VegetableContext.TOrderLists
+                .Join(_VegetableContext.TProducts,
+                ol => ol.FProductId,
+                p => p.FId,
+                (ol, p) => new { ol, p })
+                .Join(_VegetableContext.TOrders,
+                o => o.ol.FOrderId,
+                order => order.FId,
+                (o, order) => new
+                {
+                    Classification = o.p.FClassification,
+                    Count = o.ol.FCount,
+                    Time = order.FOrderAt,
+                    State = order.FStatus
+                })
+                .Where(t => t.Time.Date == DateTime.Now.Date && t.Time.Month == DateTime.Now.Month && t.Time.Year == DateTime.Now.Year && t.State == 2)
+                .GroupBy(x => x.Classification)
+                .Select(g => g.Sum(x => x.Count))
+                .ToList();
+
             var viewmodel = new CERPIndexViewModel
             {
-                AllMembersLabels = _VegetableContext.TPeople.Where(p => p.FPermission == 0).GroupBy(m => m.FCreatedAt.Year).Select(g => g.Key.ToString()).ToList(),
+                AllMembersLabels = TotalMembersAll.Keys.ToList(),
                 TotalMembers = _VegetableContext.TPeople.Count(p => p.FPermission == 0),
-                TotalMembersAll = TotalMembersAll,
-                TotalMembersYear = TotalMembersYear,
-                TotalMembersMonth = TotalMembersMonth,
+                TotalMembersAll = TotalMembersAll.Values.ToList(),
+                TotalMembersYear = TotalMembersYear.Values.ToList(),
+                TotalMembersMonth = TotalMembersMonth.Values.ToList(),
                 TotalVisitorsYear = 100,//待修改
                 TotalVisitorsMonth = 10,//待修改
                 TotalVisitorsDay = 1,//待修改
                 TotalOrdersYear = TotalOrdersYear,
                 TotalOrdersMonth = TotalOrdersMonth,
                 TotalOrdersDay = TotalOrdersDay,
-                //BestSellingProductYear = ""  ,
-                //BestSellingProductMonth ="",
-                //BestSellingProductDay ="",
+                BestSellingProductYear = BestSellingProductYear,
+                BestSellingProductMonth = BestSellingProductMonth,
+                BestSellingProductDay = BestSellingProductDay,
 
-                //MostPopularProductYear ="",
-                //MostPopularProductMonth ="",
-                //MostPopularProductDay ="",
+                MostPopularProductYear = MostPopularProductYear,
+                MostPopularProductMonth = MostPopularProductMonth,
+                MostPopularProductDay = MostPopularProductDay,
 
-                //BestSellingClassYear ="",
-                //BestSellingClassMonth ="",
-                //BestSellingClassDay =""
+                SellingClassYear = SellingClassYear,
+                SellingClassMonth = SellingClassMonth,
+                SellingClassDay = SellingClassDay
             };
             return View(viewmodel);
         }

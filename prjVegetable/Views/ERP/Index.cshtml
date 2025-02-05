@@ -110,9 +110,7 @@
                         </ul>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title fs-5 fw-bold">
-                            會員數
-                        </h5>
+                        <h5 class="card-title fs-5 fw-bold">會員數 <span id="MembersDate">| 最近一年內</span></h5>
                         <!-- Line Chart -->
                         <div id="LineChart"></div>
                         <!-- End Line Chart -->
@@ -126,26 +124,27 @@
                     <div class="card top-selling overflow-auto mt-3" style="min-height:220px;">
                         <div class="filter position-absolute top-0 end-0 p-2">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="SalesRankList">
                                 <li class="dropdown-header text-start">
                                     <h6>篩選</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('day', '今天')">今天</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('month', '這個月')">這個月</a></li>
-                                <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('year', '今年')">今年</a></li>
+                                <li><a class="dropdown-item" href="#">今天</a></li>
+                                <li><a class="dropdown-item" href="#">這個月</a></li>
+                                <li><a class="dropdown-item" href="#">今年</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
-                            <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRanking_Date">| 今天</span></h5>
+                            <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRankDate">| 這個月</span></h5>
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="fs-6">圖片</th>
-                                        <th scope="col" class="fs-6">產品</th>
+                                        <th scope="col" class="fs-6">序</th>
+                                        <th scope="col" class="fs-6">產品名稱</th>
                                         <th scope="col" class="fs-6">數量</th>
+                                        <th scope="col" class="fs-6">金額</th>
                                     </tr>
                                 </thead>
-                                <tbody id="SalesRanking">
+                                <tbody id="SalesRank">
                                 </tbody>
                             </table>
                         </div>
@@ -171,12 +170,12 @@
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
-                                        <th scope="col" class="fs-6">圖片</th>
-                                        <th scope="col" class="fs-6">產品</th>
+                                        <th scope="col" class="fs-6">產品名稱</th>
                                         <th scope="col" class="fs-6">收藏數</th>
+                                        <th scope="col" class="fs-6">評價</th>
                                     </tr>
                                 </thead>
-                                <tbody id="LikesRanking">
+                                <tbody id="LikesRank">
                                 </tbody>
                             </table>
                         </div>
@@ -201,18 +200,18 @@
             <div class="card mt-3">
                 <div class="filter position-absolute top-0 end-0 p-2">
                     <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="Orders_List">
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="SalesClassList">
                         <li class="dropdown-header text-start">
                             <h6>篩選</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('day', '今天')">今天</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('month', '這個月')">這個月</a></li>
-                        <li><a class="dropdown-item" href="#" onclick="updateVisitorsData('year', '今年')">今年</a></li>
+                        <li><a class="dropdown-item" href="#">今天</a></li>
+                        <li><a class="dropdown-item" href="#">這個月</a></li>
+                        <li><a class="dropdown-item" href="#">今年</a></li>
                     </ul>
                 </div>
                 <div class="card-body pb-0">
-                    <h5 class="card-title fw-bold fs-5">類別銷量 <span id="sales_date">| 今天</span></h5>
-                    <div id="trafficChart" style="min-height: 400px;" class="echart"></div>
+                    <h5 class="card-title fw-bold fs-5">類別銷量 <span id="SalesClassDate">| 這個月</span></h5>
+                    <div id="PieChart" style="min-height: 400px;"></div>
                 </div>
             </div>
             <!-- End 類別銷量 -->
@@ -315,17 +314,16 @@
     </script>
     <!--會員數折線圖-->
     <script>
-
         let TotalMembersAll = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersAll));
         let TotalMembersYear = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersYear));
         let TotalMembersMonth = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersMonth));
         let AllLabel = @Html.Raw(JsonSerializer.Serialize(Model.AllMembersLabels));
         let MonthLabel = @Html.Raw(JsonSerializer.Serialize(
-        Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select(date => { return (date.Day == 1) ? date.ToString("MM/dd") : date.ToString("dd"); }).ToList()));
+        Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select((date, index) => (date.Day == 1 || index == 0) ? date.ToString("MM/dd") : date.ToString("dd")).ToList()));
         let YearLabel = @Html.Raw(JsonSerializer.Serialize(
-        Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => { return (date.Month == 1) ? date.ToString("yyyy/MM") : date.ToString("MM"); }).ToList()));
+        Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
 
-            let chart;
+        let chart;
         function MemberCountMonth() {
             if (chart) chart.destroy();
             chart = new ApexCharts(document.querySelector("#LineChart"), {
@@ -463,11 +461,177 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            MemberCountAll();
+            MemberCountYear();
+        })
+
+        $(function () {
+            $("#MembersList").on("click", (e) => {
+                e.preventDefault();
+                let date = e.target.textContent.trim();
+                $("#MembersDate").text(`/${date}`);
+                switch (date) {
+
+                    case "最近一個月內":
+                        MemberCountMonth();
+                        break;
+                    case "最近一年內":
+                        MemberCountYear();
+                        break;
+                    case "全部":
+                        MemberCountAll();
+                        break;
+
+                }
+            })
         })
     </script>
     <!--通知-->
-    <!--圓餅圖-->
+    <!--銷售類別排行圓餅圖-->
+    <script>
+        let PChart;
+        let SellingClassYear = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassYear));
+        let SellingClassMonth = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassMonth));
+        let SellingClassDay = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassDay));
+        console.log(SellingClassYear);
+        function PieYear() {
+            if (PChart) PChart.destroy();
+            PChart = new ApexCharts(document.querySelector("#PieChart"), {
+                series: SellingClassYear,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: ['根莖', '葉菜', '水果', '蕈菇', '蔬菜箱', '其他'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            });
+            PChart.render();
+        }
+        function PieMonth() {
+            if (PChart) PChart.destroy();
+            PChart = new ApexCharts(document.querySelector("#PieChart"), {
+                series: SellingClassMonth,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: ['根莖', '葉菜', '水果', '蕈菇', '蔬菜箱', '其他'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            });
+            PChart.render();
+        }
+        function PieDay() {
+            if (PChart) PChart.destroy();
+            PChart = new ApexCharts(document.querySelector("#PieChart"), {
+                series: SellingClassDay,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: ['根莖', '葉菜', '水果', '蕈菇', '蔬菜箱', '其他'],
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            });
+            PChart.render();
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            PieMonth();
+        });
+        $(function () {
+            $("#SalesClassList").on("click", (e) => {
+                e.preventDefault();
+                let SalesClassDate = e.target.textContent.trim();
+                $("#SalesClassDate").text(`| ${SalesClassDate}`);
+                switch (SalesClassDate) {
+                    case "今天":
+                        PieDay();
+                        break;
+                    case "這個月":
+                        PieMonth();
+                        break;
+                    case "今年":
+                        PieYear();
+                        break;
+                }
+            })
+        })
+    </script>
     <!--銷售排行-->
+    <script>
+        var BestSellingProductYear = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductYear));
+        var BestSellingProductMonth = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductMonth));
+        var BestSellingProductDay = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductDay));
+        function SalesRank(products) {
+            var count = 0;
+            // 清空表格內容
+            $('#SalesRank').empty();
+            // 遍歷 products 並插入到表格中
+            $.each(products, function (index, product) {
+                count++;
+                var row = $('<tr></tr>');  // 創建一行
+                var countCell = $('<td></td>').text(index + 1);  // 使用 index 作為序號 (從1開始)
+                row.append(countCell);
+                var productNameCell = $('<td></td>').text(product.ProductName); // 商品名稱
+                row.append(productNameCell);
+
+                var totalSoldCell = $('<td></td>').text(product.Total); // 總銷售數量
+                row.append(totalSoldCell);
+
+                var totalRevenueCell = $('<td></td>').text(product.TotalSum); // 總營收
+                row.append(totalRevenueCell);
+
+                $('#SalesRank').append(row); // 將這一行加入到表格中
+            });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            SalesRank(BestSellingProductMonth);
+        });
+        $(function () {
+            $("#SalesRankList").on("click", (e) => {
+                e.preventDefault();
+                let SalesRankDate = e.target.textContent.trim();
+                $("#SalesRankDate").text(`| ${SalesRankDate}`);
+                switch (SalesRankDate) {
+                    case "今天":
+                        SalesRank(BestSellingProductDay);
+                        break;
+                    case "這個月":
+                        SalesRank(BestSellingProductMonth);
+                        break;
+                    case "今年":
+                        SalesRank(BestSellingProductYear);
+                        break;
+                }
+            })
+        })
+    </script>
     <!--最受歡迎-->
 }
