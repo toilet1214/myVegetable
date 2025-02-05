@@ -8,7 +8,7 @@
 <h1>新增進出貨資料</h1>
 <hr />
 
-<!-- ✅ 確保 `form` 內包含 `asp-action="Create"` -->
+<!-- 主表單 (TGoodsInAndOut) -->
 <form asp-action="Create" method="post" id="MainForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
@@ -36,14 +36,14 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票ID</label>
+                <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
                 <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
                 <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商ID</label>
+                <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
                 <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required />
                 <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
             </div>
@@ -53,7 +53,7 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶ID</label>
+                <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
                 <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
                 <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
             </div>
@@ -61,7 +61,7 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
-                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required />
+                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required/>
                 <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
             </div>
         </div>
@@ -71,20 +71,25 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
-                <input asp-for="GoodsInAndOut.FNote" class="form-control" />
+                <input asp-for="GoodsInAndOut.FNote" class="form-control" type="text" required value="無" />
                 <span asp-validation-for="GoodsInAndOut.FNote" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
+                <input asp-for="GoodsInAndOut.FEditor" class="form-control" readonly value="1" />
+                <span asp-validation-for="GoodsInAndOut.FEditor" class="text-danger"></span>
             </div>
         </div>
     </div>
 </form>
 
-
 <hr />
 
 <!-- 進出貨明細 -->
 <h3>進出貨明細</h3>
-<div id="details">
-</div>
+<div id="details"></div>
 
 <!-- [+] 按鈕 -->
 <div class="row mb-3">
@@ -102,43 +107,36 @@
     </div>
 </div>
 
-<!-- JavaScript: 提交主表並插入細項 -->
 <script>
     document.getElementById("submitAllData").addEventListener("click", function () {
         let formData = new FormData(document.getElementById("MainForm"));
 
-        fetch("@Url.Action("Create")", {
+        fetch("/GoodsInAndOut/Create", {
             method: "POST",
             body: formData
         }).then(response => response.json())
             .then(data => {
                 if (data.success) {
                     let mainFId = data.fId;
-                    document.querySelectorAll(".FGoodsInandOutId").forEach(input => input.value = mainFId);
-
-                    let details = document.querySelectorAll(".detail-entry");
-                    details.forEach(detailEntry => {
-                        let detailData = {
+                    let details = [];
+                    document.querySelectorAll(".detail-entry").forEach(detailEntry => {
+                        details.push({
                             FGoodsInandOutId: mainFId,
                             FProductId: detailEntry.querySelector(".FProductId").value,
                             FCount: detailEntry.querySelector(".FCount").value,
                             FPrice: detailEntry.querySelector(".FPrice").value,
                             FSum: detailEntry.querySelector(".FSum").value
-                        };
-
-                        fetch("@Url.Action("InsertDetail")", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(detailData)
-                        }).then(response => response.json())
-                            .then(data => {
-                                if (!data.success) {
-                                    console.error("明細插入失敗：" + data.message);
-                                }
-                            }).catch(error => console.error("Error:", error));
+                        });
                     });
 
-                    alert("所有資料提交完成！");
+                    fetch("@Url.Action("InsertDetail")", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(details)
+                    }).then(response => response.json())
+                        .then(data => {
+                            alert("所有資料提交完成！");
+                        }).catch(error => console.error("Error:", error));
                 } else {
                     alert("提交失敗：" + data.message);
                 }
@@ -146,34 +144,14 @@
     });
 
     document.getElementById("addDetail").addEventListener("click", function () {
-        var newRow = `
-                <div class="row mb-3 detail-entry">
-                    <input type="hidden" class="FGoodsInandOutId" value="0" />
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label>產品 ID</label>
-                            <input type="text" class="FProductId form-control" />
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label>商品數量</label>
-                            <input type="text" class="FCount form-control" />
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label>單價</label>
-                            <input type="text" class="FPrice form-control" />
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="form-group">
-                            <label>小計</label>
-                            <input type="text" class="FSum form-control" />
-                        </div>
-                    </div>
-                </div>`;
+        var newRow = `<div class="row mb-3 detail-entry">
+                <input type="hidden" class="FGoodsInandOutId" value="0" />
+                <div class="col-3"><input type="text" class="FProductId form-control" placeholder="產品 ID" /></div>
+                <div class="col-3"><input type="text" class="FCount form-control" placeholder="數量" /></div>
+                <div class="col-3"><input type="text" class="FPrice form-control" placeholder="單價" /></div>
+                <div class="col-3"><input type="text" class="FSum form-control" placeholder="小計" /></div>
+            </div>`;
         document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
     });
+    console.log(@Model.GoodsInAndOut.FNote);
 </script>

@@ -9,7 +9,7 @@ public partial class TGoodsInAndOut
 
     public int FInOut { get; set; }
 
-    public DateOnly FDate { get; set; }
+    public DateTime FDate { get; set; }
 
     public int FInvoiceId { get; set; }
 
@@ -19,13 +19,13 @@ public partial class TGoodsInAndOut
 
     public int FProductId { get; set; }
 
-    public int FCount { get; set; }
+    public int? FCount { get; set; } = 0;
 
-    public int FPrice { get; set; }
+    public int? FPrice { get; set; } = 0;
 
-    public int FTotal { get; set; }
+    public int? FTotal { get; set; } = 0;
 
     public int FEditor { get; set; }
 
-    public string FNote { get; set; } = null!;
+    public string? FNote { get; set; } 
 }

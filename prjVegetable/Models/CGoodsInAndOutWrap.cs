@@ -32,7 +32,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("日期")]
-        public DateOnly FDate
+        public DateTime FDate
         {
             get { return _GoodsInAndOut.FDate; }
             set { _GoodsInAndOut.FDate = value; }
@@ -70,21 +70,21 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("商品數量")]
-        public int FCount
+        public int? FCount
         {
             get { return _GoodsInAndOut.FCount; }
             set { _GoodsInAndOut.FCount = value; }
         }
 
         [DisplayName("商品單價")]
-        public int FPrice
+        public int? FPrice
         {
             get { return _GoodsInAndOut.FPrice; }
             set { _GoodsInAndOut.FPrice = value; }
         }
 
         [DisplayName("商品總價")]
-        public int FTotal
+        public int? FTotal
         {
             get { return _GoodsInAndOut.FTotal; }
             set { _GoodsInAndOut.FTotal = value; }
@@ -98,7 +98,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("備註")]
-        public string FNote
+        public string? FNote
         {
             get { return _GoodsInAndOut.FNote; }
             set { _GoodsInAndOut.FNote = value; }

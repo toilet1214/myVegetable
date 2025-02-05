@@ -7,6 +7,7 @@ using prjVegetable.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using prjVegetable.ViewModels;
+using Microsoft.Data.SqlClient;
 
 namespace prjVegetable.Controllers
 {
@@ -93,33 +94,92 @@ namespace prjVegetable.Controllers
                 GoodsInAndOut = new TGoodsInAndOut(),
                 GoodsInAndOutDetails = new List<TGoodsInAndOutDetail> { new TGoodsInAndOutDetail() }
             };
-
             return View(viewModel);
         }
 
-
-        // POST: GoodsInAndOut/Create
+        // POST: GoodsInAndOut/Create (主表)
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(CGoodsInAndOutViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                // 新增 TGoodsInAndOut（主表）
-                _dbContext.TGoodsInAndOuts.Add(model.GoodsInAndOut);
-                _dbContext.SaveChanges();
-
-                // 設定明細的關聯 ID
-                foreach (var detail in model.GoodsInAndOutDetails)
+                foreach (var error in ModelState)
                 {
-                    detail.FGoodsInandOutId = model.GoodsInAndOut.FId;
-                    _dbContext.TGoodsInAndOutDetails.Add(detail);
+                    Console.WriteLine($"欄位: {error.Key}, 錯誤訊息: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
                 }
-
-                _dbContext.SaveChanges();
-                return RedirectToAction("GoodsInAndOutIndex");
+                return Json(new { success = false, message = "主表驗證失敗，請檢查 Console 訊息" });
             }
-            return View(model);
+
+            // **1️⃣ 轉換 CGoodsInAndOutViewModel 為 TGoodsInAndOut (主表)**
+            var goodsInAndOut = new TGoodsInAndOut
+            {
+                FInOut = model.GoodsInAndOut.FInOut,
+                FDate = model.GoodsInAndOut.FDate,
+                FInvoiceId = model.GoodsInAndOut.FInvoiceId,
+                FProviderId = model.GoodsInAndOut.FProviderId,
+                FPersonId = model.GoodsInAndOut.FPersonId,
+                FTotal = model.GoodsInAndOut.FTotal,
+                FEditor = model.GoodsInAndOut.FEditor,
+                FNote = model.GoodsInAndOut.FNote
+            };
+
+            // **2️⃣ 儲存主表並獲取 FId**
+            _dbContext.TGoodsInAndOuts.Add(goodsInAndOut);
+            _dbContext.SaveChanges(); // 這裡確保 FId 產生
+
+            int generatedFId = goodsInAndOut.FId; // 獲取主表 FId
+
+            // **3️⃣ 轉換並插入 TGoodsInAndOutDetail (明細表)**
+            if (model.GoodsInAndOutDetails != null && model.GoodsInAndOutDetails.Count > 0)
+            {
+                List<TGoodsInAndOutDetail> details = model.GoodsInAndOutDetails.Select(detail => new TGoodsInAndOutDetail
+                {
+                    FGoodsInandOutId = generatedFId, // 綁定主表 FId
+                    FProductId = detail.FProductId,
+                    FCount = detail.FCount,
+                    FPrice = detail.FPrice,
+                    FSum = detail.FSum
+                }).ToList();
+
+                _dbContext.TGoodsInAndOutDetails.AddRange(details); // **批量插入**
+                _dbContext.SaveChanges();
+            }
+
+            return Json(new { success = true, fId = generatedFId });
+        }
+
+
+        // POST: GoodsInAndOut/InsertDetail (批量新增明細)
+        [HttpPost]
+        public IActionResult InsertDetail([FromBody] List<TGoodsInAndOutDetail> details)
+        {
+            if (details == null || details.Count == 0)
+            {
+                return Json(new { success = false, message = "沒有明細資料可插入" });
+            }
+
+            List<string> valuesList = new List<string>();
+            List<object> parameters = new List<object>();
+            int paramIndex = 0;
+
+            foreach (var detail in details)
+            {
+                string valuePlaceholder = $"(@FGoodsInandOutId{paramIndex}, @FProductId{paramIndex}, @FCount{paramIndex}, @FPrice{paramIndex}, @FSum{paramIndex})";
+                valuesList.Add(valuePlaceholder);
+
+                parameters.Add(new SqlParameter($"@FGoodsInandOutId{paramIndex}", detail.FGoodsInandOutId));
+                parameters.Add(new SqlParameter($"@FProductId{paramIndex}", detail.FProductId));
+                parameters.Add(new SqlParameter($"@FCount{paramIndex}", detail.FCount));
+                parameters.Add(new SqlParameter($"@FPrice{paramIndex}", detail.FPrice));
+                parameters.Add(new SqlParameter($"@FSum{paramIndex}", detail.FSum));
+
+                paramIndex++;
+            }
+
+            string sql = "INSERT INTO TGoodsInAndOutDetail (FGoodsInandOutId, FProductId, FCount, FPrice, FSum) VALUES " + string.Join(", ", valuesList);
+            _dbContext.Database.ExecuteSqlRaw(sql, parameters.ToArray());
+
+            return Json(new { success = true });
         }
 
 
