@@ -15,9 +15,11 @@ public partial class TProduct
 
     public string FDescription { get; set; } = null!;
 
+    public string FIntroduction { get; set; } = null!;
+
     public int FQuantity { get; set; }
 
-    public DateTime FLaunchAt { get; set; }
+    public DateOnly FLaunchAt { get; set; }
 
     public int FStorage { get; set; }
 
