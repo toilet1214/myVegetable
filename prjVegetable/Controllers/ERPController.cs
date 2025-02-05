@@ -224,7 +224,7 @@ namespace prjVegetable.Controllers
                 .GroupBy(x => x.Classification)
                 .Select(g => g.Sum(x => x.Count))
                 .ToList();
-            var UnDoneOrder = _VegetableContext.TOrders.Where(x=>x.FStatus == 1 ).Select(x=>x.FId).ToList();
+            var UnDoneOrder = _VegetableContext.TOrders.Where(x=>x.FStatus == 1 && x.FOrderAt < DateTime.Now.AddDays(-3)).Select(x=>x.FId).ToList();
             var viewmodel = new CERPIndexViewModel
             {
                 AllMembersLabels = TotalMembersAll.Keys.ToList(),
