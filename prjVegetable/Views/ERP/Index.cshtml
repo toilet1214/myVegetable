@@ -183,13 +183,12 @@
                 <div class="card-body pb-1">
                     <h5 class="card-title fs-5 fw-bold py-0 mb-0">通知</h5>
                     <div id="notification" style="height: 250px; overflow-y: auto;">
-                        
-                            <i class="bi bi-check-circle-fill text-success"></i>
-                            <div>
-                                <h3>沒有需要處理的訂單</h3>
-                                <p class="fs-6" style="color:#707070;"></p>
-                            </div>
-                        
+
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                        <div>
+                            <h3>沒有需要處理的訂單</h3>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -486,28 +485,35 @@
     <!--通知-->
     <script>
         function NotificationRefresh() {
-
-            var orders = @Html.Raw(Json.Serialize(Model.UnDoneOrder)); // 將 Model 轉為 JSON
+            var orders = @Html.Raw(JsonSerializer.Serialize(Model.UnDoneOrder)); // 確保不為 null
             console.log(orders);
-            if (Model.UnDoneOrder != null && Model.UnDoneOrder.Any()) {
-                $("#notification").empty(); // 清空通知內容
+
+            $("#notification").empty(); // 清空通知內容
+
+            if (!orders || orders.length === 0) {
+                // 若沒有未處理訂單，顯示提示訊息
+                $("#notification").append(`
+                        <div class="text-center p-3">
+                            <i class="bi bi-check-circle text-success"></i>
+                            <p class="fs-6" style="color:#707070;">目前沒有未處理訂單</p>
+                        </div>
+                    `);
+            } else {
                 $.each(orders, function (index, item) {
                     var html = `
-                                        <a href="~/Order/List" class="notification-item px-0 py-2">
-                                                    <i class="bi bi-exclamation-circle-fill text-warning"></i>
-                                            <div>
-                                                <h3 style="color:darkred;">訂單未處理</h3>
-                                                        <p class="fs-6" style="color:#707070;">訂單編號: ${item.FId} 未出貨</p>
-                                            </div>
-                                        </a>
-                                        <div>
-                                            <hr class="my-2" />
-                                        </div>`;
+                            <div class="notification-item px-0 py-2">
+                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                <div>
+                                    <h3 style="color:darkred;">訂單未處理</h3>
+                                            <a href="/Order/List" class="fs-6" style="color:#707070;">訂單編號: ${item} 未出貨</a>
+                                </div>
+                                    </div>
+                            <div><hr class="my-2" /></div>`;
 
                     $("#notification").append(html); // 將 HTML 插入通知區塊
-                })
+                });
             }
-        };
+        }
 
         $(document).ready(function () {
             NotificationRefresh(); // 頁面載入時執行
