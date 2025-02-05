@@ -71,21 +71,24 @@ namespace prjVegetable.Controllers
         }
 
 
-        // GET: TPersons/Details/5
-        public async Task<IActionResult> Details(int? id)
+        //詳細資料頁面
+        public async Task<IActionResult> Details()        
         {
-            if (id == null)
+           return View();
+        }
+        [HttpGet]        
+        public async Task<IActionResult> GetPersonById (int? id) 
+        {
+            if (id==0) 
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest("找不到ID");
             }
-
-            var tPerson = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
-            if (tPerson == null)
+            var person = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+            if (person == null)
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound("Person not found");
             }
-
-            return View(new CPersonWrap() { person = tPerson });
+            return Ok(person);
         }
 
 
@@ -112,7 +115,7 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: TPersons/Edit/5
+        //GET: TPersons/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
