@@ -231,7 +231,7 @@ namespace prjVegetable.Controllers
                 _dbContext.TCarts.RemoveRange(cartItems);
                 _dbContext.SaveChanges();
 
-                return RedirectToAction("Order", "Customer", new { orderId = newOrder.FId });
+                return RedirectToAction("CheckOutIndex", "CheckOut", new { orderId = newOrder.FId });
             }
             catch (Exception ex)
             {
