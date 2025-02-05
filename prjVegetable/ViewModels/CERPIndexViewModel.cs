@@ -17,13 +17,13 @@ namespace prjVegetable.ViewModels
         public int TotalOrdersMonth { get; set; }
         public int TotalOrdersDay { get; set; }
         public IEnumerable<dynamic> BestSellingProductYear { get; set; }
-        public List<string> MostPopularProductYear { get; set; }
+        public IEnumerable<dynamic> MostPopularProductYear { get; set; }
         public List<int> SellingClassYear { get; set; }
         public IEnumerable<dynamic> BestSellingProductMonth { get; set; }
-        public List<string> MostPopularProductMonth { get; set; }
+        public IEnumerable<dynamic> MostPopularProductMonth { get; set; }
         public List<int> SellingClassMonth { get; set; }
         public IEnumerable<dynamic> BestSellingProductDay { get; set; }
-        public List<string> MostPopularProductDay { get; set; }
+        public IEnumerable<dynamic> MostPopularProductDay { get; set; }
         public List<int> SellingClassDay { get; set; }
     }
 }
