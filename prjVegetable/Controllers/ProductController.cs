@@ -89,7 +89,6 @@ namespace prjVegetable.Controllers
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
                 pp.FImgName = image?.FName;
                 pp.IsFavorite = favoriteProductIds.Contains(p.FId);
-                pp.IsInCart = cartProductIds.Contains(p.FId);
                 list.Add(pp);
             }
            
@@ -97,12 +96,30 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
+
+
+        [HttpGet]
+        public JsonResult CheckLogin()
+        {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+            bool isLoggedIn = UserId > 0;
+
+            return Json(new { isLoggedIn = isLoggedIn });
+        }
+
+
+
         [HttpPost]
         public IActionResult AddToFavorites(int productId)
         {
             var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
             var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
             var favorite = _context.TFavorites.FirstOrDefault(f=>f.FPersonId ==personId && f.FProductId == productId);
+
+            if (personId == 0)
+            {
+                return Json(new { success = false, redirectToLogin = true });
+            }
 
             bool isFavorite = false;
 
@@ -116,6 +133,7 @@ namespace prjVegetable.Controllers
                 _context.TFavorites.Remove(favorite);
                 isFavorite = false;
             }
+            //加入我的最愛
             _context.SaveChanges();
             return Json(new {success = true, isFavorite = isFavorite});
         }
@@ -123,14 +141,14 @@ namespace prjVegetable.Controllers
 
 
         [HttpPost]
-        public IActionResult AddToCart(int productId)
+        public IActionResult AddToCart(int productId, int quantity)
         {
             var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
             var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
 
             if (personId == 0)
             {
-                return Json(new { success = false, message = "請先登入" });
+                return Json(new { success = false, redirectToLogin = true });
             }
 
             var product = _context.TProducts.FirstOrDefault(p => p.FId == productId);
@@ -138,16 +156,15 @@ namespace prjVegetable.Controllers
             {
                 return Json(new { success = false, message = "商品不存在" });
             }
-
-            // 檢查是否已經加入購物車，若已存在則不再加入
-            var existingCartItem = _context.TCarts.FirstOrDefault(c => c.FPersonId == personId && c.FProductId == productId);
-            if (existingCartItem != null)
+            _context.TCarts.Add(new TCart
             {
-                return Json(new { success = false, message = "此商品已在購物車中" });
-            }
+                FPersonId = personId,
+                FProductId = productId,
+                FCount = quantity 
+            });
 
             // 將商品加入購物車
-            _context.TCarts.Add(new TCart { FPersonId = personId, FProductId = productId });
+            
             _context.SaveChanges();
 
             return Json(new { success = true });
@@ -175,5 +192,7 @@ namespace prjVegetable.Controllers
 
             return View(x);
         }
+
+        
     }
 }

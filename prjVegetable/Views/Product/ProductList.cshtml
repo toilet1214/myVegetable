@@ -2,8 +2,9 @@
 
 @{
     ViewData["Title"] = "ProductList";
-
+    
 }
+
 
 
 
@@ -26,8 +27,6 @@
             background-color: rgb(174, 146, 105);
             width: 17%;
         }
-
-
 
 
     #dropdownMenuButton1 {
@@ -278,10 +277,10 @@
                 
 
 
-                <div class="col product-item">
+                <div class="col product-item mb-4">
                     <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
 
-                        <div class="card h-100 shadow-sm d-flex flex-column">
+                        <div class="card h-100 shadow-sm d-flex flex-column ">
                             <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div>
                              @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
                             <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid" alt="Image">
@@ -294,8 +293,8 @@
                                 <button class="btn heartButton" data-productid="@item.FId">
                                     <i class="heart-icon @((item.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i>
                                 </button>
-                                <button class="btn addToCartButton  @((item.IsInCart ? "in-cart" : ""))" data-productid="@item.FId">
-                                    <i class="bi bi-cart @((item.IsInCart ? "bi-cart-check text-danger" : ""))"></i>@((item.IsInCart) ? "已加入購物車" : "加入購物車")
+                                <button class="btn addToCartButtonList" data-productid="@item.FId">
+                                    <i class="bi bi-cart"></i>加入購物車
                                 </button>
                             </div>
                         </div>
@@ -497,77 +496,102 @@
 
             //我的最愛
             $(".heartButton").click(function (event) {
-                event.stopPropagation();
-
-                var heartIcon = $(this).find(".heart-icon");
-                var productId = $(this).data("productid");
-                var isFavorite = heartIcon.hasClass("bi-heart-fill");
-
-                // 透過 AJAX 傳送資料到後端，傳送當前商品 ID 和是喜歡還是取消的狀態
-                $.ajax({
-                    url: '@Url.Action("AddToFavorites", "Product")',
-                    type: 'POST',
-                    data: { productId: productId, isFavorite: !isFavorite },
-                    success: function (response) {
-                        console.log(response);
-
-                        if (response.success) {
-                            if (response.isFavorite) {
-                                heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
-                            } else {
-                                heartIcon.removeClass("bi-heart-fill text-danger").addClass("bi-heart");
-                            }
-                        } else {
-                            alert('操作失敗');
-                        }
-                    },
-                    error: function () {
-                        alert('出現錯誤');
-                    }
-                });
-                event.preventDefault();
-            });
-
-
-            //加入購物車
-                    $(".addToCartButton").click(function (event) {
             event.stopPropagation();
 
-            var button = $(this);
-            var productId = button.data("productid");
-            var isDisabled = button.hasClass("disabled");
-            var isInCart = button.hasClass("in-cart");
+            var heartIcon = $(this).find(".heart-icon");
+            var productId = $(this).data("productid");
+            var isFavorite = heartIcon.hasClass("bi-heart-fill");
+            var currentUrl = window.location.href;  // 獲取當前頁面的 URL
 
-            if (isDisabled) {
-                alert("此商品已售完，無法加入購物車");
-                return;
-            }
+            // 檢查是否已登入
+            $.ajax({
+                url: '@Url.Action("CheckLogin", "Product")',  // 檢查登入狀態的 API
+                type: 'GET',
+                success: function (response) {
+                    if (!response.isLoggedIn) {
+                        // 如果未登入，顯示登入 modal 並傳遞當前頁面 URL
+                        $('#LoginModal').modal('show');
+                        $("#LoginModal").on('shown.bs.modal', function() {
+                            $('input[name="returnUrl"]').val(currentUrl);  // 將當前頁面 URL 填入 returnUrl 欄位
+                        });
+                    } else {
+                        // 如果已登入，執行收藏的操作
+                        $.ajax({
+                            url: '@Url.Action("AddToFavorites", "Product")',  // 呼叫後端處理加入或取消收藏
+                            type: 'POST',
+                            data: { productId: productId, isFavorite: !isFavorite },
+                            success: function (response) {
+                                console.log(response);
 
-            if (isInCart) {
-                // 如果商品已經加入購物車，顯示提示訊息
-                alert("此商品已加入購物車");
-            } else {
-                // 否則執行加入購物車的操作
-                $.ajax({
-                    url: '@Url.Action("AddToCart", "Product")',
-                    type: 'POST',
-                    data: { productId: productId },
-                    success: function (response) {
-                        if (response.success) {
-                            button.addClass("disabled in-cart");
-                            button.html('<i class="bi bi-cart-check"></i>已加入購物車');
-                        } else {
-                            alert('操作失敗');
-                        }
-                    },
-                    error: function () {
-                        alert('出現錯誤');
+                                if (response.success) {
+                                    if (response.isFavorite) {
+                                        heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
+                                    } else {
+                                        heartIcon.removeClass("bi-heart-fill text-danger").addClass("bi-heart");
+                                    }
+                                } else {
+                                    alert('操作失敗');
+                                }
+                            },
+                            error: function () {
+                                alert('出現錯誤');
+                            }
+                        });
                     }
-                });
-            }
+                },
+                error: function () {
+                    alert('檢查登入狀態時出現錯誤');
+                }
+            });
 
             event.preventDefault();
         });
+
+
+            //加入購物車
+            $(".addToCartButtonList").click(function (event) {
+                event.stopPropagation();
+
+                var button = $(this);
+                var productId = button.data("productid");
+                var currentUrl = window.location.href;
+
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',
+                    type: 'GET',
+                    success: function (response) {
+                        if (!response.isLoggedIn) {
+                            $('#LoginModal').modal('show');
+                            $("#LoginModal").on('shown.bs.modal', function() {
+                                $('input[name="returnUrl"]').val(currentUrl); 
+                            });
+                        } else {
+
+                            // 執行加入購物車的操作
+                            $.ajax({
+                                url: '@Url.Action("AddToCart", "Product")',
+                                type: 'POST',
+                                data: { productId: productId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert("成功加入購物車");
+                                    } else {
+                                        alert('操作失敗');
+                                    }
+                                },
+                                error: function () {
+                                    alert('出現錯誤');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                    }
+                });
+                event.preventDefault();
+             });
+             
 
 
 
@@ -575,7 +599,7 @@
             var itemsPerPage = 10;
             var totalItems = $(".product-item").length;  // 總共的產品數量
             var totalPages = Math.ceil(totalItems / itemsPerPage); // 總頁數
-            var currentPage = 1;
+           
 
             // 顯示指定頁碼的產品
             function showPage(page) {

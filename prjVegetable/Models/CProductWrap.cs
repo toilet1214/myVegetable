@@ -61,6 +61,14 @@ namespace prjVegetable.Models
         }
 
         [Required(ErrorMessage = "必填")]
+        [DisplayName("商品介紹")]
+        public string FIntroduction
+        {
+            get { return _product.FIntroduction; }
+            set { _product.FIntroduction = value; }
+        }
+
+        [Required(ErrorMessage = "必填")]
         [DisplayName("庫存數量")]
         public int FQuantity
         {
@@ -117,8 +125,6 @@ namespace prjVegetable.Models
         public bool IsFavorite
         { get; set; }
 
-        public bool IsInCart
-        { get; set; }
 
 
         public List<string> ImgList { get; set; }

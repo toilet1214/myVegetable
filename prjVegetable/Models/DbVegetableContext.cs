@@ -97,7 +97,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TCart>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227C28B83216");
+            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227CCD06999B");
 
             entity.ToTable("tCart");
 
@@ -458,7 +458,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProduct>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C50595E2F");
+            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C107B47F8");
 
             entity.ToTable("tProduct");
 
@@ -471,6 +471,9 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fDescription");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FIntroduction)
+                .HasDefaultValue("")
+                .HasColumnName("fIntroduction");
             entity.Property(e => e.FLaunch).HasColumnName("fLaunch");
             entity.Property(e => e.FLaunchAt)
                 .HasDefaultValueSql("(getdate())")
