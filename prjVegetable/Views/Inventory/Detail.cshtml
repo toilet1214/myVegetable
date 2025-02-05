@@ -2,7 +2,6 @@
 @{
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-
 <!--
 
 庫存盤點作業 Inventory/Detail
@@ -32,13 +31,16 @@
             <i class="bi bi-file-earmark me-2"></i>新增
         </button>
         <button type="button" class="btn btn-primary" id="editButton">
-            <i class="bi bi-pencil me-2"></i>修改
+            <i class="bi bi-pencil me-2"></i>編輯
         </button>
-        <button type="button" class="btn btn-primary" id="saveButton">
+        <button type="button" class="btn btn-primary d-none" id="saveButton">
             <i class="bi bi-floppy me-2"></i>儲存
         </button>
         <button type="button" class="btn btn-primary" id="deletebutton">
             <i class="bi bi-trash me-2"></i>刪除
+        </button>
+        <button type="button" class="btn btn-primary me-2" id="printButton" onclick="printTable()">
+            <i class="bi bi-printer me-2"></i>列印
         </button>
     </div>
 </div>
@@ -85,7 +87,7 @@
         <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
     </div>
     <div class="table-responsive" style="max-height: 50%;">
-        <table class="table">
+        <table class="table" id="printTable">
             <thead>
                 <tr>
                     <th>商品Id</th>
@@ -238,22 +240,30 @@
     });
 </script>
 
-<!-- 修改 -->
+<!-- 編輯/儲存 -->
 <script>
-    document.getElementById("editButton").addEventListener("click", function() {
+    let isEditing = false; // 用來判斷是否進入編輯模式
+
+    document.getElementById("editButton").addEventListener("click", function () {
+        isEditing = true;
+
+        // 啟用按鈕與輸入框
         document.getElementById('syncStockButton').disabled = false;
         document.getElementById('resetStockButton').disabled = false;
 
         var inputs = document.querySelectorAll('table input[type="number"]');
-        inputs.forEach(function(input) {
+        inputs.forEach(function (input) {
             input.disabled = false;
         });
-    });
-</script>
 
-<!-- 儲存 -->
-<script>
+        // 切換按鈕顯示
+        this.classList.add("d-none"); // 隱藏修改按鈕
+        document.getElementById("saveButton").classList.remove("d-none"); // 顯示儲存按鈕
+    });
+
     document.getElementById("saveButton").addEventListener("click", function () {
+        isEditing = false; // 儲存後結束編輯模式
+
         var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
         var FBaselineDate = document.getElementById('FBaselineDate').value;
 
@@ -270,29 +280,27 @@
         var inventoryDetails = [];
         var rows = document.querySelectorAll("table tbody tr");
 
-        rows.forEach(function(row) {
+        rows.forEach(function (row) {
             var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
             var productId = parseInt(row.querySelector("td:nth-child(1)").innerText, 10);
             var actualQuantity = parseInt(row.querySelector("input[name='FActualQuantity']").value, 10);
             var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText, 10);
             var productName = row.querySelector("td:nth-child(2)").innerText;
-            var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10);  // 從表單中正確獲取 FId
+            var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10);
 
-            // 計算差異數量
             var differenceQuantity = actualQuantity - systemQuantity;
 
-            // 確保 FId 正確傳遞
             inventoryDetails.push({
                 InventoryDetail: {
-                    FId: fId,  // 確保傳遞 FId
+                    FId: fId,
                     FInventoryMainId: inventoryMainId,
-                    FInventoryDetailId: fId,  // 也保留 FInventoryDetailId
+                    FInventoryDetailId: fId,
                     FActualQuantity: actualQuantity,
                     FProductId: productId,
                     FSystemQuantity: systemQuantity
                 },
                 FName: productName,
-                DifferenceQuantity: differenceQuantity // 差異數量
+                DifferenceQuantity: differenceQuantity
             });
 
             products.push({
@@ -302,7 +310,6 @@
             });
         });
 
-        // 組合請求資料
         var requestData = {
             currentId: currentId,
             InventoryMain: {
@@ -320,23 +327,71 @@
 
         console.log(requestData);
 
-        // 發送 AJAX 請求
         $.ajax({
             url: '/Inventory/Save/' + currentId,
             method: 'POST',
             data: JSON.stringify(requestData),
             contentType: 'application/json',
-            success: function(response) {
+            success: function (response) {
                 if (response.success) {
                     window.location.href = response.redirectTo;
                 } else {
                     alert('錯誤: ' + response.error);
                 }
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 alert("錯誤: " + error);
             }
         });
+
+        // 提交後，切換回修改按鈕
+        this.classList.add("d-none"); // 隱藏儲存按鈕
+        document.getElementById("editButton").classList.remove("d-none"); // 顯示修改按鈕
+
+        // 禁用輸入框
+        document.getElementById('syncStockButton').disabled = true;
+        document.getElementById('resetStockButton').disabled = true;
+        var inputs = document.querySelectorAll('table input[type="number"]');
+        inputs.forEach(function (input) {
+            input.disabled = true;
+        });
+    });
+
+    // 監聽點擊表格外的事件
+    document.addEventListener("click", function (event) {
+        if (isEditing) {
+            var table = document.querySelector("table");
+            var editButton = document.getElementById("editButton");
+            var saveButton = document.getElementById("saveButton");
+            var syncStockButton = document.getElementById("syncStockButton"); // 系統數量帶入按鈕
+            var resetStockButton = document.getElementById("resetStockButton"); // 數量歸零按鈕
+
+            // 確保點擊區域不在表格內、修改/儲存按鈕、或其他允許的按鈕上
+            if (
+                !table.contains(event.target) &&
+                event.target !== editButton &&
+                event.target !== saveButton &&
+                event.target !== syncStockButton &&
+                event.target !== resetStockButton
+            ) {
+                var confirmExit = confirm("您尚未儲存變更，確定要離開編輯模式嗎？");
+                if (confirmExit) {
+                    isEditing = false; // 退出編輯模式
+
+                    // 切換回修改按鈕
+                    saveButton.classList.add("d-none");
+                    editButton.classList.remove("d-none");
+
+                    // 禁用輸入框
+                    document.getElementById('syncStockButton').disabled = true;
+                    document.getElementById('resetStockButton').disabled = true;
+                    var inputs = document.querySelectorAll('table input[type="number"]');
+                    inputs.forEach(function (input) {
+                        input.disabled = true;
+                    });
+                }
+            }
+        }
     });
 </script>
 
@@ -368,6 +423,17 @@
         }
     });
 </script>
+
+<!-- 列印 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+<script>
+    function printTable() {
+            printJS({
+                printable: 'printTable',
+                type: 'html'
+            });
+        }
+ </script>
 
 <!-- 將系統庫存數量帶入實際庫存數量 -->
 <script>
