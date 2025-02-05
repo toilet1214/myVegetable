@@ -458,7 +458,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProduct>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227CDF6280A4");
+            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227CF796CB1E");
 
             entity.ToTable("tProduct");
 
@@ -471,6 +471,9 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fDescription");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FIntroduction)
+                .HasDefaultValue("")
+                .HasColumnName("fIntroduction");
             entity.Property(e => e.FLaunch).HasColumnName("fLaunch");
             entity.Property(e => e.FLaunchAt)
                 .HasDefaultValueSql("(getdate())")

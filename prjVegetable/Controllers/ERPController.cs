@@ -117,11 +117,11 @@ namespace prjVegetable.Controllers
             }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year).GroupBy(x => x.FName).Select(g => new
             {
                 ProductName = g.Key,
-                Total = g.Sum(x => x.Total),       // 總銷售量
-                TotalSum = g.Sum(x => x.TotalSum) // 總營收
+                Total = g.Sum(x => x.Total),      
+                TotalSum = g.Sum(x => x.TotalSum) 
             })
-            .OrderByDescending(x => x.Total) // 按銷量排序
-            .Take(5)  // 取前 5 名
+            .OrderByDescending(x => x.Total) 
+            .Take(5)  
             .ToList();
             var BestSellingProductMonth = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
             { ol, p }).Join(_VegetableContext.TOrders, b => b.ol.FOrderId, o => o.FId, (b, o) => new
@@ -134,27 +134,39 @@ namespace prjVegetable.Controllers
             }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year && x.Time.Month == DateTime.Now.Month).GroupBy(x => x.FName).Select(g => new
             {
                 ProductName = g.Key,
-                Total = g.Sum(x => x.Total),       // 總銷售量
-                TotalSum = g.Sum(x => x.TotalSum) // 總營收
-            });
-            var BestSellingProductDay = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
+                Total = g.Sum(x => x.Total),       
+                TotalSum = g.Sum(x => x.TotalSum) 
+            }).OrderByDescending(x => x.Total) 
+            .Take(5) 
+            .ToList();
+            var BestSellingProductAll = _VegetableContext.TOrderLists.Join(_VegetableContext.TProducts, ol => ol.FProductId, p => p.FId, (ol, p) => new
             { ol, p }).Join(_VegetableContext.TOrders, b => b.ol.FOrderId, o => o.FId, (b, o) => new
             {
                 Total = b.ol.FCount,
                 TotalSum = b.p.FPrice * b.ol.FCount,
                 b.p.FName,
-                o.FStatus,
-                Time = o.FOrderAt
-            }).Where(x => x.FStatus == 2 && x.Time.Year == DateTime.Now.Year && x.Time.Month == DateTime.Now.Month && x.Time.Date == DateTime.Now.Date).GroupBy(x => x.FName).Select(g => new
+                o.FStatus
+            }).Where(x => x.FStatus == 2).GroupBy(x => x.FName).Select(g => new
             {
                 ProductName = g.Key,
-                Total = g.Sum(x => x.Total),       // 總銷售量
-                TotalSum = g.Sum(x => x.TotalSum) // 總營收
-            });
+                Total = g.Sum(x => x.Total),       
+                TotalSum = g.Sum(x => x.TotalSum) 
+            }).OrderByDescending(x => x.Total) 
+            .Take(5) 
+            .ToList();
 
-            var MostPopularProductYear = new List<string>();
-            var MostPopularProductMonth = new List<string>();
-            var MostPopularProductDay = new List<string>();
+            var MostPopularProduct = _VegetableContext.TFavorites.Join(_VegetableContext.TProducts, f => f.FProductId, p => p.FId, (f, p) => new
+            {
+                f.FProductId,
+                p.FName
+            }).GroupBy(x => x.FName).Select(g => new
+            {
+                ProductName = g.Key,
+                Likes = g.Count()
+            }).OrderByDescending(x => x.Likes) 
+            .Take(5) 
+            .ToList();
+
 
             List<int> SellingClassYear = _VegetableContext.TOrderLists
                 .Join(_VegetableContext.TProducts,
@@ -194,7 +206,7 @@ namespace prjVegetable.Controllers
                 .GroupBy(x => x.Classification)
                 .Select(g => g.Sum(x => x.Count))
                 .ToList();
-            List<int> SellingClassDay = _VegetableContext.TOrderLists
+            List<int> SellingClassAll = _VegetableContext.TOrderLists
                 .Join(_VegetableContext.TProducts,
                 ol => ol.FProductId,
                 p => p.FId,
@@ -206,14 +218,13 @@ namespace prjVegetable.Controllers
                 {
                     Classification = o.p.FClassification,
                     Count = o.ol.FCount,
-                    Time = order.FOrderAt,
                     State = order.FStatus
                 })
-                .Where(t => t.Time.Date == DateTime.Now.Date && t.Time.Month == DateTime.Now.Month && t.Time.Year == DateTime.Now.Year && t.State == 2)
+                .Where(t => t.State == 2)
                 .GroupBy(x => x.Classification)
                 .Select(g => g.Sum(x => x.Count))
                 .ToList();
-
+            var UnDoneOrder = _VegetableContext.TOrders.Where(x=>x.FStatus == 1 ).Select(x=>x.FId).ToList();
             var viewmodel = new CERPIndexViewModel
             {
                 AllMembersLabels = TotalMembersAll.Keys.ToList(),
@@ -229,15 +240,14 @@ namespace prjVegetable.Controllers
                 TotalOrdersDay = TotalOrdersDay,
                 BestSellingProductYear = BestSellingProductYear,
                 BestSellingProductMonth = BestSellingProductMonth,
-                BestSellingProductDay = BestSellingProductDay,
+                BestSellingProductAll = BestSellingProductAll,
 
-                MostPopularProductYear = MostPopularProductYear,
-                MostPopularProductMonth = MostPopularProductMonth,
-                MostPopularProductDay = MostPopularProductDay,
+                MostPopularProduct = MostPopularProduct,
 
                 SellingClassYear = SellingClassYear,
                 SellingClassMonth = SellingClassMonth,
-                SellingClassDay = SellingClassDay
+                SellingClassAll = SellingClassAll,
+                UnDoneOrder = UnDoneOrder
             };
             return View(viewmodel);
         }

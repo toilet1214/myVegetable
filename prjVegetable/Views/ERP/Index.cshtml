@@ -128,7 +128,7 @@
                                 <li class="dropdown-header text-start">
                                     <h6>篩選</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#">今天</a></li>
+                                <li><a class="dropdown-item" href="#">不限</a></li>
                                 <li><a class="dropdown-item" href="#">這個月</a></li>
                                 <li><a class="dropdown-item" href="#">今年</a></li>
                             </ul>
@@ -154,22 +154,13 @@
                 <!-- 最受歡迎 -->
                 <div class="col-md-6">
                     <div class="card top-like overflow-auto mt-3" style="min-height:220px;">
-                        <div class="filter position-absolute top-0 end-0 p-2">
-                            <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="LikesList">
-                                <li class="dropdown-header text-start">
-                                    <h6>篩選</h6>
-                                </li>
-                                <li><a class="dropdown-item" href="#">今天</a></li>
-                                <li><a class="dropdown-item" href="#">這個月</a></li>
-                                <li><a class="dropdown-item" href="#">今年</a></li>
-                            </ul>
-                        </div>
+
                         <div class="card-body pb-0">
-                            <h5 class="card-title fw-bold fs-5">最受歡迎 <span id="LikesDate">| 今天</span></h5>
+                            <h5 class="card-title fw-bold fs-5">最受歡迎商品</h5>
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
+                                        <th scope="col" class="fs-6">序</th>
                                         <th scope="col" class="fs-6">產品名稱</th>
                                         <th scope="col" class="fs-6">收藏數</th>
                                         <th scope="col" class="fs-6">評價</th>
@@ -192,6 +183,13 @@
                 <div class="card-body pb-1">
                     <h5 class="card-title fs-5 fw-bold py-0 mb-0">通知</h5>
                     <div id="notification" style="height: 250px; overflow-y: auto;">
+                        
+                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <div>
+                                <h3>沒有需要處理的訂單</h3>
+                                <p class="fs-6" style="color:#707070;"></p>
+                            </div>
+                        
                     </div>
                 </div>
             </div>
@@ -486,13 +484,41 @@
         })
     </script>
     <!--通知-->
+    <script>
+        function NotificationRefresh() {
+
+            var orders = @Html.Raw(Json.Serialize(Model.UnDoneOrder)); // 將 Model 轉為 JSON
+            console.log(orders);
+            if (Model.UnDoneOrder != null && Model.UnDoneOrder.Any()) {
+                $("#notification").empty(); // 清空通知內容
+                $.each(orders, function (index, item) {
+                    var html = `
+                                        <a href="~/Order/List" class="notification-item px-0 py-2">
+                                                    <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                            <div>
+                                                <h3 style="color:darkred;">訂單未處理</h3>
+                                                        <p class="fs-6" style="color:#707070;">訂單編號: ${item.FId} 未出貨</p>
+                                            </div>
+                                        </a>
+                                        <div>
+                                            <hr class="my-2" />
+                                        </div>`;
+
+                    $("#notification").append(html); // 將 HTML 插入通知區塊
+                })
+            }
+        };
+
+        $(document).ready(function () {
+            NotificationRefresh(); // 頁面載入時執行
+        });
+    </script>
     <!--銷售類別排行圓餅圖-->
     <script>
         let PChart;
         let SellingClassYear = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassYear));
         let SellingClassMonth = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassMonth));
-        let SellingClassDay = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassDay));
-        console.log(SellingClassYear);
+        let SellingClassAll = @Html.Raw(JsonSerializer.Serialize(Model.SellingClassAll));
         function PieYear() {
             if (PChart) PChart.destroy();
             PChart = new ApexCharts(document.querySelector("#PieChart"), {
@@ -539,10 +565,10 @@
             });
             PChart.render();
         }
-        function PieDay() {
+        function PieAll() {
             if (PChart) PChart.destroy();
             PChart = new ApexCharts(document.querySelector("#PieChart"), {
-                series: SellingClassDay,
+                series: SellingClassAll,
                 chart: {
                     width: 380,
                     type: 'pie',
@@ -571,8 +597,8 @@
                 let SalesClassDate = e.target.textContent.trim();
                 $("#SalesClassDate").text(`| ${SalesClassDate}`);
                 switch (SalesClassDate) {
-                    case "今天":
-                        PieDay();
+                    case "不限":
+                        PieAll();
                         break;
                     case "這個月":
                         PieMonth();
@@ -588,7 +614,7 @@
     <script>
         var BestSellingProductYear = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductYear));
         var BestSellingProductMonth = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductMonth));
-        var BestSellingProductDay = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductDay));
+        var BestSellingProductAll = @Html.Raw(JsonSerializer.Serialize(Model.BestSellingProductAll));
         function SalesRank(products) {
             var count = 0;
             // 清空表格內容
@@ -612,7 +638,7 @@
             });
         }
         document.addEventListener("DOMContentLoaded", () => {
-            SalesRank(BestSellingProductMonth);
+            SalesRank(BestSellingProductAll);
         });
         $(function () {
             $("#SalesRankList").on("click", (e) => {
@@ -620,8 +646,8 @@
                 let SalesRankDate = e.target.textContent.trim();
                 $("#SalesRankDate").text(`| ${SalesRankDate}`);
                 switch (SalesRankDate) {
-                    case "今天":
-                        SalesRank(BestSellingProductDay);
+                    case "不限":
+                        SalesRank(BestSellingProductAll);
                         break;
                     case "這個月":
                         SalesRank(BestSellingProductMonth);
@@ -634,4 +660,32 @@
         })
     </script>
     <!--最受歡迎-->
+    <script>
+        var MostPopularProduct = @Html.Raw(JsonSerializer.Serialize(Model.MostPopularProduct));
+        function LikesRank(products) {
+            var count = 0;
+            // 清空表格內容
+            $('#LikesRank').empty();
+            // 遍歷 products 並插入到表格中
+            $.each(products, function (index, product) {
+                count++;
+                var row = $('<tr></tr>');  // 創建一行
+                var countCell = $('<td></td>').text(index + 1);  // 使用 index 作為序號 (從1開始)
+                row.append(countCell);
+                var productNameCell = $('<td></td>').text(product.ProductName); // 商品名稱
+                row.append(productNameCell);
+
+                var totalLikesCell = $('<td></td>').text(product.Likes); // 總銷售數量
+                row.append(totalLikesCell);
+
+                var totalRateCell = $('<td></td>').text(""); // 總營收
+                row.append(totalRateCell);
+
+                $('#LikesRank').append(row); // 將這一行加入到表格中
+            });
+        }
+        document.addEventListener("DOMContentLoaded", () => {
+            LikesRank(MostPopularProduct);
+        });
+    </script>
 }
