@@ -50,6 +50,10 @@
             get { return _inventoryAdjustment.FCheckerId; }
             set { _inventoryAdjustment.FCheckerId = value; }
         }
+
+        public DateOnly? FAdjustmentStartDate { get; set; }
+        public DateOnly? FAdjustmentEndDate { get; set; }
+
     }
 
 }

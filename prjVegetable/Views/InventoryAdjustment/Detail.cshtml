@@ -16,19 +16,19 @@
             查詢
         </button>
 
-        <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = 1 })" class="btn btn-primary">
             <i class="bi bi-skip-start-fill me-2"></i>第一筆
         </a>
-        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
             <i class="bi bi-caret-left-fill me-2"></i>上一筆
         </a>
-        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })" class="btn btn-primary">
             <i class="bi bi-caret-right-fill me-2"></i>下一筆
         </a>
-        <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
+        <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })" class="btn btn-primary">
             <i class="bi bi-skip-end-fill me-2"></i>最後一筆
         </a>
-        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+        <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" disabled>
             <i class="bi bi-file-earmark me-2"></i>新增
         </button>
         <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
@@ -65,10 +65,11 @@
             </div>
             <!-- 盤點人員 -->
             <div class="d-flex align-items-center">
-                <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-3">盤點人員ID</label>
-                <input asp-for="InventoryAdjustment.FCheckerId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
+                <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-3">盤點人員名稱</label>
+                <input class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" value="@ViewData["CheckerName"]" readonly />
                 <span asp-validation-for="InventoryAdjustment.FCheckerId" class="text-danger"></span>
             </div>
+
         </div>
         <div class="col-7 d-flex">
             <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryAdjustment.FNote</div>
@@ -111,44 +112,48 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">新增盤點條件</h5>
+                <h5 class="modal-title" id="exampleModalLabel">輸入盤點條件查詢</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="inventoryForm" method="post" action="@Url.Action("Create", "Inventory")">
-                    <div class="form-group">
-                        <label for="BaseDate">盤點基準日</label>
-                        <input type="date" class="form-control" id="BaseDate" name="BaseDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
-                    </div>
+                <!-- 庫存盤點單號 -->
+                <div class="d-flex mb-3 align-items-center">
+                    <label asp-for="InventoryAdjustment.FId" class="pe-1 mb-0" style="width: 150px;">庫存盤點單號</label>
+                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" id="searchFId" />
+                    <span asp-validation-for="InventoryAdjustment.FId" class="text-danger"></span>
+                </div>
 
-                    <div class="form-group">
-                        <label for="ProductStartCode">商品編號區間 (起始)</label>
-                        <select class="form-control" id="ProductStartCode" name="ProductStartCode">
-                            @foreach (var product in Model.Products)
-                            {
-                                <option value="@product.FId">@product.FId - @product.FName</option>
-                            }
-                        </select>
-                    </div>
+                <!-- 盤點日期 -->
+                <div class="d-flex mb-3 align-items-center">
+                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-0" style="width: 150px;">盤點日期</label>
+                    <input asp-for="InventoryAdjustment.FAdjustmentStartDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineStartDate" />
+                    <span class="mx-2">至</span>
+                    <input asp-for="InventoryAdjustment.FAdjustmentEndDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineEndDate" />
+                    <span asp-validation-for="InventoryAdjustment.FAdjustmentDate" class="text-danger"></span>
+                </div>
 
-                    <div class="form-group">
-                        <label for="ProductEndCode">商品編號區間 (結束)</label>
-                        <select class="form-control" id="ProductEndCode" name="ProductEndCode">
-                            @foreach (var product in Model.Products)
-                            {
-                                <option value="@product.FId">@product.FId - @product.FName</option>
-                            }
-                        </select>
-                    </div>
-                </form>
+                <!-- 盤點人員 -->
+                <div class="d-flex mb-3 align-items-center">
+                    <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-0" style="width: 150px;">盤點人員</label>
+                    <select asp-for="InventoryAdjustment.FCheckerId" class="form-control form-control-sm w-auto">
+                        <option value="">選擇員工</option>
+                        @foreach (var employee in (SelectList)ViewData["Employees"])
+                        {
+                            <option value="@employee.Value">@employee.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="InventoryAdjustment.FCheckerId" class="text-danger"></span>
+                </div>
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                <button type="submit" class="btn btn-primary" form="inventoryForm">確定</button>
+                <button type="button" class="btn btn-primary" id="modalSearchButton">確定</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- 新增 -->
 <script>

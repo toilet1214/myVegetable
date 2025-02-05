@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using prjVegetable.Models;
@@ -50,7 +51,7 @@ namespace prjVegetable.Controllers
 
             if (adjustment == null)
             {
-                return NotFound(); // 如果找不到，返回 404
+                return NotFound();
             }
 
             // 根據傳入的 id 查找相關資料
@@ -84,6 +85,22 @@ namespace prjVegetable.Controllers
                 FPrice = product.FPrice
             }).ToList();
 
+            var employees = _context.TPeople
+                .Where(p => p.FPermission == 1)
+                .ToList();
+
+            var checkerId = adjustment.FCheckerId;
+            var checker = _context.TPeople
+                .FirstOrDefault(p => p.FId == checkerId);
+            var checkerName = checker?.FName ?? "";
+
+            // 傳遞盤點人員的名稱
+            ViewData["CheckerName"] = checkerName;
+
+            // 使用 SelectList 封裝員工資料
+            ViewData["Employees"] = new SelectList(employees, "FId", "FName");
+
+
             // 創建 ViewModel 並傳遞到視圖
             var viewModel = new CInventoryAdjustmentViewModel
             {
@@ -92,25 +109,20 @@ namespace prjVegetable.Controllers
                 Products = productWraps.Select(p => new CProductUpdateWrap
                 {
                     FId = p.FId,
-                    FQuantity = p.FQuantity
-                }).ToList() // 轉換並且確保是 List<CProductUpdateWrap>
+                    FQuantity = p.FQuantity,
+                    FName = p.FName
+                }).ToList()
             };
 
-
-            // 查找下一筆和上一筆
             var currentIndex = adjustments.FindIndex(a => a.FId == id);
-
             var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : id;
             var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : id;
-
-            // 處理最後一筆的情況，確保 adjustments 不為空
             var lastId = adjustments.Any() ? adjustments.Last().FId : id;
 
             ViewData["NextId"] = nextId;
             ViewData["PreviousId"] = previousId;
-            ViewData["LastId"] = lastId; // 傳遞最後一筆的 id
+            ViewData["LastId"] = lastId;
 
-            // 返回視圖
             return View(viewModel);
         }
 

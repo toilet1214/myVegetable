@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using prjVegetable.Models;
@@ -66,6 +67,17 @@ namespace prjVegetable.Controllers
                 FActualQuantity = detail.FActualQuantity,
                 FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
             }).ToList();
+
+            var employees = _context.TPeople
+                .Where(p => p.FPermission == 1)
+                .ToList();
+
+            // 使用 SelectList 封裝員工資料
+            ViewData["Employees"] = new SelectList(employees, "FId", "FName");
+
+
+            // 將符合條件的員工列表傳遞給視圖
+            ViewData["Employees"] = new SelectList(employees, "fId", "fName");
 
             // 總 InventoryMain 筆數
             int totalItemCount = _context.TInventoryMains
