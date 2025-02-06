@@ -21,11 +21,17 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TFaq> TFaqs { get; set; }
 
+    public virtual DbSet<TFavorite> TFavorites { get; set; }
+
     public virtual DbSet<TGoodsInAndOut> TGoodsInAndOuts { get; set; }
 
     public virtual DbSet<TGoodsInAndOutDetail> TGoodsInAndOutDetails { get; set; }
 
     public virtual DbSet<TImg> TImgs { get; set; }
+
+    public virtual DbSet<TInventoryAdjustment> TInventoryAdjustments { get; set; }
+
+    public virtual DbSet<TInventoryAdjustmentDetail> TInventoryAdjustmentDetails { get; set; }
 
     public virtual DbSet<TInventoryDetail> TInventoryDetails { get; set; }
 
@@ -57,6 +63,8 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TReceiptReversalDetail> TReceiptReversalDetails { get; set; }
 
+    public virtual DbSet<TReport> TReports { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=dbVegetable;Integrated Security=True;Encrypt=False");
@@ -65,18 +73,21 @@ public partial class DbVegetableContext : DbContext
     {
         modelBuilder.Entity<TAboutU>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C64B40435");
+            entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C7BE65F86");
 
             entity.ToTable("tAboutUs");
 
             entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FContent).HasColumnName("fContent");
+            entity.Property(e => e.FContent)
+                .HasDefaultValue("")
+                .HasColumnName("fContent");
             entity.Property(e => e.FCreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fCreatedAt");
             entity.Property(e => e.FTitle)
                 .HasMaxLength(200)
+                .HasDefaultValue("")
                 .HasColumnName("fTitle");
             entity.Property(e => e.FUpdatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -86,7 +97,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TCart>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227C7DC90C7A");
+            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227C5F8F9976");
 
             entity.ToTable("tCart");
 
@@ -100,18 +111,21 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TFaq>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227CADC0EF8A");
+            entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227C2B55428B");
 
             entity.ToTable("tFAQ");
 
             entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FAnswer).HasColumnName("fAnswer");
+            entity.Property(e => e.FAnswer)
+                .HasDefaultValue("")
+                .HasColumnName("fAnswer");
             entity.Property(e => e.FCreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fCreatedAt");
             entity.Property(e => e.FQuestion)
                 .HasMaxLength(500)
+                .HasDefaultValue("")
                 .HasColumnName("fQuestion");
             entity.Property(e => e.FUpdatedAt)
                 .HasDefaultValueSql("(getdate())")
@@ -119,31 +133,42 @@ public partial class DbVegetableContext : DbContext
                 .HasColumnName("fUpdatedAt");
         });
 
+        modelBuilder.Entity<TFavorite>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tFavorit__D9F8227CED6CF742");
+
+            entity.ToTable("tFavorite");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+        });
+
         modelBuilder.Entity<TGoodsInAndOut>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227C6896496C");
+            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227C1BFBC806");
 
             entity.ToTable("tGoodsInAndOut");
 
             entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FCount).HasColumnName("fCount");
-            entity.Property(e => e.FDate).HasColumnName("fDate");
+            entity.Property(e => e.FDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fDate");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
             entity.Property(e => e.FInOut).HasColumnName("fInOut");
             entity.Property(e => e.FInvoiceId).HasColumnName("fInvoiceId");
             entity.Property(e => e.FNote)
                 .HasMaxLength(500)
+                .HasDefaultValue("")
                 .HasColumnName("fNote");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
-            entity.Property(e => e.FPrice).HasColumnName("fPrice");
-            entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FProviderId).HasColumnName("fProviderId");
             entity.Property(e => e.FTotal).HasColumnName("fTotal");
         });
 
         modelBuilder.Entity<TGoodsInAndOutDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227CAEB75A9D");
+            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227C075B7EB6");
 
             entity.ToTable("tGoodsInAndOutDetail");
 
@@ -157,7 +182,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TImg>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227CC5D5C8EA");
+            entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227CE3E0A6A9");
 
             entity.ToTable("tImg");
 
@@ -173,29 +198,57 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FUploadAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
                 .HasColumnName("fUploadAt");
+        });
+
+        modelBuilder.Entity<TInventoryAdjustment>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CCF68F511");
+
+            entity.ToTable("tInventoryAdjustment");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FCheckerId).HasColumnName("fCheckerId");
+            entity.Property(e => e.FCreatedAt).HasColumnName("fCreatedAt");
+            entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FNote)
+                .HasMaxLength(500)
+                .HasDefaultValue("")
+                .HasColumnName("fNote");
+            entity.Property(e => e.FadjustmentDate).HasColumnName("fadjustmentDate");
+        });
+
+        modelBuilder.Entity<TInventoryAdjustmentDetail>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CF0BDB036");
+
+            entity.ToTable("tInventoryAdjustmentDetail");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FCost)
+                .HasColumnType("decimal(18, 2)")
+                .HasColumnName("fCost");
+            entity.Property(e => e.FInventoryAdjustmentId).HasColumnName("fInventoryAdjustmentId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+            entity.Property(e => e.FQuantity).HasColumnName("fQuantity");
         });
 
         modelBuilder.Entity<TInventoryDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CA9D3D057");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C73C73C62");
 
             entity.ToTable("tInventoryDetail");
 
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FActualQuantity).HasColumnName("fActualQuantity");
-            entity.Property(e => e.FNote)
-                .HasMaxLength(500)
-                .HasDefaultValue("")
-                .HasColumnName("fNote");
+            entity.Property(e => e.FInventoryMainId).HasColumnName("fInventoryMainId");
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FSystemQuantity).HasColumnName("fSystemQuantity");
         });
 
         modelBuilder.Entity<TInventoryMain>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C8E8A677A");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CE5D98799");
 
             entity.ToTable("tInventoryMain");
 
@@ -203,11 +256,14 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FBaselineDate).HasColumnName("fBaselineDate");
             entity.Property(e => e.FCreatedAt).HasColumnName("fCreatedAt");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FNote)
+                .HasMaxLength(500)
+                .HasColumnName("fNote");
         });
 
         modelBuilder.Entity<TInvoice>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227CBC0BD7B3");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227CCEE7F218");
 
             entity.ToTable("tInvoice");
 
@@ -240,7 +296,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInvoiceDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C5F35F847");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C2B675B57");
 
             entity.ToTable("tInvoiceDetail");
 
@@ -260,7 +316,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TOrder>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227CB0FE2BF4");
+            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227C74618BC6");
 
             entity.ToTable("tOrder");
 
@@ -292,7 +348,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TOrderList>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227CD67318AB");
+            entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227CFE67D902");
 
             entity.ToTable("tOrderList");
 
@@ -306,12 +362,14 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPaymentReversal>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227CF1460575");
+            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227CE7F92BA6");
 
             entity.ToTable("tPaymentReversal");
 
             entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FDate).HasColumnName("fDate");
+            entity.Property(e => e.FDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fDate");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
             entity.Property(e => e.FNote)
                 .HasMaxLength(500)
@@ -324,7 +382,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPaymentReversalDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227CC79DB65E");
+            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227C77AFD8B8");
 
             entity.ToTable("tPaymentReversalDetail");
 
@@ -335,7 +393,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPerson>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227C59A0DE30");
+            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227C8D09A523");
 
             entity.ToTable("tPerson");
 
@@ -347,7 +405,9 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FAddress)
                 .HasDefaultValue("")
                 .HasColumnName("fAddress");
-            entity.Property(e => e.FBirth).HasColumnName("fBirth");
+            entity.Property(e => e.FBirth)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fBirth");
             entity.Property(e => e.FCreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
@@ -394,7 +454,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProduct>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C964455C6");
+            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C3C4E27F1");
 
             entity.ToTable("tProduct");
 
@@ -407,10 +467,12 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fDescription");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FIntroduction)
+                .HasDefaultValue("")
+                .HasColumnName("fIntroduction");
             entity.Property(e => e.FLaunch).HasColumnName("fLaunch");
             entity.Property(e => e.FLaunchAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("datetime")
                 .HasColumnName("fLaunchAt");
             entity.Property(e => e.FName)
                 .HasMaxLength(500)
@@ -420,14 +482,16 @@ public partial class DbVegetableContext : DbContext
                 .HasMaxLength(100)
                 .HasDefaultValue("")
                 .HasColumnName("fOrigin");
-            entity.Property(e => e.FPrice).HasColumnName("fPrice");
+            entity.Property(e => e.FPrice)
+                .HasDefaultValue(1)
+                .HasColumnName("fPrice");
             entity.Property(e => e.FQuantity).HasColumnName("fQuantity");
             entity.Property(e => e.FStorage).HasColumnName("fStorage");
         });
 
         modelBuilder.Entity<TProvider>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CA1629588");
+            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CFCA996B4");
 
             entity.ToTable("tProvider");
 
@@ -469,7 +533,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPurchase>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227C72DCB223");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CD104078B");
 
             entity.ToTable("tPurchase");
 
@@ -493,7 +557,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPurchaseDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227C8457CCB5");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CDD591CDB");
 
             entity.ToTable("tPurchaseDetail");
 
@@ -509,31 +573,60 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TReceiptReversal>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227CB6C14C7C");
+            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C34308999");
 
             entity.ToTable("tReceiptReversal");
 
             entity.Property(e => e.FId).HasColumnName("fId");
-            entity.Property(e => e.FDate).HasColumnName("fDate");
+            entity.Property(e => e.FDate)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fDate");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
             entity.Property(e => e.FNote)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fNote");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
-            entity.Property(e => e.FReceiptMethod).HasColumnName("fReceiptMethod");
+            entity.Property(e => e.FReceiptMethod)
+                .HasDefaultValue(1)
+                .HasColumnName("fReceiptMethod");
             entity.Property(e => e.FTotal).HasColumnName("fTotal");
         });
 
         modelBuilder.Entity<TReceiptReversalDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C9BFA24E4");
+            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C1E26B330");
 
             entity.ToTable("tReceiptReversalDetail");
 
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FOrderId).HasColumnName("fOrderId");
             entity.Property(e => e.FReceiptReversalId).HasColumnName("fReceiptReversalId");
+        });
+
+        modelBuilder.Entity<TReport>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tReport__D9F8227C15A44FA3");
+
+            entity.ToTable("tReport");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FClass)
+                .HasMaxLength(10)
+                .HasDefaultValue("其他")
+                .HasColumnName("fClass");
+            entity.Property(e => e.FDescription)
+                .HasDefaultValue("")
+                .HasColumnName("fDescription");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FTime)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime")
+                .HasColumnName("fTime");
+            entity.Property(e => e.FTitle)
+                .HasMaxLength(100)
+                .HasDefaultValue("")
+                .HasColumnName("fTitle");
         });
 
         OnModelCreatingPartial(modelBuilder);
