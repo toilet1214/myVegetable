@@ -106,11 +106,11 @@
                             </li>
                             <li><a class="dropdown-item" href="#">最近一個月內</a></li>
                             <li><a class="dropdown-item" href="#">最近一年內</a></li>
-                            <li><a class="dropdown-item" href="#">全部</a></li>
+                            <li><a class="dropdown-item" href="#">不限</a></li>
                         </ul>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title fs-5 fw-bold">會員數 <span id="MembersDate">| 最近一年內</span></h5>
+                        <h5 class="card-title fs-5 fw-bold">會員數 <span id="MembersDate">| 不限</span></h5>
                         <!-- Line Chart -->
                         <div id="LineChart"></div>
                         <!-- End Line Chart -->
@@ -365,7 +365,16 @@
                 },
                 tooltip: {
                     enabled: true,
-                    followCursor: true
+                    followCursor: true,
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                        let xLabel = MonthLabel[dataPointIndex];
+                        let value = series[seriesIndex][dataPointIndex];
+
+                        return `<div class="custom-tooltip">
+                                            <strong>${xLabel} 號</strong> <br>
+                                            會員數: <span style="color:#ff4560;">${value} 位</span>
+                                        </div>`;
+                    }
                 }
             });
             chart.render();
@@ -410,6 +419,19 @@
                         formatter: function (value) {
                             return Math.round(value); // 確保是整數
                         }
+                    }
+                },
+                tooltip: {
+                    enabled: true,
+                    followCursor: true,
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                        let xLabel = YearLabel[dataPointIndex];
+                        let value = series[seriesIndex][dataPointIndex];
+
+                        return `<div class="custom-tooltip">
+                                                    <strong>${xLabel} 月</strong> <br>
+                                                    會員數: <span style="color:#ff4560;">${value} 位</span>
+                                                </div>`;
                     }
                 }
             });
@@ -456,13 +478,26 @@
                             return Math.round(value); // 確保是整數
                         }
                     }
+                },
+                tooltip: {
+                    enabled: true,
+                    followCursor: true,
+                    custom: function ({ series, seriesIndex, dataPointIndex, w }) {
+                        let xLabel = AllLabel[dataPointIndex];
+                        let value = series[seriesIndex][dataPointIndex];
+
+                        return `<div class="custom-tooltip">
+                                                    <strong>${xLabel} 年</strong> <br>
+                                                    會員數: <span style="color:#ff4560;">${value} 位</span>
+                                                </div>`;
+                    }
                 }
             });
             chart.render();
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            MemberCountYear();
+            MemberCountAll();
         })
 
         $(function () {
@@ -478,7 +513,7 @@
                     case "最近一年內":
                         MemberCountYear();
                         break;
-                    case "全部":
+                    case "不限":
                         MemberCountAll();
                         break;
 
@@ -497,22 +532,22 @@
             if (!orders || orders.length === 0) {
                 // 若沒有未處理訂單，顯示提示訊息
                 $("#notification").append(`
-                        <div class="text-center p-3">
-                            <i class="bi bi-check-circle text-success"></i>
-                            <p class="fs-6" style="color:#707070;">目前沒有未處理訂單</p>
-                        </div>
-                    `);
+                                        <div class="text-center p-3">
+                                            <i class="bi bi-check-circle text-success"></i>
+                                            <p class="fs-6" style="color:#707070;">目前沒有未處理訂單</p>
+                                        </div>
+                                    `);
             } else {
                 $.each(orders, function (index, item) {
                     var html = `
-                            <div class="notification-item px-0 py-2">
-                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
-                                <div>
-                                    <h3 style="color:darkred;">訂單未處理</h3>
-                                            <a href="/Order/List" class="fs-6" style="color:#707070;">訂單編號: ${item} 已超過三天未出貨</a>
-                                </div>
-                                    </div>
-                            <div><hr class="my-2" /></div>`;
+                                            <div class="notification-item px-0 py-2">
+                                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                                <div>
+                                                    <h3 style="color:darkred;">訂單未處理</h3>
+                                                            <a href="/Order/List" class="fs-6" style="color:#707070;">訂單編號: ${item} 已超過三天未出貨</a>
+                                                </div>
+                                                    </div>
+                                            <div><hr class="my-2" /></div>`;
 
                     $("#notification").append(html); // 將 HTML 插入通知區塊
                 });
