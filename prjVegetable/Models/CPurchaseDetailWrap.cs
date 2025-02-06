@@ -29,7 +29,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("採購號碼")]
-        public int? FPurchaseId
+        public int FPurchaseId
         {
             get { return _PurchaseDetail.FPurchaseId; }
             set { _PurchaseDetail.FPurchaseId = value; }
@@ -38,7 +38,7 @@ namespace prjVegetable.Models
 
 
         [DisplayName("數量")]
-        public int? FCount
+        public int FCount
         {
             get { return _PurchaseDetail.FCount; }
             set { _PurchaseDetail.FCount = value; }
@@ -46,14 +46,14 @@ namespace prjVegetable.Models
 
 
         [DisplayName("單價")]
-        public int? FPrice
+        public int FPrice
         {
             get { return _PurchaseDetail.FPrice; }
             set { _PurchaseDetail.FPrice = value; }
         }
 
         [DisplayName("小計")]
-        public int? FSum
+        public int FSum
         {
             get { return _PurchaseDetail.FSum; }
             set { _PurchaseDetail.FSum = value; }

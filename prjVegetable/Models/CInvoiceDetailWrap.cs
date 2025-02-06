@@ -40,19 +40,19 @@ namespace prjVegetable.Models
             set { _InvoiceDetail.FProductName = value; }
         }
         [DisplayName("數量")]
-        public int? FCount
+        public int FCount
         {
             get { return _InvoiceDetail.FCount; }
             set { _InvoiceDetail.FCount = value; }
         }
         [DisplayName("單價")]
-        public int? FPrice
+        public int FPrice
         {
             get { return _InvoiceDetail.FPrice; }
             set { _InvoiceDetail.FPrice = value; }
         }
         [DisplayName("小計")]
-        public int? FSum
+        public int FSum
         {
             get { return _InvoiceDetail.FSum; }
             set { _InvoiceDetail.FSum = value; }
