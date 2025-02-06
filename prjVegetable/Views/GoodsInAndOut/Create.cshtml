@@ -78,7 +78,7 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
-                <input asp-for="GoodsInAndOut.FEditor" class="form-control" readonly value="1" />
+                <input asp-for="GoodsInAndOut.FEditor" id="GoodsInAndOut_FEditor" class="form-control" readonly />
                 <span asp-validation-for="GoodsInAndOut.FEditor" class="text-danger"></span>
             </div>
         </div>
@@ -108,6 +108,20 @@
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/GoodsInAndOut/GetMemberInfo")
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("GoodsInAndOut_FEditor").value = data.data.ID;
+                } else {
+                    console.error("無法獲取會員資訊: " + data.message);
+                }
+            })
+            .catch(error => console.error("錯誤: ", error));
+    });
+
+
     document.getElementById("submitAllData").addEventListener("click", function () {
         let formData = new FormData(document.getElementById("MainForm"));
 

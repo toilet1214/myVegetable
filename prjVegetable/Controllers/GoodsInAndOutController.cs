@@ -60,10 +60,10 @@ namespace prjVegetable.Controllers
                         p.FNote.Contains(keyword)
                     );
             }
-            // **先將資料轉換為 List，確保 EF Core 連線已經關閉**
+            // 先將資料轉換為 List，確保 EF Core 連線已經關閉
             var dataList = datas.ToList();
 
-            // **查詢 TPerson 和 TProvider 並轉為字典，避免多次查詢**
+            // 查詢 TPerson 和 TProvider 並轉為字典，避免多次查詢
             var personDict = _dbContext.TPeople
                 .ToDictionary(p => p.FId, p => p.FName);
 
@@ -86,9 +86,13 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+            int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
             var viewModel = new CGoodsInAndOutViewModel
             {
-                GoodsInAndOut = new TGoodsInAndOut(),
+                GoodsInAndOut = new TGoodsInAndOut
+                {
+                    FEditor = userId
+                },
                 GoodsInAndOutDetails = new List<TGoodsInAndOutDetail> { new TGoodsInAndOutDetail() }
             };
             return View(viewModel);
@@ -107,7 +111,7 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, message = "主表驗證失敗，請檢查 Console 訊息" });
             }
 
-            // **1️⃣ 轉換 CGoodsInAndOutViewModel 為 TGoodsInAndOut (主表)**
+            // 轉換 CGoodsInAndOutViewModel 為 TGoodsInAndOut (主表)
             var goodsInAndOut = new TGoodsInAndOut
             {
                 FInOut = model.GoodsInAndOut.FInOut,
@@ -120,13 +124,13 @@ namespace prjVegetable.Controllers
                 FNote = model.GoodsInAndOut.FNote
             };
 
-            // **2️⃣ 儲存主表並獲取 FId**
+            // 儲存主表並獲取 FId
             _dbContext.TGoodsInAndOuts.Add(goodsInAndOut);
             _dbContext.SaveChanges(); // 這裡確保 FId 產生
 
             int generatedFId = goodsInAndOut.FId; // 獲取主表 FId
 
-            // **3️⃣ 轉換並插入 TGoodsInAndOutDetail (明細表)**
+            //轉換並插入 TGoodsInAndOutDetail (明細表)
             if (model.GoodsInAndOutDetails != null && model.GoodsInAndOutDetails.Count > 0)
             {
                 List<TGoodsInAndOutDetail> details = model.GoodsInAndOutDetails.Select(detail => new TGoodsInAndOutDetail
@@ -138,7 +142,7 @@ namespace prjVegetable.Controllers
                     FSum = detail.FSum
                 }).ToList();
 
-                _dbContext.TGoodsInAndOutDetails.AddRange(details); // **批量插入**
+                _dbContext.TGoodsInAndOutDetails.AddRange(details); // 批量插入
                 _dbContext.SaveChanges();
             }
 
