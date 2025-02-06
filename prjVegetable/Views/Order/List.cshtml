@@ -13,6 +13,7 @@
 }
 <br />
 
+
 <table class="table">
     <thead>
         <tr>
@@ -52,42 +53,42 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FId)
-                </td>
-                <td>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.FId)
+            </td>
+            <td>
                     @Html.DisplayFor(modelItem => item.FPersonId)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FTotal)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FStatus)
-                </td>
-                <td>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTotal)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FStatus)
+            </td>
+            <td>
                     @Html.DisplayFor(modelItem => item.FPay)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FOrderAt)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FAddress)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FReceiverName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FPhone)
-                </td>
-                <td>
+                @Html.DisplayFor(modelItem => item.FOrderAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FAddress)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FReceiverName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FPhone)
+            </td>
+            <td>
                     @Html.DisplayFor(modelItem => item.FNote)
-                </td>
-                <td>
+            </td>
+            <td>
                     @Html.ActionLink("訂單詳細資料", "OrderList", new { id = item.FId })
-                </td>
-            </tr>
-        }
+            </td>
+        </tr>
+}
     </tbody>
 </table>
 @section Scripts {
