@@ -4,6 +4,9 @@
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+}
 
 <h1>訂單資料</h1>
 @using (Html.BeginForm())
@@ -12,9 +15,6 @@
     <input type="submit" value="查詢" class="btn btn-primary">
 }
 <br />
-@section Styles {
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
-}
 
 <table class="table" id="List">
     <thead>
