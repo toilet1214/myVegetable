@@ -193,17 +193,28 @@
 
 
 
-<div class=" m-0 position-relative">
+<div class="container d-flex flex-column">
 
-    <div class="row ">
-        @using (Html.BeginForm())
+    <div class="row">
+        
+        <!-- 搜尋 start -->
+        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm1" }))
         {
-            @Html.TextBox("txtKeyword")
-            <input type="submit" value="查詢" />
+            @Html.TextBox("keyword", "")
+            <button type="submit" class="btn btn-link" style="border: none;">
+                <i class="bi bi-search"></i>
+            </button>
         }
 
+        <select id="sortOrder" class="form-select">
+            <option value="price_asc">預設排序</option>
+            <option value="price_asc">價格由小到大</option>
+            <option value="price_desc">價格由大到小</option>
+            <option value="publish_date_asc">上架日期由舊到新</option>
+            <option value="publish_date_desc">上架日期由新到舊</option>
+        </select>
 
-        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm" }))
+        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm2" }))
         {
             <!-- 篩選價格 start -->
             <input type="hidden" id="maxPriceInput" name="MaxPrice" />
@@ -268,16 +279,13 @@
     <!-- 產品列表 start -->
     <div class="col-12">
 
-        <div class="row row-cols-1 row-cols-md-5  my-4 mx-5 hot-product-card" id=" product-list">
+        <div class="row row-cols-1 row-cols-md-5  my-4 mx-5 hot-product-card" id="product-list">
 
 
             @foreach (var item in Model)
             {
                 count++;
-                
-
-
-                <div class="col product-item mb-4">
+                <div class="col product-item mb-4" data-publish-date="@item.FLaunchAt">
                     <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
 
                         <div class="card h-100 shadow-sm d-flex flex-column ">
@@ -308,30 +316,29 @@
     </div>
     <!-- 分頁控制 start -->
     <footer style="margin-top: auto;">
-        <div class="container my-auto ">
-            <div class="d-flex align-item-end justify-content-center mt-3">
-
+        <div class="container my-auto">
+            <div class="d-flex align-items-end justify-content-center mt-3">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-end" id="pagination">
+                    <ul class="pagination justify-content-center" id="pagination">
+                        <!-- 上一頁 -->
                         <li class="page-item" id="prevPage">
-                            <a class="page-link" href="#" aria-label="Previous">
+                            <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                                 <span aria-hidden="true">&laquo;</span>
                             </a>
                         </li>
-                        <li class="page-item active"><a class="page-link" href="#" data-page="1">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#" data-page="2">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#" data-page="3">3</a></li>
+
+                        <!-- 分頁頁碼 -->
+                        <!-- 這裡的頁碼將由 jQuery 自動生成 -->
+                        <!-- 下一頁 -->
                         <li class="page-item" id="nextPage">
-                            <a class="page-link" href="#" aria-label="Next">
+                            <a class="page-link" href="javascript:void(0);" aria-label="Next">
                                 <span aria-hidden="true">&raquo;</span>
                             </a>
                         </li>
                     </ul>
                 </nav>
-
             </div>
         </div>
-
     </footer>
 </div>
 
@@ -351,12 +358,25 @@
 
             // 篩選種類start //
             function submitCategory(button) {
-                // 取得按鈕的 data-category 屬性值
-                var category = button.getAttribute('data-category');
-                // 將選中的 category 值設置到隱藏的輸入框中
-                document.getElementById('categoryInput').value = category;
+                // 獲取按鈕的 data-category 屬性值
+                var category = button.getAttribute('data-category') || "所有產品"; // 預設值
+
+                // 將選中的 category 設置到隱藏輸入框
+                var categoryInput = document.getElementById('categoryInput');
+                if (categoryInput) {
+                    categoryInput.value = category;
+                } else {
+                    console.error('隱藏輸入框 categoryInput 不存在！');
+                    return;
+                }
+
                 // 提交表單
-                document.querySelector("form").submit();
+                var form = document.querySelector("form");
+                if (form) {
+                    form.submit();
+                } else {
+                    console.error('表單不存在！');
+                }
             }
 
             // 停止按鈕的默認提交行為，並用 JavaScript 提交
@@ -364,6 +384,7 @@
                 event.preventDefault();  // 阻止表單提交
                 submitCategory(this);  // 呼叫 submitCategory
             });
+
 
 
 
@@ -382,8 +403,6 @@
                     isVisible = false;
                 }
             });
-
-
 
 
             // 篩選價格Slider Range start//
@@ -591,77 +610,100 @@
                 });
                 event.preventDefault();
              });
-             
 
 
+            //分頁控制
+            $(document).ready(function() {
+            // 取得從後端傳遞過來的總頁數與當前頁數
+            var currentPage = @ViewBag.CurrentPage;  // 用後端傳遞的 currentPage
+            var totalPages = @ViewBag.TotalPages;    // 用後端傳遞的 totalPages
 
-            // 分頁控制 //
-            var itemsPerPage = 10;
-            var totalItems = $(".product-item").length;  // 總共的產品數量
-            var totalPages = Math.ceil(totalItems / itemsPerPage); // 總頁數
-           
+            // 更新分頁
+                   function updatePagination() {
+            $('#pagination').find('li.page-item').not('#prevPage, #nextPage').remove(); // 清空頁碼
 
-            // 顯示指定頁碼的產品
-            function showPage(page) {
-                var startIndex = (page - 1) * itemsPerPage;
-                var endIndex = startIndex + itemsPerPage;
+            for (var i = 1; i <= totalPages; i++) {
+                var pageItem = $('<li>', { 'class': 'page-item' }).append(
+                    $('<a>', {
+                        'class': 'page-link',
+                        'href': 'javascript:void(0);',
+                        'text': i
+                    })
+                );
 
-                $(".product-item").hide(); // 隱藏所有產品
-                $(".product-item").slice(startIndex, endIndex).show(); // 顯示當前頁面的產品
-
-                // 更新頁碼樣式
-                $("#pagination .page-item").removeClass("active");
-                $("#pagination .page-item[data-page=" + page + "]").addClass("active");
-
-                // 更新上一頁和下一頁的可用性
-                if (page == 1) {
-                    $("#prevPage").addClass("disabled");
-                } else {
-                    $("#prevPage").removeClass("disabled");
+                if (i === currentPage) {
+                    pageItem.addClass('active');
                 }
 
-                if (page == totalPages) {
-                    $("#nextPage").addClass("disabled");
-                } else {
-                    $("#nextPage").removeClass("disabled");
-                }
+                $('#pagination').find('#nextPage').before(pageItem);
             }
 
-            // 點擊頁碼
-            $("#pagination .page-link").click(function (e) {
-                e.preventDefault();
-                var page = $(this).data("page");
-                if (page) {
-                    currentPage = page;
-                    showPage(currentPage);
-                }
-            });
+            $('#prevPage').toggleClass('disabled', currentPage === 1);
+            $('#nextPage').toggleClass('disabled', currentPage === totalPages);
+        }
 
-            // 上一頁
-            $("#prevPage").click(function (e) {
-                e.preventDefault();
-                if (currentPage > 1) {
-                    currentPage--;
-                    showPage(currentPage);
-                }
-            });
+        // 點擊頁碼事件
+        $(document).on('click', '#pagination .page-link', function () {
+            var clickedPage = parseInt($(this).text());
+            if (clickedPage && clickedPage !== currentPage) {
+                currentPage = clickedPage;
+                updatePagination();
+                loadPageContent(currentPage);
+            }
+        });
 
-            // 下一頁
-            $("#nextPage").click(function (e) {
-                e.preventDefault();
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    showPage(currentPage);
-                }
-            });
+        // 點擊上一頁事件
+        $(document).on('click', '#prevPage .page-link', function () {
+            if (currentPage > 1) {
+                currentPage--;
+                updatePagination();
+                loadPageContent(currentPage);
+            }
+        });
 
-            // 初始顯示第一頁
-            showPage(currentPage);
+        // 點擊下一頁事件
+        $(document).on('click', '#nextPage .page-link', function () {
+            if (currentPage < totalPages) {
+                currentPage++;
+                updatePagination();
+                loadPageContent(currentPage);
+            }
+        });
 
-            // 防止整個卡片點擊跳轉
-            $("a#productLink").click(function (event) {
-                event.stopPropagation();  // 防止點擊鏈接時跳轉
-            });
+            // 載入頁面內容（AJAX 請求，根據當前頁面載入相應的資料）
+            function loadPageContent(page) {
+                var category = $('#categoryInput').val() || "所有產品"; // 從隱藏輸入框中獲取值
+                var keyword = $('#keywordInput').val() || ''; // 關鍵字搜尋
+                var minPrice = $('#minPriceInput').val() || ''; // 最低價格
+                var maxPrice = $('#maxPriceInput').val() || ''; // 最高價格
+
+                $.ajax({
+                    url: '@Url.Action("ProductList", "Product")',
+                    type: 'GET',
+                    data: {
+                        page: page,
+                        category: category,
+                        keyword: keyword,
+                        minPrice: minPrice,
+                        maxPrice: maxPrice
+                    },
+                    success: function(response) {
+                        console.log("後端返回資料: ", response);
+                        $('#productListContainer').html(response.data); // 更新產品列表
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX 請求錯誤: ', error);
+                    }
+                });
+        }
+
+            // 初始載入分頁
+            updatePagination();
+            loadPageContent(currentPage);
+        });
+
+            
+            
 
         });//end function
 

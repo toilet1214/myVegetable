@@ -21,27 +21,32 @@ namespace prjVegetable.Controllers
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
             string keyword = pvm.category;
+            string textkeyword = pvm.keyword;
 
             // 設置 ViewBag.Category，用來在麵包屑顯示
-            ViewBag.Category = string.IsNullOrEmpty(keyword) ? "產品列表" : keyword;
-
-            IEnumerable<TProduct> datas = null;
+            ViewBag.Category = string.IsNullOrEmpty(keyword) ? "所有產品" : keyword;
 
             // 取得篩選的最低價格和最高價格
             //decimal精確數值的資料型別，小數點後兩位
             decimal? minPrice = pvm.MinPrice;
             decimal? maxPrice = pvm.MaxPrice;
 
-            //篩選分類
-            if (string.IsNullOrEmpty(keyword))
+            // 基本的資料查詢篩選條件
+            IQueryable<TProduct> datas = db.TProducts
+                                        .Where(p => p.FLaunch == 1)
+                                        .OrderBy(p=>p.FId);
+
+            //關鍵字搜尋
+            if (!string.IsNullOrEmpty(textkeyword))
             {
-                datas = db.TProducts.Where(p=>p.FLaunch ==1);
-            }
-            else {
-                datas = db.TProducts.Where(p => p.FClassification.Contains(keyword) && p.FLaunch == 1); 
-            
+                datas = datas.Where(p => p.FName.Contains(textkeyword) || p.FDescription.Contains(textkeyword));
             }
 
+            //篩選分類 category
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                datas = datas.Where(p => p.FClassification.Contains(keyword) || p.FName.Contains(keyword) || p.FDescription.Contains(keyword));
+            }
 
             // 根據價格範圍進行篩選
             if (minPrice.HasValue && maxPrice.HasValue)
@@ -80,10 +85,22 @@ namespace prjVegetable.Controllers
             int pagesize = 10;
             int totalProducts = datas.Count();
             int totalPages = (int)Math.Ceiling((double)totalProducts / pagesize);
-            datas = datas.Skip((page - 1) * pagesize).Take(pagesize);
+
+            page = page < 1 ? 1 : page;
+            page = page > totalPages ? totalPages : page;
 
 
-            foreach (var p in products)     
+            int skip = (page - 1) * pagesize;
+            skip = skip < 0 ? 0 : skip;
+            var pagedDatas = datas
+                            .Skip(skip)
+                            .Take(pagesize)
+                            .ToList();
+            //var pagedDatas = datas.Skip((page - 1) * pagesize).Take(pagesize).ToList();
+
+
+
+            foreach (var p in pagedDatas)
             {
                 CProductWrap pp = new CProductWrap() { product = p };
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
@@ -91,11 +108,20 @@ namespace prjVegetable.Controllers
                 pp.IsFavorite = favoriteProductIds.Contains(p.FId);
                 list.Add(pp);
             }
-           
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = totalPages;
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("_ProductList", pagedDatas); 
+            }
+
+
 
             return View(list);
         }
 
+        
 
 
         [HttpGet]
@@ -189,6 +215,20 @@ namespace prjVegetable.Controllers
                          .OrderBy(img => img.FOrderBy)          // 按 Order 排序
                          .Select(img => img.FName)       // 只選擇圖片路徑
                          .ToList();
+
+            var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+            var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
+            if (personId > 0)
+            {
+                var isFavorite = _context.TFavorites
+                    .Any(f => f.FPersonId == personId && f.FProductId == id);
+
+                x.IsFavorite = isFavorite;
+            }
+            else
+            {
+                x.IsFavorite = false; // 未登入的話，顯示為未加入最愛
+            }
 
             return View(x);
         }
