@@ -12,9 +12,11 @@
     <input type="submit" value="查詢" class="btn btn-primary">
 }
 <br />
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.min.css">
+}
 
-
-<table class="table">
+<table class="table" id="List">
     <thead>
         <tr>
             <th>
@@ -53,46 +55,73 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FId)
-            </td>
-            <td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FId)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FPersonId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTotal)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FStatus)
-            </td>
-            <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FTotal)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FStatus)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FPay)
                 </td>
                 <td>
-                @Html.DisplayFor(modelItem => item.FOrderAt)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FReceiverName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPhone)
-            </td>
-            <td>
+                    @Html.DisplayFor(modelItem => item.FOrderAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FReceiverName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FPhone)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.FNote)
-            </td>
-            <td>
+                </td>
+                <td>
                     @Html.ActionLink("訂單詳細資料", "OrderList", new { id = item.FId })
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+            });
+        });
+    </script>
+
 }
