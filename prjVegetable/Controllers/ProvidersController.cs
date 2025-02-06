@@ -48,22 +48,54 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        // GET: TProviders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        //詳細資料頁面
+        public async Task<IActionResult> Details()
         {
-            if (id == null)
+            return View();
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetProviderById(int? id)
+        {
+            if (id == 0) 
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest("找不到ID");
             }
-
-            var tProvider = await _context.TProviders
-                .FirstOrDefaultAsync(m => m.FId == id);
-            if (tProvider == null)
+            var provider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId ==id);
+            if (provider == null) 
+            { 
+                return NotFound("Provider not found");
+            }
+            return Ok(provider);
+        }
+        [HttpPut]
+        public async Task<IActionResult> update([FromBody] CProviderWrap providerwrap) 
+        {
+            TProvider e = _context.TProviders.FirstOrDefault(c => c.FId == providerwrap.FId);
+            if (e == null) 
             {
-                return RedirectToAction(nameof(Index));
+                return NotFound("未找到相關廠商");
             }
+            try
+            { // 更新資料，不給使用者修改的欄位（例如密碼）
+                e.FName =providerwrap.FName;
+                e.FUbn = providerwrap.FUbn;
+                e.FTel = providerwrap.FTel;
+                e.FConnect = providerwrap.FConnect;
+                e.FAccountant = providerwrap.FAccountant;
+                e.FAddress = providerwrap.FAddress;
+                e.FDelivery = providerwrap.FDelivery;
+                e.FInvoiceAdd = providerwrap.FInvoiceAdd;
 
-            return View(new CProviderWrap() {provider = tProvider });
+                // 儲存變更
+                await _context.SaveChangesAsync();
+
+                return Ok("資料已成功更新");
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳具體錯誤訊息
+                return StatusCode(500, $"儲存資料時發生錯誤: {ex.Message}");
+            }
         }
 
         // GET: TProviders/Create
@@ -83,7 +115,7 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));            
         }
 
-        // GET: TProviders/Edit/5
+        //GET: TProviders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -91,12 +123,12 @@ namespace prjVegetable.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId ==id);
+            var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == id);
             if (tProvider == null)
             {
                 return RedirectToAction(nameof(Index));
             }
-            return View(new CProviderWrap() {provider = tProvider });
+            return View(new CProviderWrap() { provider = tProvider });
         }
 
         // POST: TProviders/Edit/5

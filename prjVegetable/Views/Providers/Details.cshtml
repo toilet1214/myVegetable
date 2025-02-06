@@ -6,68 +6,275 @@
 }
 
 <h1>廠商詳細資料</h1>
+<br />
+<hr />
+<div id="app">
+    <div class="container">
+        <div v-if="provider" :key="provider.fId">
+            <form v-if="edit">
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fId" :value="provider.fId" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fName" class="col-md-3 col-form-label">廠商名稱：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fName" :placeholder="provider.fName" v-model="provider.fName">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fConnect" class="col-md-3 col-form-label">廠商聯絡人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fConnect" :placeholder="provider.fConnect" v-model="provider.fConnect">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fTel" class="col-md-3 col-form-label">廠商電話</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fTel" :placeholder="provider.fTel" v-model="provider.fTel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fUbn" class="col-md-3 col-form-label">廠商統編：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fUbn" :placeholder="provider.fUbn" v-model="provider.fUbn">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAccountant" class="col-md-3 col-form-label">廠商會計：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAccountant" :placeholder="provider.fAccountant" v-model="provider.fAccountant">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-3 col-form-label">廠商公司地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAddress" :placeholder="provider.fAddress" v-model="provider.fAddress">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fDelivery" class="col-md-3 col-form-label">廠商送貨地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fDelivery" :placeholder="provider.fDelivery" v-model="provider.fDelivery">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fInvoiceAdd" class="col-md-3 col-form-label">廠商發票地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fInvoiceAdd" :placeholder="provider.fInvoiceAdd" v-model="provider.fInvoiceAdd">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" v-model="provider.fEditor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            @*顯示*@
+            <form else>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fId" :value="provider.fId" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fName" class="col-md-3 col-form-label">廠商名稱：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fName" :value="provider.fName" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fConnect" class="col-md-3 col-form-label">廠商聯絡人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fConnect" :value="provider.fConnect" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fTel" class="col-md-3 col-form-label">廠商電話</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fTel" :value="provider.fTel" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fUbn" class="col-md-3 col-form-label">廠商統編：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fUbn" :value="provider.fUbn" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAccountant" class="col-md-3 col-form-label">廠商會計：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAccountant" :value="provider.fAccountant" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-3 col-form-label">廠商公司地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAddress" :value="provider.fAddress" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fDelivery" class="col-md-3 col-form-label">廠商送貨地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fDelivery" :value="provider.fDelivery" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fInvoiceAdd" class="col-md-3 col-form-label">廠商發票地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fInvoiceAdd" :value="provider.fInvoiceAdd" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div>
+                <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
+                <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="edit" @@click="saveProvider" class="btn btn-success">儲存修改</button>
+            </div>
+        </div>
+        <div v-else>
+            <p>載入中...</p>
+        </div>
+            
+    </div>
+</div>
+ 
+@section Scripts
+{
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    provider: [],  // 用來存放從後端獲得的人員資料
+                    edit:false, //啟用編輯
+                };
+            },
+            mounted() {
+                this.loadProviderId();  // 确保调用正确的 method
+            },
+            methods: {
+                loadProviderId() {
+                        // 获取当前 URL 的路径部分
+                        const path = window.location.pathname;
 
-<div>
-    <h4>TProvider</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUbn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FUbn)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FTel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FTel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FConnect)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FConnect)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAccountant)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FAccountant)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAddress)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FAddress)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FDelivery)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FDelivery)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FInvoiceAdd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FInvoiceAdd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEditor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FEditor)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index">回廠商列表</a>
-    <a asp-action="Edit" asp-route-id="@Model?.FId">編輯資料</a> |
-</div>
+                        // 假设 URL 路径的格式是 /provider/Details/{id}
+                        const pathSegments = path.split('/'); // 将路径分割为数组
+
+                        // 获取路径的最后一部分作为 ID
+                        const providerId = pathSegments[pathSegments.length - 1];
+                    if (providerId) {
+                        axios.get(`/Providers/GetProviderById/${providerId}`)
+                            .then(response => {
+                                console.log(response.data);  // 查看 API 返回的资料
+                                this.provider = response.data //? [response.data] : [];  直接将返回的对象赋值给 `provider`
+                            })
+                            .catch(error => {
+                                console.error('资料加载错误', error);
+                                this.provider = [];  // 如果出錯，清空資料
+                            });
+                    } else {
+                        console.error('未提供有效的 ID');
+                    }
+                },
+                goToIndex() {
+                    window.location.href = "/Provider/index";  // 返回到廠商列表页面，或者修改为你的页面路径
+                },
+
+                toggleEditting() {
+                this.edit = !this.edit;  // 切換 edit 值
+                },
+                saveProvider() {
+                    if (this.provider.fId) {
+                        console.log(this.provider);  // 打印数据，确认数据是否正确
+                        const providerData =JSON.parse(JSON.stringify(this.provider))
+                        axios.put(`/Provider/update`, providerData)
+                            .then(response => {
+                                // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
+                                alert("資料已儲存!");
+                                this.toggleEditting();  // 儲存後退出編輯模式
+                            })
+                            .catch(error => {
+                                console.error('儲存失敗', error);
+                                alert("儲存資料時發生錯誤");
+                            });
+                    } else {
+                        alert("無效的使用者ID，無法儲存資料");
+                    }
+                }
+            }
+        });
+
+        app.mount('#app'); // 使用 Vue 3 创造并挂载应用
+    </script>
+}
+
