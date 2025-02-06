@@ -201,13 +201,13 @@
                         <li class="dropdown-header text-start">
                             <h6>篩選</h6>
                         </li>
-                        <li><a class="dropdown-item" href="#">今天</a></li>
+                        <li><a class="dropdown-item" href="#">不限</a></li>
                         <li><a class="dropdown-item" href="#">這個月</a></li>
                         <li><a class="dropdown-item" href="#">今年</a></li>
                     </ul>
                 </div>
                 <div class="card-body pb-0">
-                    <h5 class="card-title fw-bold fs-5">類別銷量 <span id="SalesClassDate">| 這個月</span></h5>
+                    <h5 class="card-title fw-bold fs-5">類別銷量 <span id="SalesClassDate">| 不限</span></h5>
                     <div id="PieChart" style="min-height: 400px;"></div>
                 </div>
             </div>
@@ -599,7 +599,7 @@
             PChart.render();
         }
         document.addEventListener("DOMContentLoaded", () => {
-            PieMonth();
+            PieAll();
         });
         $(function () {
             $("#SalesClassList").on("click", (e) => {
