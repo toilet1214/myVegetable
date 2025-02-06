@@ -215,6 +215,11 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Edit(CGoodsInAndOutViewModel model)
         {
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return Json(new { success = false, message = "請先登入" });
+            }
+
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "主表驗證失敗" });
@@ -226,7 +231,7 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, message = "找不到主表資料" });
             }
 
-            // 更新主表
+            //  更新主表並將 FEditor 設定為當前登入使用者
             goodsInAndOut.FInOut = model.GoodsInAndOut.FInOut;
             goodsInAndOut.FDate = model.GoodsInAndOut.FDate;
             goodsInAndOut.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
@@ -234,8 +239,9 @@ namespace prjVegetable.Controllers
             goodsInAndOut.FPersonId = model.GoodsInAndOut.FPersonId;
             goodsInAndOut.FTotal = model.GoodsInAndOut.FTotal;
             goodsInAndOut.FNote = model.GoodsInAndOut.FNote;
+            goodsInAndOut.FEditor = userId; //  更新為當前登入的使用者 ID
 
-            // 更新細項表
+            //  更新細項表
             foreach (var detail in model.GoodsInAndOutDetails)
             {
                 var existingDetail = _dbContext.TGoodsInAndOutDetails.FirstOrDefault(d => d.FId == detail.FId);
@@ -251,6 +257,7 @@ namespace prjVegetable.Controllers
             _dbContext.SaveChanges();
             return Json(new { success = true });
         }
+
 
 
         // GET: GoodsInAndOut/Details/5

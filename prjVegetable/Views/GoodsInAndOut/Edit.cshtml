@@ -106,9 +106,12 @@
     }
 </div>
 
-<!-- 送出所有資料 -->
+<!-- 送出更新 & 返回 -->
 <div class="row mb-3">
-    <div class="col-12">
+    <div class="col-6 text-start">
+        <button type="button" id="cancelEdit" class="btn btn-secondary">返回</button>
+    </div>
+    <div class="col-6 text-end">
         <button type="button" id="submitEditData" class="btn btn-primary">儲存</button>
     </div>
 </div>
@@ -129,5 +132,10 @@
                     alert("更新失敗：" + data.message);
                 }
             }).catch(error => console.error("Error:", error));
+    });
+
+    //  取消按鈕，返回 GoodsInAndOutIndex
+    document.getElementById("cancelEdit").addEventListener("click", function () {
+        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
     });
 </script>
