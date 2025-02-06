@@ -19,7 +19,7 @@ public partial class TProduct
 
     public int FQuantity { get; set; }
 
-    public DateOnly FLaunchAt { get; set; }
+    public DateTime FLaunchAt { get; set; }
 
     public int FStorage { get; set; }
 

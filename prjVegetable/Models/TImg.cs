@@ -13,7 +13,7 @@ public partial class TImg
 
     public int FOrderBy { get; set; }
 
-    public DateOnly FUploadAt { get; set; }
+    public DateTime FUploadAt { get; set; }
 
     public int FEditor { get; set; }
 }

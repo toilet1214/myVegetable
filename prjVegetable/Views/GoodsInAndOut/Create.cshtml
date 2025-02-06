@@ -136,12 +136,27 @@
                     }).then(response => response.json())
                         .then(data => {
                             alert("所有資料提交完成！");
+                            clearAllFields();
                         }).catch(error => console.error("Error:", error));
                 } else {
                     alert("提交失敗：" + data.message);
                 }
             }).catch(error => console.error("Error:", error));
     });
+    function clearAllFields() {
+        // 清空所有 `input` 和 `textarea`
+        document.querySelectorAll("#MainForm input, #MainForm textarea").forEach(field => {
+            if (field.id !== "GoodsInAndOut_FEditor") { // 🔹 `FEditor` 不能被清空
+                field.value = "";
+            }
+        });
+
+        // 清空 `#details` 內的明細表
+        document.getElementById("details").innerHTML = "";
+
+        // 重新設置 `FNote` 預設為 "無"
+        document.querySelector("textarea[name='GoodsInAndOut.FNote']").value = "無";
+    }
 
     document.getElementById("addDetail").addEventListener("click", function () {
         var newRow = `<div class="row mb-3 detail-entry">
