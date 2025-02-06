@@ -30,7 +30,7 @@ namespace prjVegetable.Controllers
                 .Where(c => c.FPersonId == userId)
                 .ToList();
 
-            // 根據 fProductId 分組，並將同一產品的數量加總
+            // 根據 fProductId 分組，並將同一產品的數量加總 
             var groupedCart = cartDatas.GroupBy(c => c.FProductId)
                 .Select(g => new
                 {
