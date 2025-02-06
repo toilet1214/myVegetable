@@ -25,25 +25,46 @@ namespace prjVegetable.Controllers
                 return new List<CCartWrap>(); // 未登入直接回傳空清單
             }
 
+            // 取得該使用者所有購物車資料
             var cartDatas = _dbContext.TCarts
                 .Where(c => c.FPersonId == userId)
                 .ToList();
 
+            // 根據 fProductId 分組，並將同一產品的數量加總
+            var groupedCart = cartDatas.GroupBy(c => c.FProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    TotalCount = g.Sum(c => c.FCount),
+                    // 取該分組中的第一筆資料作為參考(其他欄位不影響)
+                    CartData = g.First()
+                })
+                .ToList();
+
             List<CCartWrap> cartWrapList = new List<CCartWrap>();
-            foreach (var cartData in cartDatas)
+
+            foreach (var group in groupedCart)
             {
-                var productData = _dbContext.TProducts.FirstOrDefault(p => p.FId == cartData.FProductId);
-                var imgData = _dbContext.TImgs.FirstOrDefault(img => img.FProductId == cartData.FProductId);
+                // 從 TProducts 查詢該商品資訊
+                var productData = _dbContext.TProducts.FirstOrDefault(p => p.FId == group.ProductId);
+                // 從 TImgs 查詢該商品的圖片資訊
+                var imgData = _dbContext.TImgs.FirstOrDefault(img => img.FProductId == group.ProductId);
+
+                // 如果查不到商品資料，就跳過
+                if (productData == null)
+                    continue;
 
                 cartWrapList.Add(new CCartWrap
                 {
-                    Cart = cartData,
+                    // 這邊的 Cart 可以保留該分組中第一筆資料(但 fCount 會用總加總覆蓋)
+                    Cart = group.CartData,
                     FPrice = productData.FPrice,
-                    FCount = cartData.FCount,
+                    FCount = group.TotalCount, // 使用加總後的數量
                     FProductName = productData.FName,
-                    FName = imgData.FName
+                    FName = imgData != null ? imgData.FName : ""  // 若查不到圖片則預設空字串
                 });
             }
+
             return cartWrapList;
         }
 
