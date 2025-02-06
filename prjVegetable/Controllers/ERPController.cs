@@ -220,7 +220,7 @@ namespace prjVegetable.Controllers
                     Count = o.ol.FCount,
                     State = order.FStatus
                 })
-                .Where(t => t.State == 1)
+                .Where(t => t.State == 2)
                 .GroupBy(x => x.Classification)
                 .Select(g => g.Sum(x => x.Count))
                 .ToList();
