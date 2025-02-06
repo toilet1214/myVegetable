@@ -21,22 +21,22 @@
     <table class="table" id="List">
         <thead>
             <tr>
-                <th>序號</th>
-                <th>ID</th>
-                <th>姓名</th>
-                <th>帳號</th>
-                <th>密碼</th>
-                <th>性別</th>
-                <th>生日</th>
-                <th>手機</th>
-                <th>家用電話</th>
-                <th>電子郵件</th> 
+                <th @@click ="sort('fId')">序號</th>
+                <th @@click ="sort('fId')">ID</th>
+                <th @@click ="sort('fName')">姓名</th>
+                <th @@click ="sort('fAccount')">帳號</th>
+                <th @@click ="sort('fPassword')">密碼</th>
+                <th @@click ="sort('fGender')">性別</th>
+                <th @@click ="sort('fBirth')">生日</th>
+                <th @@click ="sort('fPhone')">手機</th>
+                <th @@click ="sort('fTel')">家用電話</th>
+                <th @@click ="sort('fEmail')">電子郵件</th>
                 <th>操作</th>
             </tr>
         </thead>
-        <tbody v-if="CPersonWrap.length > 0">
-            <tr v-for="(item, index) in CPersonWrap" :key="item.fId">
-                <td>{{ index + 1 }}</td>
+        <tbody v-if="paginatedPeople.length > 0">
+            <tr v-for="(item, index) in paginatedPeople" :key="item.fId">
+                <td>{{ index + 1 + (currentPage - 1) * itemsPerPage }}</td>                
                 <th>{{item.fId}}</th>
                 <td>{{ item.fName }}</td>
                 <th>{{item.fAccount}}</th>
@@ -54,6 +54,13 @@
             </tr>
         </tbody>
     </table>
+
+    @*分頁*@
+    <div class="pagination">
+        <button :disabled="currentPage === 1" @@click ="goToPage(currentPage - 1)">上一頁</button>
+        <span>頁碼: {{ currentPage }}</span>
+        <button :disabled="currentPage === totalPages" @@click ="goToPage(currentPage + 1)">下一頁</button>
+    </div>
 </div>
 
 @section Scripts {
@@ -63,8 +70,45 @@
             data() {
                 return {
                     CPersonWrap: [], // 儲存所有人員資料
-                    keyword: "", // 搜尋關鍵字                   
+                    keyword: "", // 搜尋關鍵字
+                    currentPage: 1, // 當前頁碼
+                    itemsPerPage: 5, // 每頁顯示的項目數量
+                    sortColumn: "", // 當前排序的列
+                    sortDirection: "asc", // 排序方向
                 };
+            },
+            computed: {
+                // 根據分頁顯示的資料
+                paginatedPeople() {
+                    let filteredPeople = this.CPersonWrap;
+
+                    if (this.keyword) {
+                        filteredPeople = filteredPeople.filter(person =>
+                            person.fName.includes(this.keyword) ||
+                            person.fPhone.includes(this.keyword) ||
+                            person.fEmail.includes(this.keyword) ||
+                            person.fAddress.includes(this.keyword)
+                        );
+                    }
+
+                    // 排序
+                    if (this.sortColumn) {
+                        filteredPeople = filteredPeople.sort((a, b) => {
+                            if (this.sortDirection === "asc") {
+                                return a[this.sortColumn] > b[this.sortColumn] ? 1 : -1;
+                            } else {
+                                return a[this.sortColumn] < b[this.sortColumn] ? 1 : -1;
+                            }
+                        });
+                    }
+
+                    // 計算分頁
+                    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+                    return filteredPeople.slice(startIndex, startIndex + this.itemsPerPage);
+                },
+                totalPages() {
+                    return Math.ceil(this.CPersonWrap.length / this.itemsPerPage);
+                }
             },
             mounted() {
                 this.loadPeople();
@@ -103,7 +147,23 @@
                                 console.error('刪除失敗', error);
                             });
                     }
-                }
+                },
+                // 排序方法
+                sort(column) {
+                    if (this.sortColumn === column) {
+                        // 如果點擊了相同列，則改變排序方向
+                        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+                    } else {
+                        this.sortColumn = column;
+                        this.sortDirection = "asc"; // 默認為升序
+                    }
+                },
+                // 分頁
+                goToPage(page) {
+                    if (page >= 1 && page <= this.totalPages) {
+                        this.currentPage = page;
+                    }
+                },
             } // 這裡結束 methods 部分
         }); // 這裡結束 Vue.createApp 的程式碼
 
