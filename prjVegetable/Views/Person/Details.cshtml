@@ -12,79 +12,37 @@
         <div v-if="person" :key="person.fId">            
             <form v-if="edit">
                 <div class="mb-3 row">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fId" class="col-md-4 col-form-label">使用者ID：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fId" :placeholder="person.fId" >
+                            <label for="fname" class="col-md-3 col-form-label">姓名：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fname" :placeholder="請輸入新姓名" v-model="person.fName">
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fname" class="col-md-4 col-form-label">姓名：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fname" :placeholder="person.fName">
-                            </div>
-                        </div>                        
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fUbn" class="col-md-4 col-form-label">統編：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fUbn" :placeholder="person.fUbn">
+                            <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fUbn" :placeholder="請輸入新統編" v-model="person.fUbn">
                             </div>
                         </div>
-                    </div>
+                    </div>                           
                 </div>
                 <div class="mb-3 row">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fAccount" class="col-md-4 col-form-label">帳號：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount">
+                            <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAccount" :placeholder="請輸入新帳號" v-model="person.fAccount">
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fPassword" class="col-md-4 col-form-label">密碼：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fGender" class="col-md-4 col-form-label">性別：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fGender" :placeholder="person.fGender">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fBirth" class="col-md-4 col-form-label">生日：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fBirth" :placeholder="person.fBirth">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fPhone" class="col-md-4 col-form-label">手機：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fPhone" :placeholder="person.fPhone">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fTel" class="col-md-4 col-form-label">家用電話：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel">
+                            <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPassword" :placeholder="請輸入新密碼" v-model="person.fPassword">
                             </div>
                         </div>
                     </div>
@@ -92,132 +50,102 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
-                            <label for="fAddress" class="col-md-4 col-form-label">地址：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fAddress" :placeholder="person.fAddress">
+                            <label for="fGender" class="col-md-3 col-form-label">性別：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fGender" :value="person.fGender" v-model="person.fGender">
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fEmail" class="col-md-4 col-form-label">電子郵件：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fEmail" :placeholder="person.fEmail">
+                            <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :placeholder="person.fBirth" v-model="person.fBirth">
                             </div>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="mb-3 row">
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fEmp" class="col-md-4 col-form-label">緊急聯絡人：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fEmp" :placeholder="person.fEmp">
+                            <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPhone" :placeholder="請輸入新手機號碼" v-model="person.fPhone">
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fEmpTel" class="col-md-4 col-form-label">緊急聯絡人電話：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fEmpTel" :placeholder="person.fEmpTel">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="row">
-                            <label for="fCreatedAt" class="col-md-4 col-form-label">創建日期：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fCreatedAt" :placeholder="person.fCreatedAt">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-3">
-                        <div class="row">
-                            <label for="fEditor" class="col-md-4 col-form-label">修改人：</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" id="fEditor" :placeholder="person.fEditor">
+                            <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fTel" :placeholder="請輸入新電話" v-model="person.fTel">
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAddress" :placeholder="請輸入新地址" v-model="person.fAddress">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmail" :placeholder="請輸入新電子郵件" v-model="person.fEmail">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmp" class="col-md-3 col-form-label">緊急聯絡人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmp" :placeholder="請輸入緊急聯絡人" v-model="person.fEmp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmpTel" class="col-md-3 col-form-label">緊急聯絡人電話：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmpTel" :placeholder="請輸入緊急聯絡人電話" v-model="person.fEmpTel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">                    
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" v-model="person.fPermission">
+                            </div>
+                        </div>
+                    </div>
+                </div>               
             </form>
             @*顯示樣本*@
             <form v-else>
                 <div class="mb-3 row">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fId" class="col-md-4 col-form-label">使用者ID：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fId" :value="person.fId">
+                            <label for="fname" class="col-md-3 col-form-label">姓名：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fname" :value="person.fname" readonly>
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fname" class="col-md-4 col-form-label">姓名：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fname" :value="person.fName">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fUbn" class="col-md-4 col-form-label">統編：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fUbn" :value="person.fUbn">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fAccount" class="col-md-4 col-form-label">帳號：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fAccount" :value="person.fAccount">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fPassword" class="col-md-4 col-form-label">密碼：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fPassword" :value="person.fPassword">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fGender" class="col-md-4 col-form-label">性別：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fGender" :value="person.fGender">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fBirth" class="col-md-4 col-form-label">生日：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fBirth" :value="person.fBirth">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fPhone" class="col-md-4 col-form-label">手機：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fPhone" :value="person.fPhone">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-4">
-                        <div class="row">
-                            <label for="fTel" class="col-md-4 col-form-label">家用電話：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fTel" :value="person.fTel">
+                            <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fUbn" :value="person.fUbn" readonly>
                             </div>
                         </div>
                     </div>
@@ -225,51 +153,125 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
-                            <label for="fAddress" class="col-md-4 col-form-label">地址：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fAddress" :value="person.fAddress">
+                            <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAccount" :value="person.fAccount" readonly>
                             </div>
                         </div>
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fEmail" class="col-md-4 col-form-label">電子郵件：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fEmail" :value="person.fEmail">
+                            <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPassword" :value="person.fPassword" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fEmp" class="col-md-4 col-form-label">緊急聯絡人：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fEmp" :value="person.fEmp">
+                            <label for="fGender" class="col-md-3 col-form-label">性別：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fGender" :value="person.fGender" readonly>
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fEmpTel" class="col-md-4 col-form-label">緊急聯絡人電話：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fEmpTel" :value="person.fEmpTel">
+                            <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :value="person.fBirth" readonly>
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fCreatedAt" class="col-md-4 col-form-label">創建日期：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fCreatedAt" :value="person.fCreatedAt">
+                            <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPhone" :value="person.fPhone" readonly>
                             </div>
                         </div>
                     </div>
-                    <div class="col-3">
+                    <div class="col-6">
                         <div class="row">
-                            <label for="fEditor" class="col-md-4 col-form-label">修改人：</label>
-                            <div class="col-md-8">
-                                <input type="text" readonly class="form-control" id="fEditor" :value="person.fEditor">
+                            <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fTel" :value="person.fTel" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fAddress" :value="person.fAddress" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmail" :value="person.fEmail" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmp" class="col-md-3 col-form-label">緊急聯絡人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmp" :value="person.fEmp" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmpTel" class="col-md-3 col-form-label">緊急聯絡人電話：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEmpTel" :value="person.fEmpTel" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fId" class="col-md-3 col-form-label">使用者ID：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fId" :value="person.fId" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fCreatedAt" class="col-md-3 col-form-label">創建日期：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fCreatedAt" :value="person.fCreatedAt" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEditor" :value="person.fEditor" readonly>
                             </div>
                         </div>
                     </div>
@@ -278,7 +280,8 @@
             <!-- 返回與編輯按鈕 -->
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
-                <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料</button>
+                <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="edit" @@click ="savePerson" class="btn btn-success">儲存修改</button>
             </div>
         </div>
 
@@ -289,7 +292,12 @@
 </div>
 
 @section Scripts
-{
+{<script>
+  $( function() {
+    $( "#datepicker" ).datepicker();
+  } );
+  </script>
+
     <script>
         const app = Vue.createApp({
             data() {
@@ -331,7 +339,25 @@
                 
                 toggleEditting() {
                 this.edit = !this.edit;  // 切換 edit 值
-                },                
+                },
+                savePerson() {
+                    if (this.person.fId) {
+                        console.log(this.person);  // 打印数据，确认数据是否正确
+                        const personData =JSON.parse(JSON.stringify(this.person))
+                        axios.put(`/Person/update`, personData)
+                            .then(response => {
+                                // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
+                                alert("資料已儲存!");
+                                this.toggleEditting();  // 儲存後退出編輯模式
+                            })
+                            .catch(error => {
+                                console.error('儲存失敗', error);
+                                alert("儲存資料時發生錯誤");
+                            });
+                    } else {
+                        alert("無效的使用者ID，無法儲存資料");
+                    }
+                }
             }
         });
 

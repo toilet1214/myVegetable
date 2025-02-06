@@ -115,50 +115,63 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //GET: TPersons/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+        // GET: TPersons/Edit/5
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
-            if (x == null)
-                return RedirectToAction(nameof(Index));
+        //    var x = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == id);
+        //    if (x == null)
+        //        return RedirectToAction(nameof(Index));
 
-            return View(new CPersonWrap() { person = x });
-        }
+        //    return View(new CPersonWrap() { person = x });
+        //}
 
         // POST: TPersons/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public IActionResult Edit(CPersonWrap tPersonwrap)
+        [HttpPut]
+        public async Task<IActionResult> update([FromBody] CPersonWrap personwrap)
         {
-            TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == tPersonwrap.FId);
+            // 檢查是否找到對應的使用者
+            TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == personwrap.FId);
 
-            if (e != null)
-            {   //拿掉不給使用者修改的欄位
-                e.FName = tPersonwrap.FName;
-                e.FAccount = tPersonwrap.FAccount;
-                //e.FPassword = tPersonwrap.FPassword;
-                e.FBirth = tPersonwrap.FBirth;
-                e.FPhone = tPersonwrap.FPhone;
-                e.FTel = tPersonwrap.FTel;
-                e.FAddress = tPersonwrap.FAddress;
-                e.FEmail = tPersonwrap.FEmail;
-                e.FUbn = tPersonwrap.FUbn;
-                e.FPermission = tPersonwrap.FPermission;
-                e.FEmp = tPersonwrap.FEmp;
-                e.FEmpTel = tPersonwrap.FEmpTel;
-                e.FCreatedAt = tPersonwrap.FCreatedAt;
-                e.FEditor = tPersonwrap.FEditor;
-                _context.SaveChanges();
+            if (e == null)
+            {
+                return NotFound("使用者未找到");
             }
 
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                // 更新資料，不給使用者修改的欄位（例如密碼）
+                e.FName = personwrap.FName;
+                e.FAccount = personwrap.FAccount;
+                e.FBirth = personwrap.FBirth;
+                e.FPhone = personwrap.FPhone;
+                e.FTel = personwrap.FTel;
+                e.FAddress = personwrap.FAddress;
+                e.FEmail = personwrap.FEmail;
+                e.FUbn = personwrap.FUbn;
+                e.FPermission = personwrap.FPermission;
+                e.FEmp = personwrap.FEmp;
+                e.FEmpTel = personwrap.FEmpTel;
+                e.FCreatedAt = personwrap.FCreatedAt;
+                e.FEditor = personwrap.FEditor;
+
+                // 儲存變更
+                await _context.SaveChangesAsync();
+
+                return Ok("資料已成功更新");
+            }
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳具體錯誤訊息
+                return StatusCode(500, $"儲存資料時發生錯誤: {ex.Message}");
+            }
         }
-        
+
     }
 }
