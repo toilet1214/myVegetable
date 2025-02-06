@@ -37,7 +37,6 @@
                 <!-- 瀏覽人次 -->
                 <div class="col-md-4">
                     <div class="card info-card  position-relative mt-3 h-100">
-                        <!-- 篩選器放到右上角 -->
                         <div class="filter position-absolute top-0 end-0 p-2">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
                             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="VisitorsList">
@@ -215,15 +214,10 @@
         </div><!-- End Right side columns -->
     </div>
 </section>
-@{
-    var maxValue = Math.Max(Model.TotalMembersMonth.Max(), 5); // 避免 maxValue 為 0
-    var baseValue = Math.Pow(10, Math.Floor(Math.Log10(maxValue / 5))); // 取得 10 的倍數
-    var stepOptions = new[] { 1, 2, 5 }; // 1-2-5 規則
-    var stepSize = stepOptions.Select(s => s * baseValue).First(s => s >= maxValue / 5); // 選擇最接近的刻度
-    var maxY = stepSize * 5; // 確保 maxY 是 5 個 stepSize
-}
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
     <!-- 數據卡片 -->
     <script>
         function SetCardData(ClassPer, Percentage, Color, Icon) {
@@ -311,6 +305,7 @@
     </script>
     <!--會員數折線圖-->
     <script>
+
         let TotalMembersAll = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersAll));
         let TotalMembersYear = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersYear));
         let TotalMembersMonth = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersMonth));
@@ -319,8 +314,13 @@
         Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select((date, index) => (date.Day == 1 || index == 0) ? date.ToString("MM/dd") : date.ToString("dd")).ToList()));
         let YearLabel = @Html.Raw(JsonSerializer.Serialize(
         Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
-
         let chart;
+        let maxAll = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxYAll = Math.ceil(maxAll / 5) * 5; // 計算接近的 5 的倍數
+        let maxYear = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxYYear = Math.ceil(maxYear / 5) * 5; // 計算接近的 5 的倍數
+        let maxMonth = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxYMonth = Math.ceil(maxMonth / 5) * 5; // 計算接近的 5 的倍數
         function MemberCountMonth() {
             if (chart) chart.destroy();
             chart = new ApexCharts(document.querySelector("#LineChart"), {
@@ -354,8 +354,8 @@
                     categories: MonthLabel
                 },
                 yaxis: {
-                    min: 0, // 最小值固定為 1
-                    max: @maxY, // 由 Razor 計算出來
+                    min: 0, // 最小值固定為 0
+                    max: maxYMonth,
                     tickAmount: 5, // 總共 5 個刻度
                     labels: {
                         formatter: function (value) {
@@ -413,7 +413,7 @@
                 },
                 yaxis: {
                     min: 0, // 最小值固定為 1
-                    max: @maxY, // 由 Razor 計算出來
+                    max: maxYYear, // 由 Razor 計算出來
                     tickAmount: 5, // 總共 5 個刻度
                     labels: {
                         formatter: function (value) {
@@ -471,7 +471,7 @@
                 },
                 yaxis: {
                     min: 0, // 最小值固定為 1
-                    max: @maxY, // 由 Razor 計算出來
+                    max: maxAll, // 由 Razor 計算出來
                     tickAmount: 5, // 總共 5 個刻度
                     labels: {
                         formatter: function (value) {
