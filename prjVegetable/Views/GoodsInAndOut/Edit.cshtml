@@ -1,68 +1,133 @@
-﻿@model prjVegetable.Models.CProviderWrap
+﻿@model prjVegetable.Models.CGoodsInAndOutViewModel
 
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>編輯資料</h1>
+<h1>編輯進出貨資料</h1>
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FId" />
+
+<!-- 主表單 (TGoodsInAndOut) -->
+<form asp-action="Edit" method="post" id="EditForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <h3>進出貨基本資料</h3>
+    <input type="hidden" asp-for="GoodsInAndOut.FId" />
+
+    <div class="row mb-3">
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FName" class="control-label"></label>
-                <input asp-for="FName" class="form-control" />
-                <span asp-validation-for="FName" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨/廢棄</label>
+                <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
+                    <option value="0">進貨</option>
+                    <option value="1">出貨</option>
+                    <option value="2">廢棄單</option>
+                </select>
+                <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FUbn" class="control-label"></label>
-                <input asp-for="FUbn" class="form-control" />
-                <span asp-validation-for="FUbn" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
+                <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" required />
+                <span asp-validation-for="GoodsInAndOut.FDate" class="text-danger"></span>
             </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FTel" class="control-label"></label>
-                <input asp-for="FTel" class="form-control" />
-                <span asp-validation-for="FTel" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
+                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
+                <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FConnect" class="control-label"></label>
-                <input asp-for="FConnect" class="form-control" />
-                <span asp-validation-for="FConnect" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
+                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required />
+                <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
             </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FAccountant" class="control-label"></label>
-                <input asp-for="FAccountant" class="form-control" />
-                <span asp-validation-for="FAccountant" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
+                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
+                <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
             </div>
+        </div>
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FAddress" class="control-label"></label>
-                <input asp-for="FAddress" class="form-control" />
-                <span asp-validation-for="FAddress" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
+                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required />
+                <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
             </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
             <div class="form-group">
-                <label asp-for="FDelivery" class="control-label"></label>
-                <input asp-for="FDelivery" class="form-control" />
-                <span asp-validation-for="FDelivery" class="text-danger"></span>
+                <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
+                <input asp-for="GoodsInAndOut.FNote" class="form-control" type="text" required />
+                <span asp-validation-for="GoodsInAndOut.FNote" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FInvoiceAdd" class="control-label"></label>
-                <input asp-for="FInvoiceAdd" class="form-control" />
-                <span asp-validation-for="FInvoiceAdd" class="text-danger"></span>
-            </div>            
-            <div class="form-group">
-                <input type="submit" value="儲存" class="btn btn-primary" />
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<!-- 進出貨明細 -->
+<h3>進出貨明細</h3>
+<div id="details">
+    @for (int i = 0; i < Model.GoodsInAndOutDetails.Count; i++)
+    {
+        <div class="row mb-3 detail-entry">
+            <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
+            <div class="col-3">
+                <input asp-for="GoodsInAndOutDetails[i].FProductId" class="form-control" placeholder="產品 ID" />
             </div>
-        </form>
+            <div class="col-3">
+                <input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" placeholder="數量" />
+            </div>
+            <div class="col-3">
+                <input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" placeholder="單價" />
+            </div>
+            <div class="col-3">
+                <input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" placeholder="小計" />
+            </div>
+        </div>
+    }
+</div>
+
+<!-- 送出所有資料 -->
+<div class="row mb-3">
+    <div class="col-12">
+        <button type="button" id="submitEditData" class="btn btn-primary">儲存</button>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">回廠商列表</a>
-</div>
+<script>
+    document.getElementById("submitEditData").addEventListener("click", function () {
+        let formData = new FormData(document.getElementById("EditForm"));
 
-@* @section Scripts { *@
-@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
-@* } *@
+        fetch("/GoodsInAndOut/Edit", {
+            method: "POST",
+            body: formData
+        }).then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert("資料已更新！");
+                    window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+                } else {
+                    alert("更新失敗：" + data.message);
+                }
+            }).catch(error => console.error("Error:", error));
+    });
+</script>

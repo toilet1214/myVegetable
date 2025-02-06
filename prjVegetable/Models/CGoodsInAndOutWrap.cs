@@ -47,7 +47,7 @@ namespace prjVegetable.Models
         }
 
 
-        [DisplayName("供應商ID")]
+        [DisplayName("供應商")]
         public int FProviderId
         {
             get { return _GoodsInAndOut.FProviderId; }
@@ -55,7 +55,7 @@ namespace prjVegetable.Models
         }
 
 
-        [DisplayName("購買者ID")]
+        [DisplayName("購買者")]
         public int FPersonId
         {
             get { return _GoodsInAndOut.FPersonId; }

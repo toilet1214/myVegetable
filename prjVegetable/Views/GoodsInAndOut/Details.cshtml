@@ -1,73 +1,86 @@
-﻿@model prjVegetable.Models.CProviderWrap
+﻿@model prjVegetable.Models.CGoodsInAndOutViewModel
 
-@{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_LayoutERP.cshtml";
-}
+<h1>進出貨資料詳情</h1>
+<hr />
 
-<h1>廠商詳細資料</h1>
+<!-- 主表單 -->
+<form id="DetailsForm">
+    <input type="hidden" asp-for="GoodsInAndOut.FId" />
 
-<div>
-    <h4>TProvider</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUbn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FUbn)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FTel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FTel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FConnect)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FConnect)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAccountant)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FAccountant)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAddress)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FAddress)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FDelivery)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FDelivery)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FInvoiceAdd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FInvoiceAdd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEditor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.provider.FEditor)
-        </dd>
-    </dl>
+    <div class="row mb-3">
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
+            <select asp-for="GoodsInAndOut.FInOut" class="form-control" disabled style="min-width: 400px;">
+                <option value="0">進貨</option>
+                <option value="1">出貨</option>
+            </select>
+        </div>
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
+            <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" readonly style="min-width: 400px;" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
+            <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
+            <input asp-for="GoodsInAndOut.FProviderId" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
+            <input asp-for="GoodsInAndOut.FPersonId" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
+            <input asp-for="GoodsInAndOut.FTotal" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
+            <input asp-for="GoodsInAndOut.FNote" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+        <div class="col-6">
+            <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
+            <input asp-for="GoodsInAndOut.FEditor" class="form-control" readonly style="min-width: 400px;" />
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<!-- 進出貨明細 -->
+<h3>進出貨明細</h3>
+<div id="details">
+    @for (int i = 0; i < Model.GoodsInAndOutDetails.Count; i++)
+    {
+        <div class="row mb-3 detail-entry">
+            <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
+            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FProductId" class="form-control" placeholder="產品 ID" readonly style="min-width: 400px;" /></div>
+            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" placeholder="數量" readonly style="min-width: 400px;" /></div>
+            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" placeholder="單價" readonly style="min-width: 400px;" /></div>
+            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" placeholder="小計" readonly style="min-width: 400px;" /></div>
+        </div>
+    }
 </div>
-<div>
-    <a asp-action="Index">回廠商列表</a>
-    <a asp-action="Edit" asp-route-id="@Model?.FId">編輯資料</a> |
+
+<!-- 返回按鈕 -->
+<div class="row mb-3">
+    <div class="col-12 text-center">
+        <button type="button" id="backToIndex" class="btn btn-secondary">返回</button>
+    </div>
 </div>
+
+<script>
+    document.getElementById("backToIndex").addEventListener("click", function () {
+        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+    });
+</script>
