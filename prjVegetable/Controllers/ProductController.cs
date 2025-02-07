@@ -3,7 +3,10 @@ using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Security.Claims;
+using X.PagedList.Extensions;
+using X.PagedList;
 
 namespace prjVegetable.Controllers
 {
@@ -16,7 +19,7 @@ namespace prjVegetable.Controllers
         }
 
         //商品列表
-        public IActionResult ProductList(ProductViewModel pvm, int page =1)
+        public IActionResult ProductList(ProductViewModel pvm, int page)
         {
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
@@ -34,7 +37,7 @@ namespace prjVegetable.Controllers
             // 基本的資料查詢篩選條件
             IQueryable<TProduct> datas = db.TProducts
                                         .Where(p => p.FLaunch == 1)
-                                        .OrderBy(p=>p.FId);
+                                        .OrderBy(p => p.FId);
 
             //關鍵字搜尋
             if (!string.IsNullOrEmpty(textkeyword))
@@ -71,57 +74,75 @@ namespace prjVegetable.Controllers
 
 
             var favoriteProductIds = db.TFavorites
-                                    .Where(f=>f.FPersonId == personId)
-                                    .Select(f=>f.FProductId)
+                                    .Where(f => f.FPersonId == personId)
+                                    .Select(f => f.FProductId)
                                     .ToList();
             var cartProductIds = db.TCarts
-                                .Where(c=>c.FPersonId==personId)
-                                .Select(c=>c.FProductId)
+                                .Where(c => c.FPersonId == personId)
+                                .Select(c => c.FProductId)
                                 .ToList();
 
 
 
             //頁碼排序
-            int pagesize = 10;
+            int pagesize = 3;
             int totalProducts = datas.Count();
             int totalPages = (int)Math.Ceiling((double)totalProducts / pagesize);
-
             page = page < 1 ? 1 : page;
-            page = page > totalPages ? totalPages : page;
-
-
-            int skip = (page - 1) * pagesize;
-            skip = skip < 0 ? 0 : skip;
             var pagedDatas = datas
-                            .Skip(skip)
+                            .Skip((page - 1) * pagesize)
                             .Take(pagesize)
                             .ToList();
-            //var pagedDatas = datas.Skip((page - 1) * pagesize).Take(pagesize).ToList();
-
-
 
             foreach (var p in pagedDatas)
             {
-                CProductWrap pp = new CProductWrap() { product = p };
-                var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
-                pp.FImgName = image?.FName;
+                CProductWrap pp = new CProductWrap()
+                {
+                    FId = p.FId,
+                    FName = p.FName,
+                    FClassification = p.FClassification,
+                    FPrice = p.FPrice,
+                    FDescription = p.FDescription,
+                    FQuantity = p.FQuantity,
+                    FLaunch = p.FLaunch,
+                    FStorage = p.FStorage,
+                    FOrigin = p.FOrigin,
+                    FEditor = p.FEditor
+                };
+
+                // 查找對應的商品圖片
+                var image = db.TImgs.FirstOrDefault(img => img.FProductId == p.FId && img.FOrderBy == 1);
+                pp.FImgName = image?.FName;  // 如果圖片存在，設定 FImgName
+
+                // 設定該產品是否為收藏
                 pp.IsFavorite = favoriteProductIds.Contains(p.FId);
+
                 list.Add(pp);
             }
 
-            ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = totalPages;
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
-            {
-                return PartialView("_ProductList", pagedDatas); 
-            }
 
 
+            //foreach (var p in pagedDatas)
+            //{
+            //    CProductWrap pp = new CProductWrap() { product = p };
+            //    var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
+            //    pp.FImgName = image?.FName;
+            //    pp.IsFavorite = favoriteProductIds.Contains(p.FId);
+            //    list.Add(pp);
+            //}
+
+            ViewData["TotalPages"] = totalPages;
+            ViewData["Page"] = page;
+            ViewData["Category"] = keyword;  // 保留篩選條件
+            ViewData["Keyword"] = textkeyword;  // 保留關鍵字篩選
+            ViewData["MinPrice"] = minPrice;
+            ViewData["MaxPrice"] = maxPrice;
 
             return View(list);
         }
 
-        
+
+
 
 
         [HttpGet]

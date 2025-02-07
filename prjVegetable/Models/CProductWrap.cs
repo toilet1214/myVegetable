@@ -119,8 +119,7 @@ namespace prjVegetable.Models
 
         [Required(ErrorMessage = "必填")]
         [DisplayName("商品照片")]
-        public string FImgName
-        { get; set; }
+        public string FImgName{ get; set; }
 
         public bool IsFavorite
         { get; set; }
