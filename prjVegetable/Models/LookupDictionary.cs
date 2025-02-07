@@ -8,7 +8,8 @@ namespace prjVegetable.Models
         public static readonly Dictionary<int, string> InOutMapping = new Dictionary<int, string>
         {
             { 0, "進貨" },
-            { 1, "出貨" }
+            { 1, "出貨" },
+            { 2, "廢棄貨單(已取消)" }
         };
 
         // 訂單狀態 (fStatus)

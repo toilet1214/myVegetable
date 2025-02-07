@@ -39,16 +39,6 @@
                 @Html.DisplayNameFor(model => model.FPersonId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FProductId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCount)
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.FPrice)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.FTotal)
             </th>
             <th>
@@ -70,17 +60,12 @@
                 <td>@Html.DisplayFor(modelItem => item.FInvoiceId)</td>
                 <td>@Html.DisplayFor(modelItem => item.FProviderName)</td> <!-- 顯示供應商名稱 -->
                 <td>@Html.DisplayFor(modelItem => item.FPersonName)</td> <!-- 顯示顧客名稱 -->
-                <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
-                <td>@Html.DisplayFor(modelItem => item.FCount)</td>
-                <td>@Html.DisplayFor(modelItem => item.FPrice)</td>
                 <td>@Html.DisplayFor(modelItem => item.FTotal)</td>
                 <td>@Html.DisplayFor(modelItem => item.FEditor)</td>
                 <td>@Html.DisplayFor(modelItem => item.FNote)</td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
                     <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
-                    @Html.ActionLink("移除", "Delete", "TGoodsInAndOut", new { id = item.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
                 </td>
             </tr>
         }

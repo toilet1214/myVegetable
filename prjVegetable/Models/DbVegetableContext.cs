@@ -163,8 +163,6 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fNote");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
-            entity.Property(e => e.FPrice).HasColumnName("fPrice");
-            entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FProviderId).HasColumnName("fProviderId");
             entity.Property(e => e.FTotal).HasColumnName("fTotal");
         });
@@ -239,6 +237,19 @@ public partial class DbVegetableContext : DbContext
         modelBuilder.Entity<TInventoryDetail>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CCACE66CE");
+
+            entity.ToTable("tInventoryDetail");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FActualQuantity).HasColumnName("fActualQuantity");
+            entity.Property(e => e.FInventoryMainId).HasColumnName("fInventoryMainId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+            entity.Property(e => e.FQuantity).HasColumnName("fQuantity");
+        });
+
+        modelBuilder.Entity<TInventoryDetail>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C73C73C62");
 
             entity.ToTable("tInventoryDetail");
 

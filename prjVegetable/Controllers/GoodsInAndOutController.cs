@@ -7,6 +7,7 @@ using prjVegetable.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using prjVegetable.ViewModels;
+using Microsoft.Data.SqlClient;
 
 namespace prjVegetable.Controllers
 {
@@ -54,18 +55,15 @@ namespace prjVegetable.Controllers
                         personIds.Contains(p.FPersonId) ||
                         providerIds.Contains(p.FProviderId) ||
                         p.FDate.ToString().Contains(keyword) ||
-                        p.FProductId.ToString().Contains(keyword) ||
-                        p.FCount.ToString().Contains(keyword) ||
-                        p.FPrice.ToString().Contains(keyword) ||
                         p.FTotal.ToString().Contains(keyword) ||
                         p.FEditor.ToString().Contains(keyword) ||
                         p.FNote.Contains(keyword)
                     );
             }
-            // **先將資料轉換為 List，確保 EF Core 連線已經關閉**
+            // 先將資料轉換為 List，確保 EF Core 連線已經關閉
             var dataList = datas.ToList();
 
-            // **查詢 TPerson 和 TProvider 並轉為字典，避免多次查詢**
+            // 查詢 TPerson 和 TProvider 並轉為字典，避免多次查詢
             var personDict = _dbContext.TPeople
                 .ToDictionary(p => p.FId, p => p.FName);
 
@@ -85,104 +83,211 @@ namespace prjVegetable.Controllers
 
 
         // GET: GoodsInAndOut/Create
+        [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
+            var viewModel = new CGoodsInAndOutViewModel
+            {
+                GoodsInAndOut = new TGoodsInAndOut
+                {
+                    FEditor = userId
+                },
+                GoodsInAndOutDetails = new List<TGoodsInAndOutDetail> { new TGoodsInAndOutDetail() }
+            };
+            return View(viewModel);
         }
 
-        // POST: GoodsInAndOut/Create
+        // POST: GoodsInAndOut/Create (主表)
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Create(CGoodsInAndOutWrap goodsInAndOutWrap)
+        public IActionResult Create(CGoodsInAndOutViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _dbContext.Set<CGoodsInAndOutWrap>().Add(goodsInAndOutWrap);
-                _dbContext.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                foreach (var error in ModelState)
+                {
+                    Console.WriteLine($"欄位: {error.Key}, 錯誤訊息: {string.Join(", ", error.Value.Errors.Select(e => e.ErrorMessage))}");
+                }
+                return Json(new { success = false, message = "主表驗證失敗，請檢查 Console 訊息" });
             }
-            return View(goodsInAndOutWrap);
+
+            // 轉換 CGoodsInAndOutViewModel 為 TGoodsInAndOut (主表)
+            var goodsInAndOut = new TGoodsInAndOut
+            {
+                FInOut = model.GoodsInAndOut.FInOut,
+                FDate = model.GoodsInAndOut.FDate,
+                FInvoiceId = model.GoodsInAndOut.FInvoiceId,
+                FProviderId = model.GoodsInAndOut.FProviderId,
+                FPersonId = model.GoodsInAndOut.FPersonId,
+                FTotal = model.GoodsInAndOut.FTotal,
+                FEditor = model.GoodsInAndOut.FEditor,
+                FNote = model.GoodsInAndOut.FNote
+            };
+
+            // 儲存主表並獲取 FId
+            _dbContext.TGoodsInAndOuts.Add(goodsInAndOut);
+            _dbContext.SaveChanges(); // 這裡確保 FId 產生
+
+            int generatedFId = goodsInAndOut.FId; // 獲取主表 FId
+
+            //轉換並插入 TGoodsInAndOutDetail (明細表)
+            if (model.GoodsInAndOutDetails != null && model.GoodsInAndOutDetails.Count > 0)
+            {
+                List<TGoodsInAndOutDetail> details = model.GoodsInAndOutDetails.Select(detail => new TGoodsInAndOutDetail
+                {
+                    FGoodsInandOutId = generatedFId, // 綁定主表 FId
+                    FProductId = detail.FProductId,
+                    FCount = detail.FCount,
+                    FPrice = detail.FPrice,
+                    FSum = detail.FSum
+                }).ToList();
+
+                _dbContext.TGoodsInAndOutDetails.AddRange(details); // 批量插入
+                _dbContext.SaveChanges();
+            }
+
+            return Json(new { success = true, fId = generatedFId });
         }
+
+
+        // POST: GoodsInAndOut/InsertDetail (批量新增明細)
+        [HttpPost]
+        public IActionResult InsertDetail([FromBody] List<TGoodsInAndOutDetail> details)
+        {
+            if (details == null || details.Count == 0)
+            {
+                return Json(new { success = false, message = "沒有明細資料可插入" });
+            }
+
+            List<string> valuesList = new List<string>();
+            List<object> parameters = new List<object>();
+            int paramIndex = 0;
+
+            foreach (var detail in details)
+            {
+                string valuePlaceholder = $"(@FGoodsInandOutId{paramIndex}, @FProductId{paramIndex}, @FCount{paramIndex}, @FPrice{paramIndex}, @FSum{paramIndex})";
+                valuesList.Add(valuePlaceholder);
+
+                parameters.Add(new SqlParameter($"@FGoodsInandOutId{paramIndex}", detail.FGoodsInandOutId));
+                parameters.Add(new SqlParameter($"@FProductId{paramIndex}", detail.FProductId));
+                parameters.Add(new SqlParameter($"@FCount{paramIndex}", detail.FCount));
+                parameters.Add(new SqlParameter($"@FPrice{paramIndex}", detail.FPrice));
+                parameters.Add(new SqlParameter($"@FSum{paramIndex}", detail.FSum));
+
+                paramIndex++;
+            }
+
+            string sql = "INSERT INTO TGoodsInAndOutDetail (FGoodsInandOutId, FProductId, FCount, FPrice, FSum) VALUES " + string.Join(", ", valuesList);
+            _dbContext.Database.ExecuteSqlRaw(sql, parameters.ToArray());
+
+            return Json(new { success = true });
+        }
+
 
         // GET: GoodsInAndOut/Edit/5
-        public IActionResult Edit(int? id)
+        [HttpGet]
+        public IActionResult Edit(int id)
         {
-            if (id == null)
+            // 從資料庫獲取 TGoodsInAndOut (主表)
+            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == id);
+            if (goodsInAndOut == null)
             {
-                return NotFound();
+                return NotFound(); // 若無此 FId，則返回 404
             }
 
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().Find(id);
-            if (goodsInAndOutWrap == null)
+            //  從資料庫獲取 TGoodsInAndOutDetail (細項表)
+            var details = _dbContext.TGoodsInAndOutDetails
+                .Where(d => d.FGoodsInandOutId == id)
+                .ToList();
+
+            //  封裝至 ViewModel
+            var viewModel = new CGoodsInAndOutViewModel
             {
-                return NotFound();
-            }
-            return View(goodsInAndOutWrap);
+                GoodsInAndOut = goodsInAndOut,
+                GoodsInAndOutDetails = details
+            };
+
+            //  將 ViewModel 傳遞至 Edit.cshtml
+            return View(viewModel);
         }
 
-        // POST: GoodsInAndOut/Edit/5
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, CGoodsInAndOutWrap goodsInAndOutWrap)
+        public IActionResult Edit(CGoodsInAndOutViewModel model)
         {
-            if (id != goodsInAndOutWrap.FId)
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
             {
-                return NotFound();
+                return Json(new { success = false, message = "請先登入" });
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _dbContext.Update(goodsInAndOutWrap);
-                _dbContext.SaveChanges();
-                return RedirectToAction(nameof(Index));
+                return Json(new { success = false, message = "主表驗證失敗" });
             }
-            return View(goodsInAndOutWrap);
+
+            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == model.GoodsInAndOut.FId);
+            if (goodsInAndOut == null)
+            {
+                return Json(new { success = false, message = "找不到主表資料" });
+            }
+
+            //  更新主表並將 FEditor 設定為當前登入使用者
+            goodsInAndOut.FInOut = model.GoodsInAndOut.FInOut;
+            goodsInAndOut.FDate = model.GoodsInAndOut.FDate;
+            goodsInAndOut.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
+            goodsInAndOut.FProviderId = model.GoodsInAndOut.FProviderId;
+            goodsInAndOut.FPersonId = model.GoodsInAndOut.FPersonId;
+            goodsInAndOut.FTotal = model.GoodsInAndOut.FTotal;
+            goodsInAndOut.FNote = model.GoodsInAndOut.FNote;
+            goodsInAndOut.FEditor = userId; //  更新為當前登入的使用者 ID
+
+            //  更新細項表
+            foreach (var detail in model.GoodsInAndOutDetails)
+            {
+                var existingDetail = _dbContext.TGoodsInAndOutDetails.FirstOrDefault(d => d.FId == detail.FId);
+                if (existingDetail != null)
+                {
+                    existingDetail.FProductId = detail.FProductId;
+                    existingDetail.FCount = detail.FCount;
+                    existingDetail.FPrice = detail.FPrice;
+                    existingDetail.FSum = detail.FSum;
+                }
+            }
+
+            _dbContext.SaveChanges();
+            return Json(new { success = true });
         }
+
+
 
         // GET: GoodsInAndOut/Details/5
-        public IActionResult Details(int? id)
+        [HttpGet]
+        public IActionResult Details(int id)
         {
-            if (id == null)
+            //  從資料庫獲取 TGoodsInAndOut (主表)
+            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == id);
+            if (goodsInAndOut == null)
             {
-                return NotFound();
+                return NotFound(); //  若無此 FId則返回 404
             }
 
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().FirstOrDefault(m => m.FId == id);
-            if (goodsInAndOutWrap == null)
+            //  從資料庫獲取 TGoodsInAndOutDetail (細項表)
+            var details = _dbContext.TGoodsInAndOutDetails
+                .Where(d => d.FGoodsInandOutId == id)
+                .ToList();
+
+            //  封裝至 ViewModel
+            var viewModel = new CGoodsInAndOutViewModel
             {
-                return NotFound();
-            }
-            return View(goodsInAndOutWrap);
+                GoodsInAndOut = goodsInAndOut,
+                GoodsInAndOutDetails = details
+            };
+
+            //  將 ViewModel 傳遞至 Details.cshtml
+            return View(viewModel);
         }
 
-        // GET: GoodsInAndOut/Delete/5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().FirstOrDefault(m => m.FId == id);
-            if (goodsInAndOutWrap == null)
-            {
-                return NotFound();
-            }
-            return View(goodsInAndOutWrap);
-        }
 
-        // POST: GoodsInAndOut/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public IActionResult DeleteConfirmed(int id)
-        {
-            var goodsInAndOutWrap = _dbContext.Set<CGoodsInAndOutWrap>().Find(id);
-            if (goodsInAndOutWrap != null)
-            {
-                _dbContext.Set<CGoodsInAndOutWrap>().Remove(goodsInAndOutWrap);
-                _dbContext.SaveChanges();
-            }
-            return RedirectToAction(nameof(Index));
-        }
     }
 }

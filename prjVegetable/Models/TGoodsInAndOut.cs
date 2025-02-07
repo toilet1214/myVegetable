@@ -9,19 +9,13 @@ public partial class TGoodsInAndOut
 
     public int FInOut { get; set; }
 
-    public DateOnly FDate { get; set; }
+    public DateTime FDate { get; set; }
 
     public int FInvoiceId { get; set; }
 
     public int FProviderId { get; set; }
 
     public int FPersonId { get; set; }
-
-    public int FProductId { get; set; }
-
-    public int FCount { get; set; }
-
-    public int FPrice { get; set; }
 
     public int FTotal { get; set; }
 
