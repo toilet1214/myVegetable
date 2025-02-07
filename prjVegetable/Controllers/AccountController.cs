@@ -34,9 +34,18 @@ namespace prjVegetable.Controllers
         public IActionResult Register(TPerson P)
         {
             DbVegetableContext db = new DbVegetableContext();
+            bool exists = db.TPeople.Any(x => x.FAccount == P.FAccount); // 可以根據需要使用 Email 進行檢查
+
+            if (exists)
+            {
+                // 傳遞錯誤訊息給視圖
+                TempData["ErrorRegister"] = "帳號已經註冊過了！";
+                return RedirectToAction("Register"); // 重新導向回註冊頁面
+            }
+
             db.TPeople.Add(P);
             db.SaveChanges();
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Forgot()
