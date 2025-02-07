@@ -1,12 +1,70 @@
 ﻿@model IEnumerable<prjVegetable.Models.CProductWrap>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+
 
 @{
     ViewData["Title"] = "ProductList";
 
-
 }
 
+
+
+
 <style>
+
+    .dropdown-menu {
+        margin: 0 !important; /* 去除外邊距 */
+        padding: 0 !important; /* 去除內邊距 */
+    }
+
+
+    .imgicon {
+        border-radius: 50%;
+        color: white;
+        background-color: #8D8266;
+        transition: all 0.3s;
+    }
+
+        .imgicon:hover {
+            background-color: rgb(174, 146, 105);
+            width: 17%;
+        }
+
+
+    #dropdownMenuButton1 {
+        white-space: nowrap;
+        padding: 10px 10px;
+        font-size: 16px;
+        width: auto;
+    }
+
+    #collapseExample {
+        position: absolute;
+        top: 42px;
+        right: 0px;
+        z-index: 1050;
+        width: 300px;
+    }
+
+        #collapseExample .modal-body {
+            padding: 5px 5px;
+            margin: 10px;
+        }
+
+    .lightbox-close {
+        color: black;
+        text-shadow: 1px 1px 1px #333;
+        font-size: 30px;
+        position: absolute;
+        top: 1px;
+        right: 0px;
+        margin: 10px;
+        cursor: pointer;
+    }
+
+
+
 
     .range_container {
         display: flex;
@@ -86,148 +144,242 @@
         height: 0;
         z-index: 1;
     }
+
 </style>
 
 @{
     int count = 0;
 }
 
-
-<!--產品側邊欄 start -->
-<div class="bg-primary">
-    <div class="container mt-5 py-2 fs-5 w-50">
-        <div class="row">
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 根莖"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                <div class="mt-1 d-flex justify-content-center align-items-end">
-                    <p>根莖</p>
-                </div>
-            </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 葉菜"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                <div class="mt-1 d-flex justify-content-center align-items-end">
-                    <p>葉菜</p>
-                </div>
-            </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 水果"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                <div class="mt-1 d-flex justify-content-center align-items-end">
-                    <p>水果</p>
-                </div>
-            </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 蕈菇"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                <div class="mt-1 d-flex justify-content-center align-items-end">
-                    <p>蕈菇</p>
-                </div>
-            </div>
-            <div class="imgicon col-12 col-md-2 me-1 data-category=" 蔬菜箱"">
-                <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                <div class="mt-1 d-flex justify-content-center align-items-end">
-                    <p>蔬菜箱</p>
-                </div>
+<!--產品分類 start -->
+@using (Html.BeginForm("ProductList", "Product", FormMethod.Get))
+{
+    <input type="hidden" name="category" id="categoryInput" />
+    <div class="bg-primary">
+        <div class="container mt-5 pt-3 fs-5 w-50">
+            <div class="row">
+                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="根莖" onclick="submitCategory(this)">
+                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                    <div class="mt-1 d-flex justify-content-center align-items-end">
+                        <p>根莖</p>
+                    </div>
+                </button>
+                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="葉菜" onclick="submitCategory(this)">
+                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                    <div class="mt-1 d-flex justify-content-center align-items-end">
+                        <p>葉菜</p>
+                    </div>
+                </button>
+                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="水果" onclick="submitCategory(this)">
+                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                    <div class="mt-1 d-flex justify-content-center align-items-end">
+                        <p>水果</p>
+                    </div>
+                </button>
+                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="蕈菇" onclick="submitCategory(this)">
+                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                    <div class="mt-1 d-flex justify-content-center align-items-end">
+                        <p>蕈菇</p>
+                    </div>
+                </button>
+                <button class="imgicon col-12 col-md-2 me-1" style="border: none;" data-category="蔬菜箱" onclick="submitCategory(this)">
+                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
+                    <div class="mt-1 d-flex justify-content-center align-items-end">
+                        <p>蔬菜箱</p>
+                    </div>
+                </button>
             </div>
         </div>
     </div>
-</div>
+}
 
 
 
-<!-- 篩選價格 start -->
-<div class="container d-flex flex-column  margin-top: auto ">
-    <div class="dropdown position-absolute top-1 end-0">
-        <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-            篩選價格
-        </button>
-        <ul class="dropdown-menu" style="width: 450px;" aria-labelledby="dropdownMenuButton1">
-            <li>
-                <a class="dropdown-item" href="#"></a>
-                <div class="modal-body">
-                    <p>建議區間: NT$300 ~ NT$700</p>
-                    <div class="range_container">
-                        <div class="sliders_control">
-                            <input id="fromSlider" type="range" value="300" min="0" max="1000" />
-                            <input id="toSlider" type="range" value="700" min="0" max="1000" />
-                        </div>
-                        <div class="form_control">
-                            <div class="form_control_container">
-                                <div class="form_control_container__time">最低$$</div>
-                                <input class="form_control_container__time__input" type="number" id="fromInput" value="300" min="0" max="1000" />
-                            </div>
-                            <div class="form_control_container">
-                                <div class="form_control_container__time">最高$$</div>
-                                <input class="form_control_container__time__input" type="number" id="toInput" value="700" min="0" max="1000" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
 
-                <div class="d-flex justify-content-end ">
-                    <button id="applyFilter" class="btn btn-secondary btn-sm me-3 ms-3 ">確定</button>
-                </div>
+<div class="container d-flex flex-column">
 
-            </li>
-        </ul>
-    </div>
+    <div class="row">
 
-    <!-- 產品列表 start -->
-    <div class="row row-cols-1 row-cols-md-5 g-4 my-4 mx-5 hot-product-card">
-
-        @foreach (var item in Model)
+        <!-- 搜尋 start -->
+        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm1" }))
         {
-            count++;
-            bool isSoldOut = item.FQuantity == 0;  // 檢查產品是否售完
+            @Html.TextBox("keyword", "")
+            <button type="submit" class="btn btn-link" style="border: none;">
+                <i class="bi bi-search"></i>
+            </button>
+        }
 
+        <select id="sortOrder" class="form-select">
+            <option value="price_asc">預設排序</option>
+            <option value="price_asc">價格由小到大</option>
+            <option value="price_desc">價格由大到小</option>
+            <option value="publish_date_asc">上架日期由舊到新</option>
+            <option value="publish_date_desc">上架日期由新到舊</option>
+        </select>
 
-            <div class="col">
-                <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
-
-                    <div class="card h-100 shadow-sm d-flex flex-column @((isSoldOut) ? "sold-out" : "")">
-
-                        @if (isSoldOut)
-                        {
-                            <div class="position-absolute bottom-0 end-0 bg-dark text-light fw-bold p-2 m-3 opacity-75" style="border-radius: 5px;">
-                                售完
-                            </div>
-                            <div class="card-overlay position-absolute top-0 start-0 w-100 h-100 bg-dark opacity-50"></div>
-                        }
-
-
-                        <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div>
-                        @* 判斷售完產品是否顯示灰色圖片 *@
-                        @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
-                        <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid @((isSoldOut) ? "sold-out-img" : "")" alt="Image">
-                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
-                            <h5 class="card-title">@Html.DisplayFor(modelItem => item.FName)</h5>
-                            <p class="card-text">【@Html.DisplayFor(modelItem => item.FDescription)】《宅配含運》</p>
-                            <p class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</p>
-                            <div class="d-flex">
-                                <button class="btn"><i class="bi bi-heart"></i></button>
-                                <button class="btn @((isSoldOut) ? "disabled" : "")"><i class="bi bi-cart"></i>加入購物車</button>
+        @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm2" }))
+        {
+            <!-- 篩選價格 start -->
+            <input type="hidden" id="maxPriceInput" name="MaxPrice" />
+            <div class="dropdown position-absolute top-1 end-0">
+                <p>
+                    <button class="btn btn-primary position-absolute top-0 end-0" type="button" id="dropdownMenuButton1" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                        篩選價格
+                    </button>
+                </p>
+                <div class="collapse " id="collapseExample">
+                    <div class="card card-body ">
+                        <a class="dropdown-item " href="#"></a>
+                        <span class="lightbox-close">&times;</span>
+                        <div class="modal-body">
+                            <p>建議區間: NT$100 ~ NT$500</p>
+                            <div class="range_container">
+                                <div class="sliders_control">
+                                    <input id="fromSlider" type="range" value="100" min="0" max="1000" step="10" />
+                                    <input id="toSlider" type="range" value="500" min="0" max="1000" step="10" />
+                                </div>
+                                <div class="form_control">
+                                    <div class="form_control_container">
+                                        <div class="form_control_container__time">最低$$</div>
+                                        <input class="form_control_container__time__input" type="number" id="fromInput" value="100" min="0" max="1000" step="10" />
+                                    </div>
+                                    <div class="form_control_container">
+                                        <div class="form_control_container__time">最高$$</div>
+                                        <input class="form_control_container__time__input" type="number" id="toInput" value="500" min="0" max="1000" step="10" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <div class="d-flex justify-content-end ">
+                            <button id="applyFilter" class="btn btn-secondary btn-sm me-3 ms-3 ">確定</button>
+                        </div>
                     </div>
-                </a>
+                </div>
             </div>
         }
 
+        <!-- 麵包屑 start -->
+        <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="@Url.Action("Index", "Home")">首頁</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">
+                    <a href="@Url.Action("ProductList", "Product")">產品列表</a>
+                </li>
+                @if (ViewBag.Category != null && ViewBag.Category != "產品列表")
+                {
+                    <li class="breadcrumb-item active" aria-current="page">
+                        <a>@ViewBag.Category</a>
+                    </li>
+                }
+            </ol>
+        </nav>
+    </div>
 
-        <!-- 頁碼 start -->
-        <div class="container d-flex align-item-end justify-content-center mt-3">
-            <div class="row ">
-                <div class=" col align-self-center">
+
+    <!-- 產品列表 start -->
+    <div class="col-12" id="card">
+
+        <div class="row row-cols-1 row-cols-md-5  my-4 mx-5 " id="product-list">
+
+
+            @foreach (var item in Model)
+            {
+                count++;
+                <div class="col product-item mb-4" data-publish-date="@item.FLaunchAt">
+                    <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
+
+                        <div class="card h-100 shadow-sm d-flex flex-column ">
+                            <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div>
+                            @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
+                            <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid" alt="Image">
+                            <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                                <h5 class="card-title">@Html.DisplayFor(modelItem => item.FName)</h5>
+                                <p class="card-text">【@Html.DisplayFor(modelItem => item.FDescription)】</p>
+                                <p class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</p>
+                            </div>
+                            <div class="card-footer bg-transparent border-primary">
+                                <button class="btn heartButton" data-productid="@item.FId">
+                                    <i class="heart-icon @((item.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                                </button>
+                                <button class="btn addToCartButtonList" data-productid="@item.FId">
+                                    <i class="bi bi-cart"></i>加入購物車
+                                </button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+
+
+
+        </div>
+        <!-- 分頁控制 -->
+        <div class="d-flex justify-content-center">
+            @if ((int)ViewData["TotalPages"] > 1)
+            {
+                <div class="container my-auto">
+                    <div class="d-flex align-items-end justify-content-center mt-3">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- 上一頁 -->
+                                <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != 1 ? "" : "disabled")">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Max(1, Convert.ToInt32(ViewData["Page"]) - 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <!-- 分頁頁碼 -->
+                                @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+                                {
+                                    <li class="page-item @(i == Convert.ToInt32(ViewData["Page"]) ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })">@i</a>
+                                    </li>
+                                }
+
+                                <!-- 下一頁 -->
+                                <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != Convert.ToInt32(ViewData["TotalPages"]) ? "" : "disabled")">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Min(Convert.ToInt32(ViewData["TotalPages"]), Convert.ToInt32(ViewData["Page"]) + 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* <div class="d-flex justify-content-center">
+            @if ((int)ViewData["TotalPages"] > 1)
+            {
+                for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+                {
+                    <a href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" class="btn btn-outline-secondary @((i == Convert.ToInt32(ViewData["Page"])) ? "active" : "")">@i</a>
+                }
+            }
+        </div> *@
+
+
+        @* <footer style="margin-top: auto;">
+            <div class="container my-auto">
+                <div class="d-flex align-items-end justify-content-center mt-3">
                     <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-end">
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Previous">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <!-- 上一頁 -->
+                            <li class="page-item" id="prevPage">
+                                <a class="page-link" href="javascript:void(0);" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
+
+                            <!-- 分頁頁碼 -->
+                            <!-- 這裡的頁碼將由 jQuery 自動生成 -->
+                            <!-- 下一頁 -->
+                            <li class="page-item" id="nextPage">
+                                <a class="page-link" href="javascript:void(0);" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
@@ -235,20 +387,73 @@
                     </nav>
                 </div>
             </div>
-        </div>
+        </footer> *@
     </div>
-</div>
 
 
 
 
-@section Scripts
-    {
+
+
+
+
+    @section Scripts
+{
 
     <script>
-        // 篩選價格start//
+
         $(function () {
 
+            // 篩選種類start //
+            function submitCategory(button) {
+                // 獲取按鈕的 data-category 屬性值
+                var category = button.getAttribute('data-category') || "所有產品"; // 預設值
+
+                // 將選中的 category 設置到隱藏輸入框
+                var categoryInput = document.getElementById('categoryInput');
+                if (categoryInput) {
+                    categoryInput.value = category;
+                } else {
+                    console.error('隱藏輸入框 categoryInput 不存在！');
+                    return;
+                }
+
+                // 提交表單
+                var form = document.querySelector("form");
+                if (form) {
+                    form.submit();
+                } else {
+                    console.error('表單不存在！');
+                }
+            }
+
+            // 停止按鈕的默認提交行為，並用 JavaScript 提交
+            $('.imgicon').on('click', function (event) {
+                event.preventDefault();  // 阻止表單提交
+                submitCategory(this);  // 呼叫 submitCategory
+            });
+
+
+
+
+            // collapse隱藏/顯示
+            let isVisible = false;
+            $('#dropdownMenuButton1, .lightbox-close').on('click', function () {
+                if (this.id === 'dropdownMenuButton1') {
+                    if (isVisible) {
+                        $('#collapseExample').hide();
+                    } else {
+                        $('#collapseExample').show();
+                    }
+                    isVisible = !isVisible;
+                } else if (this.classList.contains('lightbox-close')) {
+                    $('#collapseExample').fadeOut();
+                    isVisible = false;
+                }
+            });
+
+
+            // 篩選價格Slider Range start//
             function controlFromInput(fromSlider, fromInput, toInput, controlSlider) {
                 const [from, to] = getParsed(fromInput, toInput);
                 fillSlider(fromInput, toInput, '#C6C6C6', '#25daa5', controlSlider);
@@ -307,13 +512,13 @@
                 const fromPosition = from.value - to.min;
                 const toPosition = to.value - to.min;
                 controlSlider.style.background = `linear-gradient(
-                     to right,
-                     ${sliderColor} 0%,
-                     ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
-                     ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
-                     ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
-                     ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
-                     ${sliderColor} 100%)`;
+                                             to right,
+                                             ${sliderColor} 0%,
+                                             ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
+                                             ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
+                                             ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                             ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                             ${sliderColor} 100%)`;
             }
 
             function setToggleAccessible(currentTarget) {
@@ -336,10 +541,134 @@
             toSlider.oninput = () => controlToSlider(fromSlider, toSlider, toInput);
             fromInput.oninput = () => controlFromInput(fromSlider, fromInput, toInput, toSlider);
             toInput.oninput = () => controlToInput(toSlider, fromInput, toInput, toSlider);
+            // 篩選價格Slider Range end //
+
+
+
+            //挑選最大最小值
+            // 點擊 "確定" 按鈕時觸發篩選
+            $('#applyFilter').on('click', function () {
+                const minPrice = parseInt(fromSlider.value);
+                const maxPrice = parseInt(toSlider.value);
+
+                // 假設你有一個表單來提交數據
+                $('#minPriceInput').val(minPrice);
+                $('#maxPriceInput').val(maxPrice);
+
+                // 提交表單
+                $('#filterForm').submit();
+            });
+
+
+
+            //我的最愛
+            $(".heartButton").click(function (event) {
+                event.stopPropagation();
+
+                var heartIcon = $(this).find(".heart-icon");
+                var productId = $(this).data("productid");
+                var isFavorite = heartIcon.hasClass("bi-heart-fill");
+                var currentUrl = window.location.href;  // 獲取當前頁面的 URL
+
+                // 檢查是否已登入
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',  // 檢查登入狀態的 API
+                    type: 'GET',
+                    success: function (response) {
+                        if (!response.isLoggedIn) {
+                            // 如果未登入，顯示登入 modal 並傳遞當前頁面 URL
+                            $('#LoginModal').modal('show');
+                            $("#LoginModal").on('shown.bs.modal', function () {
+                                $('input[name="returnUrl"]').val(currentUrl);  // 將當前頁面 URL 填入 returnUrl 欄位
+                            });
+                        } else {
+                            // 如果已登入，執行收藏的操作
+                            $.ajax({
+                                url: '@Url.Action("AddToFavorites", "Product")',  // 呼叫後端處理加入或取消收藏
+                                type: 'POST',
+                                data: { productId: productId, isFavorite: !isFavorite },
+                                success: function (response) {
+                                    console.log(response);
+
+                                    if (response.success) {
+                                        if (response.isFavorite) {
+                                            heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
+                                        } else {
+                                            heartIcon.removeClass("bi-heart-fill text-danger").addClass("bi-heart");
+                                        }
+                                    } else {
+                                        alert('操作失敗');
+                                    }
+                                },
+                                error: function () {
+                                    alert('出現錯誤');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                    }
+                });
+
+                event.preventDefault();
+            });
+
+
+            //加入購物車
+            $(".addToCartButtonList").click(function (event) {
+                event.stopPropagation();
+
+                var button = $(this);
+                var productId = button.data("productid");
+                var currentUrl = window.location.href;
+
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',
+                    type: 'GET',
+                    success: function (response) {
+                        if (!response.isLoggedIn) {
+                            $('#LoginModal').modal('show');
+                            $("#LoginModal").on('shown.bs.modal', function () {
+                                $('input[name="returnUrl"]').val(currentUrl);
+                            });
+                        } else {
+
+                            // 執行加入購物車的操作
+                            $.ajax({
+                                url: '@Url.Action("AddToCart", "Product")',
+                                type: 'POST',
+                                data: { productId: productId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert("成功加入購物車");
+                                    } else {
+                                        alert('操作失敗');
+                                    }
+                                },
+                                error: function () {
+                                    alert('出現錯誤');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                    }
+                });
+                event.preventDefault();
+            });
+
+
+
+
+
+            
+
+
+
 
         });//end function
 
     </script>
-}
-
-
+    }

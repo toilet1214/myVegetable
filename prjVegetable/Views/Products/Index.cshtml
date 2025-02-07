@@ -47,6 +47,9 @@
                 @Html.DisplayNameFor(model => model.FOrigin)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FLaunch)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FEditor)
             </th>
             <th></th>
@@ -91,10 +94,31 @@
                     @Html.DisplayFor(modelItem => item.product.FLaunchAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.FStorage)
+                    @if (item.product.FStorage == 0)
+                    {
+                        @:冷凍
+                    }
+                    else if (item.product.FStorage == 1)
+                    {
+                        @:冷藏
+                    }
+                    else if (item.product.FStorage == 2)
+                    {
+                        @:常溫
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FOrigin)
+                </td>
+                <td>
+                    @if (item.product.FLaunch == 0)
+                    {
+                        @:下架
+                    }
+                    else if (item.product.FLaunch == 1)
+                    {
+                        @:上架
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FEditor)

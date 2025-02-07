@@ -2,10 +2,79 @@
 
 @{
     ViewData["Title"] = "ProductItem";
+    var productDescription = Model.FIntroduction.Replace(Environment.NewLine, "<br>");
 }
 
+<style>
+    .quantity {
+        width: 170px;
+        display: flex;
+        border: 2px solid #333C48;
+        border-radius: 4px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+    }
+
+        .quantity button {
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            width: 40px;
+            height: auto;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
+
+            .quantity button:hover {
+                background-color: #2980b9;
+            }
+
+    .input-box {
+        width: 100px;
+        text-align: center;
+        border: none;
+        padding: 8px 10px;
+        font-size: 16px;
+        outline: none;
+    }
+
+        /*隱藏數字框的上下箭頭 */
+        .input-box::-webkit-inner-spin-button,
+        .input-box::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-box[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+</style>
 
 
+<!-- 麵包屑 start -->
+<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a href="@Url.Action("Index", "Home")">
+                首頁
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <a href="@Url.Action("ProductList", "Product")">
+                產品列表
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <a href="@Url.Action("ProductList", "Product", new { category = @Model.FClassification })">
+                @Model.FClassification
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.FName</li>
+    </ol>
+</nav>
 <div class="container pb-5 mt-4">
     <div class="row">
         <div class="col-12 col-md-6">
@@ -59,38 +128,39 @@
                 <p class="my-0">@Model.product.FDescription</p>
             </div>
             <div>
-                <p class="text-danger fs-2 fw-bold">@Model.product.FPrice</p>
+                <p class="text-danger fs-2 fw-bold">NT$@Model.product.FPrice</p>
             </div>
-            <div>
+            @* <div>
                 <p>商品編號:</p>
             </div>
             <div>
                 <p>供貨狀況: 尚有庫存</p>
-            </div>
+            </div> *@
 
-            <div class="btn-group my-3 col-md-12 " role="group" aria-label="First group">
-                <button type="button" class="btn btn-outline-secondary add-down  col-md-2 ">-</button>
-
-                <input type="text" class="form-control" placeholder="" aria-label="Example text with button addon"
-                       aria-describedby="button-addon1">
-                <!-- <input type="text" class="btn  btn-outline-secondary item-quantity  col-md-8 " name="quantity" value="1"
-                  data-old-value="1"> -->
-
-                <button type="button" class="btn btn-outline-secondary add-up  col-md-2 ">+</button>
+            <div class="quantity col-12 col-md-6 mb-3">
+                <button class="minus" aria-label="Decrease">&minus;</button>
+                <input type="number" class="input-box" value="1" min="1" max="10">
+                <button class="plus" aria-label="Increase">&plus;</button>
             </div>
 
 
             <div class="row justify-content-center pb-4">
                 <div class="col-12 col-md-6">
-                    <button type="button" class="btn btn-outline-secondary ">加入購物車</button>
+                    <button type="button" class="btn addToCartButtonItem btn-outline-secondary" data-productid="@Model.FId">
+                        <i class="bi bi-cart"></i>加入購物車
+                    </button>
                 </div>
                 <div class="col-12 col-md-6">
-                    <button type="button" class="btn btn-secondary bg-primary ">立即購買</button>
+                    <button type="button" class="btn buyNowButtonItem btn-secondary bg-primary w-100" data-productid="@Model.FId">
+                        立即購買
+                    </button>
                 </div>
             </div>
 
             <div class="">
-                <button type="button" class="btn btn-outline-secondary rounded-pill"><i class="bi bi-heart"></i> 加入最愛</button>
+                <button type="button" class="btn  heartButton btn-outline-secondary rounded-pill" data-productid="@Model.FId">
+                    <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
+                </button>
             </div>
         </div>
     </div>
@@ -110,14 +180,14 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
                             role="tab" aria-controls="profile" aria-selected="false">
-                        運送方式
+                        顧客評價
                     </button>
                 </li>
 
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
-                    .111
+                    @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">222</div>
 
@@ -125,3 +195,197 @@
         </div>
     </div>
 </div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+
+
+            //  商品增減數量 //
+            const quantityContainer = document.querySelector(".quantity");
+            const minusBtn = quantityContainer.querySelector(".minus");
+            const plusBtn = quantityContainer.querySelector(".plus");
+            const inputBox = quantityContainer.querySelector(".input-box");
+
+            updateButtonStates();
+
+            quantityContainer.addEventListener("click", handleButtonClick);
+            inputBox.addEventListener("input", handleQuantityChange);
+
+            function updateButtonStates() {
+                const value = parseInt(inputBox.value);
+                minusBtn.disabled = value <= 1;
+                plusBtn.disabled = value >= parseInt(inputBox.max);
+            }
+
+            function handleButtonClick(event) {
+                if (event.target.classList.contains("minus")) {
+                    decreaseValue();
+                } else if (event.target.classList.contains("plus")) {
+                    increaseValue();
+                }
+            }
+
+            function decreaseValue() {
+                let value = parseInt(inputBox.value);
+                value = isNaN(value) ? 1 : Math.max(value - 1, 1);
+                inputBox.value = value;
+                updateButtonStates();
+                handleQuantityChange();
+            }
+
+            function increaseValue() {
+                let value = parseInt(inputBox.value);
+                value = isNaN(value) ? 1 : Math.min(value + 1, parseInt(inputBox.max));
+                inputBox.value = value;
+                updateButtonStates();
+                handleQuantityChange();
+            }
+
+            function handleQuantityChange() {
+                let value = parseInt(inputBox.value);
+                value = isNaN(value) ? 1 : value;
+
+                // 可以在這裡處理根據更新後的數量進行的操作
+                console.log("數量已更改:", value);
+            }
+
+
+
+            //我的最愛
+            $(".heartButton").click(function (event) {
+                event.stopPropagation();
+
+                var heartIcon = $(this).find(".heart-icon");
+                var productId = $(this).data("productid");
+                var isFavorite = heartIcon.hasClass("bi-heart-fill");
+                var currentUrl = window.location.href
+
+                // 檢查是否已登入
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',
+                    type: 'GET',
+                    success: function (response) {
+                        if (!response.isLoggedIn) {
+                            $('#LoginModal').modal('show');
+                            $("#LoginModal").on('shown.bs.modal', function () {
+                                $('input[name="returnUrl"]').val(currentUrl);
+                            });
+                        } else {
+                            $.ajax({
+                                url: '@Url.Action("AddToFavorites", "Product")',
+                                type: 'POST',
+                                data: { productId: productId, isFavorite: !isFavorite },
+                                success: function (response) {
+                                    console.log(response);
+
+                                    if (response.success) {
+                                        if (response.isFavorite) {
+                                            heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
+                                        } else {
+                                            heartIcon.removeClass("bi-heart-fill text-danger").addClass("bi-heart");
+                                        }
+                                    } else {
+                                        alert('操作失敗');
+                                    }
+                                },
+                                error: function () {
+                                    alert('出現錯誤');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                    }
+                });
+
+                event.preventDefault();
+            });
+
+
+            //加入購物車
+            $(".addToCartButtonItem, .buyNowButtonItem").click(function (event) {
+                event.stopPropagation();
+
+                // 禁用按鈕防止重複點擊
+                var button = $(this);
+                button.prop('disabled', true);
+
+                var isBuyNow = button.hasClass('btn-secondary');
+                var productId = button.data("productid");
+                var currentUrl = window.location.href; 
+                var quantityInput = button.closest('.row').prev('.quantity').find('.input-box');
+                var quantity = quantityInput.val();
+
+                // 如果數量無效或超出範圍，提示錯誤
+                if (!quantity || isNaN(quantity) || quantity < 1 || quantity > 10) {
+                    alert('請輸入有效的數量（1-10）');
+                    button.prop('disabled', false); 
+                    return;
+                }
+
+                // 檢查用戶是否登入
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',
+                    type: 'GET',
+                    success: function (response) {
+                        if (!response.isLoggedIn) {
+                            $('#LoginModal').modal('show');
+                            $("#LoginModal").on('shown.bs.modal', function () {
+                                $('input[name="returnUrl"]').val(currentUrl);
+                            });
+                            button.prop('disabled', false);
+                        } else {
+                            if (isBuyNow) {
+                                $.ajax({
+                                    url: '@Url.Action("AddToCart", "Product")',
+                                    type: 'POST',
+                                    data: { productId: productId, quantity: quantity },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            window.location.href = '@Url.Action("Cart", "Cart")'; 
+                                        } else {
+                                             alert('操作失敗: ' + response.message);
+                                        }
+                                        button.prop('disabled', false);
+                                    },
+                                    error: function () {
+                                        alert('出現錯誤');
+                                        button.prop('disabled', false);
+                                    }
+                                });
+                            } else {
+                                $.ajax({
+                                    url: '@Url.Action("AddToCart", "Product")',
+                                    type: 'POST',
+                                    data: { productId: productId, quantity: quantity },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            alert("成功加入購物車");
+                                        } else {
+                                            alert('操作失敗');
+                                        }
+                                        button.prop('disabled', false);
+                                    },
+                                    error: function () {
+                                        alert('出現錯誤');
+                                        button.prop('disabled', false);
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                        button.prop('disabled', false);
+                    }
+                });
+
+                event.preventDefault();
+            });
+
+        });
+    </script>
+}

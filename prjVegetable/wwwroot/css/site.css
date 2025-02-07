@@ -1,8 +1,10 @@
-﻿main {
+﻿
+main {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     padding-top: 43px;
+    flex-shrink: 0;
 }
 
 .navbar {
@@ -59,6 +61,7 @@ a {
 
 .footer {
     background-color: #8D8266;
+
 }
 
 .carousel {
@@ -653,23 +656,4 @@ h1 {
     font-family: LXGW WenKai Mono TC, Tahoma, sans-serif !important;
     font-size: 22px !important;
     color: #8D8266 !important;
-}
-
-
-
-
-
-/*-----------------------------------*/
-.dropdown-menu {
-    margin: 0 !important; /* 去除外邊距 */
-    padding: 0 !important; /* 去除內邊距 */
-}
-
-
-.imgicon {
-    border-radius: 50%;
-    color: white;
-    background-color: rgb(83, 178, 233);
-    /* 過渡 動態效果*/
-    transition: all 0.3s;
 }
