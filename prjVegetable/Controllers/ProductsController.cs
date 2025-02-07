@@ -55,21 +55,77 @@ namespace prjVegetable.Controllers
         }
 
         // GET: TProducts/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details()
         {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+            return View();
+        }
 
-            var tProduct = await _context.TProducts
-                .FirstOrDefaultAsync(m => m.FId == id);
-            if (tProduct == null)
+        [HttpGet]
+        public async Task<IActionResult> GetProviderById(int? id)
+        {
+            if (id == 0)
             {
-                return RedirectToAction(nameof(Index));
+                return BadRequest("找不到ID");
             }
+            var products = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == id);
+            if (products == null)
+            {
+                return NotFound("products not found");
+            }
+            return Ok(products);
+        }
 
-            return View(new CProductWrap() { product = tProduct });
+        [HttpPut]
+        public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
+        { 
+            TProduct e = _context.TProducts.FirstOrDefault(c=> c.FId == productwrap.FId);
+            TImg i = _context.TImgs.FirstOrDefault(i=>i.FProductId == productwrap.FId);
+            if (e==null) 
+            {
+                return NotFound("未找到相關商品");
+            }
+            try 
+            {
+                e.FName = productwrap.FName;
+                e.FClassification = productwrap.FClassification;
+                e.FPrice = productwrap.FPrice;
+                e.FDescription = productwrap.FDescription;
+                e.FIntroduction = productwrap.FIntroduction;
+                e.FQuantity = productwrap.FQuantity;
+                e.FLaunchAt = productwrap.FLaunchAt;
+                e.FStorage = productwrap.FStorage;
+                e.FOrigin = productwrap.FOrigin;
+                e.FLaunch = productwrap.FLaunch;
+                e.FEditor = productwrap.FEditor;
+
+                if (productwrap.FImgName != null)
+                {
+                    if (i == null)
+                    {
+                        // 如果沒有圖片資料，新增圖片
+                        i = new TImg
+                        {
+                            FProductId = productwrap.FId,
+                            FName = productwrap.FImgName // 假設圖片是 URL，若是二進位資料則需進一步處理
+                        };
+                        _context.TImgs.Add(i);
+                    }
+                    else
+                    {
+                        // 如果已有圖片，則更新圖片
+                        i.FName = productwrap.FImgName;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return Ok("資料已成功更新");
+            }
+            
+            catch (Exception ex)
+            {
+                // 捕捉錯誤並回傳具體錯誤訊息
+                return StatusCode(500, $"儲存資料時發生錯誤: {ex.Message}");
+            }
         }
 
         // GET: TProducts/Create

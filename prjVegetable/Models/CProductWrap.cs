@@ -53,6 +53,13 @@ namespace prjVegetable.Models
             set { _product.FDescription = value; }
         }
 
+        [DisplayName("產品介紹")]
+        public string FIntroduction
+        {
+            get { return _product.FIntroduction; }
+            set { _product.FIntroduction = value; }
+        }
+
         [DisplayName("庫存數量")]
         public int FQuantity
         {

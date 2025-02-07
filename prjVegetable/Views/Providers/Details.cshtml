@@ -257,7 +257,7 @@
                     if (this.provider.fId) {
                         console.log(this.provider);  // 打印数据，确认数据是否正确
                         const providerData =JSON.parse(JSON.stringify(this.provider))
-                        axios.put(`/Provider/update`, providerData)
+                        axios.put(`/Providers/update`, providerData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
                                 alert("資料已儲存!");
