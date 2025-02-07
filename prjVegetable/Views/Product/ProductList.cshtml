@@ -280,9 +280,9 @@
 
 
     <!-- 產品列表 start -->
-    <div class="col-12">
+    <div class="col-12" id="card">
 
-        <div class="row row-cols-1 row-cols-md-5 m-4" id="product-list">
+        <div class="row row-cols-1 row-cols-md-5  my-4 mx-5 " id="product-list">
 
 
             @foreach (var item in Model)
@@ -291,7 +291,7 @@
                 <div class="col product-item mb-4" data-publish-date="@item.FLaunchAt">
                     <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
 
-                        <div class="card h-100 shadow-sm d-flex flex-column">
+                        <div class="card h-100 shadow-sm d-flex flex-column ">
                             <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div>
                             @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
                             <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid" alt="Image">
@@ -320,12 +320,47 @@
         <div class="d-flex justify-content-center">
             @if ((int)ViewData["TotalPages"] > 1)
             {
+                <div class="container my-auto">
+                    <div class="d-flex align-items-end justify-content-center mt-3">
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center" id="pagination">
+                                <!-- 上一頁 -->
+                                <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != 1 ? "" : "disabled")">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Max(1, Convert.ToInt32(ViewData["Page"]) - 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+
+                                <!-- 分頁頁碼 -->
+                                @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
+                                {
+                                    <li class="page-item @(i == Convert.ToInt32(ViewData["Page"]) ? "active" : "")">
+                                        <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })">@i</a>
+                                    </li>
+                                }
+
+                                <!-- 下一頁 -->
+                                <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != Convert.ToInt32(ViewData["TotalPages"]) ? "" : "disabled")">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Min(Convert.ToInt32(ViewData["TotalPages"]), Convert.ToInt32(ViewData["Page"]) + 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @* <div class="d-flex justify-content-center">
+            @if ((int)ViewData["TotalPages"] > 1)
+            {
                 for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
                 {
                     <a href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" class="btn btn-outline-secondary @((i == Convert.ToInt32(ViewData["Page"])) ? "active" : "")">@i</a>
                 }
             }
-        </div>
+        </div> *@
 
 
         @* <footer style="margin-top: auto;">
@@ -637,5 +672,3 @@
 
     </script>
     }
-
-

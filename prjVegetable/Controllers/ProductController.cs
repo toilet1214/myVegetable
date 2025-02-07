@@ -85,7 +85,7 @@ namespace prjVegetable.Controllers
 
 
             //頁碼排序
-            int pagesize = 3;
+            int pagesize = 5;
             int totalProducts = datas.Count();
             int totalPages = (int)Math.Ceiling((double)totalProducts / pagesize);
             page = page < 1 ? 1 : page;
@@ -119,17 +119,7 @@ namespace prjVegetable.Controllers
 
                 list.Add(pp);
             }
-
-
-
-            //foreach (var p in pagedDatas)
-            //{
-            //    CProductWrap pp = new CProductWrap() { product = p };
-            //    var image = db.TImgs.FirstOrDefault(img => img.FProductId == pp.FId && img.FOrderBy == 1);
-            //    pp.FImgName = image?.FName;
-            //    pp.IsFavorite = favoriteProductIds.Contains(p.FId);
-            //    list.Add(pp);
-            //}
+            
 
             ViewData["TotalPages"] = totalPages;
             ViewData["Page"] = page;
