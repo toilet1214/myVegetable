@@ -116,20 +116,20 @@ namespace prjVegetable.Controllers
         }
 
         //GET: TProviders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == id);
-            if (tProvider == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            return View(new CProviderWrap() { provider = tProvider });
-        }
+        //    var tProvider = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == id);
+        //    if (tProvider == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(new CProviderWrap() { provider = tProvider });
+        //}
 
         // POST: TProviders/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.

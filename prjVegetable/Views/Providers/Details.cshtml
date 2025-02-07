@@ -17,7 +17,7 @@
                         <div class="row">
                             <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fId" :value="provider.fId" readonly>
+                                <input type="text" class="form-control" id="fId" :placeholder="provider.fId" readonly>
                             </div>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                 </div>
             </form>
             @*顯示*@
-            <form else>
+            <form v-else>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
@@ -197,7 +197,7 @@
                 </div>
             </form>
             <div>
-                <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
+                <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回廠商資料列表</a>
                 <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
                 <button v-if="edit" @@click="saveProvider" class="btn btn-success">儲存修改</button>
             </div>
@@ -247,7 +247,7 @@
                     }
                 },
                 goToIndex() {
-                    window.location.href = "/Provider/index";  // 返回到廠商列表页面，或者修改为你的页面路径
+                    window.location.href = "/Providers/index";  // 返回到廠商列表页面，或者修改为你的页面路径
                 },
 
                 toggleEditting() {
