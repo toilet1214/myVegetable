@@ -22,23 +22,6 @@ namespace prjVegetable.Controllers
         // GET: TProviders
         public async Task<IActionResult> Index(CKeywordViewModel vm)
         {
-            string keyword = vm.txtKeyword;
-            IEnumerable<TProvider> datas = null;
-            if (string.IsNullOrEmpty(keyword))
-            {
-                datas = from p in _context.TProviders
-                        select p;
-            }
-            else 
-            {
-                datas = _context.TProviders.Where(p =>
-                p.FName.Contains(keyword)||
-                p.FUbn.Contains(keyword) ||
-                p.FTel.Contains(keyword) ||
-                p.FConnect.Contains(keyword) ||
-                p.FAddress.Contains(keyword)
-                );
-            }
             var data = _context.TProviders.ToList();
             List<CProviderWrap> list = new List<CProviderWrap>();
             foreach (var p in data)
