@@ -315,11 +315,11 @@
         let YearLabel = @Html.Raw(JsonSerializer.Serialize(
         Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
         let chart;
-        let maxAll = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxAll = Math.max(...TotalMembersAll,5); // 取得最大值
         let maxYAll = Math.ceil(maxAll / 5) * 5; // 計算接近的 5 的倍數
-        let maxYear = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxYear = Math.max(...TotalMembersYear,5); // 取得最大值
         let maxYYear = Math.ceil(maxYear / 5) * 5; // 計算接近的 5 的倍數
-        let maxMonth = Math.max(...TotalMembersMonth); // 取得最大值
+        let maxMonth = Math.max(...TotalMembersMonth,5); // 取得最大值
         let maxYMonth = Math.ceil(maxMonth / 5) * 5; // 計算接近的 5 的倍數
         function MemberCountMonth() {
             if (chart) chart.destroy();
