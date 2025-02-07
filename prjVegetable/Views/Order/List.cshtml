@@ -49,7 +49,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.FNote)
             </th>
-            <th></th>
+            <th>
+                操作
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -94,7 +96,7 @@
     </tbody>
 </table>
 @section Scripts {
-    
+
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
@@ -120,6 +122,10 @@
                 },
                 "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
                 "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order":[]
             });
         });
     </script>

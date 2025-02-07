@@ -101,6 +101,10 @@
                                     previous: "上一頁"
                                 }
                             },
+                            order: [], // 預設不排序（防止 DataTables 自動設定）
+                            columnDefs: [
+                                { orderable: false, targets: [-1] } // 最後一欄不能排序
+                            ]
                         });
                     });
                 },
