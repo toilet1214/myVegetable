@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // 取得 Session 中的登入使用者 ID
+    var loggedUserId = ViewContext.HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+}
+<!DOCTYPE html>
 <html lang="zh-TW" class="h-100">
 
 <head>
@@ -63,8 +67,12 @@
                                     <i class="bi bi-person-fill fs-4 me-3"></i>
                                 </a>
                             }
-                            <a data-bs-toggle="offcanvas" href="#offcanvasCart" role="button"
-                               aria-controls="offcanvasExample"><i class="bi bi-bag-fill fs-4 me-3"></i></a>
+                            @if (!string.IsNullOrEmpty(loggedUserId))
+                            {
+                                <a asp-action="Cart" asp-controller="Cart" role="button">
+                                    <i class="bi bi-bag-fill fs-4 me-3"></i>
+                                </a>
+                            }
                         </div>
                     </div>
                 </div>
@@ -132,35 +140,9 @@
     <!-- up to top btn-->
     <button onclick="topFunction()" id="up-to-top" title="Go to top"><i class="bi bi-arrow-up fs-3"></i></button>
 
-    <!-- 購物車側邊攔展開 start -->
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart" aria-labelledby="My Cart">
-        <div class="offcanvas-header justify-content-center">
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="order-md-last">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">購物車</span>
-                </h4>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/04.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card-body">
-                                <h5 class="card-title px-3 mb-1">大沙發/灰</h5>
-                                <p class="card-price px-3">NT$150</p>
-                            </div>
-                        </div>
-                            <hr class="w-100 mt-4">
-                            <a asp-action="Cart" asp-controller="Cart" class="w-100 btn btn-primary btn-lg">查看購物車</a>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+
+
 
     <!-- 登入 Start -->
     <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
