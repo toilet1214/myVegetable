@@ -25,13 +25,13 @@ public partial class TPerson
 
     public string FEmail { get; set; } = null!;
 
-    public string? FUbn { get; set; }
+    public string FUbn { get; set; } = null!;
 
     public int FPermission { get; set; }
 
-    public string? FEmp { get; set; }
+    public string FEmp { get; set; } = null!;
 
-    public string? FEmpTel { get; set; }
+    public string FEmpTel { get; set; } = null!;
 
     public DateTime FCreatedAt { get; set; }
 
