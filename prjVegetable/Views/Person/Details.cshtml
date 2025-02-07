@@ -4,105 +4,337 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
+<h1>人員詳細資料</h1>
+<br />
+<hr />
+<div id="app">
+    <div class="container">
+        <div v-if="person" :key="person.fId">            
+            <form v-if="edit">
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fId" class="col-md-4 col-form-label">使用者ID：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fId" :placeholder="person.fId" >
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fname" class="col-md-4 col-form-label">姓名：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fname" :placeholder="person.fName">
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fUbn" class="col-md-4 col-form-label">統編：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fUbn" :placeholder="person.fUbn">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fAccount" class="col-md-4 col-form-label">帳號：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fPassword" class="col-md-4 col-form-label">密碼：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fGender" class="col-md-4 col-form-label">性別：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fGender" :placeholder="person.fGender">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fBirth" class="col-md-4 col-form-label">生日：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fBirth" :placeholder="person.fBirth">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fPhone" class="col-md-4 col-form-label">手機：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fPhone" :placeholder="person.fPhone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fTel" class="col-md-4 col-form-label">家用電話：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-4 col-form-label">地址：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fAddress" :placeholder="person.fAddress">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmail" class="col-md-4 col-form-label">電子郵件：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fEmail" :placeholder="person.fEmail">
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEmp" class="col-md-4 col-form-label">緊急聯絡人：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fEmp" :placeholder="person.fEmp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEmpTel" class="col-md-4 col-form-label">緊急聯絡人電話：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fEmpTel" :placeholder="person.fEmpTel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fCreatedAt" class="col-md-4 col-form-label">創建日期：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fCreatedAt" :placeholder="person.fCreatedAt">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-4 col-form-label">修改人：</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" id="fEditor" :placeholder="person.fEditor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            @*顯示樣本*@
+            <form v-else>
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fId" class="col-md-4 col-form-label">使用者ID：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fId" :value="person.fId">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fname" class="col-md-4 col-form-label">姓名：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fname" :value="person.fName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fUbn" class="col-md-4 col-form-label">統編：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fUbn" :value="person.fUbn">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fAccount" class="col-md-4 col-form-label">帳號：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fAccount" :value="person.fAccount">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fPassword" class="col-md-4 col-form-label">密碼：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fPassword" :value="person.fPassword">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fGender" class="col-md-4 col-form-label">性別：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fGender" :value="person.fGender">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fBirth" class="col-md-4 col-form-label">生日：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fBirth" :value="person.fBirth">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fPhone" class="col-md-4 col-form-label">手機：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fPhone" :value="person.fPhone">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="row">
+                            <label for="fTel" class="col-md-4 col-form-label">家用電話：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fTel" :value="person.fTel">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fAddress" class="col-md-4 col-form-label">地址：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fAddress" :value="person.fAddress">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEmail" class="col-md-4 col-form-label">電子郵件：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fEmail" :value="person.fEmail">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEmp" class="col-md-4 col-form-label">緊急聯絡人：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fEmp" :value="person.fEmp">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEmpTel" class="col-md-4 col-form-label">緊急聯絡人電話：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fEmpTel" :value="person.fEmpTel">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fCreatedAt" class="col-md-4 col-form-label">創建日期：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fCreatedAt" :value="person.fCreatedAt">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-4 col-form-label">修改人：</label>
+                            <div class="col-md-8">
+                                <input type="text" readonly class="form-control" id="fEditor" :value="person.fEditor">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- 返回與編輯按鈕 -->
+            <div>
+                <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
+                <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料</button>
+            </div>
+        </div>
 
-<h1>詳細資料</h1>
+        <div v-else>
+            <p>載入中...</p>
+        </div>
+    </div>
+</div>
 
-<div>
-   <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAccount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FAccount)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FPassword)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FPassword)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FGender)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FGender)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FBirth)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FBirth)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.person.FPhone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FPhone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FTel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FTel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FAddress)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FAddress)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEmail)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FEmail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FUbn)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FUbn)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FPermission)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FPermission)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEmp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FEmp)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEmpTel)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FEmpTel)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FCreatedAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FCreatedAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEditor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.person.FEditor)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index" class="btn btn-outline-primary">回員工與會員列表</a>
-    <a asp-action="Edit" asp-route-id="@Model?.FId" class="btn btn-primary">編輯資料</a>    
-</div>
+@section Scripts
+{
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    person: [],  // 用來存放從後端獲得的人員資料
+                    edit:false, //啟用編輯
+                };
+            },
+            mounted() {
+                this.loadPersonId();  // 确保调用正确的 method
+            },
+            methods: {
+                loadPersonId() {
+                        // 获取当前 URL 的路径部分
+                        const path = window.location.pathname;
+
+                        // 假设 URL 路径的格式是 /Person/Details/{id}
+                        const pathSegments = path.split('/'); // 将路径分割为数组
+
+                        // 获取路径的最后一部分作为 ID
+                        const personId = pathSegments[pathSegments.length - 1];
+                    if (personId) {
+                        axios.get(`/Person/GetPersonById/${personId}`)
+                            .then(response => {
+                                console.log(response.data);  // 查看 API 返回的资料
+                                this.person = response.data //? [response.data] : [];  直接将返回的对象赋值给 `person`
+                            })
+                            .catch(error => {
+                                console.error('资料加载错误', error);
+                                this.person = [];  // 如果出錯，清空資料
+                            });
+                    } else {
+                        console.error('未提供有效的 ID');
+                    }
+                },
+                goToIndex() {
+                    window.location.href = "/Person/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
+                },
+                
+                toggleEditting() {
+                this.edit = !this.edit;  // 切換 edit 值
+                },                
+            }
+        });
+
+        app.mount('#app'); // 使用 Vue 3 创造并挂载应用
+    </script>
+}
