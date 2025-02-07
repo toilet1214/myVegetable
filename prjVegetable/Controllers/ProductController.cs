@@ -85,7 +85,7 @@ namespace prjVegetable.Controllers
 
 
             //頁碼排序
-            int pagesize = 5;
+            int pagesize = 10;
             int totalProducts = datas.Count();
             int totalPages = (int)Math.Ceiling((double)totalProducts / pagesize);
             page = page < 1 ? 1 : page;
