@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace prjVegetable.Models
 {
@@ -30,6 +31,7 @@ namespace prjVegetable.Models
             set { img.FProductId = value; }
         }
 
+        [Required (ErrorMessage = "必填")]
         [DisplayName("照片名稱")]
         public string FName
         {
@@ -37,13 +39,15 @@ namespace prjVegetable.Models
             set { img.FName = value; }
         }
 
-        [DisplayName("照片名稱")]
+        [Required(ErrorMessage = "必填")]
+        [DisplayName("照片順序")]
         public int FOrderBy
         {
             get { return img.FOrderBy; }
             set { img.FOrderBy = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("上傳日期")]
         public DateOnly FUploadAt
         {
@@ -51,6 +55,7 @@ namespace prjVegetable.Models
             set { img.FUploadAt = value; }
         }
 
+        [Required(ErrorMessage = "必填")]
         [DisplayName("修改人")]
         public int FEditor
         {
