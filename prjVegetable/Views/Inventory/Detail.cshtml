@@ -98,7 +98,7 @@
                     <th>差異數量</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="tableBody">
                 @foreach (var item in Model.InventoryDetails)
                 {
                     <tr>
@@ -177,18 +177,99 @@
 
 <!-- 查詢 -->
 <script>
+        let inventoryList = []; // 儲存所有查詢結果
+    let currentIndex = 0;   // 目前顯示的索引
+
     document.getElementById('modalSearchButton').addEventListener('click', function () {
         const fId = document.getElementById('searchFId').value.trim();
+        const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
+        const fBaselineEndDate = document.getElementById('FBaselineEndDate').value.trim();
+        const fCreatedStartDate = document.getElementById('FCreatedStartDate').value.trim();
+        const fCreatedEndDate = document.getElementById('FCreatedEndDate').value.trim();
 
-        if (fId) {
-            // 將頁面跳轉到相對應的查詢結果
-            const queryUrl = '@Url.Action("Detail", "Inventory", new { id = "__FId__" })'.replace('__FId__', fId);
-            window.location.href = queryUrl;
-        } else {
-            alert('請輸入庫存盤點單號');
+        const requestData = {
+            fId: fId || null,
+            fBaselineStartDate: fBaselineStartDate || null,
+            fBaselineEndDate: fBaselineEndDate || null,
+            fCreatedStartDate: fCreatedStartDate || null,
+            fCreatedEndDate: fCreatedEndDate || null
+        };
+
+        if (!fId && !fBaselineStartDate && !fBaselineEndDate && !fCreatedStartDate && !fCreatedEndDate) {
+            alert('請至少填寫一個查詢條件');
+            return;
         }
+
+        $.ajax({
+            url: '/Inventory/Search',
+            type: 'GET',
+            data: requestData,
+            success: function (response) {
+                console.log("🚀 AJAX 成功回應！", response);
+
+                if (response && response.inventoryDetails && response.products) {
+                    inventoryList = response.inventoryDetails;
+                    updateTable(0); // 預設顯示第一筆
+                } else {
+                    console.error("⚠️ 沒有收到 InventoryDetails 或 Products！");
+                    alert('查無符合條件的資料');
+                    document.getElementById('tableBody').innerHTML = '';
+                }
+
+                $("#exampleModal").modal("hide");
+            },
+            error: function (error) {
+                console.error("❌ AJAX 失敗", error);
+                alert('發生錯誤，請稍後再試');
+            }
+        });
     });
+
+    function updateTable(index) {
+        if (inventoryList.length === 0) return;
+
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
+
+        let currentInventoryMainId = inventoryList[index].fInventoryMainId;
+        let filteredData = inventoryList.filter(item => item.fInventoryMainId === currentInventoryMainId);
+
+        filteredData.forEach(item => {
+            let row = `<tr>
+                <td>${item.fInventoryMainId}</td>
+                <td>${item.fProductId}</td>
+                <td>${item.fSystemQuantity}</td>
+                <td><input id="FActualQuantity_${item.fId}" name="FActualQuantity" type="number" value="${item.fActualQuantity ?? ''}"></td>
+            </tr>`;
+            tableBody.innerHTML += row;
+        });
+
+        // 變更網址 (不重新載入)
+        window.history.pushState({}, '', `/Inventory/Detail/${currentInventoryMainId}`);
+
+        // 更新按鈕連結
+        updateNavigationButtons(currentInventoryMainId);
+    }
+
+
+    function updateNavigationButtons(currentMainId) {
+        let mainIds = [...new Set(inventoryList.map(item => item.fInventoryMainId))]; // 取得不重複的 FInventoryMainId
+        let currentIndex = mainIds.indexOf(currentMainId);
+
+        document.getElementById("firstButton").href = `/Inventory/Detail?id=${mainIds[0]}`;
+        document.getElementById("prevButton").href = currentIndex > 0 ? `/Inventory/Detail?id=${mainIds[currentIndex - 1]}` : "#";
+        document.getElementById("nextButton").href = currentIndex < mainIds.length - 1 ? `/Inventory/Detail?id=${mainIds[currentIndex + 1]}` : "#";
+        document.getElementById("lastButton").href = `/Inventory/Detail?id=${mainIds[mainIds.length - 1]}`;
+    }
+
+    // 事件監聽：按鈕切換資料
+    document.getElementById('firstButton').addEventListener('click', () => updateTable(0));
+    document.getElementById('prevButton').addEventListener('click', () => updateTable(Math.max(currentIndex - 1, 0)));
+    document.getElementById('nextButton').addEventListener('click', () => updateTable(Math.min(currentIndex + 1, inventoryList.length - 1)));
+    document.getElementById('lastButton').addEventListener('click', () => updateTable(inventoryList.length - 1));
+
 </script>
+
 
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

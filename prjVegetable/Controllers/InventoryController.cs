@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using static prjVegetable.ViewModels.CInventoryViewModel;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjVegetable.Controllers
 {
@@ -12,7 +13,6 @@ namespace prjVegetable.Controllers
     {
         private readonly DbVegetableContext _context;
         private readonly ILogger<InventoryController> _logger;
-
         public InventoryController(DbVegetableContext context, ILogger<InventoryController> logger)
         {
             _context = context;
@@ -25,22 +25,37 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Detail(int id)
         {
+            // 查詢當前 ID 是否存在且 FBaselineDate 不為 null
             var inventoryMain = _context.TInventoryMains
                 .Where(im => im.FId == id && im.FBaselineDate != null)
                 .FirstOrDefault();
 
+            // 如果查不到該 ID，導向第一筆資料
             if (inventoryMain == null)
             {
-                return View("DetailEmpty", new CInventoryViewModel
+                var firstRecordId = _context.TInventoryMains
+                    .Where(im => im.FBaselineDate != null)
+                    .OrderBy(im => im.FId)
+                    .Select(im => im.FId)
+                    .FirstOrDefault();
+
+                if (firstRecordId != 0)  // 如果找到第一筆資料，就導向該筆資料
                 {
-                    InventoryMain = new CInventoryMainWrap(),
-                    InventoryDetails = new List<CInventoryDetailWrap>(),
-                    Products = _context.TProducts.Select(product => new CProductUpdateWrap
+                    return RedirectToAction("Detail", new { id = firstRecordId });
+                }
+                else  // 如果沒有任何可用資料，則顯示空視圖
+                {
+                    return View("DetailEmpty", new CInventoryViewModel
                     {
-                        FId = product.FId,
-                        FQuantity = product.FQuantity
-                    }).ToList()
-                });
+                        InventoryMain = new CInventoryMainWrap(),
+                        InventoryDetails = new List<CInventoryDetailWrap>(),
+                        Products = _context.TProducts.Select(product => new CProductUpdateWrap
+                        {
+                            FId = product.FId,
+                            FQuantity = product.FQuantity
+                        }).ToList()
+                    });
+                }
             }
 
             var inventoryMainWrap = new CInventoryMainWrap
@@ -92,7 +107,7 @@ namespace prjVegetable.Controllers
                 .ToList();
 
             // 當前顯示的 InventoryMain Id
-            int currentIndex = validIds.IndexOf(id) + 1; 
+            int currentIndex = validIds.IndexOf(id) + 1;
 
             var viewModel = new CInventoryViewModel
             {
@@ -108,10 +123,10 @@ namespace prjVegetable.Controllers
                 CurrentItemCount = currentIndex // 當前顯示的 InventoryMain 是第幾筆
             };
 
-            var firstId = validIds.FirstOrDefault();
-            var lastId = validIds.LastOrDefault();
-            var previousId = validIds.Where(i => i < id).LastOrDefault(id);
-            var nextId = validIds.Where(i => i > id).FirstOrDefault(id);
+            var firstId = validIds.Cast<int?>().FirstOrDefault() ?? 0;
+            var lastId = validIds.Cast<int?>().LastOrDefault() ?? 0;
+            var previousId = validIds.Cast<int?>().Where(i => i < id).LastOrDefault(id);
+            var nextId = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault(id);
 
             ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
@@ -359,54 +374,118 @@ namespace prjVegetable.Controllers
         {
             var query = _context.TInventoryMains.AsQueryable();
 
-            // 根據 fId 進行篩選
+            // 1. 根據 FId 查詢 (允許其他條件並存)
             if (fId.HasValue)
             {
-                query = query.Where(x => x.FId == fId.Value);
+                query = query.Where(i => i.FId == fId.Value);
             }
 
-            // 根據盤點基準日範圍進行篩選
+            // 2. 日期範圍過濾（需確保起始日期 <= 結束日期）
+            if (fBaselineStartDate.HasValue && fBaselineEndDate.HasValue && fBaselineStartDate > fBaselineEndDate)
+            {
+                return Json(new { success = false, message = "盤點基準日範圍不正確" });
+            }
+
+            if (fCreatedStartDate.HasValue && fCreatedEndDate.HasValue && fCreatedStartDate > fCreatedEndDate)
+            {
+                return Json(new { success = false, message = "建檔日期範圍不正確" });
+            }
+
             if (fBaselineStartDate.HasValue)
             {
-                query = query.Where(x => x.FBaselineDate >= fBaselineStartDate.Value);
+                query = query.Where(i => i.FBaselineDate >= fBaselineStartDate.Value);
             }
 
             if (fBaselineEndDate.HasValue)
             {
-                query = query.Where(x => x.FBaselineDate <= fBaselineEndDate.Value);
+                query = query.Where(i => i.FBaselineDate <= fBaselineEndDate.Value);
             }
 
-            // 根據建檔日期範圍進行篩選
             if (fCreatedStartDate.HasValue)
             {
-                query = query.Where(x => x.FCreatedAt >= fCreatedStartDate.Value);
+                query = query.Where(i => i.FCreatedAt >= fCreatedStartDate.Value);
             }
 
             if (fCreatedEndDate.HasValue)
             {
-                query = query.Where(x => x.FCreatedAt <= fCreatedEndDate.Value);
+                query = query.Where(i => i.FCreatedAt <= fCreatedEndDate.Value);
             }
 
-            // 使用 Join 進行手動聯結
-            var inventoryDetails = (from main in query
-                                    join detail in _context.TInventoryDetails on main.FId equals detail.FInventoryMainId
-                                    select detail)
-                                    .ToList();
+            // 查詢主檔
+            var inventoryMains = query.Select(i => new {
+                i.FId,
+                i.FBaselineDate,
+                i.FCreatedAt
+            }).ToList();
 
-            // 返回查詢結果
-            var result = new
+            if (!inventoryMains.Any())
             {
-                InventoryDetails = inventoryDetails.Select(item => new
+                return Json(new { success = false, message = "未找到符合條件的盤點主資料。" });
+            }
+
+            // 3. 查詢 InventoryDetails
+            var inventoryDetails = _context.TInventoryDetails
+                .Where(d => inventoryMains.Select(im => im.FId).Contains(d.FInventoryMainId))
+                .Select(d => new {
+                    d.FSystemQuantity,
+                    d.FActualQuantity,
+                    d.FInventoryMainId,
+                    d.FProductId, // 修正這裡，應該取 FProductId 而非 FId
+                    d.FId
+                }).ToList();
+
+            // 4. 查詢 Products
+            var products = _context.TProducts
+                .Where(p => inventoryDetails.Select(d => d.FProductId).Contains(p.FId)) // 修正篩選條件
+                .Select(p => new {
+                    p.FId,
+                    p.FName,
+                    p.FQuantity
+                }).ToList();
+
+            // 構建 ViewModel
+            var viewModel = new CInventoryViewModel
+            {
+                InventoryMain = inventoryMains.Select(i => new CInventoryMainWrap
                 {
-                    item.FProductId,
-                    item.FSystemQuantity,
-                    item.FActualQuantity
+                    FId = i.FId,
+                    FBaselineDate = i.FBaselineDate,
+                    FCreatedAt = i.FCreatedAt
+                }).FirstOrDefault(),
+
+                InventoryDetails = inventoryDetails.Select(d => new CInventoryDetailWrap
+                {
+                    FSystemQuantity = (int)d.FSystemQuantity,
+                    FActualQuantity = d.FActualQuantity,
+                    FInventoryMainId = d.FInventoryMainId,
+                    FProductId = d.FProductId,
                 }).ToList(),
-                TotalItemCount = inventoryDetails.Count,
-                CurrentItemCount = inventoryDetails.Count
+
+                Products = products.Select(p => new CProductUpdateWrap
+                {
+                    FId = p.FId,
+                    FName = p.FName,
+                    FQuantity = p.FQuantity
+                }).ToList(),
+
+                TotalItemCount = inventoryMains.Count,
+                CurrentItemCount = inventoryMains.Count
             };
 
-            return Json(result);
+            _logger.LogInformation("查詢到的 InventoryDetails: {0}", JsonConvert.SerializeObject(inventoryDetails));
+            _logger.LogInformation("Returning viewModel: {viewModel}", JsonConvert.SerializeObject(viewModel));
+
+            return new JsonResult(new
+            {
+                success = true,  // 加入 success 標誌，前端可據此判斷是否成功
+                InventoryMain = viewModel.InventoryMain,
+                InventoryDetails = inventoryDetails,
+                Products = products,
+                TotalItemCount = viewModel.TotalItemCount,
+                CurrentItemCount = viewModel.CurrentItemCount
+            });
         }
+
+
     }
 }
