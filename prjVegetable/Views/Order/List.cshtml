@@ -9,12 +9,7 @@
 }
 
 <h1>訂單資料</h1>
-@using (Html.BeginForm())
-{
-    @:搜尋 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢" class="btn btn-primary">
-}
-<br />
+
 
 <table class="table" id="List">
     <thead>
@@ -49,7 +44,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.FNote)
             </th>
-            <th></th>
+            <th>
+                操作
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -94,7 +91,7 @@
     </tbody>
 </table>
 @section Scripts {
-    
+
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
@@ -120,6 +117,10 @@
                 },
                 "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
                 "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order":[]
             });
         });
     </script>

@@ -96,8 +96,11 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    @if (TempData["ErrorRegister"] != null)
+    {
+        <script>
+            alert('@Html.Raw(TempData["ErrorRegister"].ToString())');
+        </script>
     }
 }
 

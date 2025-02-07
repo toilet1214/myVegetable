@@ -9,15 +9,13 @@ namespace prjVegetable.Controllers
     {
         public IActionResult List(CKeywordViewModel vm)
         {
-            string keyword = vm.txtKeyword;
+
             DbVegetableContext db = new DbVegetableContext();
-            IEnumerable<TOrder> datas = null;
-            if (string.IsNullOrEmpty(keyword))
-                datas = from t in db.TOrders select t;
-            else { 
-                
-            }
-                
+
+
+            var datas = from t in db.TOrders select t;
+
+
             List<COrderWrap> list = new List<COrderWrap>();
             foreach (var t in datas)
                 list.Add(new COrderWrap() { order = t });
@@ -37,6 +35,6 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        
+
     }
 }
