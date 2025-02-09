@@ -1,22 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 
 namespace prjVegetable.Controllers
 {
     public class CustomerController : Controller
     {
+        private readonly DbVegetableContext _context;
+
+        public CustomerController(DbVegetableContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
+        }
         public IActionResult Index()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            DbVegetableContext db = new DbVegetableContext();
-            TPerson x = db.TPeople.FirstOrDefault(c => c.FId == UserId);
+            TPerson x = _context.TPeople.FirstOrDefault(c => c.FId == UserId);
             return View(new CCustomerWrap() { person = x });
         }
         [HttpPost]
         public IActionResult Index(CCustomerWrap p)
         {
-            DbVegetableContext db = new DbVegetableContext();
-            TPerson x = db.TPeople.FirstOrDefault(c => c.FId == p.FId);
+            TPerson x = _context.TPeople.FirstOrDefault(c => c.FId == p.FId);
             if (x != null)
             {
                 x.FName = p.FName;
@@ -28,10 +33,48 @@ namespace prjVegetable.Controllers
                 x.FPassword = p.FPassword;
                 x.FUbn = p.FUbn;
                 x.FGender = p.FGender;
-                db.SaveChanges();
+                _context.SaveChanges();
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPersonById()
+        {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+
+            var person = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == UserId);
+
+            return Ok(person);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> update([FromBody] CCustomerWrap CustomerWrap)
+        {
+            
+            TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == CustomerWrap.FId);
+
+            e.FName = CustomerWrap.FName;
+            e.FAccount = CustomerWrap.FAccount;
+            e.FPassword = CustomerWrap.FPassword;
+            e.FBirth = CustomerWrap.FBirth;
+            e.FPhone = CustomerWrap.FPhone;
+            e.FTel = CustomerWrap.FTel;
+            e.FAddress = CustomerWrap.FAddress;
+            e.FEmail = CustomerWrap.FEmail;
+            e.FUbn = CustomerWrap.FUbn;
+
+            
+            await _context.SaveChangesAsync();
+
+            return Ok("資料已成功更新");
+
+        }
+
+
+
+
+
 
         public IActionResult Report()
         {
@@ -40,19 +83,17 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Report(TReport P)
         {
-            DbVegetableContext db = new DbVegetableContext();
-            db.TReports.Add(P);
-            db.SaveChanges();
+            _context.TReports.Add(P);
+            _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
         public IActionResult Order()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            DbVegetableContext db = new DbVegetableContext();
             IEnumerable<TOrder> datas = null;
-            
-            datas = db.TOrders.Where(p => p.FPersonId == UserId);
+
+            datas = _context.TOrders.Where(p => p.FPersonId == UserId);
             List<COrderWrap> list = new List<COrderWrap>();
             foreach (var t in datas)
                 list.Add(new COrderWrap() { order = t });
@@ -63,9 +104,8 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
                 return RedirectToAction("Order");
-            DbVegetableContext db = new DbVegetableContext();
-            IEnumerable<TOrderList>datas = null;
-            datas = db.TOrderLists.Where(p => p.FOrderId == id);
+            IEnumerable<TOrderList> datas = null;
+            datas = _context.TOrderLists.Where(p => p.FOrderId == id);
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
                 list.Add(new COrderListWrap() { orderList = t });

@@ -9,14 +9,14 @@
 <hr />
 <div id="app">
     <div class="container">
-        <div v-if="person" :key="person.fId">            
+        <div v-if="person" :key="person.fId">
             <form v-if="edit">
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
-                            <label for="fname" class="col-md-3 col-form-label">姓名：</label>
+                            <label for="fName" class="col-md-3 col-form-label">姓名：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fname" :placeholder="請輸入新姓名" v-model="person.fName">
+                                <input type="text" class="form-control" id="fName" :placeholder="請輸入新姓名" v-model="person.fName">
                             </div>
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                                 <input type="text" class="form-control" id="fUbn" :placeholder="請輸入新統編" v-model="person.fUbn">
                             </div>
                         </div>
-                    </div>                           
+                    </div>
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mb-3 row">                    
+                <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
@@ -128,16 +128,16 @@
                             </div>
                         </div>
                     </div>
-                </div>               
+                </div>
             </form>
             @*顯示樣本*@
             <form v-else>
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
-                            <label for="fname" class="col-md-3 col-form-label">姓名：</label>
+                            <label for="fName" class="col-md-3 col-form-label">姓名：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fname" :value="person.fname" readonly>
+                                <input type="text" class="form-control" id="fName" :value="person.fName" readonly>
                             </div>
                         </div>
                     </div>
@@ -281,7 +281,7 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
                 <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click ="savePerson" class="btn btn-success">儲存修改</button>
+                <button v-if="edit" @@click="savePerson" class="btn btn-success">儲存修改</button>
             </div>
         </div>
 
@@ -292,18 +292,19 @@
 </div>
 
 @section Scripts
-{<script>
-  $( function() {
-    $( "#datepicker" ).datepicker();
-  } );
-  </script>
+{
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+    </script>
 
     <script>
         const app = Vue.createApp({
             data() {
                 return {
                     person: [],  // 用來存放從後端獲得的人員資料
-                    edit:false, //啟用編輯
+                    edit: false, //啟用編輯
                 };
             },
             mounted() {
@@ -311,14 +312,14 @@
             },
             methods: {
                 loadPersonId() {
-                        // 获取当前 URL 的路径部分
-                        const path = window.location.pathname;
+                    // 获取当前 URL 的路径部分
+                    const path = window.location.pathname;
 
-                        // 假设 URL 路径的格式是 /Person/Details/{id}
-                        const pathSegments = path.split('/'); // 将路径分割为数组
+                    // 假设 URL 路径的格式是 /Person/Details/{id}
+                    const pathSegments = path.split('/'); // 将路径分割为数组
 
-                        // 获取路径的最后一部分作为 ID
-                        const personId = pathSegments[pathSegments.length - 1];
+                    // 获取路径的最后一部分作为 ID
+                    const personId = pathSegments[pathSegments.length - 1];
                     if (personId) {
                         axios.get(`/Person/GetPersonById/${personId}`)
                             .then(response => {
@@ -336,14 +337,14 @@
                 goToIndex() {
                     window.location.href = "/Person/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
                 },
-                
+
                 toggleEditting() {
-                this.edit = !this.edit;  // 切換 edit 值
+                    this.edit = !this.edit;  // 切換 edit 值
                 },
                 savePerson() {
                     if (this.person.fId) {
                         console.log(this.person);  // 打印数据，确认数据是否正确
-                        const personData =JSON.parse(JSON.stringify(this.person))
+                        const personData = JSON.parse(JSON.stringify(this.person))
                         axios.put(`/Person/update`, personData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
