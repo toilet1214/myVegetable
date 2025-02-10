@@ -335,3 +335,5 @@ VALUES
 --person
 INSERT INTO tPerson (fName, fAccount, fPassword, fGender, fBirth, fPhone, fTel, fAddress, fEmail, fUBN, fPermission, fEmp, fEmpTel, fEditor) 
 VALUES ('Dwayne Strong', '123', '123', '¤k', '1990-06-08', '0979874614', '079599366', 'Unit 6832 Box 4261\nDPO AE 11131', 'bradley56@roth.com', '33448366', 1, 'William Stephens', '0962975478', 1);
+INSERT INTO tPerson (fName, fAccount, fPassword, fGender, fBirth, fPhone, fTel, fAddress, fEmail, fUBN, fPermission, fEmp, fEmpTel, fEditor) 
+VALUES ('Brian Cole', '456', '456', '¤k', '1979-01-07', '0969038974', '071316228', '572 Dixon Cliffs\nNew Eileen, AZ 39214', 'paula82@gmail.com', '62276379', 0, 'Amy Johnson', '0995817086', 1);

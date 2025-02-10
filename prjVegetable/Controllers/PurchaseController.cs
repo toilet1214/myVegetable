@@ -2,14 +2,41 @@
 using prjVegetable.Models;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
+using System.Text.Json;
 
 namespace prjVegetable.Controllers
 {
 	public class PurchaseController : Controller
 	{
-		//----------List------------------------
-		public IActionResult List(CKeywordViewModel vm)
+        //----------(會員session)------------------
+        private readonly ILogger<PurchaseController> _logger;
+        private readonly DbVegetableContext _dbContext;
+        private readonly IWebHostEnvironment _environment;
+        public PurchaseController(ILogger<PurchaseController> logger, DbVegetableContext dbContext, IWebHostEnvironment environment)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+            _environment = environment;
+        }
+
+        //----------List------------------------
+        public IActionResult List(CKeywordViewModel vm)
 		{
+            //先session
+            var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
+
+            // 先驗證身分
+            if (!checkout == true)
+            {
+                
+                return RedirectToAction("Index","Home"); // 若未登入，跳轉至登入頁面
+            }
+
+            //if (ModelState.IsValid)
+            //{
+            //    return RedirectToAction("List","Purchase"); // 若驗證成功，回到Views():Purchase/List
+            //}
+
             //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
             DbVegetableContext db = new DbVegetableContext();
 			string? keyword = vm.txtKeyword;
@@ -18,15 +45,20 @@ namespace prjVegetable.Controllers
 			//view()呈現
 			IEnumerable<TPurchase> datas = null;
 
-			//查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 (2)
+			//查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 或(2)目前資料筆數
 			if (string.IsNullOrEmpty(keyword))
 				datas = from t in db.TPurchases
 						select t;
 			else
 				datas = db.TPurchases.Where(
-				 p => p.FEditor.ToString().Contains(keyword)
+				p =>p.FId.ToString().Contains(keyword)
+                || p.FBuyDate.ToString().Contains(keyword)
                 || p.FProviderId.ToString().Contains(keyword)
-                || p.FId.ToString().Contains(keyword));
+                || p.FInvoiceForm.ToString().Contains(keyword)
+                || p.FTotal.ToString().Contains(keyword)
+                || p.FTax.ToString().Contains(keyword)
+                || p.FPreTax.ToString().Contains(keyword)
+                || p.FEditor.ToString().Contains(keyword));
 
 			//原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
 			List<CPurchaseWrap> list = new List<CPurchaseWrap>();
@@ -38,22 +70,58 @@ namespace prjVegetable.Controllers
 		//----------Create------------------------
 		public IActionResult Create()
 		{
-			return View();
-		}
+			//先session
+            var checkout=int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
 
-		[HttpPost]
+            // 先驗證身分
+            if ( !checkout == true)
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
+            //insert id into FEditor
+            var viewModel = new CPurchaseWrap
+            {
+                Purchase = new TPurchase
+                {
+                    FEditor = userId
+                }             
+            };
+            return View(viewModel);
+
+        }
+
+        [HttpPost]
 		public IActionResult Create(TPurchase p)
 		{
-			DbVegetableContext db = new DbVegetableContext();
+
+            DbVegetableContext db = new DbVegetableContext();
 			db.TPurchases.Add(p);
 			db.SaveChanges(); //回傳至資料庫
 			return RedirectToAction("List");
 		}
+
 		//----------delete----------------------
 		public ActionResult Delete(int? id) //int? => 允許有null
-
 		{
-			if (id != null)
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
+            //
+            if (id != null)
 			{
 				//open database 
 				DbVegetableContext db = new DbVegetableContext();
@@ -90,31 +158,46 @@ namespace prjVegetable.Controllers
 			// 將找到的客戶資料傳遞到 View
 			return View(c);
 		}
-		[HttpPost]
-		public IActionResult Edit(TPurchase p)
 
-		{
-			//建立資料庫
-			DbVegetableContext db = new DbVegetableContext();
+        [HttpPost]
+        public IActionResult Edit(TPurchase p)
+        {
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
 
-			//搜尋id : "p.Fid" 為資料庫裡的id。 "c.Fid"為輸入的id
-			TPurchase x = db.TPurchases.FirstOrDefault(c => c.FId == p.FId);
+            //若驗證失敗，回到編輯頁面
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Edit", new { id = p.FId }); 
+            }
 
-			if (x != null)
-			{
-				x.FBuyDate = p.FBuyDate;
-				x.FProviderId = p.FProviderId;
-				x.FInvoiceForm = p.FInvoiceForm;
-				x.FPayment = p.FPayment;
-				x.FEditor = p.FEditor;
-				x.FPreTax = p.FPreTax;
-				x.FTax = p.FTax;
-				x.FTotal = p.FTotal;
-				x.FNote = p.FNote;
-				db.SaveChanges();
+            using (DbVegetableContext db = new DbVegetableContext())
+            {
+                // 搜尋 id
+                TPurchase x = db.TPurchases.FirstOrDefault(c => c.FId == p.FId);
 
-			}
-			return RedirectToAction("List");
-		}
-	}
+                if (x != null)
+                {
+                    x.FBuyDate = p.FBuyDate;
+                    x.FProviderId = p.FProviderId;
+                    x.FInvoiceForm = p.FInvoiceForm;
+                    x.FPayment = p.FPayment;
+                    x.FEditor = userId; // 記錄目前登入者的 ID
+                    x.FPreTax = p.FPreTax;
+                    x.FTax = p.FTax;
+                    x.FTotal = p.FTotal;
+                    x.FNote = p.FNote;
+
+                    db.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("List"); // 修改完成後，跳轉回列表頁
+        }
+
+
+    }
 }

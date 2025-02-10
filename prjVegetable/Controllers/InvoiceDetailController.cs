@@ -6,9 +6,34 @@ namespace prjVegetable.Controllers
 {
     public class InvoiceDetailController : Controller
     {
+        //----------(會員session)------------------
+        private readonly ILogger<InvoiceDetailController> _logger;
+        private readonly DbVegetableContext _dbContext;
+        private readonly IWebHostEnvironment _environment;
+        public InvoiceDetailController(ILogger<InvoiceDetailController> logger, DbVegetableContext dbContext, IWebHostEnvironment environment)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+            _environment = environment;
+        }
+
         //----------List------------------------
         public IActionResult List(CKeywordViewModel vm)
         {
+            //先session
+            var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
+
+            // 先驗證身分
+            if (!checkout == true)
+            {
+                return RedirectToAction("Index", "Home"); // 若未登入，跳轉至登入頁面
+            }
+
+            //if (ModelState.IsValid)
+            //{
+            //    return RedirectToAction("List", "InvoiceDetail"); // 若驗證成功，回到Views():Purchase/List
+            //}
+
             //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
             DbVegetableContext db = new DbVegetableContext();
             string? keyword = vm.txtKeyword;
@@ -25,6 +50,9 @@ namespace prjVegetable.Controllers
                 datas = db.TInvoiceDetails.Where(
                  p => p.FId.ToString().Contains(keyword)
                 || p.FNumber.Contains(keyword)
+                || p.FCount.ToString().Contains(keyword)
+                || p.FPrice.ToString().Contains(keyword)
+                || p.FSum.ToString().Contains(keyword)
                 || p.FProductName.Contains(keyword));
 
             //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
@@ -37,6 +65,20 @@ namespace prjVegetable.Controllers
         //----------Create------------------------
         public IActionResult Create()
         {
+            //先session
+            var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
+
+            // 先驗證身分
+            if (!checkout == true)
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
             return View();
         }
 
@@ -50,8 +92,19 @@ namespace prjVegetable.Controllers
         }
         //----------delete----------------------
         public ActionResult Delete(int? id) //int? => 允許有null
-
         {
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
+            //
             if (id != null)
             {
                 //open database 
@@ -90,8 +143,19 @@ namespace prjVegetable.Controllers
         }
         [HttpPost]
         public IActionResult Edit(TInvoiceDetail p)
-
         {
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            //若驗證失敗，回到編輯頁面
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Edit", new { id = p.FId });
+            }
+
             //建立資料庫
             DbVegetableContext db = new DbVegetableContext();
 
