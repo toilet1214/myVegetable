@@ -12,8 +12,8 @@ a {
 
 .btn-primary {
     color: #fff;
-    background-color: #8D8266;
-    border-color: #786e56;
+    background-color: #786e56;
+    border-color: #8D8266;
 }
 .btn-outline-primary {
     color: #786e56;
@@ -49,5 +49,6 @@ button.accept-policy {
 }
 
 .bg-primary {
-    background-color: #8d8266;
+    background-color: #8D8266 !important;
+    
 }
