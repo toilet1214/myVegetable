@@ -112,7 +112,7 @@ namespace prjVegetable.Controllers
 
                 // 查找對應的商品圖片
                 var image = db.TImgs.FirstOrDefault(img => img.FProductId == p.FId && img.FOrderBy == 1);
-                pp.FImgName = image?.FName;  // 如果圖片存在，設定 FImgName
+                pp.FImgName = image?.FName;
 
                 // 設定該產品是否為收藏
                 pp.IsFavorite = favoriteProductIds.Contains(p.FId);
@@ -123,8 +123,8 @@ namespace prjVegetable.Controllers
 
             ViewData["TotalPages"] = totalPages;
             ViewData["Page"] = page;
-            ViewData["Category"] = keyword;  // 保留篩選條件
-            ViewData["Keyword"] = textkeyword;  // 保留關鍵字篩選
+            ViewData["Category"] = keyword;
+            ViewData["Keyword"] = textkeyword;
             ViewData["MinPrice"] = minPrice;
             ViewData["MaxPrice"] = maxPrice;
 
