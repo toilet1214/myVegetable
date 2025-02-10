@@ -8,131 +8,138 @@
 
 -->
 <div class="container my-5">
-    <!-- 工具列 start -->
-    <div class="row d-block mb-3">
-        <div class="btn-group" role="group" aria-label="Basic example">
-            <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                查詢
-            </button>
-
-            <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
-                <i class="bi bi-skip-start-fill me-2"></i>第一筆
-            </a>
-            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
-                <i class="bi bi-caret-left-fill me-2"></i>上一筆
-            </a>
-            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })" class="btn btn-primary">
-                <i class="bi bi-caret-right-fill me-2"></i>下一筆
-            </a>
-            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
-                <i class="bi bi-skip-end-fill me-2"></i>最後一筆
-            </a>
-            <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                <i class="bi bi-file-earmark me-2"></i>新增
-            </button>
-            <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
-                <i class="bi bi-pencil me-2"></i>編輯
-            </button>
-            <button type="button" class="btn btn-primary d-none" id="saveButton">
-                <i class="bi bi-floppy me-2"></i>儲存
-            </button>
-            <button type="button" class="btn btn-primary" id="deletebutton">
-                <i class="bi bi-trash me-2"></i>刪除
-            </button>
-            <button type="button" class="btn btn-primary me-2" id="printButton" onclick="printTable()">
-                <i class="bi bi-printer me-2"></i>列印
-            </button>
-        </div>
-    </div>
-
-    <!-- 工具列 end -->
-    <hr />
     <div class="row">
-        <div class="row">
-            <div class="col-5">
-                <!-- 庫存盤點單號 -->
-                <div class="d-flex mb-0 align-items-center">
-                    <label asp-for="InventoryMain.FId" class="pe-1 mb-3">庫存盤點單號</label>
-                    <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
-                    <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
-                </div>
-                <!-- 盤點基準日 -->
-                <div class="d-flex mb-0 align-items-center">
-                    <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-3">盤點基準日</label>
-                    <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-                    <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
-                </div>
+        <div class="col-md-3">
+            <ul id="inventoryList" class="list-group">
+                <!-- 查詢結果會顯示在這裡 -->
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <div class="row d-block mb-3">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                        查詢
+                    </button>
 
-                <!-- 建檔日期 -->
-                <div class="d-flex align-items-center">
-                    <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-3">建檔日期</label>
-                    <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
-                    <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger"></span>
+                    <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
+                        <i class="bi bi-skip-start-fill me-2"></i>第一筆
+                    </a>
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
+                        <i class="bi bi-caret-left-fill me-2"></i>上一筆
+                    </a>
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })" class="btn btn-primary">
+                        <i class="bi bi-caret-right-fill me-2"></i>下一筆
+                    </a>
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
+                        <i class="bi bi-skip-end-fill me-2"></i>最後一筆
+                    </a>
+                    <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="bi bi-file-earmark me-2"></i>新增
+                    </button>
+                    <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
+                        <i class="bi bi-pencil me-2"></i>編輯
+                    </button>
+                    <button type="button" class="btn btn-primary d-none" id="saveButton">
+                        <i class="bi bi-floppy me-2"></i>儲存
+                    </button>
+                    <button type="button" class="btn btn-primary" id="deletebutton">
+                        <i class="bi bi-trash me-2"></i>刪除
+                    </button>
+                    <button type="button" class="btn btn-primary me-2" id="printButton" onclick="printTable()">
+                        <i class="bi bi-printer me-2"></i>列印
+                    </button>
                 </div>
             </div>
-            <div class="col-7 d-flex">
-                <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryMain.FNote</div>
-                <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryMain.FNote</textarea>
-            </div>
-            <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
-            @foreach (var item in Model.InventoryDetails)
-            {
-                <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
-            }
-        </div>
-    </div>
-    <hr />
-    <div>
-        <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
-            <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
-        </div>
-        <div class="table-responsive" style="max-height: 50%;">
-            <table class="table" id="printTable">
-                <thead>
-                    <tr>
-                        <th>商品Id</th>
-                        <th>商品名稱</th>
-                        <th>系統庫存數量</th>
-                        <th>實際庫存數量(填入數量)</th>
-                        <th>差異數量</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
+
+            <!-- 工具列 end -->
+            <hr />
+            <div class="row">
+                <div class="row">
+                    <div class="col-5">
+                        <!-- 庫存盤點單號 -->
+                        <div class="d-flex mb-0 align-items-center">
+                            <label asp-for="InventoryMain.FId" class="pe-1 mb-3">庫存盤點單號</label>
+                            <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
+                            <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
+                        </div>
+                        <!-- 盤點基準日 -->
+                        <div class="d-flex mb-0 align-items-center">
+                            <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-3">盤點基準日</label>
+                            <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
+                            <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
+                        </div>
+
+                        <!-- 建檔日期 -->
+                        <div class="d-flex align-items-center">
+                            <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-3">建檔日期</label>
+                            <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
+                            <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-7 d-flex">
+                        <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryMain.FNote</div>
+                        <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryMain.FNote</textarea>
+                    </div>
+                    <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
                     @foreach (var item in Model.InventoryDetails)
                     {
-                        <tr>
-                            <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
-                            <td>@Html.DisplayFor(modelItem => item.FName)</td>
-                            <td>
-                                @Html.DisplayFor(modelItem => item.FSystemQuantity)
-                            </td>
-                            <td>
-                                <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
-                            </td>
-                            <td>
-                                @if (item.FActualQuantity.HasValue)
-                                {
-                                    @(item.FActualQuantity.Value - item.FSystemQuantity)
-                                }
-                                else
-                                {
-                                    @("")
-                                }
-                            </td>
-                            <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
-                            <input type="hidden" name="FInventoryDetailId" value="@item.FId" />
-                        </tr>
+                        <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
                     }
-                </tbody>
-            </table>
+                </div>
+            </div>
+            <hr />
+            <div>
+                <div class="d-flex justify-content-end">
+                    <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
+                    <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
+                </div>
+                <div class="table-responsive" style="max-height: 50%;">
+                    <table class="table" id="printTable">
+                        <thead>
+                            <tr>
+                                <th>商品Id</th>
+                                <th>商品名稱</th>
+                                <th>系統庫存數量</th>
+                                <th>實際庫存數量(填入數量)</th>
+                                <th>差異數量</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            @foreach (var item in Model.InventoryDetails)
+                            {
+                                <tr>
+                                    <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
+                                    <td>@Html.DisplayFor(modelItem => item.FName)</td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FSystemQuantity)
+                                    </td>
+                                    <td>
+                                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
+                                    </td>
+                                    <td>
+                                        @if (item.FActualQuantity.HasValue)
+                                        {
+                                            @(item.FActualQuantity.Value - item.FSystemQuantity)
+                                        }
+                                        else
+                                        {
+                                            @("")
+                                        }
+                                    </td>
+                                    <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+                                    <input type="hidden" name="FInventoryDetailId" value="@item.FId" />
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex mb-3 align-items-center">
+                <span class="ms-auto">共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆</span>
+            </div>
         </div>
     </div>
-    <hr />
-    <div class="d-flex mb-3 align-items-center">
-        <span class="ms-auto">共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆</span>
-    </div>
-
 </div>
 <!-- 選擇條件來查詢 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -178,9 +185,103 @@
 
 <!-- 查詢 -->
 <script>
-        let inventoryList = []; // 儲存所有查詢結果
+    let inventoryList = []; // 儲存所有查詢結果
     let currentIndex = 0;   // 目前顯示的索引
 
+    document.getElementById('modalSearchButton').addEventListener('click', function () {
+        const fId = document.getElementById('searchFId').value.trim();
+        const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
+        const fBaselineEndDate = document.getElementById('FBaselineEndDate').value.trim();
+        const fCreatedStartDate = document.getElementById('FCreatedStartDate').value.trim();
+        const fCreatedEndDate = document.getElementById('FCreatedEndDate').value.trim();
+
+        const requestData = {
+            fId: fId || null,
+            fBaselineStartDate: fBaselineStartDate || null,
+            fBaselineEndDate: fBaselineEndDate || null,
+            fCreatedStartDate: fCreatedStartDate || null,
+            fCreatedEndDate: fCreatedEndDate || null
+        };
+
+        if (!fId && !fBaselineStartDate && !fBaselineEndDate && !fCreatedStartDate && !fCreatedEndDate) {
+            alert('請至少填寫一個查詢條件');
+            return;
+        }
+
+        $.ajax({
+        url: '/Inventory/Search',
+        type: 'GET',
+        data: requestData,
+        success: function (response) {
+            console.log("AJAX 成功回應！", response);
+
+            if (response && response.inventoryDetails && response.products) {
+                inventoryList = response.inventoryDetails;
+                updateTable(0); // 預設顯示第一筆
+
+                // 動態更新庫存盤點單號、盤點基準日、建檔日期、庫存盤點單備註
+                const firstItem = inventoryList[0]; // 假設顯示第一筆資料
+                if (firstItem) {
+                    document.getElementById('FBaselineDate').value = firstItem.fBaselineDate ? firstItem.fBaselineDate : '';
+                    document.getElementById('FCreatedAt').value = firstItem.fCreatedAt ? firstItem.fCreatedAt : '';
+                    document.getElementById('inventoryNoteView').textContent = firstItem.fNote || '';
+                    document.getElementById('inventoryNoteEdit').value = firstItem.fNote || '';
+                }
+
+            } else {
+                console.error("沒有收到 InventoryDetails 或 Products！");
+                alert('查無符合條件的資料');
+                document.getElementById('tableBody').innerHTML = '';
+            }
+
+            $("#exampleModal").modal("hide");
+        },
+        error: function (error) {
+            console.error("AJAX 失敗", error);
+            alert('發生錯誤，請稍後再試');
+        }
+        });
+
+    });
+
+    function updateTable(fInventoryMainId) {
+        if (inventoryList.length === 0) return;
+
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = ''; // 清空表格
+
+        // 根據 fInventoryMainId 過濾出相關資料
+        let filteredData = inventoryList.filter(item => item.fInventoryMainId === fInventoryMainId);
+
+        // 遍歷過濾後的資料並顯示
+        filteredData.forEach(item => {
+            let actualQuantity = item.fActualQuantity ?? '';
+            let difference = actualQuantity !== '' ? actualQuantity - item.fSystemQuantity : '';
+
+            let row = `
+                <tr>
+                    <td>${item.fProductId}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.fSystemQuantity}</td>
+                    <td><input id="FActualQuantity_${item.fId}" name="FActualQuantity" type="number" value="${actualQuantity}"></td>
+                    <td>${difference}</td>
+                </tr>
+            `;
+            tableBody.innerHTML += row;
+        });
+
+        // 更新 URL
+        window.history.pushState({}, '', `/Inventory/Detail/${fInventoryMainId}`);
+
+        // 更新導航按鈕
+        updateNavigationButtons(fInventoryMainId);
+    }
+
+
+</script>
+
+<!-- 左側選擇欄 -->
+<script>
     document.getElementById('modalSearchButton').addEventListener('click', function () {
         const fId = document.getElementById('searchFId').value.trim();
         const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
@@ -206,13 +307,17 @@
             type: 'GET',
             data: requestData,
             success: function (response) {
-                console.log("🚀 AJAX 成功回應！", response);
+                console.log("AJAX 成功回應！", response);
 
                 if (response && response.inventoryDetails && response.products) {
                     inventoryList = response.inventoryDetails;
+
+                    // 更新左側欄的資料
+                    updateInventoryList(inventoryList);
+
                     updateTable(0); // 預設顯示第一筆
                 } else {
-                    console.error("⚠️ 沒有收到 InventoryDetails 或 Products！");
+                    console.error("沒有收到 InventoryDetails 或 Products！");
                     alert('查無符合條件的資料');
                     document.getElementById('tableBody').innerHTML = '';
                 }
@@ -220,60 +325,58 @@
                 $("#exampleModal").modal("hide");
             },
             error: function (error) {
-                console.error("❌ AJAX 失敗", error);
+                console.error("AJAX 失敗", error);
                 alert('發生錯誤，請稍後再試');
             }
         });
     });
 
-     function updateTable(index) {
-        if (inventoryList.length === 0) return;
+    // 更新左側欄的清單
+    function updateInventoryList(inventoryList) {
+        const inventoryListElement = document.getElementById('inventoryList');
+        inventoryListElement.innerHTML = ''; // 清空現有清單
 
-        const tableBody = document.getElementById('tableBody');
-        tableBody.innerHTML = '';
+        // 取得唯一的 fInventoryMainId
+        const uniqueInventoryMainIds = [...new Set(inventoryList.map(item => item.fInventoryMainId))];
+        
+        // 遍歷唯一的 fInventoryMainId 並顯示
+        uniqueInventoryMainIds.forEach(fInventoryMainId => {
+            const listItem = document.createElement('li');
+            listItem.classList.add('list-group-item');
 
-        let currentInventoryMainId = inventoryList[index].fInventoryMainId;
-        let filteredData = inventoryList.filter(item => item.fInventoryMainId === currentInventoryMainId);
+            // 找到該 fInventoryMainId 對應的第一筆資料，顯示其細節
+            const firstItem = inventoryList.find(item => item.fInventoryMainId === fInventoryMainId);
+            listItem.textContent = `${firstItem.fInventoryMainId} - ${firstItem.fBaselineDate} - ${firstItem.fCreatedAt} - ${firstItem.fNote}`;
 
-        filteredData.forEach(item => {
-            let actualQuantity = item.fActualQuantity ?? '';
-            let difference = actualQuantity !== '' ? actualQuantity - item.fSystemQuantity : '';
+            // 點擊時顯示該筆資料的詳細內容
+            listItem.addEventListener('click', function () {
+                updateTable(firstItem.fInventoryMainId);
 
-            let row = `
-                <tr>
-                    <td>${item.fProductId}</td>
-                    <td>${item.productName}</td>
-                    <td>${item.fSystemQuantity}</td>
-                    <td><input id="FActualQuantity_${item.fId}" name="FActualQuantity" type="number" value="${actualQuantity}"></td>
-                    <td>${difference}</td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
+                // 更新工具列中的資料
+                document.getElementById('FBaselineDate').value = firstItem.fBaselineDate || '';
+                document.getElementById('FCreatedAt').value = firstItem.fCreatedAt || '';
+                document.getElementById('inventoryNoteView').textContent = firstItem.fNote || '';
+                document.getElementById('inventoryNoteEdit').value = firstItem.fNote || '';
+            });
+
+            inventoryListElement.appendChild(listItem);
         });
-
-        window.history.pushState({}, '', `/Inventory/Detail/${currentInventoryMainId}`);
-        updateNavigationButtons(currentInventoryMainId);
     }
 
+        function updateNavigationButtons(currentInventoryMainId) {
+        // 假設 inventoryList 已經被填充為搜尋結果
 
-    function updateNavigationButtons(currentMainId) {
-        let mainIds = [...new Set(inventoryList.map(item => item.fInventoryMainId))]; // 取得不重複的 FInventoryMainId
-        let currentIndex = mainIds.indexOf(currentMainId);
+        // 根據 currentInventoryMainId 在 inventoryList 中找到目前的索引
+        const currentIndex = inventoryList.findIndex(item => item.fInventoryMainId === currentInventoryMainId);
 
-        document.getElementById("firstButton").href = `/Inventory/Detail?id=${mainIds[0]}`;
-        document.getElementById("prevButton").href = currentIndex > 0 ? `/Inventory/Detail?id=${mainIds[currentIndex - 1]}` : "#";
-        document.getElementById("nextButton").href = currentIndex < mainIds.length - 1 ? `/Inventory/Detail?id=${mainIds[currentIndex + 1]}` : "#";
-        document.getElementById("lastButton").href = `/Inventory/Detail?id=${mainIds[mainIds.length - 1]}`;
+        // 根據當前索引啟用或禁用導航按鈕
+        document.querySelector('[href*="FirstId"]').disabled = currentIndex === 0;
+        document.querySelector('[href*="PreviousId"]').disabled = currentIndex === 0;
+        document.querySelector('[href*="NextId"]').disabled = currentIndex === inventoryList.length - 1;
+        document.querySelector('[href*="LastId"]').disabled = currentIndex === inventoryList.length - 1;
     }
-
-    // 事件監聽：按鈕切換資料
-    document.getElementById('firstButton').addEventListener('click', () => updateTable(0));
-    document.getElementById('prevButton').addEventListener('click', () => updateTable(Math.max(currentIndex - 1, 0)));
-    document.getElementById('nextButton').addEventListener('click', () => updateTable(Math.min(currentIndex + 1, inventoryList.length - 1)));
-    document.getElementById('lastButton').addEventListener('click', () => updateTable(inventoryList.length - 1));
 
 </script>
-
 
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

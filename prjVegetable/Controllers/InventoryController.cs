@@ -132,7 +132,6 @@ namespace prjVegetable.Controllers
             ViewData["LastId"] = lastId;
             ViewData["PreviousId"] = previousId;
             ViewData["NextId"] = nextId;
-
             return View(viewModel);
         }
 
@@ -481,7 +480,7 @@ namespace prjVegetable.Controllers
 
             return new JsonResult(new
             {
-                success = true,  // 加入 success 標誌，前端可據此判斷是否成功
+                success = true,
                 InventoryMain = viewModel.InventoryMain,
                 InventoryDetails = inventoryDetails,
                 Products = products,
@@ -489,6 +488,8 @@ namespace prjVegetable.Controllers
                 CurrentItemCount = viewModel.CurrentItemCount
             });
         }
+
+       
 
 
     }
