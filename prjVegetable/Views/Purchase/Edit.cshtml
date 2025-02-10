@@ -29,12 +29,19 @@
 
             <div class="form-group">
                 <label asp-for="FInvoiceForm" class="control-label"></label>
-                <input asp-for="FInvoiceForm" class="form-control" />
+                <select asp-for="FInvoiceForm" class="form-control">
+                    <option value="0">二連</option>
+                    <option value="1">三連</option>
+                </select>
                 <span asp-validation-for="FInvoiceForm" class="text-danger"></span>
             </div>
+
             <div class="form-group">
                 <label asp-for="FPayment" class="control-label"></label>
-                <input asp-for="FPayment" class="form-control" />
+                <select asp-for="FPayment" class="form-control">
+                    <option value="0">日結</option>
+                    <option value="1">月結</option>
+                </select>
                 <span asp-validation-for="FPayment" class="text-danger"></span>
             </div>
 
@@ -63,14 +70,14 @@
                 <input asp-for="FNote" class="form-control" />
                 <span asp-validation-for="FNote" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group mt-2">
                 <input type="submit" value="送出並修改" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
+<div class="mt-2">
        <form asp-action="List" method="post">
         <button type="submit" class="btn btn-danger">取消</button>
     </form>

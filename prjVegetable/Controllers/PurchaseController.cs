@@ -25,6 +25,7 @@ namespace prjVegetable.Controllers
 			else
 				datas = db.TPurchases.Where(
 				 p => p.FEditor.ToString().Contains(keyword)
+                || p.FProviderId.ToString().Contains(keyword)
                 || p.FId.ToString().Contains(keyword));
 
 			//原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。

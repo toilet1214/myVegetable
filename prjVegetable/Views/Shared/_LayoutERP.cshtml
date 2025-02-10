@@ -83,11 +83,15 @@
                         </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                帳款管理
+                                營運狀況
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="@Url.Action("#", "#")">收款管理</a></li>
-                                <li><a class="dropdown-item" href="@Url.Action("#", "#")">付款管理</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="BusinessOperation" asp-action="business">採購概況分析</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="BusinessOperation" asp-action="transaction">交易紀錄分析</a></li>
+                                <li><a class="nav-link text-dark" asp-area="" asp-controller="BusinessOperation" asp-action="goods">銷售商品分類分析</a></li>
+@*                                 <li><a class="dropdown-item" href="@Url.Action("business", "business")">銷售概況</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("transaction", "transaction")">交易紀錄</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("goods", "goods")">銷售商品分類</a></li> *@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -129,7 +133,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.1/jquery-ui.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ" crossorigin="anonymous"></script>
-
+    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <script src="js/datepicker-zh-TW.js">//日期中文化</script>
     <script>
         $(function () {

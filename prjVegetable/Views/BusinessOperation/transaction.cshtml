@@ -1,0 +1,121 @@
+﻿@model IEnumerable<prjVegetable.Models.TInvoice> //會改
+
+@{
+	ViewData["Title"] = "List";
+	Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .chart-container 
+        { display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .chart-box 
+        { width: 48%;
+            min-width: 400px;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="fs-1 fw-bold mt-3">
+            <p>交易紀錄分析</p>
+        </div>
+        <div class="input-container mt-3 margin-left: 20px">
+            <label>選擇時間區間:</label>
+            <input type="date" v-model="startDate">
+            <span>-</span>
+            <input type="date" v-model="endDate">
+            <button class="btn btn-success" v-on:click="fetchData">查詢</button>
+        </div>
+
+        <div>
+            <div class="chart-container mt-3">
+				<div class="fs-1 fw-bold text-center col-6 ">
+					<p>交易總額: {{ totalAmount }} 元</p>
+                    <p>交易總數: {{ totalCount }} 筆</p>
+                    <img style="width: 25%; height: 50%;" src="~/images/交易紀錄分析.jpg" />
+				</div>
+
+				<div class="chart-box col-6 ">
+					<div id="lineChartContainer" style="height: 370px;"></div>
+				</div>
+			</div>
+
+            <div class="chart-container mb-3 mt-3">
+                <div id="pieChartContainer" class="chart-box " style="height: 450px;"></div>
+                <div id="barChartContainer" class="chart-box" style="height: 370px;"></div>
+
+			</div>
+        </div>
+
+    </div>
+
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                startDate: "2024-01-01",
+                endDate: "2025-12-31",
+                totalAmount: 0,
+                totalCount: 0,
+                pieChart: null,
+                barChart: null,
+                lineChart: null
+            },
+            methods: {
+                fetchData() {
+                    $.ajax({
+                        url: "/AjaxBusinessOperation/GetInvoiceData",
+                        type: "GET",
+                        data: { startDate: this.startDate, endDate: this.endDate },
+                        success: (res) => {
+                            this.totalAmount = res.total;
+                            this.totalCount = res.count;
+                            this.renderCharts(res);
+                        }
+                    });
+                },
+                renderCharts(data) {
+                    this.pieChart = new CanvasJS.Chart("pieChartContainer", {
+                        theme: "light2",
+                        title: { text: "銷項或進項" },
+                        data: [{ type: "pie",
+                        dataPoints: data.invoiceTypes }]
+                    });
+
+                    this.barChart = new CanvasJS.Chart("barChartContainer", {
+                        theme: "light2",
+                        title: { text: "交易狀態" },
+                        data: [{ type: "column", dataPoints: data.statusCounts }]
+                    });
+
+                    this.lineChart = new CanvasJS.Chart("lineChartContainer", {
+                        theme: "light2",
+                        title: { text: "交易趨勢" },
+                        axisX: { valueFormatString: "YYYY-MM" },
+                        axisY: { title: "交易次數" },
+                        data: [{
+                            type: "line",
+                            dataPoints: data.timeTrends.map(d => ({ x: new Date(d.x), y: d.y }))
+                        }]
+                    });
+
+
+                    this.pieChart.render();
+                    this.barChart.render();
+                    this.lineChart.render();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
