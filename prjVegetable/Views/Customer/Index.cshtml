@@ -131,9 +131,9 @@
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
-                                <label for="fPassword" class="col-md-3 col-form-label">新密碼：</label>
+                                <label for="newPassword" class="col-md-3 col-form-label">新密碼：</label>
                                 <div class="col-md-9">
-                                    <input type="password" class="form-control" id="fPassword" placeholder="請輸入新密碼" v-model="Customer.newPassword">
+                                    <input type="password" class="form-control" id="newPassword" placeholder="請輸入新密碼" v-model="Customer.newPassword">
                                 </div>
                             </div>
                         </div>
@@ -143,7 +143,7 @@
                             <div class="row">
                                 <label for="ConfirmPassword" class="col-md-3 col-form-label">確認密碼：</label>
                                 <div class="col-md-9">
-                                    <input type="password" class="form-control" id="ConfirmPassword" placeholder="請確認新密碼" v-model="Customer.confirmPassword">
+                                    <input type="password" class="form-control" id="ConfirmPassword" placeholder="請確認新密碼" v-model="Customer.ConfirmPassword">
                                 </div>
                             </div>
                         </div>
@@ -316,7 +316,7 @@
                             return;
                         }
 
-                        if (this.newPassword !== this.confirmPassword) {
+                        if (this.newPassword !== this.ConfirmPassword) {
                             this.passwordError = true;
                             alert("o123ld");
                             return;
@@ -337,8 +337,7 @@
                         });
                 },
                 validateOldPassword() {
-                    // 這裡可以用真正的後端 API 驗證舊密碼
-                    return this.oldPassword == this.Customer.fPassword;  // 假設舊密碼與 fPassword 一致
+                    return String(this.oldPassword) === String(this.Customer.fPassword); // 假設舊密碼與 fPassword 一致
                 }
             }
         });

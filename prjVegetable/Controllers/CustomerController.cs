@@ -12,7 +12,7 @@ namespace prjVegetable.Controllers
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
