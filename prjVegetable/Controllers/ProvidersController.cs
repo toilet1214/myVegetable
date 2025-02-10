@@ -137,7 +137,8 @@ namespace prjVegetable.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: TProviders/Delete/5
+        // Post: TProviders/Delete/5
+        [HttpPost]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -145,16 +146,16 @@ namespace prjVegetable.Controllers
                 return NotFound();
             }
 
-            var tProvider = await _context.TProviders
-                .FirstOrDefaultAsync(m => m.FId == id);
+            var tProvider = await _context.TProviders.FirstOrDefaultAsync(m => m.FId == id);
             if (tProvider == null)
             {
                 return NotFound();
             }
             _context.TProviders.Remove(tProvider);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
-        }        
+            return Json(new { success=true});
+        }
+        
     }
 }

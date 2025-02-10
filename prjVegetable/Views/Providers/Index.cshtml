@@ -16,6 +16,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FName)
             </th>
             <th>
@@ -46,34 +49,35 @@
 @foreach (var item in Model) {
         <tr>
             <td>
+                @Html.DisplayFor(modelItem => item.provider.FId)
+            </td>
+            <td>
                 @Html.DisplayFor(modelItem => item.provider.FName)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FUbn)
+                @Html.DisplayFor(modelItem => item.provider.FUbn)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FTel)
+                @Html.DisplayFor(modelItem => item.provider.FTel)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FConnect)
+                @Html.DisplayFor(modelItem => item.provider.FConnect)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FAccountant)
+                @Html.DisplayFor(modelItem => item.provider.FAccountant)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FAddress)
+                @Html.DisplayFor(modelItem => item.provider.FAddress)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FDelivery)
+                @Html.DisplayFor(modelItem => item.provider.FDelivery)
             </td>
             <td>
-                    @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
+                @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
             </td>            
             <td>
-                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br/>
                 <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
-                @Html.ActionLink("移除", "Delete", "Tproviders", new { id = item.provider.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
+                    <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)">刪除</a>
             </td>
         </tr>
 }
@@ -108,6 +112,20 @@
                 "lengthChange": true, // 允許改變筆數
             });
         });
+        function deleteProvider(id) {
+        if (confirm("你確定要刪除這筆資料嗎?")) {
+            $.ajax({
+                url: '/Providers/Delete/' + id,
+                type: 'POST',  // 或 'DELETE'，取決於你的控制器方法是否接受 DELETE 請求
+                success: function (result) {
+                    // 刪除成功後更新頁面，移除該筆資料
+                    location.reload();
+                },
+                error: function () {alert('刪除失敗'); }
+                });
+            }
+        }
+
     </script>
 
 }

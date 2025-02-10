@@ -41,8 +41,7 @@
                 <td>{{ item.fPhone }}</td>
                 <td>{{ item.fTel }}</td>
                 <td>{{ item.fEmail }}</td>
-                <td>
-                    <a :href="'/Person/Edit/' + item.fId">編輯資料</a><br />
+                <td>                    
                     <a :href="'/Person/Details/' + item.fId">詳細資料</a><br />
                     <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)">移除</a>
                 </td>
