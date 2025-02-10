@@ -226,7 +226,7 @@
         });
     });
 
-    function updateTable(index) {
+     function updateTable(index) {
         if (inventoryList.length === 0) return;
 
         const tableBody = document.getElementById('tableBody');
@@ -236,19 +236,22 @@
         let filteredData = inventoryList.filter(item => item.fInventoryMainId === currentInventoryMainId);
 
         filteredData.forEach(item => {
-            let row = `<tr>
-                <td>${item.fInventoryMainId}</td>
-                <td>${item.fProductId}</td>
-                <td>${item.fSystemQuantity}</td>
-                <td><input id="FActualQuantity_${item.fId}" name="FActualQuantity" type="number" value="${item.fActualQuantity ?? ''}"></td>
-            </tr>`;
+            let actualQuantity = item.fActualQuantity ?? '';
+            let difference = actualQuantity !== '' ? actualQuantity - item.fSystemQuantity : '';
+
+            let row = `
+                <tr>
+                    <td>${item.fProductId}</td>
+                    <td>${item.productName}</td>
+                    <td>${item.fSystemQuantity}</td>
+                    <td><input id="FActualQuantity_${item.fId}" name="FActualQuantity" type="number" value="${actualQuantity}"></td>
+                    <td>${difference}</td>
+                </tr>
+            `;
             tableBody.innerHTML += row;
         });
 
-        // 變更網址 (不重新載入)
         window.history.pushState({}, '', `/Inventory/Detail/${currentInventoryMainId}`);
-
-        // 更新按鈕連結
         updateNavigationButtons(currentInventoryMainId);
     }
 
@@ -415,35 +418,37 @@
 
             if (differenceQuantity !== 0) {
                 hasQuantityChange = true; // 如果有數量變更，設定為 true
+
+                // **只儲存有變動的庫存項目**
+                inventoryDetails.push({
+                    InventoryDetail: {
+                        FId: fId,
+                        FInventoryMainId: inventoryMainId,
+                        FInventoryDetailId: fId,
+                        FActualQuantity: actualQuantity,
+                        FProductId: productId,
+                        FSystemQuantity: systemQuantity
+                    },
+                    FName: productName,
+                    DifferenceQuantity: differenceQuantity
+                });
+
+                products.push({
+                    FId: productId,
+                    FQuantity: actualQuantity,
+                    FName: productName
+                });
             }
-
-            inventoryDetails.push({
-                InventoryDetail: {
-                    FId: fId,
-                    FInventoryMainId: inventoryMainId,
-                    FInventoryDetailId: fId,
-                    FActualQuantity: actualQuantity,
-                    FProductId: productId,
-                    FSystemQuantity: systemQuantity
-                },
-                FName: productName,
-                DifferenceQuantity: differenceQuantity
-            });
-
-            products.push({
-                FId: productId,
-                FQuantity: actualQuantity,
-                FName: productName
-            });
         });
 
         var requestData = {
             currentId: currentId,
-            InventoryMain: inventoryMain
+            InventoryMain: inventoryMain,
+            InventoryDetails: []
         };
 
         if (hasQuantityChange) {
-            // 如果有數量變動，則包含完整的 InventoryDetails 和調整單
+            // **只有當有變動時，才包含 `InventoryDetails` 和相關調整資訊**
             requestData.InventoryDetails = inventoryDetails;
             requestData.Products = products;
             requestData.InventoryAdjustmentDetail = [];
@@ -452,30 +457,28 @@
 
         console.log(requestData);
 
-           $.ajax({
-        url: '/Inventory/Save/' + currentId,
-        method: 'POST',
-        data: JSON.stringify(requestData),
-        contentType: 'application/json',
-        success: function (response) {
-            if (response.success) {
-                if (response.redirectTo) {
-                    window.location.href = response.redirectTo; // 有跳轉頁面
-                    alert("檢測到庫存數量變更，將儲存並跳轉到盤點調整作業");
+        $.ajax({
+            url: '/Inventory/Save/' + currentId,
+            method: 'POST',
+            data: JSON.stringify(requestData),
+            contentType: 'application/json',
+            success: function (response) {
+                if (response.success) {
+                    if (response.redirectTo) {
+                        window.location.href = response.redirectTo; // 有跳轉頁面
+                        alert("檢測到庫存數量變更，將儲存並跳轉到盤點調整作業");
+                    } else {
+                        alert("備註更新成功！"); // 只更新 FNote，不跳轉
+                    }
                 } else {
-                    alert("備註更新成功！"); // 只更新 FNote，不跳轉
+                    alert('錯誤: ' + response.error);
                 }
-            } else {
-                alert('錯誤: ' + response.error);
+            },
+            error: function (xhr, status, error) {
+                alert("錯誤: " + error);
             }
-        },
-        error: function (xhr, status, error) {
-            alert("錯誤: " + error);
-        }
-    });
-
+        });
     }
-
 </script>
 
 <!-- 刪除 -->

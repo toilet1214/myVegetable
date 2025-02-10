@@ -364,6 +364,7 @@ namespace prjVegetable.Controllers
 
 
 
+
         /*---------------- + Search + ----------------*/
         public IActionResult Index()
         {
@@ -424,15 +425,18 @@ namespace prjVegetable.Controllers
             }
 
             // 3. 查詢 InventoryDetails
-            var inventoryDetails = _context.TInventoryDetails
-                .Where(d => inventoryMains.Select(im => im.FId).Contains(d.FInventoryMainId))
-                .Select(d => new {
-                    d.FSystemQuantity,
-                    d.FActualQuantity,
-                    d.FInventoryMainId,
-                    d.FProductId, // 修正這裡，應該取 FProductId 而非 FId
-                    d.FId
-                }).ToList();
+            var inventoryDetails = (from d in _context.TInventoryDetails
+                                    join p in _context.TProducts on d.FProductId equals p.FId
+                                    where inventoryMains.Select(im => im.FId).Contains(d.FInventoryMainId)
+                                    select new
+                                    {
+                                        d.FSystemQuantity,
+                                        d.FActualQuantity,
+                                        d.FInventoryMainId,
+                                        d.FProductId,
+                                        d.FId,
+                                        ProductName = p.FName
+                                    }).ToList();
 
             // 4. 查詢 Products
             var products = _context.TProducts
