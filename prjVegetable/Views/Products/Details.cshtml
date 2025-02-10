@@ -93,21 +93,25 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <label for="fImgName" class="col-md-3 col-form-label">商品照片：</label>
-                            <div class="col-md-9">
-                                <div v-for="(img, index) in img" :key="index">
-                                    <img :src="img" alt="Product Image" style="max-width: 25%; height: auto;">
-                                </div>
-                                
-@*                                 <img v-if="img.fImgName" :src="img.fImgName" alt="Product Image" style="max-width: 25%; height: auto;">
- *@                                @* <input type="text" class="form-control" id="fImgName" :placeholder="img.fImgName" v-model="img.fImgName"> *@
+                </div>
+                <div class="mb-3 row">
+                    <div class="row">
+                        <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
+                        <div v-if="product.Images && product.Images.length > 0" >
+                            <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
+                                <img :src="'https://localhost:7251/images/' + image"
+                                     alt="'商品圖片 ' + (index + 1)"
+                                     class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <input type="file"
+                                       :id="'update-' + index"                                       
+                                @@change="editFileChanged($event.target, index)" />
                             </div>
                         </div>
+                        <input type="file" @@change ="newImageSelected" />
                     </div>
                 </div>
-                
+
             </form>
             @*顯示樣本*@
             <form v-else>
@@ -194,28 +198,28 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fImgName" class="col-md-3 col-form-label">商品照片：</label>
+                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <img v-if="img.fImgName" :src="img.fImgName" alt="商品照片" class="img-fluid" style="max-width: 25%; height: auto;">
-@*                                 <input type="text" class="form-control" id="fImgName" :value="img.fImgName" readonly>
- *@                            </div>
+                                <input type="text" class="form-control" id="fEditor" :value="product.fEditor" readonly>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="mb-3 row">
-                    @* <div class="col-6">
-                        <div class="row">
-                            <label for="fCreatedAt" class="col-md-3 col-form-label">創建日期：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fCreatedAt" :value="person.fCreatedAt" readonly>
-                            </div>
-                        </div>
-                    </div> *@
                     <div class="col-6">
                         <div class="row">
-                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
+                            <label for="fImgName" class="col-md-3 col-form-label">商品照片：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="product.fEditor" readonly>
+                                <div v-if="product.Images && product.Images.length > 0">
+                                    <span v-for="(image, index) in product.Images" :key="index">
+                                        <img :src="'https://localhost:7251/images/' + image"
+                                             alt="'商品圖片 ' + (index + 1)"
+                                             class="img-fluid d-inline-flex"
+                                             style="max-width: 25%; margin-bottom: 10px; " />
+                                    </span>
+                                </div>
+                                <div v-else>loading</div>
+
                             </div>
                         </div>
                     </div>
@@ -242,7 +246,9 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    product: [], 
+                    product: {
+                        Images:[]
+                    },
                     img:[],// 用來存放從後端獲得的人員資料
                     edit:false, //啟用編輯
                 };
@@ -265,24 +271,76 @@
                             .then(response => {
                                 console.log(response.data);  // 查看返回的產品資料
                                 this.product = response.data; // 把返回的資料賦值給 product
-                                this.img = response.data.FImgNames || [];
+                                this.product.Images = response.data.images || [];
                             })
                             .catch(error => {
                                 console.error('資料加載錯誤', error);
                                 this.product = {};  // 如果出錯，清空資料
-                                this.img = [];
+                                this.product.Images = [];
                             });
                     } else {
                         console.error('未提供有效的 ID');
                     }
                 },
                 goToIndex() {
-                    window.location.href = "/Product/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
+                    window.location.href = "/Products/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
                 },
 
                 toggleEditting() {
                 this.edit = !this.edit;  // 切換 edit 值
                 },
+
+                //選擇文件更新照片
+                editFileChanged(event,index){
+                    const file = event.target.files[0];
+                    if(file){
+                        //更新對應圖片
+                        const formData = new FormData();
+                        formData.append('file',file;
+                        formData.append('imageIndex',index;
+
+                        axios.post('/Products/UpdateProductImage',formData,{
+                            headers:{
+                                'Content-Type':'multipart/fom-data'
+                            }
+                        })
+                        .then(response => {
+                            this.product.Images[index] = response.data.imageName;  // 更新图片数组
+                            alert("圖片更新成功");
+                        })
+                        .catch(error => {
+                            console.error('上傳失败', error);
+                            alert("圖片上傳失败");
+                        });
+                    }
+                },
+
+                // 上传新的图片
+                newImageSelected(event) {
+                    const file = event.target.files[0];  // 获取选择的文件
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+
+                        axios.post('/Products/AddProductImage', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                        .then(response => {
+                            this.product.Images.push(response.data.imageName);  // 将新图片添加到数组
+                            alert("圖片上傳成功");
+                        })
+                        .catch(error => {
+                            console.error('上傳失败', error);
+                            alert("圖片上傳失數");
+                        });
+                    }
+                },
+
+
+
+             
                 saveProduct() {
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确

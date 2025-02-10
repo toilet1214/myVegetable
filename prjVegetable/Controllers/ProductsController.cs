@@ -74,8 +74,8 @@ namespace prjVegetable.Controllers
             {
                 return NotFound("products not found");
             }
-            var Img = await _context.TImgs.Where(i => i.FId == id).ToListAsync();
-
+            var Img = await _context.TImgs.Where(i => i.FProductId == id).Select(i=>i.FName).ToListAsync();
+            
             var productsWithImg = new 
             {
                 products.FId,
@@ -90,14 +90,14 @@ namespace prjVegetable.Controllers
                 products.FOrigin,
                 products.FLaunchAt,
                 products.FEditor,
-                FImgNames = Img.Select(img => $"https://localhost:7251/images/{img.FName}").ToList(),  // 生成圖片的完整URL
+                Images = Img,
             };
 
             return Ok(productsWithImg);
         }
         
         [HttpPut]
-        public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
+        public async Task<IActionResult> update([FromBody] CProductWrap productwrap, [FromForm] IFormFile file)
         {
             TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == productwrap.FId);
             TImg i = _context.TImgs.FirstOrDefault(i => i.FProductId == productwrap.FId);
@@ -119,22 +119,32 @@ namespace prjVegetable.Controllers
                 e.FLaunch = productwrap.FLaunch;
                 e.FEditor = productwrap.FEditor;
 
-                if (productwrap.FImgName != null)
+                if (file != null && file.Length > 0)
                 {
+                    // 儲存圖片檔案
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                    var filePath = Path.Combine("wwwroot/images", fileName);  // 假設圖片儲存到 wwwroot/images
+
+                    // 將檔案儲存至伺服器
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
+
+                    // 如果商品沒有圖片資料，則新增圖片
                     if (i == null)
                     {
-                        // 如果沒有圖片資料，新增圖片
                         i = new TImg
                         {
                             FProductId = productwrap.FId,
-                            FName = productwrap.FImgName // 假設圖片是 URL，若是二進位資料則需進一步處理
+                            FName = fileName
                         };
                         _context.TImgs.Add(i);
                     }
                     else
                     {
-                        // 如果已有圖片，則更新圖片
-                        i.FName = productwrap.FImgName;
+                        // 更新圖片資料
+                        i.FName = fileName;
                     }
                 }
 
