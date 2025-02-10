@@ -331,3 +331,7 @@ VALUES
 (8, 3, 3, 200, 600),
 (9, 4, 1, 50, 50),
 (10, 5, 2, 100, 200);
+
+--person
+INSERT INTO tPerson (fName, fAccount, fPassword, fGender, fBirth, fPhone, fTel, fAddress, fEmail, fUBN, fPermission, fEmp, fEmpTel, fEditor) 
+VALUES ('Dwayne Strong', '123', '123', '¤k', '1990-06-08', '0979874614', '079599366', 'Unit 6832 Box 4261\nDPO AE 11131', 'bradley56@roth.com', '33448366', 1, 'William Stephens', '0962975478', 1);
