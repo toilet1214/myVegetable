@@ -2,14 +2,14 @@
 
 @{
     ViewData["Title"] = "Index";
-    // Layout = "~/Views/Shared/_MemberCenter.cshtml";
+
 }
 
 <h1 class="mt-5">會員資料</h1>
 
 
 <hr />
-<div class="container my-5">
+<div class="container my-5" id="app">
     <div class="row">
         <div class="col-md-3">
             <nav class="nav flex-column">
@@ -19,78 +19,331 @@
             </nav>
         </div>
         <div class="col-md-9">
-            <div class="row">
-                <form asp-action="Index">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                    <input type="hidden" name="FId" value="@Model.FId" />
-                    <div class="mb-3 form-group">
-                        <label asp-for="FName" class="control-label"></label>
-                        <input asp-for="FName" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FName" class="text-danger"></span>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-6 form-group">
-                            <label asp-for="FBirth" class="control-label"></label>
-                            <input asp-for="FBirth" type="date" class="form-control text-start w-50 border-1 border-dark">
+            <div v-if="Customer" class="row">
+                <form v-if="edit==1">
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fName" class="col-md-3 col-form-label">姓名：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fName" :placeholder="請輸入新姓名" v-model="Customer.fName">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label asp-for="FGender" class="control-label"></label>
-                            <select asp-for="FGender" class="form-control text-start border-1 border-dark w-50">
-                                <option value="" disabled selected hidden>請選擇</option>
-                                <option value="Male">男性</option>
-                                <option value="Female">女性</option>
-                                <option value="Other">其他</option>
-                            </select>
-                            <span asp-validation-for="FGender" class="text-danger"></span>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fPhone" :placeholder="請輸入新手機號碼" v-model="Customer.fPhone">
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="mb-3 form-group">
-                        <label asp-for="FPhone" class="control-label"></label>
-                        <input asp-for="FPhone" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FPhone" class="text-danger"></span>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fAccount" :value="Customer.fAccount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="fPassword" :value="Customer.fPassword" readonly>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3 form-group">
-                        <label asp-for="FTel" class="control-label"></label>
-                        <input asp-for="FTel" class="form-control text-start w-100 border-1 border-dark" />
-                        <span asp-validation-for="FTel" class="text-danger "></span>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fGender" class="col-md-3 col-form-label">性別：</label>
+                                <div class="col-md-9">
+                                    <select class="form-control" id="fGender" v-model="Customer.fGender">
+                                        <option value="男">男性</option>
+                                        <option value="女">女性</option>
+                                        <option value="其他">其他</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="datepicker" :placeholder="Customer.fBirth" v-model="Customer.fBirth">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3 form-group">
-                        <label asp-for="FAddress" class="control-label"></label>
-                        <input asp-for="FAddress" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FAddress" class="text-danger"></span>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fUbn" :placeholder="請輸入新統編" v-model="Customer.fUbn">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fTel" :placeholder="請輸入新電話" v-model="Customer.fTel">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="FEmail" class="control-label"></label>
-                        <input asp-for="FEmail" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FEmail" class="text-danger"></span>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fAddress" :placeholder="請輸入新地址" v-model="Customer.fAddress">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fEmail" :placeholder="請輸入新電子郵件" v-model="Customer.fEmail">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label asp-for="FUbn" class="control-label"></label>
-                        <input asp-for="FUbn" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FEmail" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3 form-group">
-                        <label asp-for="FPassword" class="control-label"></label>
-                        <input asp-for="FPassword" type="password" class="form-control text-start w-100 border-1 border-dark">
-                        <span asp-validation-for="FPassword" class="text-danger"></span>
-                    </div>
-                    <div class="mb-3 form-group">
-                        <label asp-for="ConfirmPassword" class="control-label"></label>
-                        <input asp-for="ConfirmPassword" type="password" class="form-control text-start w-100 border-1 border-dark" />
-                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                    </div>
-                    <div class="form-group">
-                        <input type="submit" value="儲存" class="btn btn-primary" />
-                    </div>
+
                 </form>
+                <form v-if="edit == 2">
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="OldPassword" class="col-md-3 col-form-label">舊密碼：</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="OldPassword" placeholder="請輸入舊密碼" v-model="Customer.oldPassword">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fPassword" class="col-md-3 col-form-label">新密碼：</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="fPassword" placeholder="請輸入新密碼" v-model="Customer.newPassword">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="ConfirmPassword" class="col-md-3 col-form-label">確認密碼：</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="ConfirmPassword" placeholder="請確認新密碼" v-model="Customer.confirmPassword">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="passwordError" class="text-danger">舊密碼錯誤或新密碼與確認密碼不一致</div>
+
+                </form>
+                @*顯示樣本*@
+                <form v-if="edit==0">
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fName" class="col-md-3 col-form-label">姓名：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fName" :value="Customer.fName" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fPhone" :value="Customer.fPhone" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fAccount" :value="Customer.fAccount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
+                                <div class="col-md-9">
+                                    <input type="password" class="form-control" id="fPassword" :value="Customer.fPassword" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fGender" class="col-md-3 col-form-label">性別：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fGender" :value="Customer.fGender" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="datepicker" :value="Customer.fBirth" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fUbn" :value="Customer.fUbn" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fTel" :value="Customer.fTel" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 row">
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fAddress" :value="Customer.fAddress" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" id="fEmail" :value="Customer.fEmail" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </form>
+                <!-- 返回與編輯按鈕 -->
+                <div v-if="edit==0">
+                    <button @@click="toggleEditing" class="btn btn-primary">編輯資料</button>
+                    <button @@click="toggleEditPassword" class="btn btn-primary">修改密碼</button>
+                </div>
+                <div v-if="edit>=1">
+                    <button @@click="cancel" class="btn btn-success">取消</button>
+                    <button @@click="saveCustomer" class="btn btn-success">儲存修改</button>
+                </div>
 
             </div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+@section Scripts
+{
+    <script>
+        $(function () {
+            $("#datepicker").datepicker();
+        });
+    </script>
+
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    Customer: {}, // 用來存放後端獲得的會員資料
+                    edit: 0, // 是否啟用編輯
+                    passwordError: false, // 用來顯示錯誤訊息
+                    oldPassword: '', // 用來輸入舊密碼
+                    newPassword: '', // 用來輸入新密碼
+                    confirmPassword: '', // 用來輸入確認密碼
+                };
+            },
+            mounted() {
+                this.loadCustomer(); // 確保調用正確的 method
+            },
+            methods: {
+                loadCustomer() {
+                    axios.get(`/Customer/GetCustomerById`)
+                        .then(response => {
+                            console.log(response.data);  // 查看 API 回傳的資料
+                            this.Customer = response.data;  // 確保不是 null
+                        });
+                },
+                goToIndex() {
+                    window.location.href = "/Customer/Index";  // 返回會員列表
+                },
+                toggleEditing() {
+                    this.edit = 1;  // 切換 edit 值
+                },
+                cancel() {
+                    this.edit = 0;
+                },
+                toggleEditPassword() {
+                    this.edit = 2;
+                },
+                saveCustomer() {
+                    console.log(this.Customer);  // 確認資料是否正確
+                    const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
+
+                    if (this.edit === 2) {
+                        // 在這裡處理密碼更新的邏輯
+                        if (!this.validateOldPassword()) {
+                            alert("old");
+                            this.passwordError = true;
+                            return;
+                        }
+
+                        if (this.newPassword !== this.confirmPassword) {
+                            this.passwordError = true;
+                            alert("o123ld");
+                            return;
+                        }
+
+                        // 密碼更新成功，更新 Customer 的 fPassword
+                        this.Customer.fPassword = this.newPassword;
+                        this.passwordError = false; // 清除錯誤訊息
+                    }
+
+                    axios.put(`/Customer/update`, customerData)
+                        .then(response => {
+                            alert("資料已儲存!");
+                            this.edit = 0;  // 儲存後退出編輯模式
+                        })
+                        .catch(error => {
+                            console.error("儲存客戶資料時發生錯誤:", error);
+                        });
+                },
+                validateOldPassword() {
+                    // 這裡可以用真正的後端 API 驗證舊密碼
+                    return this.oldPassword == this.Customer.fPassword;  // 假設舊密碼與 fPassword 一致
+                }
+            }
+        });
+
+        app.mount("#app"); // 掛載 Vue 應用
+    </script>
+
 }
