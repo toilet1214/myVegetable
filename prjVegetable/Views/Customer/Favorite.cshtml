@@ -1,0 +1,47 @@
+﻿@model List<prjVegetable.ViewModels.CFavoriteViewModel>
+@{
+
+    ViewData["Title"] = "Index";
+}
+<h2>我的最愛</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                序
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model[0].Popular)
+            </th>
+            <th>
+                操作
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Popular)
+                    </td>
+                    <td>
+                        @Html.ActionLink("移除", "Delete", "Customer", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

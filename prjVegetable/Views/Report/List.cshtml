@@ -31,28 +31,30 @@
     <tbody>
         @{
             var count = 0;
-            foreach (var item in Model) {
+            foreach (var item in Model)
+            {
                 count++;
-        <tr>
-            <td>
-                @count
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FPersonId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FClass)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTitle)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FTime)
-            </td>
-            <td>
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-            </td>
-        </tr>
-}}
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FPersonId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FClass)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FTitle)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FTime)
+                    </td>
+                    <td>
+                        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
