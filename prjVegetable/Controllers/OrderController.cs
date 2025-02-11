@@ -7,15 +7,15 @@ namespace prjVegetable.Controllers
 {
     public class OrderController : Controller
     {
-        public IActionResult List(CKeywordViewModel vm)
+        private readonly DbVegetableContext _context;
+
+        public OrderController(DbVegetableContext context)
         {
-
-            DbVegetableContext db = new DbVegetableContext();
-
-
-            var datas = from t in db.TOrders select t;
-
-
+            _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
+        }
+        public IActionResult List()
+        {
+            var datas = from t in _context.TOrders select t;
             List<COrderWrap> list = new List<COrderWrap>();
             foreach (var t in datas)
                 list.Add(new COrderWrap() { order = t });
@@ -26,9 +26,8 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
                 return RedirectToAction("Order");
-            DbVegetableContext db = new DbVegetableContext();
             IEnumerable<TOrderList> datas = null;
-            datas = db.TOrderLists.Where(p => p.FOrderId == id);
+            datas = _context.TOrderLists.Where(p => p.FOrderId == id);
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
                 list.Add(new COrderListWrap() { orderList = t });

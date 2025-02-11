@@ -81,6 +81,8 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Report(TReport P)
         {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+            P.FPersonId = UserId;
             _context.TReports.Add(P);
             _context.SaveChanges();
             return RedirectToAction("Index");

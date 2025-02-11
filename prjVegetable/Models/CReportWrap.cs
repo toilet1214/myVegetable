@@ -6,7 +6,7 @@ namespace prjVegetable.Models
     public class CReportWrap
     {
         private TReport _report = null;
-        public TReport Report
+        public TReport report
         {
             get { return _report; }
             set { _report = value; }
@@ -21,6 +21,7 @@ namespace prjVegetable.Models
             get { return _report.FId; } 
             set { _report.FId = value; } 
         }
+        [DisplayName("會員編號")]
         public int FPersonId
         {
             get { return _report.FPersonId; }
@@ -47,7 +48,7 @@ namespace prjVegetable.Models
             get { return _report.FDescription; }
             set { _report.FDescription = value; }
         }
-
+        [DisplayName("回報時間")]
         public DateTime FTime
         {
             get { return _report.FTime; }
