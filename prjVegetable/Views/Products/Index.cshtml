@@ -63,20 +63,16 @@
                     @Html.DisplayFor(modelItem => item.product.FName)
                 </td>
                 <td>
-                    <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadImage", "Image")">
-                        <div>
-                            @foreach (var imgName in item.ImgList)
-                            {
-
-                                <div class="container d-flex align-items-center">
-                                    <img src="~/Images/@imgName" class="w-25 d-inline-block " alt="Product Image" />
-                                    <input type="file" id="" name="file@(imgName)" />
-                                </div>
-
-                            }
-                            <button type="submit" class="d-flex justify-content-end" style="width:auto">上傳圖片</button>
-                        </div>
-                    </form>
+                    <div class="mb-3 row" >
+                        @foreach (var imgName in item.ImgList)
+                        {
+                            <div class="col-md-1">
+                                <img src="~/Images/@imgName" class="w-75 d-inline-block " alt="Product Image" />
+                            </div>
+                        }
+                            
+                    </div>
+                    
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FClassification)

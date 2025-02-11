@@ -95,8 +95,9 @@ namespace prjVegetable.Controllers
 
             return Ok(productsWithImg);
         }
-        
-        [HttpPut]
+
+
+        [HttpPost]
         public async Task<IActionResult> update([FromBody] CProductWrap productwrap, [FromForm] IFormFile file)
         {
             TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == productwrap.FId);
@@ -123,9 +124,9 @@ namespace prjVegetable.Controllers
                 {
                     // 儲存圖片檔案
                     var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var filePath = Path.Combine("wwwroot/images", fileName);  // 假設圖片儲存到 wwwroot/images
+                    var filePath = Path.Combine("~/wwwroot/images", fileName);  // 假設圖片儲存到 wwwroot/images
 
-                    // 將檔案儲存至伺服器
+                    // 儲存新圖片檔案
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await file.CopyToAsync(stream);
@@ -151,7 +152,6 @@ namespace prjVegetable.Controllers
                 await _context.SaveChangesAsync();
                 return Ok("資料已成功更新");
             }
-
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳具體錯誤訊息

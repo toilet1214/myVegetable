@@ -101,14 +101,15 @@
                             <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
                                 <img :src="'https://localhost:7251/images/' + image"
                                      alt="'商品圖片 ' + (index + 1)"
+                                     id="editimg"
                                      class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file"
-                                       :id="'update-' + index"                                       
-                                @@change="editFileChanged($event.target, index)" />
+                                       :id="update"
+                                       @@change="editFileChanged($event.target, index)" />
                             </div>
                         </div>
-                        <input type="file" @@change ="newImageSelected" />
+                        <input type="file" id="insert" @@change="insertFileChange" />
                     </div>
                 </div>
 
@@ -229,7 +230,7 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
                 <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click="saveProduct" class="btn btn-success">儲存修改</button>
+                <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
             </div>
         </div>
 
@@ -246,6 +247,7 @@
         const app = Vue.createApp({
             data() {
                 return {
+                    baseAddress:"https://localhost:7251",
                     product: {
                         Images:[]
                     },
@@ -290,62 +292,61 @@
                 this.edit = !this.edit;  // 切換 edit 值
                 },
 
+                //處理預覽上傳圖片
+                readURL:function(inputFile,img,btn){
+                    if(inputFile.files[0]){ //使用者有上傳檔案
+                        var allowType="image.*";
+                        var file = inputFile.files[0];
+                        if(file.type.match(allowType)){
+                            //預覽使用者選擇的圖片
+                            var reader=new FileReader();
+                            reader.onload=function(e){
+                                img.src=e.target.result;
+                                img.title = file.name;
+                            };
+                            reader.readAsDataURL(file);
+                            //user選文字檔案:readAsText  user選網址:readAsDataURL 陣列:readAsArrayBuffer
+                            btn.prop("disabled",false);
+                        }
+                        else{
+                            alert("不允許的檔案上傳類型！");
+                            inputFile.value="";
+                            btn.prop("disabled",true);
+                        }
+                    }
+                },
+
+
+
                 //選擇文件更新照片
-                editFileChanged(event,index){
-                    const file = event.target.files[0];
-                    if(file){
-                        //更新對應圖片
-                        const formData = new FormData();
-                        formData.append('file',file;
-                        formData.append('imageIndex',index;
-
-                        axios.post('/Products/UpdateProductImage',formData,{
-                            headers:{
-                                'Content-Type':'multipart/fom-data'
-                            }
-                        })
-                        .then(response => {
-                            this.product.Images[index] = response.data.imageName;  // 更新图片数组
-                            alert("圖片更新成功");
-                        })
-                        .catch(error => {
-                            console.error('上傳失败', error);
-                            alert("圖片上傳失败");
-                        });
-                    }
+                editFileChanged:function(inputFile){
+                    //alert("editFileChanged");
+                    let _this=this;
+                     _this.readURL(inputFile, document.querySelector("#editimg"), $("#update"));
+                
                 },
 
-                // 上传新的图片
-                newImageSelected(event) {
-                    const file = event.target.files[0];  // 获取选择的文件
-                    if (file) {
-                        const formData = new FormData();
-                        formData.append('file', file);
+                insertFileChange:function(inputFile){
+                    //alert("insertFileChange");
+                    let _this = this;
+                    _this.readURL(inputFile,inputFile.previousSibling,$("#insert"));
 
-                        axios.post('/Products/AddProductImage', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                        .then(response => {
-                            this.product.Images.push(response.data.imageName);  // 将新图片添加到数组
-                            alert("圖片上傳成功");
-                        })
-                        .catch(error => {
-                            console.error('上傳失败', error);
-                            alert("圖片上傳失數");
-                        });
-                    }
                 },
 
+               
+                update:function(item){
+
+
+                },
 
 
              
                 saveProduct() {
+                    alert("saveProduct");
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确
                         const productData =JSON.parse(JSON.stringify(this.product))
-                        axios.put(`/Products/update`, productData)
+                        axios.post(`/Products/update`, productData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
                                 alert("資料已儲存!");
@@ -360,6 +361,7 @@
                     }
                 }
             }
+            
         });
 
         app.mount('#app'); // 使用 Vue 3 创造并挂载应用
