@@ -237,39 +237,8 @@
                         _this.els.counter.num.classList.remove(visibleClassName);
                     }, 200);
                 };
-                this.ready = function () {
-                    _this.els.decrement.addEventListener('click', function () {
-                        _this.debounce(function () {
-                            _this.decrement();
-                            _this.render('is-decrement-hide', 'is-decrement-visible');
-                        });
-                    });
-                    _this.els.increment.addEventListener('click', function () {
-                        _this.debounce(function () {
-                            _this.increment();
-                            _this.render('is-increment-hide', 'is-increment-visible');
-                        });
-                    });
-                    _this.els.counter.input.addEventListener('input', function (e) {
-                        var parseValue = parseInt(e.target.value);
-                        if (!isNaN(parseValue) && parseValue >= 0) {
-                            _this.setCounter(parseValue);
-                            _this.render();
-                        }
-                    });
-                    _this.els.counter.input.addEventListener('focus', function (e) {
-                        _this.els.counter.container.classList.add('is-input');
-                    });
-                    _this.els.counter.input.addEventListener('blur', function (e) {
-                        _this.els.counter.container.classList.remove('is-input');
-                        _this.render();
-                    });
-                };
-            };
-            // init
-            var controls = new ctrls();
-            document.addEventListener('DOMContentLoaded', controls.ready);
-        })();
+            }
+        });
     </script>
     <!-- 購物車功能 End -->
     <!--up to top-->
@@ -315,14 +284,14 @@
     @{
         if (TempData["ErrorMessage"] != null)
         {
-            <script>
+                    <script>
 
-                alert("登入失敗，請重試一次");
+                        alert("登入失敗，請重試一次");
 
-                var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
-                myModal.show();
+                        var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
+                        myModal.show();
 
-            </script>
+                    </script>
         }
     }
     @await RenderSectionAsync("Scripts", required: false)
