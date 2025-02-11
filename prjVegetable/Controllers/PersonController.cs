@@ -144,6 +144,13 @@ namespace prjVegetable.Controllers
                 return NotFound("使用者未找到");
             }
 
+            var existingAccount = await _context.TPeople.FirstOrDefaultAsync(p => p.FAccount == personwrap.FAccount && p.FId != personwrap.FId);
+
+            if (existingAccount!=null) 
+            {
+                return BadRequest("此帳號已存在，請選擇其他帳號");
+            }
+
             try
             {
                 // 更新資料，不給使用者修改的欄位（例如密碼）

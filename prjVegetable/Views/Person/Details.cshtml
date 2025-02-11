@@ -16,7 +16,8 @@
                         <div class="row">
                             <label for="fname" class="col-md-3 col-form-label">姓名：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fname" :placeholder="person.fName" v-model="person.fName">
+                                <input type="text" class="form-control" id="fname" :placeholder="person.fName" v-model="person.fName" @@input="validateName">
+                                <div v-if="nameError" style="color:red;font-size:1rem">請輸入姓名</div>
                             </div>
                         </div>
                     </div>
@@ -24,7 +25,8 @@
                         <div class="row">
                             <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fUbn" :placeholder="person.fUbn" v-model="person.fUbn">
+                                <input type="text" class="form-control" id="fUbn" :placeholder="person.fUbn" v-model="person.fUbn" @@input="validateUbn">
+                                <div v-if="ubnError" style="color:red;font-size:1rem">請輸入有效的8位數字統一編號</div>
                             </div>
                         </div>
                     </div>                           
@@ -34,7 +36,8 @@
                         <div class="row">
                             <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount" v-model="person.fAccount">
+                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount" v-model="person.fAccount" @@input="validateAccount">
+                                <div v-if="accountError" style="color:red;font-size:1rem">帳號已存在</div>
                             </div>
                         </div>
                     </div>
@@ -42,7 +45,8 @@
                         <div class="row">
                             <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword" v-model="person.fPassword">
+                                <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword" v-model="person.fPassword" @@input="validatePassword">
+                                <div v-if="passwordError" style="color:red;font-size:1rem">密碼必須包含英數字，並且至少8位</div>
                             </div>
                         </div>
                     </div>
@@ -70,7 +74,8 @@
                         <div class="row">
                             <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPhone" :placeholder="person.fPhone" v-model="person.fPhone">
+                                <input type="text" class="form-control" id="fPhone" :placeholder="person.fPhone" v-model="person.fPhone" @@input="validatePhone">
+                                <div v-if="phoneError" style="color:red;font-size:1rem">請輸入有效手機號碼</div>
                             </div>
                         </div>
                     </div>
@@ -78,7 +83,8 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel">
+                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel" @@input="validateTel">
+                                <div v-if="telError" style="color:red;font-size:1rem">請輸入有效電話號碼</div>
                             </div>
                         </div>
                     </div>
@@ -96,7 +102,8 @@
                         <div class="row">
                             <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmail" :placeholder="person.fEmail" v-model="person.fEmail">
+                                <input type="text" class="form-control" id="fEmail" :placeholder="person.fEmail" v-model="person.fEmail" @@input="validateEmail">
+                                <div v-if="emailError" style="color:red;font-size:1rem">請輸入有效電子郵件</div>
                             </div>
                         </div>
                     </div>
@@ -106,7 +113,8 @@
                         <div class="row">
                             <label for="fEmp" class="col-md-3 col-form-label">緊急聯絡人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmp" :placeholder="person.fEmp" v-model="person.fEmp">
+                                <input type="text" class="form-control" id="fEmp" :placeholder="person.fEmp" v-model="person.fEmp" @@input="validateEmp">
+                                <div v-if="empError" style="color:red;font-size:1rem">員工請輸入緊急連絡人</div>
                             </div>
                         </div>
                     </div>
@@ -114,7 +122,8 @@
                         <div class="row">
                             <label for="fEmpTel" class="col-md-3 col-form-label">緊急聯絡人電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmpTel" :placeholder="person.fEmpTel" v-model="person.fEmpTel">
+                                <input type="text" class="form-control" id="fEmpTel" :placeholder="person.fEmpTel" v-model="person.fEmpTel" @@input="validateEmpTel">
+                                <div v-if="emptelError" style="color:red;font-size:1rem">員工請輸入緊急連絡人電話</div>
                             </div>
                         </div>
                     </div>
@@ -137,7 +146,7 @@
                         <div class="row">
                             <label for="fname" class="col-md-3 col-form-label">姓名：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fname" :value="person.fname" readonly>
+                                <input type="text" class="form-control" id="fName" :value="person.fName" readonly v-model="person.fName">
                             </div>
                         </div>
                     </div>
@@ -145,7 +154,7 @@
                         <div class="row">
                             <label for="fUbn" class="col-md-3 col-form-label">統編：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fUbn" :value="person.fUbn" readonly>
+                                <input type="text" class="form-control" id="fUbn" :value="person.fUbn" readonly v-model="person.fUbn">
                             </div>
                         </div>
                     </div>
@@ -155,7 +164,7 @@
                         <div class="row">
                             <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAccount" :value="person.fAccount" readonly>
+                                <input type="text" class="form-control" id="fAccount" :value="person.fAccount" readonly v-model="person.fAccount">
                             </div>
                         </div>
                     </div>
@@ -163,7 +172,7 @@
                         <div class="row">
                             <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPassword" :value="person.fPassword" readonly>
+                                <input type="text" class="form-control" id="fPassword" :value="person.fPassword" readonly v-model="person.fPassword">
                             </div>
                         </div>
                     </div>
@@ -173,7 +182,7 @@
                         <div class="row">
                             <label for="fGender" class="col-md-3 col-form-label">性別：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fGender" :value="person.fGender" readonly>
+                                <input type="text" class="form-control" id="fGender" :value="person.fGender" readonly v-model="person.fGender">
                             </div>
                         </div>
                     </div>
@@ -181,7 +190,7 @@
                         <div class="row">
                             <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="datepicker" :value="person.fBirth" readonly>
+                                <input type="text" class="form-control" id="datepicker" :value="person.fBirth" readonly v-model="person.fBirth">
                             </div>
                         </div>
                     </div>
@@ -191,7 +200,7 @@
                         <div class="row">
                             <label for="fPhone" class="col-md-3 col-form-label">手機號碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPhone" :value="person.fPhone" readonly>
+                                <input type="text" class="form-control" id="fPhone" :value="person.fPhone" readonly v-model="person.fPhone">
                             </div>
                         </div>
                     </div>
@@ -199,7 +208,7 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :value="person.fTel" readonly>
+                                <input type="text" class="form-control" id="fTel" :value="person.fTel" readonly v-model="person.fTel">
                             </div>
                         </div>
                     </div>
@@ -209,7 +218,7 @@
                         <div class="row">
                             <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAddress" :value="person.fAddress" readonly>
+                                <input type="text" class="form-control" id="fAddress" :value="person.fAddress" readonly v-model="person.fAddress">
                             </div>
                         </div>
                     </div>
@@ -217,7 +226,7 @@
                         <div class="row">
                             <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmail" :value="person.fEmail" readonly>
+                                <input type="text" class="form-control" id="fEmail" :value="person.fEmail" readonly v-model="person.fEmail">
                             </div>
                         </div>
                     </div>
@@ -227,7 +236,7 @@
                         <div class="row">
                             <label for="fEmp" class="col-md-3 col-form-label">緊急聯絡人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmp" :value="person.fEmp" readonly>
+                                <input type="text" class="form-control" id="fEmp" :value="person.fEmp" readonly v-model="person.fEmp">
                             </div>
                         </div>
                     </div>
@@ -235,7 +244,7 @@
                         <div class="row">
                             <label for="fEmpTel" class="col-md-3 col-form-label">緊急聯絡人電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmpTel" :value="person.fEmpTel" readonly>
+                                <input type="text" class="form-control" id="fEmpTel" :value="person.fEmpTel" readonly v-model="person.fEmpTel">
                             </div>
                         </div>
                     </div>
@@ -245,7 +254,7 @@
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" readonly>
+                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" readonly v-model="person.fPermission">
                             </div>
                         </div>
                     </div>
@@ -281,7 +290,7 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
                 <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click ="savePerson" class="btn btn-success">儲存修改</button>
+                <button v-if="edit" @@click="savePerson" class="btn btn-success" type="submit" :disabled="!isValid">儲存修改</button>
             </div>
         </div>
 
@@ -297,7 +306,28 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    person: [],  // 用來存放從後端獲得的人員資料
+                    person: {
+                        fName:'',
+                        fAccount:'',
+                        fPassword:'',
+                        fPhone:'',
+                        fTel:'',
+                        fEmail:'',
+                        fUbn:'',
+                        fEmp:'',
+                        fEmpTel:'',
+                    },  // 用來存放從後端獲得的人員資料
+                    personBackup:{},//用來保存原始資料的備份
+                    nameError:false,
+                    ubnError:false,
+                    accountError:false,
+                    passwordError:false,
+                    phoneError:false,
+                    telError:false,
+                    emailError:false,
+                    empError:false,
+                    emptelError:false,
+                    isValid:false,//是否啟用儲存按鈕
                     edit:false, //啟用編輯
                 };
             },
@@ -333,7 +363,14 @@
                 },
                 
                 toggleEditting() {
-                this.edit = !this.edit;  // 切換 edit 值
+                    if(this.edit){
+                        //取消編輯就回復資料
+                        this.person = JSON.parse(JSON.stringify(this.personBackup));
+                    }else{
+                        //進入編輯，輩分原始資料
+                        this.personBackup=JSON.parse(JSON.stringify(this.person));
+                    }
+                    this.edit=!this.edit;
                 },
                 savePerson() {
                     if (this.person.fId) {
@@ -344,6 +381,7 @@
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
                                 alert("資料已儲存!");
                                 this.toggleEditting();  // 儲存後退出編輯模式
+                                this.loadPersonId();
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
@@ -352,7 +390,75 @@
                     } else {
                         alert("無效的使用者ID，無法儲存資料");
                     }
-                }
+                },
+                validateName(){//名字不可以空白
+                    this.nameError=this.person.fName.trim().length===0;
+                    this.validateForm();
+                },
+                validateUbn(){
+                    //僅限數字8碼
+                    const ubnRegex=/^\d{8}$/;
+                    this.ubnError = !ubnRegex.test(this.person.fUbn);
+                    this.validateForm();
+                },
+                validateAccount(){
+                //與現有帳號不得重複
+                    axios.put(`/Person/update/${this.person.fAccount}`)
+                        .then(response=>{
+                            this.accountError=false;
+                            this.validateForm //帳號有效時檢查其他欄位
+                        })
+                        .catch(error=>{
+                            this.accountError=true;
+                        })
+                },
+                validatePassword(){
+                //英數大小寫，長度最少8碼
+                    const passwordRegex=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+                    this.passwordError =!passwordRegex.test(this.person.fPassword);
+                    this.validateForm();
+                },
+                validatePhone(){
+                //數字10碼
+                    const phoneRegex=/^\d{10}$/;
+                    this.phoneError=!phoneRegex.test(this.person.fPhone);
+                    this.validateForm();
+                },
+                validateTel(){
+                //數字區號2-3碼、6-8碼，中間用-分開
+                    const telRegex = /^\d{2,3}\d{6,8}$/;
+                    this.telError = !telRegex.test(this.person.fTel);
+                    this.validateForm();
+                },
+                validateEmail(){
+                    //電子郵件驗證
+                    const emailRegex = /^\w+([-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
+                    this.emailError = !emailRegex.test(this.person.fEmail);
+                    this.validateForm();
+                },
+                validateEmp(){
+                //如果權限=0(員工，就需要填入資料)
+                    this.empError = this.person.fPermission === 0 && this.person.fEmpTel === '';
+                    this.validateForm();
+                },
+                validateEmpTel(){
+                    //如果權限=0(員工，就需要填入資料)
+                    this.empTelError = this.person.fPermission === 0 && this.person.empTel === '';
+                    this.validateForm();
+                },
+                validateForm(){
+                    //檢查所有表單錯誤
+                    this.isValid=
+                        !this.nameError &&
+                        !this.ubnError &&
+                        !this.accountError &&
+                        !this.passwordError &&
+                        !this.phoneError &&
+                        !this.telError &&
+                        !this.emailError &&
+                        !this.empError &&
+                        !this.empTelError;
+                },
             }
         });
 

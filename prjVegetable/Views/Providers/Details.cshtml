@@ -17,7 +17,7 @@
                         <div class="row">
                             <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fId" :placeholder="provider.fId" readonly>
+                                <input type="text" class="form-control" id="fId" :placeholder="provider.fId" readonly v-model="provider.fId">                                
                             </div>
                         </div>
                     </div>
@@ -26,6 +26,7 @@
                             <label for="fName" class="col-md-3 col-form-label">廠商名稱：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fName" :placeholder="provider.fName" v-model="provider.fName">
+                                <div v-if="nameError" style="color:red;font-size:1rem">請輸入廠商名稱</div>
                             </div>
                         </div>
                     </div>
@@ -36,6 +37,7 @@
                             <label for="fConnect" class="col-md-3 col-form-label">廠商聯絡人：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fConnect" :placeholder="provider.fConnect" v-model="provider.fConnect">
+                                <div v-if="connectError" style="color:red;font-size:1rem">請輸入廠商聯絡人名稱</div>
                             </div>
                         </div>
                     </div>
@@ -44,6 +46,7 @@
                             <label for="fTel" class="col-md-3 col-form-label">廠商電話</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fTel" :placeholder="provider.fTel" v-model="provider.fTel">
+                                <div v-if="telError" style="color:red;font-size:1rem">請輸入廠商電話</div>
                             </div>
                         </div>
                     </div>
@@ -54,6 +57,7 @@
                             <label for="fUbn" class="col-md-3 col-form-label">廠商統編：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fUbn" :placeholder="provider.fUbn" v-model="provider.fUbn">
+                                <div v-if="ubnError" style="color:red;font-size:1rem">請輸入正確統編</div>
                             </div>
                         </div>
                     </div>
@@ -72,6 +76,7 @@
                             <label for="fAddress" class="col-md-3 col-form-label">廠商公司地址：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fAddress" :placeholder="provider.fAddress" v-model="provider.fAddress">
+                                <div v-if="addressError" style="color:red;font-size:1rem">請輸入正確地址</div>
                             </div>
                         </div>
                     </div>
@@ -80,6 +85,7 @@
                             <label for="fDelivery" class="col-md-3 col-form-label">廠商送貨地址：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fDelivery" :placeholder="provider.fDelivery" v-model="provider.fDelivery">
+
                             </div>
                         </div>
                     </div>
@@ -110,7 +116,7 @@
                         <div class="row">
                             <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fId" :value="provider.fId" readonly>
+                                <input type="text" class="form-control" id="fId" :value="provider.fId" readonly v-model="provider.fId">
                             </div>
                         </div>
                     </div>
@@ -118,7 +124,7 @@
                         <div class="row">
                             <label for="fName" class="col-md-3 col-form-label">廠商名稱：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fName" :value="provider.fName" readonly>
+                                <input type="text" class="form-control" id="fName" :value="provider.fName" readonly v-model="provider.fName">
                             </div>
                         </div>
                     </div>
@@ -128,7 +134,7 @@
                         <div class="row">
                             <label for="fConnect" class="col-md-3 col-form-label">廠商聯絡人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fConnect" :value="provider.fConnect" readonly>
+                                <input type="text" class="form-control" id="fConnect" :value="provider.fConnect" readonly v-model="provider.fConnect">
                             </div>
                         </div>
                     </div>
@@ -136,7 +142,7 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">廠商電話</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :value="provider.fTel" readonly>
+                                <input type="text" class="form-control" id="fTel" :value="provider.fTel" readonly v-model="provider.fTel">
                             </div>
                         </div>
                     </div>
@@ -146,7 +152,7 @@
                         <div class="row">
                             <label for="fUbn" class="col-md-3 col-form-label">廠商統編：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fUbn" :value="provider.fUbn" readonly>
+                                <input type="text" class="form-control" id="fUbn" :value="provider.fUbn" readonly v-model="provider.fUbn">
                             </div>
                         </div>
                     </div>
@@ -154,7 +160,7 @@
                         <div class="row">
                             <label for="fAccountant" class="col-md-3 col-form-label">廠商會計：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAccountant" :value="provider.fAccountant" readonly>
+                                <input type="text" class="form-control" id="fAccountant" :value="provider.fAccountant" readonly v-model="provider.fAccountant">
                             </div>
                         </div>
                     </div>
@@ -164,7 +170,7 @@
                         <div class="row">
                             <label for="fAddress" class="col-md-3 col-form-label">廠商公司地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAddress" :value="provider.fAddress" readonly>
+                                <input type="text" class="form-control" id="fAddress" :value="provider.fAddress" readonly v-model="provider.fAddress">
                             </div>
                         </div>
                     </div>
@@ -172,7 +178,7 @@
                         <div class="row">
                             <label for="fDelivery" class="col-md-3 col-form-label">廠商送貨地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fDelivery" :value="provider.fDelivery" readonly>
+                                <input type="text" class="form-control" id="fDelivery" :value="provider.fDelivery" readonly v-model="provider.fDelivery">
                             </div>
                         </div>
                     </div>
@@ -182,7 +188,7 @@
                         <div class="row">
                             <label for="fInvoiceAdd" class="col-md-3 col-form-label">廠商發票地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fInvoiceAdd" :value="provider.fInvoiceAdd" readonly>
+                                <input type="text" class="form-control" id="fInvoiceAdd" :value="provider.fInvoiceAdd" readonly v-model="provider.fInvoiceAdd">
                             </div>
                         </div>
                     </div>
@@ -190,7 +196,7 @@
                         <div class="row">
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" readonly>
+                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" readonly v-model="provider.fEditor">
                             </div>
                         </div>
                     </div>
@@ -199,7 +205,7 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回廠商資料列表</a>
                 <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click="saveProvider" class="btn btn-success">儲存修改</button>
+                <button v-if="edit" @@click="saveProvider" class="btn btn-success" type="submit" :disabled="!isValid">儲存修改</button>
             </div>
         </div>
         <div v-else>
