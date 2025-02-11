@@ -48,10 +48,10 @@ main {
     background-color: #ffffff;
     font-family: LXGW WenKai Mono TC, Tahoma, sans-serif;
     font-size: 22px;
+    position: fixed;
 }
 
-.navbar-nav,
-.nav-link {
+.navbar-nav, .nav-link {
     color: #A59B80;
     padding-bottom: 5px;
     border-bottom: 3px solid transparent;
@@ -60,15 +60,15 @@ main {
 }
 
 .navbar-nav .nav-link:visited {
-    color: #A59B80;
-
+        color: #A59B80;
 }
 
 .nav-link:hover,
-.nav-link:focus,
-.nav-link.active {
-     color: #8D8266;
-     border-bottom: 3px solid #8D8266;
+    .nav-link:focus,
+    .nav-link.active {
+        color: #8D8266;
+        border-bottom: 3px solid #8D8266;
+
 }
 
 .navbar-brand {
@@ -77,20 +77,20 @@ main {
     font-size: 30px;
 }
 
- .navbar-brand:hover {
-    color: #8D8266;
- }
+.navbar-brand:hover {
+        color: #8D8266;
+}
 
 .nav-icon i {
     color: #A59B80;
 }
 
-.nav-icon i:hover {
-   color: #8D8266;
-}
+    .nav-icon i:hover {
+        color: #8D8266;
+    }
 
 .nav-icon a {
-   text-decoration: none;
+    text-decoration: none;
 }
 
 /* ---------- carousel -----------*/

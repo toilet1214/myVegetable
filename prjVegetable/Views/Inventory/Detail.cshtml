@@ -7,8 +7,8 @@
 庫存盤點作業 Inventory/Detail
 
 *查詢到的筆數沒有更新
-*列印的格式很醜
 *還沒有帶入使用者ID
+*列印 沒有庫存盤點單號、基準日、建檔日期
 
 -->
 <div class="container my-5">
@@ -91,7 +91,7 @@
                 <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
             </div>
             <div class="table-responsive" style="max-height: 50%;">
-                <table class="table" id="printTable">
+                <table class="table text-center" id="printTable">
                     <thead>
                         <tr>
                             <th>商品Id</th>
@@ -536,12 +536,20 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 <script>
     function printTable() {
-            printJS({
-                printable: 'printTable',
-                type: 'html'
-            });
-        }
- </script>
+        printJS({
+            printable: 'printTable',
+            type: 'html',
+            style: `
+                table { width: 100%; border-collapse: collapse; }
+                caption { display: block !important; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px; } /* 讓標題顯示 */
+                th, td { text-align: center !important; vertical-align: middle !important; padding: 4px !important; } /* 縮小格子高度 */
+                thead tr { border-bottom: 2px solid black !important; } /* 標題下方黑色橫線 */
+                tbody tr { border-bottom: 1px solid gray !important; } /* 其他橫線為灰色 */
+                th, td { border: none !important; } /* 移除所有直線 */
+            `
+        });
+    }
+</script>
 
 <!-- 將系統庫存數量帶入實際庫存數量 -->
 <script>
