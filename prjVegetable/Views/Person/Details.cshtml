@@ -83,7 +83,7 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel" @@input="validateTel">
+                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel">
                                 <div v-if="telError" style="color:red;font-size:1rem">請輸入有效電話號碼</div>
                             </div>
                         </div>
@@ -272,7 +272,7 @@
                         <div class="row">
                             <label for="fCreatedAt" class="col-md-3 col-form-label">創建日期：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fCreatedAt" :value="person.fCreatedAt" readonly>
+                                <input type="text" class="form-control" id="fCreatedAt" :value="formatDate(person.fCreatedAt)" readonly>
                             </div>
                         </div>
                     </div>
@@ -367,7 +367,7 @@
                         //取消編輯就回復資料
                         this.person = JSON.parse(JSON.stringify(this.personBackup));
                     }else{
-                        //進入編輯，輩分原始資料
+                        //進入編輯，備份原始資料
                         this.personBackup=JSON.parse(JSON.stringify(this.person));
                     }
                     this.edit=!this.edit;
@@ -396,10 +396,15 @@
                     this.validateForm();
                 },
                 validateUbn(){
-                    //僅限數字8碼
-                    const ubnRegex=/^\d{8}$/;
-                    this.ubnError = !ubnRegex.test(this.person.fUbn);
-                    this.validateForm();
+                        // 如果是空白，則不顯示錯誤
+                    if (this.person.fUbn.trim() === '') {
+                        this.ubnError = false;
+                    } else {
+                        // 僅限數字 8 碼
+                        const ubnRegex = /^\d{8}$/;
+                        this.ubnError = !ubnRegex.test(this.person.fUbn);
+                    }
+                    this.validateForm(); // 驗證整個表單
                 },
                 validateAccount(){
                 //與現有帳號不得重複
@@ -423,13 +428,7 @@
                     const phoneRegex=/^\d{10}$/;
                     this.phoneError=!phoneRegex.test(this.person.fPhone);
                     this.validateForm();
-                },
-                validateTel(){
-                //數字區號2-3碼、6-8碼，中間用-分開
-                    const telRegex = /^\d{2,3}\d{6,8}$/;
-                    this.telError = !telRegex.test(this.person.fTel);
-                    this.validateForm();
-                },
+                },                
                 validateEmail(){
                     //電子郵件驗證
                     const emailRegex = /^\w+([-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
@@ -459,7 +458,17 @@
                         !this.empError &&
                         !this.empTelError;
                 },
-            }
+                
+                formatDate(date) {
+                  if (!date) return '';  // 如果没有日期数据，则返回空字符串
+                  const d = new Date(date);  // 将日期字符串转换为日期对象
+                  const year = d.getFullYear();  // 获取年份
+                  const month = String(d.getMonth() + 1).padStart(2, '0');  // 获取月份并补零
+                  const day = String(d.getDate()).padStart(2, '0');  // 获取日期并补零
+
+                  return `${year}-${month}-${day}`;  // 返回格式化后的日期字符串
+                
+            }},
         });
 
         app.mount('#app'); // 使用 Vue 3 创造并挂载应用

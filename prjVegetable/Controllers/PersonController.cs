@@ -105,6 +105,21 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CPersonWrap tPersonwrap)
         {
+            // 使用 DateOnly.Today 來設置 FCreatedAt 為今天的日期
+            tPersonwrap.person.FCreatedAt = DateTime.Now;  // 設定為今天的日期，去除時間部分
+
+            // 設定 FEditor 為當前使用者的 ID
+            //if (int.TryParse(User.Identity.Name, out int editorId))
+            //{
+            //    tPersonwrap.person.FEditor = editorId;//// 設置為當前使用者的數字 ID
+            //}
+            //else 
+            //{
+            //    // 如果轉換失敗，可以設置為 0 或處理錯誤邏輯
+            //    tPersonwrap.person.FEditor = 0;
+            //}
+
+
             // 將新的 TPerson 物件加入到資料庫上下文
             _context.TPeople.Add(tPersonwrap.person);
 

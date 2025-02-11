@@ -25,7 +25,7 @@
                         <div class="row">
                             <label for="fName" class="col-md-3 col-form-label">廠商名稱：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fName" :placeholder="provider.fName" v-model="provider.fName">
+                                <input type="text" class="form-control" id="fName" :placeholder="provider.fName" v-model="provider.fName" @@input="validateName">
                                 <div v-if="nameError" style="color:red;font-size:1rem">請輸入廠商名稱</div>
                             </div>
                         </div>
@@ -36,7 +36,7 @@
                         <div class="row">
                             <label for="fConnect" class="col-md-3 col-form-label">廠商聯絡人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fConnect" :placeholder="provider.fConnect" v-model="provider.fConnect">
+                                <input type="text" class="form-control" id="fConnect" :placeholder="provider.fConnect" v-model="provider.fConnect" @@input="validateConnect">
                                 <div v-if="connectError" style="color:red;font-size:1rem">請輸入廠商聯絡人名稱</div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">廠商電話</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :placeholder="provider.fTel" v-model="provider.fTel">
+                                <input type="text" class="form-control" id="fTel" :placeholder="provider.fTel" v-model="provider.fTel" @@input="validateTel">
                                 <div v-if="telError" style="color:red;font-size:1rem">請輸入廠商電話</div>
                             </div>
                         </div>
@@ -56,7 +56,7 @@
                         <div class="row">
                             <label for="fUbn" class="col-md-3 col-form-label">廠商統編：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fUbn" :placeholder="provider.fUbn" v-model="provider.fUbn">
+                                <input type="text" class="form-control" id="fUbn" :placeholder="provider.fUbn" v-model="provider.fUbn" @@input="validateUbn">
                                 <div v-if="ubnError" style="color:red;font-size:1rem">請輸入正確統編</div>
                             </div>
                         </div>
@@ -75,7 +75,7 @@
                         <div class="row">
                             <label for="fAddress" class="col-md-3 col-form-label">廠商公司地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAddress" :placeholder="provider.fAddress" v-model="provider.fAddress">
+                                <input type="text" class="form-control" id="fAddress" :placeholder="provider.fAddress" v-model="provider.fAddress" @@input="validateAddress">
                                 <div v-if="addressError" style="color:red;font-size:1rem">請輸入正確地址</div>
                             </div>
                         </div>
@@ -221,7 +221,24 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    provider: [],  // 用來存放從後端獲得的人員資料
+                    provider: {
+                        fName:'',
+                        fConnect:'',
+                        fTel:'',
+                        fUbn:'',
+                        fAccountant:'',
+                        fAddress:'',
+                        fDelivery:'',
+                        fInvoiceAdd:'',
+                        fEditor:'',
+                    },  // 用來存放從後端獲得的人員資料
+                    providerBackup:{},
+                    nameError:false,
+                    connectError:false,
+                    telError:false,
+                    ubnError:false,
+                    addressError:false,
+
                     edit:false, //啟用編輯
                 };
             },
@@ -257,6 +274,13 @@
                 },
 
                 toggleEditting() {
+                    if(this.edit){
+                        //取消編輯就回復資料
+                        this.provider = JSON.parse(JSON.stringify(this.providerBackup));
+                    }else{
+                        //進入編輯，輩分原始資料
+                        this.providerBackup=JSON.parse(JSON.stringify(this.provider));
+                    }
                 this.edit = !this.edit;  // 切換 edit 值
                 },
                 saveProvider() {
@@ -276,7 +300,38 @@
                     } else {
                         alert("無效的使用者ID，無法儲存資料");
                     }
-                }
+                },
+                validateName(){
+                    this.nameError=this.provider.fName.trim().lemgth===0;
+                    this.validateForm();
+                },
+                validateConnect(){
+                    this.connectError=this.provider.fConnect.trim().length===0;
+                    this.validateForm();
+                },
+                validateTel(){
+                    //僅限數字8-10碼
+                    const telRegex=/^\d{8,10}$/;
+                    this.telError = !telRegex.test(this.provider.fTel);
+                    this.validateForm();
+                },
+                validateUbn(){
+                    const ubnRegex=/^\d{8}$/;
+                    this.ubnError= !ubnRegex.test(this.provider.fUbn);
+                    this.validateForm();
+                },
+                validateAddress(){
+                    this.addressError=this.provider.fAddress.trim().lemgth===0;
+                    this.validateForm();
+                },
+                validateForm(){
+                    this.isValid=
+                        !this.nameError &&
+                        !this.connectError &&
+                        !this.telError &&
+                        !this.ubnError &&
+                        !this.addressError;
+                },
             }
         });
 

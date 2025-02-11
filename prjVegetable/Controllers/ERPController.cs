@@ -47,7 +47,8 @@ namespace prjVegetable.Controllers
             ViewBag.VisitorsPercentageYear = 70;
 
             var members = _VegetableContext.TPeople.Where(p => p.FPermission == 0).ToList();
-            var startDate = DateTime.Now.Date.AddDays(-29);  // 確保範圍涵蓋完整30天
+            var startDate = DateTime.Now.Date.AddDays(-29);
+            // 確保範圍涵蓋完整30天
             // 初始化字典，確保每一天都有數據 (預設為 0)
             Dictionary<string, int> TotalMembersMonth = Enumerable.Range(0, 30)
                 .Select(i => startDate.AddDays(i).ToString("MM/dd"))  // 轉成 "月/日" 格式
@@ -73,7 +74,7 @@ namespace prjVegetable.Controllers
                 cumulativeCountMonth += TotalMembersMonth[key];  // 累積總數
                 TotalMembersMonth[key] = cumulativeCountMonth;
             }
-            var startMonth = DateTime.Now.AddMonths(-11); // 往前推 11 個月，加上當月總共 12 個月
+            var startMonth = DateTime.Now.Date.AddMonths(-11); // 往前推 11 個月，加上當月總共 12 個月
             // 初始化字典，確保每個月份都有數據 (預設為 0)
             Dictionary<string, int> TotalMembersYear = Enumerable.Range(0, 12)
                 .Select(i => startMonth.AddMonths(i).ToString("yyyy/MM"))

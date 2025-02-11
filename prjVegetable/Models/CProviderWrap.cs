@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace prjVegetable.Models
 {
@@ -23,6 +24,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("廠商名稱")]
+        [Required(ErrorMessage = "必填欄位")]
         public string FName
         {
             get { return _provider.FName; }
@@ -30,6 +32,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("廠商統編")]
+        [Required(ErrorMessage = "必填欄位")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "統一編號必須是 8 位數字")]
         public string FUbn//統編
         {
             get { return _provider.FUbn; }
@@ -37,6 +41,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("廠商電話")]
+        [Required(ErrorMessage = "必填欄位")]
+        [RegularExpression(@"^\d{8,10}$", ErrorMessage = "電話號碼必須是8到10位數字")]
         public string FTel
         {
             get { return _provider.FTel; }
@@ -58,6 +64,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("廠商地址")]
+        [Required(ErrorMessage = "必填欄位")]
         public string FAddress
         {
             get { return _provider.FAddress; }
@@ -68,14 +75,33 @@ namespace prjVegetable.Models
         public string FDelivery
         {
             get { return _provider.FDelivery; }
-            set { _provider.FDelivery = value; }
+            set {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _provider.FDelivery = _provider.FAddress;
+                }
+                else 
+                {
+                    _provider.FDelivery = value;
+                }
+            }
         }
 
         [DisplayName("廠商統編地址")]
         public string FInvoiceAdd
         {
             get { return _provider.FInvoiceAdd; }
-            set { _provider.FInvoiceAdd = value; }
+            set 
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    _provider.FInvoiceAdd = _provider.FAddress;
+                }
+                else
+                {
+                    _provider.FInvoiceAdd = value;
+                }
+            }
         }
 
         [DisplayName("資料修改人")]
