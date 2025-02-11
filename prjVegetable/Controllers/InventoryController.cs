@@ -380,7 +380,7 @@ namespace prjVegetable.Controllers
                 query = query.Where(i => i.FId == fId.Value);
             }
 
-            // 2. 日期範圍過濾（需確保起始日期 <= 結束日期）
+            // 2. 日期範圍過濾
             if (fBaselineStartDate.HasValue && fBaselineEndDate.HasValue && fBaselineStartDate > fBaselineEndDate)
             {
                 return Json(new { success = false, message = "盤點基準日範圍不正確" });
@@ -411,11 +411,12 @@ namespace prjVegetable.Controllers
                 query = query.Where(i => i.FCreatedAt <= fCreatedEndDate.Value);
             }
 
-            // 查詢主檔
-            var inventoryMains = query.Select(i => new {
-                i.FId,
-                i.FBaselineDate,
-                i.FCreatedAt
+            // 3. 查詢主檔
+            var inventoryMains = query.Select(i => new CInventoryMainWrap
+            {
+                FId = i.FId,
+                FBaselineDate = i.FBaselineDate,
+                FCreatedAt = i.FCreatedAt
             }).ToList();
 
             if (!inventoryMains.Any())
@@ -423,73 +424,18 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, message = "未找到符合條件的盤點主資料。" });
             }
 
-            // 3. 查詢 InventoryDetails
-            var inventoryDetails = (from d in _context.TInventoryDetails
-                                    join p in _context.TProducts on d.FProductId equals p.FId
-                                    where inventoryMains.Select(im => im.FId).Contains(d.FInventoryMainId)
-                                    select new
-                                    {
-                                        d.FSystemQuantity,
-                                        d.FActualQuantity,
-                                        d.FInventoryMainId,
-                                        d.FProductId,
-                                        d.FId,
-                                        ProductName = p.FName
-                                    }).ToList();
+            _logger.LogInformation("查詢到的 InventoryMain: {0}", JsonConvert.SerializeObject(inventoryMains));
 
-            // 4. 查詢 Products
-            var products = _context.TProducts
-                .Where(p => inventoryDetails.Select(d => d.FProductId).Contains(p.FId)) // 修正篩選條件
-                .Select(p => new {
-                    p.FId,
-                    p.FName,
-                    p.FQuantity
-                }).ToList();
-
-            // 構建 ViewModel
-            var viewModel = new CInventoryViewModel
-            {
-                InventoryMain = inventoryMains.Select(i => new CInventoryMainWrap
-                {
-                    FId = i.FId,
-                    FBaselineDate = i.FBaselineDate,
-                    FCreatedAt = i.FCreatedAt
-                }).FirstOrDefault(),
-
-                InventoryDetails = inventoryDetails.Select(d => new CInventoryDetailWrap
-                {
-                    FSystemQuantity = (int)d.FSystemQuantity,
-                    FActualQuantity = d.FActualQuantity,
-                    FInventoryMainId = d.FInventoryMainId,
-                    FProductId = d.FProductId,
-                }).ToList(),
-
-                Products = products.Select(p => new CProductUpdateWrap
-                {
-                    FId = p.FId,
-                    FName = p.FName,
-                    FQuantity = p.FQuantity
-                }).ToList(),
-
-                TotalItemCount = inventoryMains.Count,
-                CurrentItemCount = inventoryMains.Count
-            };
-
-            _logger.LogInformation("查詢到的 InventoryDetails: {0}", JsonConvert.SerializeObject(inventoryDetails));
-            _logger.LogInformation("Returning viewModel: {viewModel}", JsonConvert.SerializeObject(viewModel));
-
-            return new JsonResult(new
+            // 4. 回傳符合條件的 InventoryMain 清單
+            return Json(new
             {
                 success = true,
-                InventoryMain = viewModel.InventoryMain,
-                InventoryDetails = inventoryDetails,
-                Products = products,
-                TotalItemCount = viewModel.TotalItemCount,
-                CurrentItemCount = viewModel.CurrentItemCount
+                InventoryMainList = inventoryMains
             });
         }
 
-       
+
+
 
 
     }
