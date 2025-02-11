@@ -15,6 +15,8 @@ public partial class DbVegetableContext : DbContext
     {
     }
 
+    public virtual DbSet<EcpayOrder> EcpayOrders { get; set; }
+
     public virtual DbSet<TAboutU> TAboutUs { get; set; }
 
     public virtual DbSet<TCart> TCarts { get; set; }
@@ -71,6 +73,22 @@ public partial class DbVegetableContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<EcpayOrder>(entity =>
+        {
+            entity.HasKey(e => e.MerchantTradeNo);
+
+            entity.Property(e => e.MerchantTradeNo).HasMaxLength(50);
+            entity.Property(e => e.MemberId)
+                .HasMaxLength(50)
+                .HasColumnName("MemberID");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentType).HasMaxLength(50);
+            entity.Property(e => e.PaymentTypeChargeFee).HasMaxLength(50);
+            entity.Property(e => e.RtnMsg).HasMaxLength(50);
+            entity.Property(e => e.TradeDate).HasMaxLength(50);
+            entity.Property(e => e.TradeNo).HasMaxLength(50);
+        });
+
         modelBuilder.Entity<TAboutU>(entity =>
         {
             entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C7BE65F86");

@@ -9,7 +9,9 @@ builder.Services.AddDbContext<DbVegetableContext>(
     options =>options.UseSqlServer(
         builder.Configuration.GetConnectionString("dbVegetable")
         ));
+builder.Services.AddControllers().AddNewtonsoftJson(); // ? 確保支援 JObject
 
+builder.Services.AddMemoryCache(); // ? 註冊記憶體快取
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
