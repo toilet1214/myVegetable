@@ -8,12 +8,10 @@ namespace prjVegetable.ViewModels
         public IEnumerable<CInventoryDetailWrap> InventoryDetails { get; set; }
         public CInventoryMainWrap InventoryMain { get; set; }
         public IEnumerable<CProductUpdateWrap> Products { get; set; }
-        public List<int> MainFIdList { get; set; } = new();
 
 
         public int TotalItemCount { get; set; }
         public int CurrentItemCount { get; set; }
-        public int currentId { get; set; }
 
 
         public class CProductUpdateWrap

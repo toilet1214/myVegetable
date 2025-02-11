@@ -7,6 +7,9 @@
 
 庫存調整作業 InventoryAdjustment/Detail
 
+*還沒有帶入使用者ID
+*沒有查詢到的筆數
+
 -->
 <div class="container my-5">
     <!-- 工具列 start -->
@@ -45,7 +48,6 @@
             </button>
         </div>
     </div>
-
     <!-- 工具列 end -->
     <hr />
     <div class="row">
@@ -57,9 +59,9 @@
                     <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
                     <span asp-validation-for="InventoryAdjustment.FId" class="text-danger"></span>
                 </div>
-                <!-- 盤點日期 -->
+                <!-- 調整日期 -->
                 <div class="d-flex mb-0 align-items-center">
-                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-3">盤點日期</label>
+                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-3">調整日期</label>
                     <input asp-for="InventoryAdjustment.FAdjustmentDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
                     <span asp-validation-for="InventoryAdjustment.FAdjustmentDate" class="text-danger"></span>
                 </div>
@@ -107,7 +109,8 @@
         </table>
     </div>
 </div>
-<!-- 選擇條件來新增 -->
+
+<!-- 選擇條件來查詢 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -116,35 +119,30 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <!-- 庫存盤點單號 -->
+                <!-- 庫存調整單號 -->
                 <div class="d-flex mb-3 align-items-center">
-                    <label asp-for="InventoryAdjustment.FId" class="pe-1 mb-0" style="width: 150px;">庫存盤點單號</label>
-                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" id="searchFId" />
+                    <label asp-for="InventoryAdjustment.FId" class="pe-1 mb-0" style="width: 150px;">庫存調整單號</label>
+                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" id="searchFId" value="" />
                     <span asp-validation-for="InventoryAdjustment.FId" class="text-danger"></span>
                 </div>
 
-                <!-- 盤點日期 -->
+                <!-- 庫存盤點日期 -->
                 <div class="d-flex mb-3 align-items-center">
-                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-0" style="width: 150px;">盤點日期</label>
-                    <input asp-for="InventoryAdjustment.FAdjustmentStartDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineStartDate" />
+                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-0" style="width: 150px;">庫存調整日期</label>
+                    <input asp-for="InventoryAdjustment.FAdjustmentStartDate" class="form-control form-control-sm w-auto" type="date" id="FAdjustmentStartDate" />
                     <span class="mx-2">至</span>
-                    <input asp-for="InventoryAdjustment.FAdjustmentEndDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineEndDate" />
+                    <input asp-for="InventoryAdjustment.FAdjustmentEndDate" class="form-control form-control-sm w-auto" type="date" id="FAdjustmentEndDate" />
                     <span asp-validation-for="InventoryAdjustment.FAdjustmentDate" class="text-danger"></span>
                 </div>
 
-                <!-- 盤點人員 -->
-                <div class="d-flex mb-3 align-items-center">
+                <!-- 選擇盤點人員 -->
+                <div class="d-flex align-items-center">
                     <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-0" style="width: 150px;">盤點人員</label>
-                    <select asp-for="InventoryAdjustment.FCheckerId" class="form-control form-control-sm w-auto">
-                        <option value="">選擇員工</option>
-                        @foreach (var employee in (SelectList)ViewData["Employees"])
-                        {
-                            <option value="@employee.Value">@employee.Text</option>
-                        }
+                    <select asp-for="InventoryAdjustment.FCheckerId" class="form-select form-select-sm w-auto" id="FCheckerId">
+                        <option value="">請選擇</option>
+                        <!-- 這裡應該透過後端渲染或 AJAX 動態載入盤點人員 -->
                     </select>
-                    <span asp-validation-for="InventoryAdjustment.FCheckerId" class="text-danger"></span>
                 </div>
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
@@ -154,40 +152,122 @@
     </div>
 </div>
 
+<!-- 查詢結果視窗 -->
+<div class="modal fade" id="inventoryAdjustmentListModal" tabindex="-1" role="dialog" aria-labelledby="inventoryListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="inventoryListModalLabel">選擇盤點單號</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>盤點單號</th>
+                            <th>盤點基準日</th>
+                            <th>建檔日期</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryAdjustmentListTableBody">
+                        <!-- 這裡會透過 JS 動態填入資料 -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmSelection">確定</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-<!-- 新增 -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<!-- 查詢 -->
 <script>
-        document.getElementById('addButton').addEventListener('click', function () {
-        const url = this.getAttribute('data-url');
-    });
-</script>
+    let inventoryAdjustmentList = []; // 儲存查詢結果
+    let selectedInventoryAdjustmentId = null; // 使用者選擇的 InventoryAdjustmentId
 
-<!-- 刪除 -->
-<script>
-    document.getElementById('deletebutton').addEventListener('click', function () {
-        const inventoryId = document.querySelector('input[name="currentId"]').value;
+    // 綁定查詢按鈕事件
+    document.getElementById('modalSearchButton').addEventListener('click', function () {
+        const fId = document.getElementById('searchFId').value.trim();
+        const fAdjustmentStartDate = document.getElementById('FAdjustmentStartDate').value.trim();
+        const fAdjustmentEndDate = document.getElementById('FAdjustmentEndDate').value.trim();
+        const fCheckerId = document.getElementById('FCheckerId').value.trim();
 
-        if (confirm('您確定要刪除此盤點資料嗎？此操作無法撤銷！')) {
-            fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: `id=${inventoryId}`,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    window.location.href = data.redirectTo;
-                } else {
-                    alert('刪除失敗，請稍後再試。');
-                }
-            })
-            .catch(error => {
-                console.error('錯誤:', error);
-                alert('發生錯誤，請稍後再試。');
-            });
+        // 檢查是否至少輸入一個條件
+        if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
+            alert('請至少填寫一個查詢條件');
+            return;
         }
+
+        const requestData = {
+            fId: fId || null,
+            fAdjustmentStartDate: fAdjustmentStartDate || null,
+            fAdjustmentEndDate: fAdjustmentEndDate || null,
+            fCheckerId: fCheckerId || null
+        };
+
+        // 發送 AJAX 查詢請求
+        $.ajax({
+            url: '/InventoryAdjustment/Search',
+            type: 'GET',
+            data: requestData,
+            success: function (response) {
+                console.log("AJAX 成功回應！", response);
+
+                // 確保 response.inventoryAdjustmentList 存在且長度大於 0
+                if (response.inventoryAdjustmentList && response.inventoryAdjustmentList.length > 0) {
+                    console.log("收到 InventoryAdjustmentList！", response.inventoryAdjustmentList);
+
+                    const tableBody = document.getElementById('inventoryAdjustmentListTableBody');
+                    tableBody.innerHTML = ''; // 清空表格
+
+                    response.inventoryAdjustmentList.forEach(item => {
+                        let row = `
+                        <tr class="inventory-row" data-id="${item.fId}">
+                            <td>${item.fId}</td>
+                            <td>${item.fAdjustmentDate ?? ''}</td>
+                            <td>${item.fCreatedAt ?? ''}</td>
+                            <td>
+                                <button class="btn btn-primary btn-sm selectInventoryAdjustment" data-id="${item.fId}">選擇</button>
+                            </td>
+                        </tr>
+                        `;
+                        tableBody.insertAdjacentHTML('beforeend', row);
+                    });
+
+                    // 顯示查詢結果視窗
+                    $("#inventoryAdjustmentListModal").modal("show");
+                } else {
+                    console.error("沒有收到 InventoryAdjustmentList！", response);
+                    alert('查無符合條件的資料');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("查詢發生錯誤！", error);
+                alert('查詢失敗，請稍後再試');
+            }
+        });
+    });
+
+    // 綁定「選擇」按鈕的事件
+    $(document).on('click', '.selectInventoryAdjustment', function () {
+        selectedInventoryAdjustmentId = $(this).data('id'); // 設定選中的 InventoryAdjustmentId
+        $('.inventory-row').removeClass('table-active'); // 先清除其他選中的狀態
+        $(this).closest('tr').addClass('table-active'); // 高亮當前選擇的行
+        console.log("選擇的 InventoryAdjustmentId:", selectedInventoryAdjustmentId);
+    });
+
+    // 綁定確認按鈕，進行跳轉
+    $(document).on('click', '#confirmSelection', function () {
+        if (!selectedInventoryAdjustmentId) {
+            alert('請選擇一個調整單號');
+            return;
+        }
+        console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
+        window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
     });
 </script>
 
@@ -261,6 +341,34 @@
 
 </script>
 
+<!-- 刪除 -->
+<script>
+    document.getElementById('deletebutton').addEventListener('click', function () {
+        const inventoryAdjustmentsId = document.querySelector('input[name="currentId"]').value;
+
+        if (confirm('您確定要刪除此調整資料嗎？此操作無法撤銷！')) {
+            fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `id=${inventoryAdjustmentsId}`,
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirectTo;
+                } else {
+                    alert('刪除失敗，請稍後再試。');
+                }
+            })
+            .catch(error => {
+                console.error('錯誤:', error);
+                alert('發生錯誤，請稍後再試。');
+            });
+        }
+    });
+</script>
 
 <!-- 列印 -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>

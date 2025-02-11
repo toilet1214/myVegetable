@@ -54,6 +54,8 @@
         public DateOnly? FAdjustmentStartDate { get; set; }
         public DateOnly? FAdjustmentEndDate { get; set; }
 
+        public DateOnly? FCreatedAtStartDate { get; set; }
+        public DateOnly? FCreatedAtEndDate { get; set; }
     }
 
 }

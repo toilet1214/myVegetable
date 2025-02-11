@@ -18,7 +18,10 @@ namespace prjVegetable.Controllers
             _context = context;
             _logger = logger;
         }
-
+        public IActionResult Index()
+        {
+            return View();
+        }
 
         /*--------------- + Detail + ----------------*/
         //GET Inventory/Detail
@@ -362,14 +365,7 @@ namespace prjVegetable.Controllers
         }
 
 
-
-
         /*---------------- + Search + ----------------*/
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         public IActionResult Search(int? fId, DateOnly? fBaselineStartDate, DateOnly? fBaselineEndDate, DateOnly? fCreatedStartDate, DateOnly? fCreatedEndDate)
         {
             var query = _context.TInventoryMains.AsQueryable();

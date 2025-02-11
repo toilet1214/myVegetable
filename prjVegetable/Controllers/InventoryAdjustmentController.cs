@@ -18,15 +18,14 @@ namespace prjVegetable.Controllers
             _context = context;
             _logger = logger;
         }
-
         public IActionResult Index()
         {
             return View();
         }
 
         /*--------------- + Detail + ----------------*/
-
         //GET InventoryAdjustment/Detail
+        [HttpGet]
         public IActionResult Detail(int? id)
         {
             // 如果沒有提供 id，則自動顯示第一筆調整單
@@ -126,69 +125,17 @@ namespace prjVegetable.Controllers
             return View(viewModel);
         }
 
-
-        /*--------------- + Create + ----------------*/
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult Create(DateOnly BaseDate, int ProductStartCode, int ProductEndCode)
-        {
-            var inventoryMain = new TInventoryMain
-            {
-                FBaselineDate = BaseDate,
-                FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
-                FEditor = 1,
-                FNote = "新增盤點條件"
-            };
-
-            _context.TInventoryMains.Add(inventoryMain);
-            _context.SaveChanges();
-
-            var inventoryDetails = new List<TInventoryDetail>();
-
-            var productsInRange = _context.TProducts
-                .Where(p => p.FId >= ProductStartCode && p.FId <= ProductEndCode)
-                .ToList();
-
-            foreach (var product in productsInRange)
-            {
-                var inventoryDetail = new TInventoryDetail
-                {
-                    FInventoryMainId = inventoryMain.FId,
-                    FProductId = product.FId,
-                    FSystemQuantity = product.FQuantity,
-                    FActualQuantity = null
-                };
-
-                inventoryDetails.Add(inventoryDetail);
-            }
-
-            _context.TInventoryDetails.AddRange(inventoryDetails);
-            _context.SaveChanges();
-
-            // 使用創建的 inventoryMain.FId 作為重定向的 ID
-            return RedirectToAction("Detail", "InventoryAdjustment", new { id = inventoryMain.FId });
-        }
-
-
-
         /*--------------- + Delete + ----------------*/
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            // 根據 ID 查找要刪除的盤點主單
-            var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == id);
-            if (inventoryMain == null)
+            var inventoryAdjustment = _context.TInventoryAdjustments.FirstOrDefault(im => im.FId == id);
+            if (inventoryAdjustment == null)
             {
-                return NotFound();  // 找不到資料則返回 404 錯誤
+                return NotFound();
             }
 
-            // 創建 ViewModel 並傳遞資料至視圖
-            return View(inventoryMain);
+            return View(inventoryAdjustment);
         }
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
@@ -196,28 +143,28 @@ namespace prjVegetable.Controllers
             try
             {
                 // 查找要刪除的盤點主單
-                var inventoryMain = _context.TInventoryMains.FirstOrDefault(im => im.FId == id);
-                if (inventoryMain == null)
+                var inventoryAdjustment = _context.TInventoryAdjustments.FirstOrDefault(im => im.FId == id);
+                if (inventoryAdjustment == null)
                 {
                     return NotFound();
                 }
 
                 // 刪除相關的 TInventoryDetail 資料
-                var inventoryDetails = _context.TInventoryDetails.Where(detail => detail.FId == id).ToList();
-                _context.TInventoryDetails.RemoveRange(inventoryDetails);
-                _context.TInventoryMains.Remove(inventoryMain);
+                var inventoryAdjustmentsDetails = _context.TInventoryAdjustmentDetails.Where(detail => detail.FId == id).ToList();
+                _context.TInventoryAdjustmentDetails.RemoveRange(inventoryAdjustmentsDetails);
+                _context.TInventoryAdjustments.Remove(inventoryAdjustment);
 
                 // 提交變更
                 _context.SaveChanges();
 
                 // 查找前一筆資料（ID 小於當前資料的最大值）
-                var previousInventoryMain = _context.TInventoryMains
+                var previousInventoryAdjustments = _context.TInventoryAdjustments
                     .Where(im => im.FId < id)
                     .OrderByDescending(im => im.FId)  // 降序排列
                     .FirstOrDefault();  // 取得最新的一筆
 
                 // 返回一個包含重定向 URL 的 JSON 響應
-                return Json(new { success = true, redirectTo = Url.Action("Detail", new { id = previousInventoryMain?.FId }) });
+                return Json(new { success = true, redirectTo = Url.Action("Detail", new { id = previousInventoryAdjustments?.FId }) });
             }
             catch (Exception ex)
             {
@@ -262,5 +209,69 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
+        /*---------------- + Search + ----------------*/
+        public IActionResult Search(int? fId, DateOnly? fBaselineStartDate, DateOnly? fBaselineEndDate, int? fCheckerId)
+        {
+            var query = _context.TInventoryAdjustments.AsQueryable();
+
+            // 1. 根據 FId 查詢 (允許其他條件並存)
+            if (fId.HasValue)
+            {
+                query = query.Where(i => i.FId == fId.Value);
+            }
+
+            // 2. 盤點基準日範圍過濾
+            if (fBaselineStartDate.HasValue && fBaselineEndDate.HasValue && fBaselineStartDate > fBaselineEndDate)
+            {
+                return Json(new { success = false, message = "盤點基準日範圍不正確" });
+            }
+
+            if (fBaselineStartDate.HasValue)
+            {
+                query = query.Where(i => i.FadjustmentDate >= fBaselineStartDate.Value);
+            }
+
+            if (fBaselineEndDate.HasValue)
+            {
+                query = query.Where(i => i.FadjustmentDate <= fBaselineEndDate.Value);
+            }
+
+            // 3. 根據盤點人員 FCheckerId 過濾
+            if (fCheckerId.HasValue)
+            {
+                query = query.Where(i => i.FCheckerId == fCheckerId.Value);
+            }
+
+            // 4. 查詢主檔
+            var inventoryAdjustment = query.Select(i => new CInventoryAdjustmentWrap
+            {
+                FId = i.FId,
+                FAdjustmentDate = i.FadjustmentDate,
+                FCheckerId = i.FCheckerId // 回傳盤點人員 ID
+            }).ToList();
+
+            if (!inventoryAdjustment.Any())
+            {
+                return Json(new { success = false, message = "未找到符合條件的盤點主資料。" });
+            }
+
+            _logger.LogInformation("查詢到的 InventoryAdjustment: {0}", JsonConvert.SerializeObject(inventoryAdjustment));
+
+            // 5. 回傳符合條件的 InventoryAdjustment 清單
+            return Json(new
+            {
+                success = true,
+                inventoryAdjustmentList = inventoryAdjustment.Select(i => new
+                {
+                    i.FId,
+                    i.FAdjustmentDate,
+                    i.FCreatedAt,
+                    i.FCheckerId
+                }).ToList()
+            });
+
+        }
+
     }
 }
