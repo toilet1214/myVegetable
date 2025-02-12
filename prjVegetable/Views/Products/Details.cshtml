@@ -5,74 +5,363 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>詳細資料</h1>
+<h1>商品詳細資料</h1>
+<br />
+<hr />
+<div id="app">
+    <div class="container">
+        <div v-if="product" :key="product.fId">
+            <form v-if="edit">
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fName" class="col-md-3 col-form-label">商品名稱：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fName" :placeholder="product.fName" v-model="product.fName">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fClassification" class="col-md-3 col-form-label">商品分類：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fClassification" :placeholder="product.fClassification" v-model="product.fClassification">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fPrice" class="col-md-3 col-form-label">商品價格：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPrice" :placeholder="product.fPrice" v-model="product.fPrice">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fDescription" :placeholder="product.fDescription" v-model="product.fDescription">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fQuantity" class="col-md-3 col-form-label">庫存數量：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fQuantity" :placeholder="product.fQuantity" v-model="product.fQuantity">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :placeholder="product.fLaunchAt" v-model="product.fLaunchAt">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fStorage" :placeholder="product.fStorage" v-model="product.fStorage">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fOrigin" class="col-md-3 col-form-label">產地：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fOrigin" :placeholder="product.fOrigin" v-model="product.fOrigin">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fLaunch" :placeholder="product.fLaunch" v-model="product.fLaunch">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="row">
+                        <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
+                        <div v-if="product.Images && product.Images.length > 0">
+                            <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
+                                <img :src="'https://localhost:7251/images/' + image"
+                                     alt="'商品圖片 ' + (index + 1)"
+                                     class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <input type="file"
+                                       :id="'update-' + index"
+                                       @@change="editFileChanged($event, index)" />
+                            </div>
+                        </div>
+                        <input type="file" @@change="newImageSelected" />
+                    </div>
+                </div>
 
-<div>
-    <h4>TProduct</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FName)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FClassification)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FClassification)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FPrice)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FPrice)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FDescription)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FDescription)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FQuantity)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FQuantity)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FLaunchAt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FLaunchAt)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FStorage)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FStorage)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FOrigin)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FOrigin)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.FEditor)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.product.FEditor)
-        </dd>
-    </dl>
+            </form>
+            @*顯示樣本*@
+            <form v-else>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fName" class="col-md-3 col-form-label">商品名稱：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fName" :value="product.fName" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fClassification" class="col-md-3 col-form-label">商品分類：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fClassification" :value="product.fClassification" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fPrice" class="col-md-3 col-form-label">商品價格：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fPrice" :value="product.fPrice" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fDescription" :value="product.fDescription" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fQuantity" class="col-md-3 col-form-label">庫存數量：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fQuantity" :value="product.fQuantity" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :value="product.fLaunchAt" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fStorage" :value="product.fStorage" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fOrigin" class="col-md-3 col-form-label">產地：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fOrigin" :value="product.fOrigin" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fLaunch" :value="product.fLaunch" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fEditor" :value="product.fEditor" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fImgName" class="col-md-3 col-form-label">商品照片：</label>
+                            <div class="col-md-9">
+                                <div v-if="product.Images && product.Images.length > 0">
+                                    <span v-for="(image, index) in product.Images" :key="index">
+                                        <img :src="'https://localhost:7251/images/' + image"
+                                             alt="'商品圖片 ' + (index + 1)"
+                                             class="img-fluid d-inline-flex"
+                                             style="max-width: 25%; margin-bottom: 10px; " />
+                                    </span>
+                                </div>
+                                <div v-else>loading</div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!-- 返回與編輯按鈕 -->
+            <div>
+                <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
+                <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="edit" @@click="saveProduct" class="btn btn-success">儲存修改</button>
+            </div>
+        </div>
+
+        <div v-else>
+            <p>載入中...</p>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Index" class="btn btn-outline-primary">回商品列表</a>
-    <a asp-action="Edit" asp-route-id="@Model?.FId" class="btn btn-primary">編輯資料</a> |
-    
-</div>
-@section scripts
+
+@section Scripts
 {
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    product: {
+                        Images:[]
+                    },
+                    img:[],// 用來存放從後端獲得的人員資料
+                    edit:false, //啟用編輯
+                };
+            },
+            mounted() {
+                this.loadProductId();  // 确保调用正确的 method
+            },
+            methods: {
+                loadProductId() {
+                        // 获取当前 URL 的路径部分
+                        const path = window.location.pathname;
 
+                        // 假设 URL 路径的格式是 /Person/Details/{id}
+                        const pathSegments = path.split('/'); // 将路径分割为数组
+
+                        // 获取路径的最后一部分作为 ID
+                        const productId = pathSegments[pathSegments.length - 1];
+                    if (productId) {
+                        axios.get(`/Products/GetProductById/${productId}`)
+                            .then(response => {
+                                console.log(response.data);  // 查看返回的產品資料
+                                this.product = response.data; // 把返回的資料賦值給 product
+                                this.product.Images = response.data.images || [];
+                            })
+                            .catch(error => {
+                                console.error('資料加載錯誤', error);
+                                this.product = {};  // 如果出錯，清空資料
+                                this.product.Images = [];
+                            });
+                    } else {
+                        console.error('未提供有效的 ID');
+                    }
+                },
+                goToIndex() {
+                    window.location.href = "/Products/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
+                },
+
+                toggleEditting() {
+                this.edit = !this.edit;  // 切換 edit 值
+                },
+
+                //選擇文件更新照片
+                editFileChanged(event,index){
+                    const file = event.target.files[0];
+                    if(file){
+                        //更新對應圖片
+                        const reader = new FileReader();
+                        reader.onload=(e)=>{this.product.Images[index] = e.target.result;};
+                        reader.readAsDataURL(file);
+                        
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('productId', this.product.FId);
+
+                        axios.put('/Products/updateImage', formData, {
+                            headers:{
+                                'Content-Type':'multipart/form-data'
+                            }
+                        }).then(response=>{
+                            alert("圖片更新成功")
+                            this.product.Images[index] = response.data.imageName;
+                        }).catch(error=>{
+                            console.err('上傳失敗', error);
+                            alert('圖片上傳失敗');
+                        })
+                    }
+                },
+
+                // 上传新的图片
+                newImageSelected(event) {
+                    const file = event.target.files[0];  // 获取选择的文件
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('productId', this.product.FId);
+
+                        axios.post('/Products/updateImage', formData, {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        })
+                        .then(response => {
+                            this.product.Images.push(response.data.imageName);  // 将新图片添加到数组
+                            alert("圖片上傳成功");
+                        })
+                        .catch(error => {
+                            console.error('上傳失败', error);
+                            alert("圖片上傳失數");
+                        });
+                    }
+                },
+
+                saveProduct() {
+                    if (this.product.fId) {
+                        console.log(this.product);  // 打印数据，确认数据是否正确
+                        const productData =JSON.parse(JSON.stringify(this.product))
+                        axios.put(`/Products/update`, productData)
+                            .then(response => {
+                                // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
+                                alert("資料已儲存!");
+                                this.toggleEditting();  // 儲存後退出編輯模式
+                            })
+                            .catch(error => {
+                                console.error('儲存失敗', error);
+                                alert("儲存資料時發生錯誤");
+                            });
+                    } else {
+                        alert("無效的使用者ID，無法儲存資料");
+                    }
+                }
+            }
+        });
+
+        app.mount('#app'); // 使用 Vue 3 创造并挂载应用
+    </script>
 }

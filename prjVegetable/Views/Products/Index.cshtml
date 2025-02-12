@@ -7,10 +7,16 @@
 
 <h1>商品資料列表</h1>
 <br />
+@using (Html.BeginForm())
+{
+    @:搜尋 @Html.TextBox("txtKeyword")
+    <input type="submit" value="查詢" class="btn btn-primary">
+}
+<br />
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
-<table class="table" id="List">
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -41,6 +47,9 @@
                 @Html.DisplayNameFor(model => model.FOrigin)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.FLaunch)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FEditor)
             </th>
             <th></th>
@@ -54,20 +63,15 @@
                     @Html.DisplayFor(modelItem => item.product.FName)
                 </td>
                 <td>
-                    <form method="post" enctype="multipart/form-data" action="@Url.Action("UploadImage", "Image")">
-                        <div>
-                            @foreach (var imgName in item.ImgList)
-                            {
-
-                                <div class="container d-flex align-items-center">
-                                    <img src="~/Images/@imgName" class="w-25 d-inline-block " alt="Product Image" />
-                                    <input type="file" id="" name="file@(imgName)" />
-                                </div>
-
-                            }
-                            <button type="submit" class="d-flex justify-content-end" style="width:auto">上傳圖片</button>
-                        </div>
-                    </form>
+                    <div>
+                        @foreach (var imgName in item.ImgList)
+                        {
+                            <div class="container d-flex align-items-center">
+                                <img src="~/Images/@imgName" class="w-25 d-inline-block " alt="Product Image" />
+                                <input type="file" id="" name="file@(imgName)" />
+                            </div>
+                        }
+                    </div>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FClassification)
@@ -85,24 +89,46 @@
                     @Html.DisplayFor(modelItem => item.product.FLaunchAt)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.FStorage)
+                    @if (item.product.FStorage == 0)
+                    {
+                        @:冷凍
+                    }
+                    else if (item.product.FStorage == 1)
+                    {
+                        @:冷藏
+                    }
+                    else if (item.product.FStorage == 2)
+                    {
+                        @:常溫
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FOrigin)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.FEditor)
+                    @if (item.product.FLaunch == 0)
+                    {
+                        @:下架
+                    }
+                    else if (item.product.FLaunch == 1)
+                    {
+                        @:上架
+                    }
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
-                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
-                    @Html.ActionLink("移除", "Delete", "TProducts", new { id = item.product.FId },
+                    @Html.DisplayFor(modelItem => item.product.FEditor)
+                </td>
+                <td>                    
+                    <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                    @Html.ActionLink("  移除  ", "Delete", "TProducts", new { id = item.product.FId },
                              new { onclick = "return confirm('確定要刪除嗎?')" })
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {

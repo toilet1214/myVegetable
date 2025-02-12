@@ -16,7 +16,7 @@ namespace prjVegetable.Controllers
 
         public ProductsController(DbVegetableContext context)
         {
-            _context = context;
+            _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         // GET: TProducts
@@ -54,37 +54,89 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
-        // GET: TProducts/Details/5
+        //詳細資料頁面
         public async Task<IActionResult> Details()
         {
             return View();
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProviderById(int? id)
+        public async Task<IActionResult> GetProductById(int? id)
         {
-            if (id == 0)
+            // 檢查 id 是否有效
+            if (id == null || id <= 0)
             {
-                return BadRequest("找不到ID");
+                return BadRequest("無效的產品 ID");
             }
-            var products = await _context.TProviders.FirstOrDefaultAsync(c => c.FId == id);
-            if (products == null)
+
+            // 查詢產品
+            var product = await _context.TProducts.FirstOrDefaultAsync(c => c.FId == id);
+
+            // 如果找不到該產品，返回 NotFound
+            if (product == null)
             {
-                return NotFound("products not found");
+                return NotFound("找不到該產品");
             }
-            return Ok(products);
+
+            // 查詢該產品對應的圖片名稱
+            var images = await _context.TImgs
+                .Where(i => i.FProductId == id)
+                .Select(i => i.FName)
+                .ToListAsync();
+
+            // 如果沒有圖片，設置為空陣列或者 null，根據需求來決定
+            var productWithImages = new
+            {
+                product.FId,
+                product.FName,
+                product.FClassification,
+                product.FPrice,
+                product.FDescription,
+                product.FIntroduction,
+                product.FQuantity,
+                product.FLaunch,
+                product.FStorage,
+                product.FOrigin,
+                product.FLaunchAt,
+                product.FEditor,
+                Images = images ?? new List<string>(), // 確保返回空列表而不是 null
+            };
+
+            return Ok(productWithImages);
+        }
+
+        [HttpGet]//呼叫圖片用
+        public async Task<IActionResult> GetImagesByProductId(int? productId)
+        {
+            if (productId == null || productId == 0)
+            {
+                return BadRequest("找不到產品ID");
+            }
+
+            // 查找該產品的所有圖片
+            var images = await _context.TImgs
+                                       .Where(i => i.FProductId == productId)
+                                       .Select(i => new { i.FId, i.FName })
+                                       .ToListAsync();
+
+            if (images == null || !images.Any())
+            {
+                return NotFound("該產品沒有圖片");
+            }
+
+            return Ok(images);  // 返回圖片列表
         }
 
         [HttpPut]
         public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
-        { 
-            TProduct e = _context.TProducts.FirstOrDefault(c=> c.FId == productwrap.FId);
-            TImg i = _context.TImgs.FirstOrDefault(i=>i.FProductId == productwrap.FId);
-            if (e==null) 
+        {
+            TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == productwrap.FId);
+            
+            if (e == null)
             {
                 return NotFound("未找到相關商品");
             }
-            try 
+            try
             {
                 e.FName = productwrap.FName;
                 e.FClassification = productwrap.FClassification;
@@ -97,36 +149,82 @@ namespace prjVegetable.Controllers
                 e.FOrigin = productwrap.FOrigin;
                 e.FLaunch = productwrap.FLaunch;
                 e.FEditor = productwrap.FEditor;
-
-                if (productwrap.FImgName != null)
-                {
-                    if (i == null)
-                    {
-                        // 如果沒有圖片資料，新增圖片
-                        i = new TImg
-                        {
-                            FProductId = productwrap.FId,
-                            FName = productwrap.FImgName // 假設圖片是 URL，若是二進位資料則需進一步處理
-                        };
-                        _context.TImgs.Add(i);
-                    }
-                    else
-                    {
-                        // 如果已有圖片，則更新圖片
-                        i.FName = productwrap.FImgName;
-                    }
-                }
-
-                await _context.SaveChangesAsync();
-                return Ok("資料已成功更新");
+                
             }
-            
             catch (Exception ex)
             {
                 // 捕捉錯誤並回傳具體錯誤訊息
                 return StatusCode(500, $"儲存資料時發生錯誤: {ex.Message}");
             }
+
+            await _context.SaveChangesAsync();
+                return Ok("資料已成功更新");
         }
+
+        // HttpPut method for updating product image
+        [HttpPut("updateImage")]
+        public async Task<IActionResult> updateImage([FromForm] IFormFile file, [FromForm] int productId)
+        {
+            TImg img = _context.TImgs.FirstOrDefault(e => e.FProductId == productId);
+
+            // Ensure file is provided
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("未選擇圖片檔案");
+            }
+
+            // Check if product exists
+            var product = _context.TProducts.FirstOrDefault(c => c.FId == productId);
+            if (product == null)
+            {
+                return NotFound("未找到相關商品");
+            }
+
+            try
+            {
+                // Generate a unique file name using Guid to prevent overwriting
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                // Define the path to save the image file (assuming storing it in wwwroot/images)
+                var filePath = Path.Combine("wwwroot/images", fileName);
+
+                // Save the file to the server
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                // Check if there is already an image record for this product
+                var existingImage = _context.TImgs.FirstOrDefault(i => i.FProductId == productId);
+                if (existingImage == null)
+                {
+                    // No image exists, create a new record
+                    var newImage = new TImg
+                    {
+                        FProductId = productId,
+                        FName = fileName
+                    };
+                    _context.TImgs.Add(newImage);
+                }
+                else
+                {
+                    // Update the existing image record
+                    existingImage.FName = fileName;
+                }
+
+                // Save changes to the database
+                await _context.SaveChangesAsync();
+
+                return Ok("圖片已成功上傳");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"儲存圖片時發生錯誤: {ex.Message}");
+            }
+        }
+
+
+
 
         // GET: TProducts/Create
         public IActionResult Create()
@@ -146,20 +244,20 @@ namespace prjVegetable.Controllers
         }
 
         // GET: TProducts/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
 
-            var tProduct = await _context.TProducts.FirstOrDefaultAsync(c => c.FId == id);
-            if (tProduct == null)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            return View(new CProductWrap() { product = tProduct });
-        }
+        //    var tProduct = await _context.TProducts.FirstOrDefaultAsync(c => c.FId == id);
+        //    if (tProduct == null)
+        //    {
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(new CProductWrap() { product = tProduct });
+        //}
 
         // POST: TProducts/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
@@ -208,3 +306,4 @@ namespace prjVegetable.Controllers
 
     }
 }
+
