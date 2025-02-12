@@ -176,23 +176,39 @@
                 <div class="modal-body">
                     <form asp-action="Login" asp-controller="Account" class="needs-validation" novalidate>
                         <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+
+                        <!-- 帳號輸入框 -->
                         <div class="form-group mb-3">
-                            @Html.TextBox("txtAccount", "", new { HtmlAttributes = new { @class = "form-control" } })
+                            @Html.TextBox("txtaccount", "", new
+                                {
+                                    @class = "form-control-login custom-input",
+                                    placeholder = "請輸入帳號"
+                                })
                         </div>
                         <div class="my-5"></div>
+
+                        <!-- 密碼輸入框 -->
                         <div class="form-group mb-3">
-                            @Html.TextBox("txtPassword", "", new { HtmlAttributes = new { @class = "form-control" } })
+                            @Html.Password("txtpassword", "", new
+                                {
+                                    @class = "form-control-login custom-input",
+                                    placeholder = "請輸入密碼 ( 8-20 英數字 )"
+                                })
                         </div>
+
+                        <!-- 記住我 & 忘記密碼 -->
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="form-check">
                                 <input type="checkbox" class="form-check-input me-1" id="rememberMe">
                                 <label class="form-check-label" for="rememberMe">記住我</label>
                             </div>
-                            <div class="d-flex login">
-                                <a href="@Url.Action("Forgot", "Account")" class="text-end me-3">忘記密碼</a>
-                                <a href="@Url.Action("Register", "Account")" class="text-end">立即註冊</a>
+                            <div class="d-flex">
+                                <a asp-action="ForgotPassword" asp-controller="Account" class="me-3 text-decoration-none text-end">忘記密碼?</a>
+                                <a asp-action="Register" asp-controller="Account" class="text-decoration-none text-end">立即註冊</a>
                             </div>
                         </div>
+
+                        <!-- 登入按鈕 -->
                         <div class="text-center" style="margin-top: 80px;">
                             <input type="submit" value="登入" class="btn btn-primary w-100 mb-4">
                         </div>
