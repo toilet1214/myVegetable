@@ -15,12 +15,13 @@ namespace prjVegetable.Models
         {
             _report = new TReport();
         }
-
+        [DisplayName("回報單編號")]
         public int FId 
         { 
             get { return _report.FId; } 
             set { _report.FId = value; } 
         }
+        [DisplayName("回報人ID")]
         public int FPersonId
         {
             get { return _report.FPersonId; }
@@ -47,7 +48,7 @@ namespace prjVegetable.Models
             get { return _report.FDescription; }
             set { _report.FDescription = value; }
         }
-
+        [DisplayName("回報時間")]
         public DateTime FTime
         {
             get { return _report.FTime; }
