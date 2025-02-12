@@ -27,7 +27,7 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
-                <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" required min="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" required min="@DateTime.Now.ToString("yyyy-MM-dd")" value=@DateTime.Now.ToString("yyyy-MM-dd") />
                 <span asp-validation-for="GoodsInAndOut.FDate" class="text-danger"></span>
             </div>
         </div>
@@ -37,14 +37,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
-                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
+                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required value=""/>
                 <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
-                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required />
+                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required value=1 />
                 <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
             </div>
         </div>
@@ -54,14 +54,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
-                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
+                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required value=1/>
                 <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
-                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required/>
+                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required value=0 />
                 <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
             </div>
         </div>
@@ -91,10 +91,11 @@
 <h3>進出貨明細</h3>
 <div id="details"></div>
 
-<!-- [+] 按鈕 -->
+<!-- [-] [+] 按鈕 -->
 <div class="row mb-3">
     <div class="col-6">
-        <button type="button" id="addDetail" class="btn btn-success">+ 新增明細</button>
+        <button type="button" id="addDetail" class="btn btn-success">＋ </button>
+        <button type="button" id="removeDetail" class="btn btn-danger">－ </button>
     </div>
 </div>
 
@@ -179,15 +180,22 @@
     document.getElementById("addDetail").addEventListener("click", function () {
         var newRow = `<div class="row mb-3 detail-entry">
                 <input type="hidden" class="FGoodsInandOutId" value="0" />
-                <div class="col-3"><input type="text" class="FProductId form-control" placeholder="產品 ID" /></div>
-                <div class="col-3"><input type="text" class="FCount form-control" placeholder="數量" /></div>
-                <div class="col-3"><input type="text" class="FPrice form-control" placeholder="單價" /></div>
-                <div class="col-3"><input type="text" class="FSum form-control" placeholder="小計" /></div>
+                <div class="col-3"><input type="text" class="FProductId form-control" placeholder="產品 ID" value=1 /></div>
+                <div class="col-3"><input type="text" class="FCount form-control" placeholder="數量" value=1 /></div>
+                    <div class="col-3"><input type="text" class="FPrice form-control" placeholder="單價" /></div>
+                    <div class="col-3"><input type="text" class="FSum form-control" placeholder="小計" /></div>
             </div>`;
         document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
     });
-    console.log(@Model.GoodsInAndOut.FNote);
 
+    document.getElementById("removeDetail").addEventListener("click", function () {
+        var details = document.querySelectorAll(".detail-entry");
+        if (details.length > 1) {
+            details[details.length - 1].remove(); // 移除最後一筆
+        } else {
+            alert("至少需要一筆明細！");
+        }
+    });
     //  取消按鈕，返回 GoodsInAndOutIndex
     document.getElementById("cancel").addEventListener("click", function () {
         window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
