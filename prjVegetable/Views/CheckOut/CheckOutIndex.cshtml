@@ -2,23 +2,13 @@
 @{
     
 }
-@section styles {
-
-    <style>
-        .box{
-            left:50%;
-            top:50%;
-
-        }
-    </style>
-}
 <!DOCTYPE html>
 <html>
 <body>
 
     @if (@Model["RtnCode"] == "1")
     {
-        <div class="box">
+        <div class="box" style="left:50%;top:50%;">
             <div class="mt-4 d-flex justify-content-center">
                 <div>
                     <h2 class="d-flex justify-content-center fw-bold" style="color:#5A5AAD">付款成功</h2>
@@ -38,7 +28,7 @@
     }
     else
     {
-        <h2 class="d-flex justify-content-center fw-bold" style="color:    #930000">付款失敗</h2>
+        <h2 class="d-flex justify-content-center fw-bold" style="color:#930000">付款失敗</h2>
 
     }
 </body>
