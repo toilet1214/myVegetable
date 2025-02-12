@@ -49,7 +49,8 @@ namespace prjVegetable.Controllers
                     // 附加關鍵字篩選條件
                     datas = db.TPurchaseDetails
                               .Where(d => editedPurchases.Contains(d.FPurchaseId) &&
-                                         (d.FPurchaseId.ToString().Contains(keyword)));
+                                         (d.FPurchaseId.ToString().Contains(keyword)
+                                         || d.FProductId.ToString().Contains(keyword)));
                 }
 
                 // 包裝成 ViewModel

@@ -8,12 +8,12 @@
 <h1>發票管理</h1>
 @using (Html.BeginForm())
 {
-    @:關鍵字 @Html.TextBox("txtKeyword")
+    @:任何欄位關鍵字 @Html.TextBox("txtKeyword")
     <button type="submit" class="btn btn-warning">查詢</button>
 }
 
 <div class="mt-3 mb-3">
-    <a href="@Url.Action("Create")" class="btn btn-primary">新增採購單</a>
+    <a href="@Url.Action("Create")" class="btn btn-primary">新增發票</a>
 </div>
 
 <table class="table">

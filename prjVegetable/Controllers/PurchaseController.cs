@@ -57,7 +57,8 @@ namespace prjVegetable.Controllers
                 || p.FTotal.ToString().Contains(keyword)
                 || p.FTax.ToString().Contains(keyword)
                 || p.FPreTax.ToString().Contains(keyword)
-                || p.FEditor.ToString().Contains(keyword));
+				|| p.FNote.ToString().Contains(keyword)
+				|| p.FEditor.ToString().Contains(keyword));
 
 			//原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
 			List<CPurchaseWrap> list = new List<CPurchaseWrap>();
