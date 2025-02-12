@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>採購明細</h1>
+<h1>採購明細管理</h1>
 @using (Html.BeginForm())
 {
-    @:關鍵字 @Html.TextBox("txtKeyword")
+    @:請輸入採購號碼: @Html.TextBox("txtKeyword")
     <button type="submit" class="btn btn-warning">查詢</button>
 }
 <div class="mt-3 mb-3">

@@ -88,7 +88,8 @@ namespace prjVegetable.Controllers
             {
                 Purchase = new TPurchase
                 {
-                    FEditor = userId
+                    FEditor = userId,
+                    FBuyDate=new DateTime(2025, 3, 7)
                 }             
             };
             return View(viewModel);

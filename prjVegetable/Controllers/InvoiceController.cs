@@ -90,7 +90,8 @@ namespace prjVegetable.Controllers
             {
                 TInvoice = new TInvoice
                 {
-                    FEditor = userId
+                    FEditor = userId,
+                    FDate = new DateTime(2025, 3, 7)
                 }
             };
             return View(viewModel);

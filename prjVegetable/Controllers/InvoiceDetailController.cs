@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
+using System.Linq;
 
 namespace prjVegetable.Controllers
 {
@@ -20,47 +21,46 @@ namespace prjVegetable.Controllers
         //----------List------------------------
         public IActionResult List(CKeywordViewModel vm)
         {
-            //先session
-            var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
-
-            // 先驗證身分
-            if (!checkout == true)
+            // 先驗證登入狀態
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
             {
-                return RedirectToAction("Index", "Home"); // 若未登入，跳轉至登入頁面
+                return RedirectToAction("Index", "Home"); // 若未登入，跳轉至首頁
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    return RedirectToAction("List", "InvoiceDetail"); // 若驗證成功，回到Views():Purchase/List
-            //}
+            using (DbVegetableContext db = new DbVegetableContext())
+            {
+                string? keyword = vm.txtKeyword;
+                IEnumerable<TInvoiceDetail> datas = null;
 
-            //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
-            DbVegetableContext db = new DbVegetableContext();
-            string? keyword = vm.txtKeyword;
+                // 找出當前使用者編輯過的發票號碼 (FNumber)
+                var editedInvoiceNumbers = db.TInvoices
+                                             .Where(i => i.FEditor == userId)
+                                             .Select(i => i.FNumber)
+                                             .ToList();
 
+                if (string.IsNullOrEmpty(keyword))
+                {
+                    // 只顯示該使用者編輯過的發票明細
+                    datas = db.TInvoiceDetails
+                              .Where(d => editedInvoiceNumbers.Contains(d.FNumber));
+                }
+                else
+                {
+                    // 附加關鍵字篩選條件
+                    datas = db.TInvoiceDetails
+                              .Where(d => editedInvoiceNumbers.Contains(d.FNumber) &&
+                                         (d.FId.ToString().Contains(keyword) ||
+                                          d.FNumber.Contains(keyword) ||
+                                          d.FProductName.Contains(keyword)));
+                }
 
-            //view()呈現
-            IEnumerable<TInvoiceDetail> datas = null;
-
-            //查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 (2)
-            if (string.IsNullOrEmpty(keyword))
-                datas = from t in db.TInvoiceDetails
-                        select t;
-            else
-                datas = db.TInvoiceDetails.Where(
-                 p => p.FId.ToString().Contains(keyword)
-                || p.FNumber.Contains(keyword)
-                || p.FCount.ToString().Contains(keyword)
-                || p.FPrice.ToString().Contains(keyword)
-                || p.FSum.ToString().Contains(keyword)
-                || p.FProductName.Contains(keyword));
-
-            //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
-            List<CInvoiceDetailWrap> list = new List<CInvoiceDetailWrap>();
-            foreach (var t in datas)
-                list.Add(new CInvoiceDetailWrap() { InvoiceDetail = t });
-            return View(list);
+                // 包裝成 ViewModel
+                List<CInvoiceDetailWrap> list = datas.Select(d => new CInvoiceDetailWrap() { InvoiceDetail = d }).ToList();
+                return View(list);
+            }
         }
+
+
 
         //----------Create------------------------
         public IActionResult Create()

@@ -4,12 +4,14 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
+<div class="text-center mt-3">
+	<h1>修改採購明細內容</h1>
+</div>
 
-<h1>修改採購資訊</h1>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="row d-flex justify-content-center">
+    <div class="col-md-6">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
@@ -63,14 +65,15 @@
                 <input type="submit" value="修改並送出" class="btn btn-primary" />
             </div>
         </form>
+		<div class="mt-2 mb-2">
+			<form asp-action="List" method="post">
+				<button type="submit" class="btn btn-danger">取消</button>
+			</form>
+		</div>
     </div>
 </div>
 
-<div class="mt-2">
-    <form asp-action="List" method="post">
-        <button type="submit" class="btn btn-danger">取消</button>
-    </form>
-</div>
+
 
 @* @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
