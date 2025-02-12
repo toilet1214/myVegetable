@@ -396,8 +396,9 @@
                     this.validateForm();
                 },
                 validateUbn(){
+                    const ubnRegex = /^\d{8}$/;
                         // 如果是空白，則不顯示錯誤
-                    if (this.person.fUbn.trim() === '') {
+                    if (this.person.fUbn.trim() === '' || ubnRegex.test(this.person.fUbn.trim())) {
                         this.ubnError = false;
                     } else {
                         // 僅限數字 8 碼

@@ -182,6 +182,7 @@ namespace prjVegetable.Controllers
                 e.FEmpTel = personwrap.FEmpTel;
                 e.FCreatedAt = personwrap.FCreatedAt;
                 e.FEditor = personwrap.FEditor;
+                e.FPassword = personwrap.FPassword;
 
                 // 儲存變更
                 await _context.SaveChangesAsync();

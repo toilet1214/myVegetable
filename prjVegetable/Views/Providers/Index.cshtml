@@ -76,8 +76,8 @@
                 @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
             </td>            
             <td>
-                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
-                    <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)">刪除</a>
+                <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a> <br>
+                <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)" class="btn btn-danger">&emsp;移除&emsp;</a>
             </td>
         </tr>
 }

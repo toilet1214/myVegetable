@@ -42,8 +42,8 @@
                 <td>{{ item.fTel }}</td>
                 <td>{{ item.fEmail }}</td>
                 <td>                    
-                    <a :href="'/Person/Details/' + item.fId">詳細資料</a><br />
-                    <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)">移除</a>
+                    <a :href="'/Person/Details/' + item.fId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                    <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)" class="btn btn-danger">&emsp;移除&emsp;</a>
                 </td>
             </tr>
         </tbody>
