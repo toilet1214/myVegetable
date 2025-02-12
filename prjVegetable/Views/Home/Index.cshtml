@@ -6,7 +6,7 @@
 <!-- 圖片輪播 Carousel Start-->
 @model prjVegetable.ViewModels.CarouselImageViewModel
 
-<div class="container my-5">
+<div class="container mt-2 " data-aos="fade-in" data-aos-duration="1000">
     <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
         <div class="carousel-indicators">
             @for (int i = 0; i < Model.ImagePaths.Count; i++)
@@ -32,7 +32,6 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-
     <!-- 圖片輪播 Carousel End-->
     <!-- 麵包屑 Breadcrumb-->
     <!-- <nav aria-label="breadcrumb">
@@ -43,22 +42,22 @@
       </ol>
     </nav> -->
     <!-- 網站介紹 Start-->
-    <hr class="mt-5">
-    <h1>- 新鮮直送，健康每一天 -</h1>
+    <hr class="mt-4">
+    <h1 data-aos="zoom-in" data-aos-duration="500">- 新鮮直送，健康每一天 -</h1>
     <hr>
-    <div class="row g-0 overflow-hidden my-5 pb-4">
+    <div class="row g-0 overflow-hidden my-4">
         <div class="col-lg-8 mb-3">
-            <div class="lc-block">
+            <div class="lc-block" data-aos="fade-right">
                 <img src="./images/Carousel1.jpg" alt="" class="img-fluid">
             </div>
         </div>
-        <div class="col-lg-4 py-5 ps-3 d-flex align-items-center">
+        <div class="col-lg-4 py-5 ps-4 d-flex align-items-center" data-aos="fade-down" data-aos-duration="1500">
             <div class="lc-block">
                 <h3>當日採收，新鮮直送</h3>
                 <p>我們精選當季優質蔬果，嚴格控管品質，確保每一口都新鮮美味。每日配送，讓您輕鬆享受健康生活。</p>
             </div>
         </div>
-        <div class="col-lg-4 d-flex align-items-center py-5 pe-3 mt-3">
+        <div class="col-lg-4 d-flex align-items-center py-5 pe-3 mt-3" data-aos="fade-down" data-aos-duration="1500">
             <div class="lc-block">
                 <h3>嚴選產地，安心保證</h3>
                 <p>我們與在地農場合作，選用無農藥或低殘留的優質農產品，讓您與家人吃得安心又滿足。</p>
@@ -66,9 +65,9 @@
                 <p>從產地到餐桌，每一步都用心把關。</p>
             </div>
         </div>
-        <div class="col-lg-8 mb-3 mt-3">
+        <div class="col-lg-8 mb-3 mt-3" data-aos="fade-left">
             <div class="lc-block">
-                <img src="./images/Carousel3.jpg" alt="" class="img-fluid">
+                <img src="./images/Carousel2.jpg" alt="" class="img-fluid">
             </div>
         </div>
     </div>
@@ -76,43 +75,43 @@
     <!-- 網站介紹 End-->
     <!-- 熱門商品 Card Start-->
     <hr>
-    <h1>- 本季熱銷 -</h1>
+    <h1 data-aos="zoom-in" data-aos-duration="500">- 本季熱銷 -</h1>
     <hr>
     <div class="row row-cols-1 row-cols-md-3 g-4 my-4 hot-product-card">
-        <div class="col">
+        <div class="col" data-aos="fade-up" data-aos-duration="1500">
             <a href="" class="text-decoration-none">
                 <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel1.jpg" class="card-img-top img-fluid" alt="...">
+                    <img src="~/images/Carousel1.jpg" class="card-img-top img-fluid" alt="新鮮草莓">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">新鮮草莓</h5>
                         <p class="card-text">
-                            This is a wider card with supporting text below as a natural lead-in to additional
-                            content. This content is a little bit longer.
+                            當季採摘的新鮮草莓，果肉飽滿香甜，富含維生素C，是您不可錯過的健康水果。
                         </p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col">
+        <div class="col" data-aos="fade-up">
             <a href="" class="text-decoration-none">
                 <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel2.jpg" class="card-img-top img-fluid" alt="...">
+                    <img src="~/images/Carousel2.jpg" class="card-img-top img-fluid" alt="有機南瓜">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
+                        <h5 class="card-title">有機南瓜</h5>
+                        <p class="card-text">
+                            精選產地直送有機南瓜，口感綿密細膩，適合用於製作湯品、甜點或家常料理。
+                        </p>
                     </div>
                 </div>
             </a>
         </div>
-        <div class="col">
+        <div class="col" data-aos="fade-up" data-aos-duration="2000">
             <a href="" class="text-decoration-none">
                 <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel3.jpg" class="card-img-top img-fluid" alt="...">
+                    <img src="~/images/Carousel3.jpg" class="card-img-top img-fluid" alt="優質蘋果">
                     <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
+                        <h5 class="card-title">優質蘋果</h5>
                         <p class="card-text">
-                            This is a wider card with supporting text below as a natural lead-in to additional
-                            content. This card has even longer content than the first to show that equal height action.
+                            脆甜多汁的優質蘋果，每一口都充滿自然的清甜滋味，是家庭必備的健康水果選擇。
                         </p>
                     </div>
                 </div>
