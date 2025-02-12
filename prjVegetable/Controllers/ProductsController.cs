@@ -162,19 +162,63 @@ namespace prjVegetable.Controllers
         // GET: TProducts/Create
         public IActionResult Create()
         {
-            return View();
+            return View(); 
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(CProductWrap model, IEnumerable<IFormFile> productImages)
+        {
+           
+                // 儲存商品資料到資料庫
+                _context.Add(model.product);
+                await _context.SaveChangesAsync();
+
+                // 儲存圖片檔案到 wwwroot/Images 資料夾
+                if (productImages != null && productImages.Any())
+                {
+                    var imagesPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
+                    if (!Directory.Exists(imagesPath))
+                    {
+                        Directory.CreateDirectory(imagesPath); // 確保資料夾存在
+                    }
+
+                    int orderBy = 1;
+                    foreach (var imgFile in productImages)
+                    {
+                        var fileName = Path.GetFileName(imgFile.FileName);
+                        var filePath = Path.Combine(imagesPath, fileName);
+
+                        // 儲存圖片檔案到 wwwroot/Images 資料夾
+                        using (var stream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await imgFile.CopyToAsync(stream); // 儲存檔案
+                        }
+
+                        // 儲存圖片資料到資料庫
+                        var tImg = new TImg
+                        {
+                            FProductId = model.product.FId,  // 關聯商品ID
+                            FName = fileName,                // 儲存檔名
+                            FOrderBy = orderBy++,            // 設定排序
+                            FUploadAt = DateOnly.FromDateTime(DateTime.Now),
+                            FEditor = model.product.FEditor // 編輯者
+                        };
+
+                        _context.TImgs.Add(tImg); // 儲存圖片資料到資料庫
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+                // 完成後導向 Index 頁面
+                return RedirectToAction(nameof(Index));
         }
 
-        // POST: TProducts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        public async Task<IActionResult> Create(CProductWrap tProductwrap)
-        {
-            _context.TProducts.Add(tProductwrap.product);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //[HttpPost]
+        //public async Task<IActionResult> Create(CProductWrap tProductwrap, IFormFile[] productImages)
+        //{
+        //    _context.TProducts.Add(tProductwrap.product);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         // GET: TProducts/Edit/5
         public async Task<IActionResult> Edit(int? id)
