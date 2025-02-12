@@ -4,17 +4,16 @@
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-
-<h1>新增採購單</h1>
-
-<hr />
-<div class="row">
+<div class="text-center">
+	<h1>新增採購單</h1>
+</div>
+<div class="row d-flex justify-content-center">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
                 <label asp-for="FId" class="control-label "></label>
-                <input asp-for="FId" class="form-control" />
+                <input asp-for="FId" class="form-control"/>
                 <span asp-validation-for="FId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -27,7 +26,6 @@
                 <input asp-for="FProviderId" class="form-control" />
                 <span asp-validation-for="FProviderId" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="FInvoiceForm" class="control-label"></label>
                 <select asp-for="FInvoiceForm" class="form-control">
@@ -36,7 +34,6 @@
                 </select>
                 <span asp-validation-for="FInvoiceForm" class="text-danger"></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="FPayment" class="control-label"></label>
                 <select asp-for="FPayment" class="form-control">
@@ -51,7 +48,6 @@
                 <input asp-for="FEditor" class="form-control" readonly/>
                 <span asp-validation-for="FEditor" class="text-danger" ></span>
             </div>
-
             <div class="form-group">
                 <label asp-for="FPreTax" class="control-label"></label>
                 <input asp-for="FPreTax" class="form-control" />
@@ -76,14 +72,15 @@
                 <input type="submit" value="新增並送出" class="btn btn-primary" />
             </div>
         </form>
+		<div class="mt-2">
+			<form asp-action="List" method="post">
+				<button type="submit" class="btn btn-danger">取消</button>
+			</form>
+		</div>
     </div>
 </div>
 
-<div class="mt-2">
-    <form asp-action="List" method="post">
-        <button type="submit" class="btn btn-danger">取消</button>
-    </form>
-</div>
+
 
 @* @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
