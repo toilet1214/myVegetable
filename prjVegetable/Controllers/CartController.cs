@@ -77,32 +77,46 @@ namespace prjVegetable.Controllers
             return View(cartWrapList);
         }
 
-        // 3. 移除購物車商品：直接刪除 TCart 裏的資料
         [HttpPost]
         public IActionResult RemoveFromCart(int productId)
         {
             if (!Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
                 return RedirectToAction("Index", "Home");
 
-            var cartItem = _dbContext.TCarts
-                .FirstOrDefault(c => c.FPersonId == userId && c.FProductId == productId);
+            // 找出該使用者下所有相同產品的購物車資料
+            var cartItems = _dbContext.TCarts
+                .Where(c => c.FPersonId == userId && c.FProductId == productId)
+                .ToList();
 
-            if (cartItem != null)
+            if (cartItems.Any())
             {
-                _dbContext.TCarts.Remove(cartItem);
+                _dbContext.TCarts.RemoveRange(cartItems);
                 _dbContext.SaveChanges();
             }
-            return RedirectToAction("Cart");
+
+            // 重新計算所有購物車項目的總金額（使用 join 從 TProducts 取得價格）
+            int totalPrice = _dbContext.TCarts
+                 .Where(c => c.FPersonId == userId)
+                 .Join(_dbContext.TProducts,
+                       c => c.FProductId,
+                       p => p.FId,
+                       (c, p) => new { c.FCount, p.FPrice })
+                 .Sum(x => x.FCount * x.FPrice);
+
+            return Json(new { success = true, newCount = 0, totalPrice });
         }
+
 
         // 4. 增加數量
         [HttpPost]
         public IActionResult IncreaseQuantity(int productId)
         {
             if (!Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
-                return Json(new { success = false, message = "請先登入" });
+                return RedirectToAction("Index", "Home");
 
-            var cartItem = _dbContext.TCarts.FirstOrDefault(c => c.FPersonId == userId && c.FProductId == productId);
+            // 更新其中一筆記錄（假設只更新第一筆）
+            var cartItem = _dbContext.TCarts
+                .FirstOrDefault(c => c.FPersonId == userId && c.FProductId == productId);
 
             if (cartItem != null)
             {
@@ -110,26 +124,29 @@ namespace prjVegetable.Controllers
                 _dbContext.SaveChanges();
             }
 
-            // 計算新的總金額
-            int totalPrice = _dbContext.TCarts
-                .Where(c => c.FPersonId == userId)
-                .Join(_dbContext.TProducts,
-                      cart => cart.FProductId,
-                      product => product.FId,
-                      (cart, product) => new { cart.FCount, product.FPrice })
-                .Sum(x => x.FCount * x.FPrice);
+            // 重新計算同一商品的總數量
+            int aggregatedCount = _dbContext.TCarts
+                 .Where(c => c.FPersonId == userId && c.FProductId == productId)
+                 .Sum(c => c.FCount);
 
-            return Json(new { success = true, newCount = cartItem?.FCount ?? 0, totalPrice });
+            // 計算總金額（所有購物車項目的總價）
+            int totalPrice = _dbContext.TCarts
+                 .Where(c => c.FPersonId == userId)
+                 .Join(_dbContext.TProducts, c => c.FProductId, p => p.FId, (c, p) => new { c.FCount, p.FPrice })
+                 .Sum(x => x.FCount * x.FPrice);
+
+            return Json(new { success = true, newCount = aggregatedCount, totalPrice });
         }
 
-        // 5. 減少數量
         [HttpPost]
         public IActionResult DecreaseQuantity(int productId)
         {
             if (!Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
-                return Json(new { success = false, message = "請先登入" });
+                return RedirectToAction("Index", "Home");
 
-            var cartItem = _dbContext.TCarts.FirstOrDefault(c => c.FPersonId == userId && c.FProductId == productId);
+            // 取得符合條件的記錄（假設只更新第一筆）
+            var cartItem = _dbContext.TCarts
+                .FirstOrDefault(c => c.FPersonId == userId && c.FProductId == productId);
 
             if (cartItem != null)
             {
@@ -144,18 +161,20 @@ namespace prjVegetable.Controllers
                 _dbContext.SaveChanges();
             }
 
+            // 重新計算該商品的總數量
+            int aggregatedCount = _dbContext.TCarts
+                 .Where(c => c.FPersonId == userId && c.FProductId == productId)
+                 .Sum(c => c.FCount);
+
             // 計算新的總金額
             int totalPrice = _dbContext.TCarts
-                .Where(c => c.FPersonId == userId)
-                .Join(_dbContext.TProducts,
-                      cart => cart.FProductId,
-                      product => product.FId,
-                      (cart, product) => new { cart.FCount, product.FPrice })
-                .Sum(x => x.FCount * x.FPrice);
+                 .Where(c => c.FPersonId == userId)
+                 .Join(_dbContext.TProducts, c => c.FProductId, p => p.FId, (c, p) => new { c.FCount, p.FPrice })
+                 .Sum(x => x.FCount * x.FPrice);
 
-            return Json(new { success = true, newCount = cartItem?.FCount ?? 0, totalPrice });
-
+            return Json(new { success = true, newCount = aggregatedCount, totalPrice });
         }
+
 
         // 6. 取得會員資訊（原邏輯不動）
         [HttpGet]
