@@ -6,7 +6,7 @@ namespace prjVegetable.Models
     public class CReportWrap
     {
         private TReport _report = null;
-        public TReport Report
+        public TReport report
         {
             get { return _report; }
             set { _report = value; }
