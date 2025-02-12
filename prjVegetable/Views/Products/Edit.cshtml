@@ -46,19 +46,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="FStorage" class="control-label"></label>
-                <input asp-for="FStorage" class="form-control" />
+                <select asp-for="FStorage" class="form-control">
+                    <option value="0">冷凍</option>
+                    <option value="1">冷藏</option>
+                    <option value="2">常溫</option>
+                </select>
                 <span asp-validation-for="FStorage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FLaunch" class="control-label"></label>
+                <select asp-for="FLaunch" class="form-control">
+                    <option value="0">下架</option>
+                    <option value="1">上架</option>
+                </select>
+                <span asp-validation-for="FLaunch" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FOrigin" class="control-label"></label>
                 <input asp-for="FOrigin" class="form-control" />
                 <span asp-validation-for="FOrigin" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="FEditor" class="control-label"></label>
-                <input asp-for="FEditor" class="form-control" />
-                <span asp-validation-for="FEditor" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

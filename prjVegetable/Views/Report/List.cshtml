@@ -1,0 +1,58 @@
+﻿@model IEnumerable<prjVegetable.Models.CReportWrap>
+
+@{
+    ViewData["Title"] = "List";
+}
+
+<h1>List</h1>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                序
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FPersonId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FClass)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTitle)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FTime)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            var count = 0;
+            foreach (var item in Model) {
+                count++;
+        <tr>
+            <td>
+                @count
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FPersonId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FClass)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTitle)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FTime)
+            </td>
+            <td>
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+            </td>
+        </tr>
+}}
+    </tbody>
+</table>

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjVegetable.Models;
-using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Text.Json;
 
