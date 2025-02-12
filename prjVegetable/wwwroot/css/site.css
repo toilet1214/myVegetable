@@ -517,11 +517,6 @@ h1 {
         color: #8D8266;
     }
 
-.modal-body {
-    padding: 50px 80px 30px 80px;
-    /*上右下左*/
-}
-
 .btn-primary {
     background-color: #8D8266;
     border: none;
@@ -568,6 +563,11 @@ h1 {
     max-width: 600px;
     width: 100%;
 }
+
+.contact-width {
+    max-width: 50%;
+}
+
 
 .invalid-feedback {
     font-size: 16px;
@@ -661,8 +661,7 @@ h1 {
 .form-control {
     border: 1px solid white;
     font-size: 18px;
-    width: 50px;
-    text-align: center;
+    width: 100%;
 }
 
 .text-primary {
@@ -672,6 +671,25 @@ h1 {
 }
 
 
+.form-section {
+    background-color: #EBEBEB;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.form-label .text-danger {
+        font-size: 0.9rem;
+}
+
+.invalid-feedback {
+    font-size: 0.85rem;
+    color: #dc3545;
+}
 
 
 
@@ -690,35 +708,6 @@ h1 {
     transition: all 0.3s;
 }
 
-/*------------ 登入 ---------------*/
-.individual-link {
-    position: relative;
-    text-decoration: none;
-    color: #000; /* 預設文字顏色 */
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 18px;
+.very-width{
+    width: 100%;
 }
-
-    .individual-link:hover::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 100%;
-        height: 2px;
-        background-color: #8D8266; /* 底線顏色 */
-        transition: width 0.3s ease-in-out;
-    }
-
-    .individual-link::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        width: 0;
-        height: 2px;
-        background-color: #8D8266; /* 預設底線顏色 */
-        transition: width 0.3s ease-in-out;
-    }
-
-

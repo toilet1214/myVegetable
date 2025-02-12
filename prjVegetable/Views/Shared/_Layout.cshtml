@@ -50,7 +50,7 @@
                         </ul>
                         <!-- 購物車 & 登入圖示 -->
                         <div class="d-flex d-none d-md-block nav-icon ms-auto">
-                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#ContactModal">
+                            <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#contactUsModal">
                                 <i class="bi bi-chat-fill fs-4 me-3"></i>
                             </a>
                             @if (TempData.Peek("LogedIn321") != null)
@@ -76,6 +76,7 @@
             @RenderBody()
         </div>
     </main>
+
     <!-- footer Start-->
     <footer class="bg-primary py-4 mt-5 text-center text-white">
         <div class="container">
@@ -131,6 +132,7 @@
         </div>
     </footer>
     <!-- footer End-->
+
     <!-- up to top btn-->
     <button onclick="topFunction()" id="up-to-top" title="Go to top"><i class="bi bi-arrow-up fs-3"></i></button>
 
@@ -218,67 +220,118 @@
             </div>
         </div>
     </div>
+
     <!-- 聯絡我們 Start -->
-    <div class="modal fade" id="ContactModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="contactUsModalLabel" aria-hidden="true">
+        <div class="modal-dialog contact-width modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">會員登入</h5>
+                    <h5 class="modal-title" id="contactUsModalLabel">聯絡我們</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form asp-action="Login" asp-controller="Account" class="needs-validation" novalidate>
-                        <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-
-                        <!-- 帳號輸入框 -->
-                        <div class="form-group mb-3">
-                            @Html.TextBox("txtaccount", "", new
-                                {
-                                    @class = "form-control-login custom-input",
-                                    placeholder = "請輸入Email / 手機號碼",
-                                    data_placeholder = "請輸入Email / 手機號碼",
-                                    required = "required"
-                                })
-                            <div class="invalid-feedback">請輸入Email / 手機號碼</div>
+                    <div class="row py-2">
+                        <!-- 左側填寫欄位 -->
+                        <div class="col-md-7 ps-4">
+                            <form id="contactForm" class="p-4 form-section" novalidate>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label for="lastName" class="form-label">
+                                            姓氏 <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="請填寫姓氏" data-placeholder="請填寫姓氏" required>
+                                        <div class="invalid-feedback">請填寫姓氏</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="firstName" class="form-label">
+                                            名字 <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="請填寫名字" data-placeholder="請填寫名字" required>
+                                        <div class="invalid-feedback">請填寫名字</div>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">
+                                        Email <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="請填寫Email" data-placeholder="請填寫Email" required>
+                                    <div class="invalid-feedback">請填寫正確的Email</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">
+                                        手機 <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="0978-000-000" data-placeholder="0978-000-000" required>
+                                    <div class="invalid-feedback">請填寫正確的手機號碼</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="questionType" class="form-label">
+                                        問題種類 <span class="text-danger">*</span>
+                                    </label>
+                                    <select class="form-select" id="questionType" name="questionType" required>
+                                        <option value="" selected disabled>請選擇問題種類</option>
+                                        <option value="login">帳號或登入問題</option>
+                                        <option value="transaction">交易或訂單問題</option>
+                                        <option value="product">商品問題</option>
+                                        <option value="suggest">建議</option>
+                                        <option value="other">其他</option>
+                                    </select>
+                                    <div class="invalid-feedback">請選擇問題種類</div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="description" class="form-label">
+                                        問題描述 <span class="text-danger">*</span>
+                                    </label>
+                                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="請描述您的問題" data-placeholder="請描述您的問題" required></textarea>
+                                    <div class="invalid-feedback">請描述您的問題</div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary very-width">送出</button>
+                                </div>
+                            </form>
                         </div>
 
-                        <div class="my-5"></div>
-
-                        <!-- 密碼輸入框 -->
-                        <div class="form-group mb-3">
-                            @Html.Password("txtpassword", "", new
-                                {
-                                    @class = "form-control-login custom-input",
-                                    placeholder = "請輸入密碼 ( 8-20 英數字 )",
-                                    data_placeholder = "請輸入密碼 ( 8-20 英數字 )",
-                                    required = "required"
-                                })
-                            <div class="invalid-feedback">請輸入密碼</div>
-                        </div>
-
-                        <!-- 記住我 & 忘記密碼 -->
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <div class="form-check">
-                                <input type="checkbox" class="form-check-input me-1" id="rememberMe">
-                                <label class="form-check-label" for="rememberMe">記住我</label>
+                        <!-- 右側資訊欄 -->
+                        <div class="col-md-5 px-4">
+                            <div class="info-section">
+                                <div class="mb-4">
+                                    <h5>電子信箱</h5>
+                                    <p>表單送出後，會將您的建議/問題寄到這裡，我們會在三個工作日內回覆!</p>
+                                    <a href="#" class="text-decoration-none">VegeP2258@gmail.com</a>
+                                </div>
+                                <hr>
+                                <div class="mb-4">
+                                    <h5>線上客服</h5>
+                                    <p>周一至周五 09:00-16:30，立即聯繫我們的線上客服</p>
+                                    <a href="#" class="text-decoration-none">開始對話</a>
+                                </div>
+                                <hr>
+                                <div class="mb-4">
+                                    <h5>連絡電話</h5>
+                                    <p>周一至周五 09:00-12:00</p>
+                                    <a href="#" class="text-decoration-none">0978-446-461</a>
+                                </div>
+                                <hr>
+                                <div class="mb-4">
+                                    <h5>公司地址</h5>
+                                    <p>周一至周五 09:00-17:00，辦公室坐坐!</p>
+                                    <a href="https://maps.app.goo.gl/BPoJnKZRxsTiGLmY9" class="text-decoration-none">801, 高雄市, 前金區, 中正四路, 211號8號樓之1</a>
+                                </div>
+                                <hr>
+                                <div class="mb-4">
+                                    <h5>社群</h5>
+                                    <p>歡迎關注我們的社群獲取最新消息!</p>
+                                    <a href="https://www.instagram.com/ispan_educate/" class="text-decoration-none">Vege人的Instergram</a>
+                                </div>
                             </div>
-                            <div class="d-flex">
-                                <a asp-action="ForgotPassword" asp-controller="Account" class="me-3 text-decoration-none text-end">忘記密碼?</a>
-                                <a asp-action="Register" asp-controller="Account" class="text-decoration-none text-end">立即註冊</a>
-                            </div>
                         </div>
-
-                        <!-- 登入按鈕 -->
-                        <div class="text-center" style="margin-top: 80px;">
-                            <input type="submit" value="登入" class="btn btn-primary w-100 mb-4">
-                        </div>
-                    </form>
-
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <!-- 聯絡我們 End-->
+
     <!-- 登入 Start -->
     <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -317,6 +370,8 @@
     </div>
     <!-- 登入 End-->
     
+
+
     <!-- Script 段落-->
     <!-- 購物車功能 Start -->
     <script>
@@ -400,6 +455,7 @@
         })();
     </script>
     <!-- 購物車功能 End -->
+
     <!--up to top-->
     <script>
         // Get the button:
@@ -422,6 +478,7 @@
             document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
         }
     </script>
+
     <!-- 選擇文字框時，隱藏 placeholder 文字-->
     <script>
         // 當文字框獲得焦點時，隱藏 placeholder 文字
@@ -459,7 +516,31 @@
           AOS.init();
         });
     </script>
+    <script>
+         document.addEventListener('DOMContentLoaded', () => {
+            'use strict';
 
+            const contactForm = document.getElementById('contactForm');
+
+            contactForm.addEventListener('submit', (event) => {
+                if (!contactForm.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                contactForm.classList.add('was-validated'); // 加入驗證樣式
+            });
+
+            // 重置表單驗證狀態
+            const resetForm = () => {
+                contactForm.reset(); // 清空表單資料
+                contactForm.classList.remove('was-validated'); // 移除驗證樣式
+            };
+
+            // 當 Modal 關閉時重置表單
+            const modal = document.getElementById('contactUsModal');
+            modal.addEventListener('hidden.bs.modal', resetForm);
+        });
+    </script>
 </body>
 </html>
-
