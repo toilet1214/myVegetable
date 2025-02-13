@@ -65,7 +65,8 @@ namespace prjVegetable.Controllers
                     FAddress = shippingAddress,
                     FReceiverName = shippingName,
                     FPhone = shippingPhone,
-                    FNote = note
+                    FNote = note,
+                    FMerchantTradeNo = ""
                 };
                 _dbContext.TOrders.Add(newOrder);
                 _dbContext.SaveChanges();
@@ -121,6 +122,8 @@ namespace prjVegetable.Controllers
 
             // 產生綠界單號 (GUID)
             var MerchantTradeNo = Guid.NewGuid().ToString("N").Substring(0, 20);
+            SQLorder.FMerchantTradeNo = MerchantTradeNo;
+            _dbContext.SaveChanges();
             var orderItems = _dbContext.TOrderLists.Where(ol => ol.FOrderId == SQLorder.FId).ToList();
             string itemName = "";
             if (orderItems.Any())
@@ -213,6 +216,26 @@ namespace prjVegetable.Controllers
                 ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
                 ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
                 db.SaveChanges();
+
+                if (int.TryParse(id["CustomField1"], out int orderId))
+                {
+                    var order = db.TOrders.FirstOrDefault(o => o.FId == orderId);
+                    if (order != null)
+                    {
+                        int rtnCode = int.Parse(id["RtnCode"]);
+                        if (rtnCode == 0)
+                        {
+                            order.FStatus = 3;
+                            order.FPay = 1;
+                        }
+                        else if (rtnCode == 1)
+                        {
+                            order.FStatus = 1;
+                            order.FPay = 2;
+                        }
+                        db.SaveChanges();
+                    }
+                }
             }
             return View("CheckOutIndex", data);
         }
@@ -239,5 +262,35 @@ namespace prjVegetable.Controllers
             return View("CheckOutIndex", data);
         }
 
+        [HttpPost("UpdateOrderStatus")]
+        public IActionResult UpdateOrderStatus([FromBody] OrderUpdateModel updateModel)
+        {
+            // 根據傳入的 orderId 找到訂單
+            var order = _dbContext.TOrders.FirstOrDefault(o => o.FId == updateModel.OrderId);
+            if (order == null)
+            {
+                return NotFound("找不到訂單");
+            }
+
+            // 根據 rtnCode 更新狀態
+            if (updateModel.RtnCode == 0)
+            {
+                order.FStatus = 3;
+                order.FPay = 1;
+            }
+            else if (updateModel.RtnCode == 1)
+            {
+                order.FStatus = 1;
+                order.FPay = 2;
+            }
+            _dbContext.SaveChanges();
+            return Ok("更新成功");
+        }
+
+        public class OrderUpdateModel
+        {
+            public int OrderId { get; set; }
+            public int RtnCode { get; set; }
+        }
     }
 }

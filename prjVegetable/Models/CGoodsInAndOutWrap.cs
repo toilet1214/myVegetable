@@ -32,7 +32,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("日期")]
-        public DateTime FDate
+        public DateOnly FDate
         {
             get { return _GoodsInAndOut.FDate; }
             set { _GoodsInAndOut.FDate = value; }

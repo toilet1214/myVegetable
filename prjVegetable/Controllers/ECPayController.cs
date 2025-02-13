@@ -72,6 +72,7 @@ namespace Project.Controllers
                 return ResponseError();
             }
         }
+        
 
         [HttpPost("AddAccountInfo")]
         public IActionResult AddAccountInfo([FromBody] JObject info)

@@ -334,7 +334,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TOrder>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227C74618BC6");
+            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227C39A7545E");
 
             entity.ToTable("tOrder");
 
@@ -342,6 +342,10 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FAddress)
                 .HasDefaultValue("")
                 .HasColumnName("fAddress");
+            entity.Property(e => e.FMerchantTradeNo)
+                .HasMaxLength(50)
+                .HasDefaultValue("")
+                .HasColumnName("fMerchantTradeNo");
             entity.Property(e => e.FNote)
                 .HasMaxLength(500)
                 .HasDefaultValue("")

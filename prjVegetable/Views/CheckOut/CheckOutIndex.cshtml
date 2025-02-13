@@ -31,5 +31,25 @@
         <h2 class="d-flex justify-content-center fw-bold" style="color:#930000">付款失敗</h2>
 
     }
+    <script>
+        // 在前端獲取到相關資訊， orderId 和 rtnCode
+        var updateData = {
+            orderId: orderId,  // 從訂單資料中取得
+            rtnCode: rtnCode   // 從金流回傳資料中取得
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: 'https://localhost:7251/api/ECPay/UpdateOrderStatus',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(updateData),
+            success: function (res) {
+                console.log("更新成功：", res);
+            },
+            error: function (err) {
+                console.log("更新失敗：", err);
+            }
+        });
+    </script>
 </body>
 </html>

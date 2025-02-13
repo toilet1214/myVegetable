@@ -9,7 +9,7 @@ public partial class TGoodsInAndOut
 
     public int FInOut { get; set; }
 
-    public DateTime FDate { get; set; }
+    public DateOnly FDate { get; set; }
 
     public int FInvoiceId { get; set; }
 

@@ -74,5 +74,12 @@ namespace prjVegetable.Models
             get { return _order.FNote; }
             set { _order.FNote = value; }
         }
+
+        [DisplayName("綠界GUID")]
+        public string FMerchantTradeNo
+        {
+            get { return _order.FMerchantTradeNo; }
+            set { _order.FMerchantTradeNo= value; }
+        }
     }
 }
