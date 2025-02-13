@@ -6,16 +6,16 @@
 }
 
 <h1>發票明細管理</h1>
-@using (Html.BeginForm())
+@* @using (Html.BeginForm())
 {
     @:請輸入發票號碼: @Html.TextBox("txtKeyword")
     <button type="submit" class="btn btn-warning">查詢</button>
-}
+} *@
 <div class="mt-3 mb-3">
     <a href="@Url.Action("Create")" class="btn btn-primary">新增發票明細</a>
 </div>
 
-<table class="table">
+<table class="table" id="List">
     <thead>
         <tr>
             <th>
@@ -75,3 +75,39 @@
         }
     </tbody>
 </table>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order": []
+            });
+        });
+    </script>
+
+}
