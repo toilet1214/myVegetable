@@ -65,7 +65,7 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public async Task<IActionResult> GetProductById(int? id)
         {
-            if (id == 0)
+            if (id == 0 || id==null)
             {
                 return BadRequest("找不到ID");
             }
@@ -95,7 +95,28 @@ namespace prjVegetable.Controllers
 
             return Ok(productsWithImg);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetImgByproductId(int? productid) 
+        {
+            if (productid == null || productid == 0)
+            {
+                return BadRequest("找不到商品相關圖片");
+            }
 
+            // 查詢圖片資料
+            var img = await _context.TImgs.Where(i => i.FProductId == productid)
+                                          .Select(i => i.FName)
+                                          .ToListAsync();
+
+            if (img == null || img.Count == 0)
+            {
+                return NotFound("商品相關圖片未找到");
+            }
+
+            // 返回圖片檔名列表
+            return Ok(img);
+
+        }
 
         [HttpPost]
         public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
