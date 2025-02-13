@@ -8,21 +8,20 @@
 <h1>新增資料</h1>
 
 <hr />
-<form asp-action="Create">
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FName" class="control-label"></label>
-                <input asp-for="FName" class="form-control" />
-                <span asp-validation-for="FName" class="text-danger"></span>
+                <input asp-for="FName" class="form-control" required />
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FClassification" class="control-label"></label>
-                <input asp-for="FClassification" class="form-control" />
-                <span asp-validation-for="FClassification" class="text-danger"></span>
+                <input asp-for="FClassification" class="form-control" required />
             </div>
         </div>
     </div>
@@ -30,58 +29,44 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FPrice" class="control-label"></label>
-                <input asp-for="FPrice" class="form-control" />
-                <span asp-validation-for="FPrice" class="text-danger"></span>
+                <input asp-for="FPrice" class="form-control" required />
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FQuantity" class="control-label"></label>
-                <input asp-for="FQuantity" class="form-control" />
-                <span asp-validation-for="FQuantity" class="text-danger"></span>
+                <input asp-for="FQuantity" class="form-control" required />
             </div>
         </div>
     </div>
     <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FLaunchAt" class="control-label"></label>
-                <input asp-for="FLaunchAt" class="form-control" />
-                <span asp-validation-for="FLaunchAt" class="text-danger"></span>
-            </div>
-        </div>
+
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FStorage" class="control-label"></label>
-                <select asp-for="FStorage" class="form-control">
+                <select asp-for="FStorage" class="form-control" required>
                     <option value="0">冷凍</option>
                     <option value="1">冷藏</option>
                     <option value="2">常溫</option>
                 </select>
-                <span asp-validation-for="FStorage" class="text-danger"></span>
             </div>
         </div>
+        <div class="col-6">
+            <div class="form-group">
+                <label asp-for="FLaunch" class="control-label"></label>
+                <select asp-for="FLaunch" class="form-control" required>
+                    <option value="1">上架</option>
+                    <option value="0">下架</option>
+                </select>
+            </div>
+        </div>
+
     </div>
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FOrigin" class="control-label"></label>
-                <input asp-for="FOrigin" class="form-control" />
-                <span asp-validation-for="FOrigin" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-        </div>
-    </div>
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="FLaunch" class="control-label"></label>
-                <select asp-for="FStorage" class="form-control">
-                    <option value="0">下架</option>
-                    <option value="1">上架</option>                    
-                </select>
-                <span asp-validation-for="FLaunch" class="text-danger"></span>
+                <input asp-for="FOrigin" class="form-control" required />
             </div>
         </div>
         <div class="col-6">
@@ -90,12 +75,30 @@
     <div class="row mb-3">
         <div class="col-12">
             <div class="form-group">
-                <label asp-for="FDescription" class="control-label"></label>
-                <input asp-for="FDescription" class="form-control" />
-                <span asp-validation-for="FDescription" class="text-danger"></span>
+                <label asp-for="FIntroduction" class="control-label"></label>
+                <textarea asp-for="FIntroduction" class="form-control" style="height: 100px; resize: none;" required></textarea>
             </div>
-        </div>        
+        </div>
     </div>
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="form-group">
+                <label asp-for="FDescription" class="control-label"></label>
+                <textarea asp-for="FDescription" class="form-control" style="height: 100px; resize: none;" required></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label">商品圖片</label>
+        <input type="file" id="productImageUpload" name="productImages" class="form-control d-none" accept="image/*" multiple/>
+        <button type="button" id="uploadButton" class="btn btn-primary mt-2">選擇圖片</button>
+        <div id="imagePreviewContainer" class="mt-3 d-flex flex-wrap">
+            <!-- 圖片預覽會動態插入這裡 -->
+            <span class="text-danger">請選擇圖片。</span>
+        </div>
+        <span class="text-danger" id="imageValidationError" style="display:none;">至少選擇一張圖片。</span>
+    </div>
+
     <div class="row mb-3">
         <div class="col-6">
             <div>
@@ -110,6 +113,105 @@
     </div>
 </form>
 
-@* @section Scripts { *@
-@*     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} *@
-@* } *@
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let imgList = [];  // 儲存圖片的 Data URL
+            let fileList = []; // 儲存 File 物件，確保表單提交時能上傳全部圖片
+            let fileInput = $("#productImageUpload");
+
+            // 點擊按鈕觸發 file input
+            $("#uploadButton").click(function () {
+                fileInput.click();
+            });
+
+            // 當選擇檔案時
+            fileInput.change(function (event) {
+                let files = event.target.files; // 取得多個檔案
+                for (let i = 0; i < files.length; i++) {
+                    let file = files[i];
+                    let reader = new FileReader();
+                    reader.onload = function (e) {
+                        imgList.push(e.target.result); // 儲存圖片網址
+                        fileList.push(file); // 儲存實際檔案
+                        renderPreview(); // 每次新增檔案後重新渲染預覽
+                    };
+                    reader.readAsDataURL(file);
+                }
+                $(this).val(''); // 清空選取的檔案，確保可以重複選取相同的檔案
+            });
+
+            // 渲染圖片預覽
+            function renderPreview() {
+                let previewContainer = $("#imagePreviewContainer");
+                previewContainer.empty(); // 清空現有的預覽
+                $("#imageValidationError").hide();
+                // 依照 fileList 生成預覽圖片
+                fileList.forEach((file, index) => {
+                    let previewHtml = `
+                    <div class="preview-container position-relative m-2">
+                        <img src="${imgList[index]}" class="img-thumbnail" width="100" />
+                        <button type="button" class="btn btn-danger btn-sm remove-image position-absolute" data-index="${index}" style="top: 5px; right: 5px;">X</button>
+                    </div>
+                `;
+                    previewContainer.append(previewHtml); // 加入預覽容器
+                });
+
+                // 再次檢查圖片數量，沒有圖片則顯示錯誤
+                if (fileList.length === 0) {
+                    $("#imageValidationError").show();
+                }
+            }
+
+            // 刪除圖片
+            $(document).on("click", ".remove-image", function () {
+                let index = $(this).data("index");
+
+                // 刪除圖片和文件
+                imgList.splice(index, 1);
+                fileList.splice(index, 1);
+
+                // 重新渲染預覽
+                renderPreview();
+            });
+
+            // 送出表單時手動組裝 FormData
+            $("form").submit(function (e) {
+                e.preventDefault(); // 阻止預設表單提交
+
+                // 檢查是否選擇了圖片
+                if (fileList.length === 0) {
+                    console.log("No images selected"); // 調試用，確認是否檢查到這裡
+                    $("#imageValidationError").show();  // 顯示圖片驗證錯誤
+                    return;
+                } else {
+                    $("#imageValidationError").hide();  // 隱藏圖片驗證錯誤
+                }
+
+                let formData = new FormData(this);
+
+                // 將所有圖片檔案加入 FormData
+                fileList.forEach((file) => {
+                    formData.append("productImages", file);
+                });
+
+                // AJAX 提交
+                $.ajax({
+                    url: $(this).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        alert("上傳成功！");
+                        window.location.href = '@Url.Action("Index", "Products")';
+                    },
+                    error: function () {
+                        alert("上傳失敗！");
+                    }
+                });
+            });
+
+        });
+    </script>
+}
