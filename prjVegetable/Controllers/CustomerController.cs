@@ -18,25 +18,6 @@ namespace prjVegetable.Controllers
         {
             return View();
         }
-        //[HttpPost]
-        //public IActionResult Index(CCustomerWrap p)
-        //{
-        //    TPerson x = _context.TPeople.FirstOrDefault(c => c.FId == p.FId);
-        //    if (x != null)
-        //    {
-        //        x.FName = p.FName;
-        //        x.FBirth = p.FBirth;
-        //        x.FEmail = p.FEmail;
-        //        x.FPhone = p.FPhone;
-        //        x.FTel = p.FTel;
-        //        x.FAddress = p.FAddress;
-        //        x.FPassword = p.FPassword;
-        //        x.FUbn = p.FUbn;
-        //        x.FGender = p.FGender;
-        //        _context.SaveChanges();
-        //    }
-        //    return RedirectToAction("Index");
-        //}
 
         [HttpGet]
         public async Task<IActionResult> GetCustomerById()
