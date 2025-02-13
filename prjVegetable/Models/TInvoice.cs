@@ -15,7 +15,7 @@ public partial class TInvoice
 
     public int FCustomerId { get; set; }
 
-    public string? FCustomerUbn { get; set; }
+    public string FCustomerUbn { get; set; } = null!;
 
     public int FProviderId { get; set; }
 

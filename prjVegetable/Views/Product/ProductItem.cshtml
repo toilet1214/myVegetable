@@ -187,9 +187,60 @@
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
+                    @if (!string.IsNullOrEmpty(Model.FOrigin))
+                    {
+                        <iframe width="100%" height="400"
+                                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Uri.EscapeDataString(Model.FOrigin)"
+                                allowfullscreen>
+                        </iframe>
+                    }
                     @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
                 </div>
-                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">222</div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
+                        <!-- 商品介紹內容 -->
+                    </div>
+
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="reviews-section">
+                            <!-- 顧客評論範例 -->
+                            <div class="review">
+                                <div class="review-header">
+                                    <img src="https://via.placeholder.com/50" alt="顧客照片" class="review-avatar">
+                                    <div class="review-info">
+                                        <strong class="review-name">John Doe</strong>
+                                        <div class="review-rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-half"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="review-text">這是非常棒的產品，完全超出了我的預期！絕對值得推薦給朋友。</p>
+                            </div>
+
+                            <div class="review">
+                                <div class="review-header">
+                                    <img src="https://via.placeholder.com/50" alt="顧客照片" class="review-avatar">
+                                    <div class="review-info">
+                                        <strong class="review-name">Jane Smith</strong>
+                                        <div class="review-rating">
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                            <i class="bi bi-star-fill"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <p class="review-text">這個產品真的超級棒！我已經買了第二個，並且每次使用都非常滿意。</p>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>

@@ -19,6 +19,8 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TCart> TCarts { get; set; }
 
+    public virtual DbSet<TComment> TComments { get; set; }
+
     public virtual DbSet<TFaq> TFaqs { get; set; }
 
     public virtual DbSet<TFavorite> TFavorites { get; set; }
@@ -73,7 +75,7 @@ public partial class DbVegetableContext : DbContext
     {
         modelBuilder.Entity<TAboutU>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C000BF56C");
+            entity.HasKey(e => e.FId).HasName("PK__tAboutUs__D9F8227C2D611524");
 
             entity.ToTable("tAboutUs");
 
@@ -97,7 +99,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TCart>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227CE53FE8BE");
+            entity.HasKey(e => e.FId).HasName("PK__tCart__D9F8227CCD06999B");
 
             entity.ToTable("tCart");
 
@@ -109,9 +111,28 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
         });
 
+        modelBuilder.Entity<TComment>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tComment__D9F8227CB5B6C6DF");
+
+            entity.ToTable("tComment");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FComment)
+                .HasColumnType("text")
+                .HasColumnName("fComment");
+            entity.Property(e => e.FCreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fCreatedAt");
+            entity.Property(e => e.FOrderListId).HasColumnName("fOrderListId");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+            entity.Property(e => e.FStar).HasColumnName("fStar");
+        });
+
         modelBuilder.Entity<TFaq>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227C9F01A289");
+            entity.HasKey(e => e.FId).HasName("PK__tFAQ__D9F8227C09A52536");
 
             entity.ToTable("tFAQ");
 
@@ -135,7 +156,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TFavorite>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tFavorit__D9F8227C4E137E42");
+            entity.HasKey(e => e.FId).HasName("PK__tFavorit__D9F8227C33E939CA");
 
             entity.ToTable("tFavorite");
 
@@ -146,11 +167,12 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TGoodsInAndOut>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227CD884F70B");
+            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227CC4FA2AAF");
 
             entity.ToTable("tGoodsInAndOut");
 
             entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FCount).HasColumnName("fCount");
             entity.Property(e => e.FDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("fDate");
@@ -162,13 +184,15 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fNote");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FPrice).HasColumnName("fPrice");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FProviderId).HasColumnName("fProviderId");
             entity.Property(e => e.FTotal).HasColumnName("fTotal");
         });
 
         modelBuilder.Entity<TGoodsInAndOutDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227C77347E74");
+            entity.HasKey(e => e.FId).HasName("PK__tGoodsIn__D9F8227C0B36F25E");
 
             entity.ToTable("tGoodsInAndOutDetail");
 
@@ -182,7 +206,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TImg>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227CC0C7B7A3");
+            entity.HasKey(e => e.FId).HasName("PK__tImg__D9F8227CA622D18B");
 
             entity.ToTable("tImg");
 
@@ -203,7 +227,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInventoryAdjustment>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CBB2011AD");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CA0262A4B");
 
             entity.ToTable("tInventoryAdjustment");
 
@@ -220,7 +244,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInventoryAdjustmentDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CFC0FC163");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227CB1167B2A");
 
             entity.ToTable("tInventoryAdjustmentDetail");
 
@@ -235,7 +259,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInventoryDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C922817CE");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C8A74250C");
 
             entity.ToTable("tInventoryDetail");
 
@@ -248,7 +272,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInventoryMain>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C978D85B7");
+            entity.HasKey(e => e.FId).HasName("PK__tInvento__D9F8227C46E5DBFE");
 
             entity.ToTable("tInventoryMain");
 
@@ -263,7 +287,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInvoice>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C5F4EBFFF");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C6C4A962F");
 
             entity.ToTable("tInvoice");
 
@@ -297,7 +321,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TInvoiceDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C00FF106D");
+            entity.HasKey(e => e.FId).HasName("PK__tInvoice__D9F8227C78954600");
 
             entity.ToTable("tInvoiceDetail");
 
@@ -317,7 +341,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TOrder>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227CD5E9186E");
+            entity.HasKey(e => e.FId).HasName("PK__tOrder__D9F8227CEC504951");
 
             entity.ToTable("tOrder");
 
@@ -349,7 +373,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TOrderList>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227CE654AA7D");
+            entity.HasKey(e => e.FId).HasName("PK__tOrderLi__D9F8227C4F0E9E13");
 
             entity.ToTable("tOrderList");
 
@@ -363,7 +387,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPaymentReversal>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227C5769B4A8");
+            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227C26592C9B");
 
             entity.ToTable("tPaymentReversal");
 
@@ -383,7 +407,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPaymentReversalDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227CBEB2973B");
+            entity.HasKey(e => e.FId).HasName("PK__tPayment__D9F8227CAB659964");
 
             entity.ToTable("tPaymentReversalDetail");
 
@@ -394,7 +418,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPerson>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227C74CA5B42");
+            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227C61585DAB");
 
             entity.ToTable("tPerson");
 
@@ -455,7 +479,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProduct>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C75C8EBC4");
+            entity.HasKey(e => e.FId).HasName("PK__tProduct__D9F8227C107B47F8");
 
             entity.ToTable("tProduct");
 
@@ -492,7 +516,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProvider>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CBA394A44");
+            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CD52DAEAD");
 
             entity.ToTable("tProvider");
 
@@ -534,7 +558,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPurchase>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227C7EAC2729");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CBB22EB2F");
 
             entity.ToTable("tPurchase");
 
@@ -558,7 +582,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPurchaseDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CC698C3D9");
+            entity.HasKey(e => e.FId).HasName("PK__tPurchas__D9F8227CD73C9377");
 
             entity.ToTable("tPurchaseDetail");
 
@@ -574,7 +598,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TReceiptReversal>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C0BA65A2C");
+            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C04BDC845");
 
             entity.ToTable("tReceiptReversal");
 
@@ -596,7 +620,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TReceiptReversalDetail>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C554B6B5E");
+            entity.HasKey(e => e.FId).HasName("PK__tReceipt__D9F8227C05272707");
 
             entity.ToTable("tReceiptReversalDetail");
 
@@ -607,7 +631,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TReport>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tReport__D9F8227CD350EADC");
+            entity.HasKey(e => e.FId).HasName("PK__tReport__D9F8227C768244B8");
 
             entity.ToTable("tReport");
 

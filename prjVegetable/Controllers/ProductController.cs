@@ -241,8 +241,30 @@ namespace prjVegetable.Controllers
                 x.IsFavorite = false; // 未登入的話，顯示為未加入最愛
             }
 
+
+            //// 取得商品的所有評論
+            //var reviews = _context.TComments
+            //    .Where(c => c.FProductId == id)
+            //    .Select(c => new ProductViewModel
+            //    {
+            //        FId = c.FId,
+            //        FPersonId = c.FPersonId,
+            //        FProductId = c.FProductId,
+            //        FComment = c.FComment,
+            //        FStar = c.FStar,
+            //        FCreatedAt = c.FCreatedAt,
+            //        PersonName = _context.TPersons.Where(p => p.FId == c.FPersonId).Select(p => p.FName).FirstOrDefault()
+            //    })
+            //    .OrderByDescending(c => c.FCreatedAt) // 按照創建日期倒序排列
+            //    .ToList();
+
+            //x.Reviews = reviews;
+
             return View(x);
         }
+
+
+
 
         
     }

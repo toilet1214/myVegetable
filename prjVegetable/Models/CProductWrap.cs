@@ -127,5 +127,6 @@ namespace prjVegetable.Models
 
         public IEnumerable<IFormFile> productImages { get; set; }
         public List<string> ImgList { get; set; }
+        
     }
 }

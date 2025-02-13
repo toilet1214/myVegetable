@@ -154,10 +154,8 @@ namespace prjVegetable.Controllers
             // 如果有新的图片上传
             if (images != null && images.Count > 0)
             {
-                // 使用硬编码路径
-                var _imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images"); // 直接写入路径
+                var _imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 
-                // 遍历上传的图片，保存到服务器目录
                 foreach (var file in images)
                 {
                     if (file.Length > 0)
@@ -171,21 +169,18 @@ namespace prjVegetable.Controllers
                             await file.CopyToAsync(fileStream);
                         }
 
-                        // 如果是修改，替换现有的图片
-                        if (productWrap.ImgList != null && productWrap.ImgList.Count > 0)
+                        // 遍历现有图片，删除并替换
+                        var existingImage = productWrap.ImgList.FirstOrDefault(img => img == fileName);
+                        if (existingImage != null)
                         {
-                            // 可以选择删除原有图片
-                            var oldImage = productWrap.ImgList.FirstOrDefault();
-                            if (!string.IsNullOrEmpty(oldImage))
+                            // 删除现有图片
+                            var oldImagePath = Path.Combine(_imageDirectory, existingImage);
+                            if (System.IO.File.Exists(oldImagePath))
                             {
-                                var oldImagePath = Path.Combine(_imageDirectory, oldImage);
-                                if (System.IO.File.Exists(oldImagePath))
-                                {
-                                    System.IO.File.Delete(oldImagePath); // 删除旧图
-                                }
+                                System.IO.File.Delete(oldImagePath); // 删除旧图
                             }
-
-                            productWrap.ImgList[0] = fileName; // 更新为新的文件名
+                            // 替换为新图片
+                            productWrap.ImgList[productWrap.ImgList.IndexOf(existingImage)] = fileName;
                         }
                         else
                         {
@@ -195,6 +190,7 @@ namespace prjVegetable.Controllers
                     }
                 }
             }
+
 
             foreach (var imgName in productWrap.ImgList)
             {

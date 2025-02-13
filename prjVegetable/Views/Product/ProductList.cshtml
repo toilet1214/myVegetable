@@ -14,8 +14,8 @@
 <style>
 
     .dropdown-menu {
-        margin: 0 !important; /* 去除外邊距 */
-        padding: 0 !important; /* 去除內邊距 */
+        margin: 0 !important; 
+        padding: 0 !important;
     }
 
 
@@ -25,13 +25,16 @@
         background-color: #8D8266;
         transition: all 0.3s;
     }
-
+    .imgicon i {
+        font-size: 2rem; 
+    }
      .imgicon:hover {
         background-color: rgb(174, 146, 105);
-        /* width: 17%; */
     }
 
 
+
+    /* 篩選價格 */
     #dropdownMenuButton1 {
         white-space: nowrap;
         padding: 10px 10px;
@@ -47,10 +50,10 @@
         width: 300px;
     }
 
-        #collapseExample .modal-body {
-            padding: 5px 5px;
-            margin: 10px;
-        }
+    #collapseExample .modal-body {
+        padding: 5px 5px;
+        margin: 10px;
+    }
 
     .lightbox-close {
         color: black;
@@ -62,10 +65,6 @@
         margin: 10px;
         cursor: pointer;
     }
-
-
-
-
     .range_container {
         display: flex;
         flex-direction: column;
@@ -144,7 +143,6 @@
         height: 0;
         z-index: 1;
     }
-
 </style>
 
 @{
@@ -156,39 +154,37 @@
 {
     <input type="hidden" name="category" id="categoryInput" />
     <div class="bg-primary">
-        <div class="container  fs-5">
+        <div class="container mt-2 fs-5 text-">
             <div class="row">
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="根莖" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="根莖" onclick="submitCategory(this)">
                     @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
                     <i class="fi fi-rr-carrot"></i>
-                    <p class="mb-0" style="white-space: nowrap;">根莖</p>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">根莖</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="葉菜" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="葉菜" onclick="submitCategory(this)">
                     @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
-                    <i class="fi fi-rs-broccoli"></i>
                     <i class="fi fi-rr-leafy-green"></i>
-                    <i class="fi fi-rr-lettuce"></i>
-                    <p class="mb-0" style="white-space: nowrap;">葉菜</p>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">葉菜</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="水果" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="水果" onclick="submitCategory(this)">
                    @*  <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
                     <i class="fi fi-rr-apple-whole"></i>
-                    <p class="mb-0" style="white-space: nowrap;">水果</p>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">水果</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="蕈菇" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="蕈菇" onclick="submitCategory(this)">
                     @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
                     <i class="fi fi-rr-mushroom-alt"></i>
-                    <p class="mb-0" style="white-space: nowrap;">蕈菇</p>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">蕈菇</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="蔬菜箱" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="蔬菜箱" onclick="submitCategory(this)">
                     @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
                     <i class="fi fi-rr-salad"></i>
-                    <p class="mb-0" style="white-space: nowrap;">蔬菜箱</p>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">蔬菜箱</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="其他" onclick="submitCategory(this)">
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center justify-content-center" style="border: none;" data-category="其他" onclick="submitCategory(this)">
                     @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
-                    <i class="fi fi-rr-watering-can-plant"></i>
-                    <p class="mb-0" style="white-space: nowrap;">其他</p>
+                    <i class="fi fi-rr-lettuce"></i>
+                    <p class="mx-1 my-3" style="white-space: nowrap;">其他</p>
                 </button>
             </div>
         </div>
@@ -318,6 +314,90 @@
 
 
         </div>
+
+
+
+        
+            <div class="container my-5">
+                <div id="carouselExample" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <!-- 第一組卡片，這一組顯示三張卡片 -->
+                        <div class="carousel-item active">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="card">
+                                        <img src="~/Images/04.jpg" class="card-img-top" alt="Card 1">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 1</h5>
+                                            <p class="card-text">Description for card 1.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card">
+                                    <img src="~/Images/02.jpg" class="card-img-top" alt="Card 2">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 2</h5>
+                                            <p class="card-text">Description for card 2.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card">
+                                    <img src="~/Images/06.jpg" class="card-img-top" alt="Card 3">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 3</h5>
+                                            <p class="card-text">Description for card 3.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 第二組卡片 -->
+                        <div class="carousel-item">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="card">
+                                    <img src="~/Images/01.jpg" class="card-img-top" alt="Card 4">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 4</h5>
+                                            <p class="card-text">Description for card 4.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card">
+                                    <img src="~/Images/04.jpg" class="card-img-top" alt="Card 5">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 5</h5>
+                                            <p class="card-text">Description for card 5.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="card">
+                                    <img src="~/Images/07.jpg" class="card-img-top" alt="Card 6">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Card Title 6</h5>
+                                            <p class="card-text">Description for card 6.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 左右導航箭頭 -->
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+
         <!-- 分頁控制 -->
         <div class="d-flex justify-content-center">
             @if ((int)ViewData["TotalPages"] > 1)
