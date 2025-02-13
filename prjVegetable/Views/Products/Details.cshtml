@@ -25,7 +25,14 @@
                         <div class="row">
                             <label for="fClassification" class="col-md-3 col-form-label">商品分類：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fClassification" :placeholder="product.fClassification" v-model="product.fClassification">
+                                <select class="form-control" id="fClassification" v-model="product.fClassification">
+                                    <option value="根莖">根莖</option>
+                                    <option value="葉菜">葉菜</option>
+                                    <option value="水果">水果</option>
+                                    <option value="蕈菇">蕈菇</option>
+                                    <option value="蔬菜">蔬菜</option>
+                                    <option value="其他">其他</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -71,7 +78,11 @@
                         <div class="row">
                             <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fStorage" :placeholder="product.fStorage" v-model="product.fStorage">
+                                <select class="form-control" id="fStorage" v-model="product.fStorage">
+                                    <option value="0">冷凍</option>
+                                    <option value="1">冷藏</option>
+                                    <option value="2">常溫</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -89,7 +100,10 @@
                         <div class="row">
                             <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fLaunch" :placeholder="product.fLaunch" v-model="product.fLaunch">
+                                <select class="form-control" id="fLaunch" v-model="product.fLaunch">
+                                    <option value="0">下架</option>
+                                    <option value="1">上架</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -99,6 +113,7 @@
                         <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
                         <div v-if="product.Images && product.Images.length > 0" >
                             <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
+                                <button><i class="bi bi-x-circle-fill"></i></button>
                                 <img :src="'https://localhost:7251/images/' + image"
                                      alt="'商品圖片 ' + (index + 1)"
                                      id="editimg"
@@ -109,7 +124,9 @@
                                        @@change="editFileChanged($event.target, index)" />
                             </div>
                         </div>
-                        <input type="file" id="insert" @@change="insertFileChange" />
+                        <label for="insert" style="cursor: pointer; color: blue;">新增圖片</label>
+                        <input type="file" id="insert" style="display: none;" onchange="insertFileChange()" />
+                        @* <input type="file" id="insert" @@change="insertFileChange" /> *@
                     </div>
                 </div>
 
@@ -175,7 +192,7 @@
                         <div class="row">
                             <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fStorage" :value="product.fStorage" readonly>
+                                <input type="text" class="form-control" id="fStorage" :value="getLabel('fStorage', product.fStorage)" readonly>
                             </div>
                         </div>
                     </div>
@@ -193,7 +210,7 @@
                         <div class="row">
                             <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fLaunch" :value="product.fLaunch" readonly>
+                                <input type="text" class="form-control" id="fLaunch" :value="getLabel('fLaunch', product.fLaunch)" readonly>
                             </div>
                         </div>
                     </div>
@@ -230,6 +247,7 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
                 <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="edit" @@click="saveImg" id="update" class="btn btn-success">儲存圖片</button>
                 <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
             </div>
         </div>
@@ -249,7 +267,9 @@
                 return {
                     baseAddress:"https://localhost:7251",
                     product: {
-                        Images:[]
+                        Images:[],
+                        fStorage:0,
+                        fLaunch:1
                     },
                     img:[],// 用來存放從後端獲得的人員資料
                     edit:false, //啟用編輯
@@ -292,6 +312,20 @@
                 this.edit = !this.edit;  // 切換 edit 值
                 },
 
+                getLabel(field, value) {
+                    if (field === 'fStorage') {
+                        switch(value) {
+                            case 0: return '冷凍';
+                            case 1: return '冷藏';
+                            case 2: return '常溫';
+                            default: return '';
+                        }
+                    } else if (field === 'fLaunch') {
+                        return value === 0 ? '下架' : '上架';
+                    }
+                    return '';
+                },
+
                 //處理預覽上傳圖片
                 readURL:function(inputFile,img,btn){
                     if(inputFile.files[0]){ //使用者有上傳檔案
@@ -327,7 +361,7 @@
                 },
 
                 insertFileChange:function(inputFile){
-                    //alert("insertFileChange");
+                    alert("insertFileChange");
                     let _this = this;
                     _this.readURL(inputFile,inputFile.previousSibling,$("#insert"));
 

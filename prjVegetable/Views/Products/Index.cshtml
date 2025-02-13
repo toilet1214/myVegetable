@@ -4,6 +4,17 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
+<style>
+        table {
+            width: 100%; /* 使表格佔滿容器的寬度 */
+
+            table-layout: fixed; /* 使用固定布局讓欄位寬度平均 */
+         }
+
+        th, td {
+            text-align: center; /* 使所有欄位內容居中 */
+         }
+</style>
 
 <h1>商品資料列表</h1>
 <br />
@@ -20,6 +31,9 @@
     <thead>
         <tr>
             <th>
+                序
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.FName)
             </th>
             <th>
@@ -34,6 +48,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.FDescription)
             </th>
+            @* <th>
+                @Html.DisplayNameFor(model => model.FIntroduction)
+            </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.FQuantity)
             </th>
@@ -60,17 +77,25 @@
         {
             <tr>
                 <td>
+                    @Html.DisplayFor(modelItem => item.product.FId)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.product.FName)
                 </td>
                 <td>
-                    <div class="mb-3 row" >
-                        @foreach (var imgName in item.ImgList)
+                    <div>
+                        @if (item.ImgList.Any())
+                        {
+                            <div class="">
+                                <img src="~/Images/@item.ImgList.First()" class="w-50 d-inline-block" alt="Product Image" />
+                            </div>
+                        }
+                        @* @foreach (var imgName in item.ImgList)
                         {
                             <div class="col-md-1">
                                 <img src="~/Images/@imgName" class="w-75 d-inline-block " alt="Product Image" />
                             </div>
-                        }
-                            
+                        } *@
                     </div>
                     
                 </td>
@@ -83,6 +108,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FDescription)
                 </td>
+                @* <td>
+                    @Html.DisplayFor(modelItem => item.product.FIntroduction)
+                </td> *@
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FQuantity)
                 </td>
@@ -120,7 +148,7 @@
                     @Html.DisplayFor(modelItem => item.product.FEditor)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
+                    @* <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br /> *@
                     <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
                     @Html.ActionLink("移除", "Delete", "TProducts", new { id = item.product.FId },
                              new { onclick = "return confirm('確定要刪除嗎?')" })

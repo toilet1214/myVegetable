@@ -20,16 +20,16 @@
 
 
     .imgicon {
-        border-radius: 50%;
+        /* border-radius: 50%; */
         color: white;
         background-color: #8D8266;
         transition: all 0.3s;
     }
 
-        .imgicon:hover {
-            background-color: rgb(174, 146, 105);
-            width: 17%;
-        }
+     .imgicon:hover {
+        background-color: rgb(174, 146, 105);
+        /* width: 17%; */
+    }
 
 
     #dropdownMenuButton1 {
@@ -156,37 +156,39 @@
 {
     <input type="hidden" name="category" id="categoryInput" />
     <div class="bg-primary">
-        <div class="container mt-5 pt-3 fs-5 w-50">
+        <div class="container  fs-5">
             <div class="row">
-                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="根莖" onclick="submitCategory(this)">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>根莖</p>
-                    </div>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="根莖" onclick="submitCategory(this)">
+                    @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rr-carrot"></i>
+                    <p class="mb-0" style="white-space: nowrap;">根莖</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="葉菜" onclick="submitCategory(this)">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>葉菜</p>
-                    </div>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="葉菜" onclick="submitCategory(this)">
+                    @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rs-broccoli"></i>
+                    <i class="fi fi-rr-leafy-green"></i>
+                    <i class="fi fi-rr-lettuce"></i>
+                    <p class="mb-0" style="white-space: nowrap;">葉菜</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="水果" onclick="submitCategory(this)">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>水果</p>
-                    </div>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="水果" onclick="submitCategory(this)">
+                   @*  <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rr-apple-whole"></i>
+                    <p class="mb-0" style="white-space: nowrap;">水果</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 me-1 " style="border: none;" data-category="蕈菇" onclick="submitCategory(this)">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>蕈菇</p>
-                    </div>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="蕈菇" onclick="submitCategory(this)">
+                    @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rr-mushroom-alt"></i>
+                    <p class="mb-0" style="white-space: nowrap;">蕈菇</p>
                 </button>
-                <button class="imgicon col-12 col-md-2 me-1" style="border: none;" data-category="蔬菜箱" onclick="submitCategory(this)">
-                    <img src="~/Images/icon玉米1.png" alt="" class="w-100" />
-                    <div class="mt-1 d-flex justify-content-center align-items-end">
-                        <p>蔬菜箱</p>
-                    </div>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="蔬菜箱" onclick="submitCategory(this)">
+                    @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rr-salad"></i>
+                    <p class="mb-0" style="white-space: nowrap;">蔬菜箱</p>
+                </button>
+                <button class="imgicon col-12 col-md-2 d-flex align-items-center" style="border: none;" data-category="其他" onclick="submitCategory(this)">
+                    @* <img src="~/Images/icon玉米1.png" alt="" class="w-25 me-2" /> *@
+                    <i class="fi fi-rr-watering-can-plant"></i>
+                    <p class="mb-0" style="white-space: nowrap;">其他</p>
                 </button>
             </div>
         </div>

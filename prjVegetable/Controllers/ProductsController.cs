@@ -98,7 +98,7 @@ namespace prjVegetable.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> update([FromBody] CProductWrap productwrap, [FromForm] IFormFile file)
+        public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
         {
             TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == productwrap.FId);
             TImg i = _context.TImgs.FirstOrDefault(i => i.FProductId == productwrap.FId);
@@ -120,35 +120,6 @@ namespace prjVegetable.Controllers
                 e.FLaunch = productwrap.FLaunch;
                 e.FEditor = productwrap.FEditor;
 
-                if (file != null && file.Length > 0)
-                {
-                    // 儲存圖片檔案
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-                    var filePath = Path.Combine("~/wwwroot/images", fileName);  // 假設圖片儲存到 wwwroot/images
-
-                    // 儲存新圖片檔案
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    // 如果商品沒有圖片資料，則新增圖片
-                    if (i == null)
-                    {
-                        i = new TImg
-                        {
-                            FProductId = productwrap.FId,
-                            FName = fileName
-                        };
-                        _context.TImgs.Add(i);
-                    }
-                    else
-                    {
-                        // 更新圖片資料
-                        i.FName = fileName;
-                    }
-                }
-
                 await _context.SaveChangesAsync();
                 return Ok("資料已成功更新");
             }
@@ -158,6 +129,99 @@ namespace prjVegetable.Controllers
                 return StatusCode(500, $"儲存資料時發生錯誤: {ex.Message}");
             }
         }
+
+        [HttpPost("update-images/{fId}")]
+        public async Task<IActionResult> UpdateProductImages(int fId, List<IFormFile> images)
+        {
+            var product = await _context.TProducts.FirstOrDefaultAsync(p=>p.FId==fId);
+            if (product == null)
+            {
+                return NotFound("Product not found.");
+            }
+
+            CProductWrap productWrap = new CProductWrap
+            {
+                product = product,
+                ImgList = new List<string>()
+            };
+
+            var imagesInDb = await _context.TImgs.Where(i => i.FProductId == fId).ToListAsync();
+            foreach (var img in imagesInDb)
+            {
+                productWrap.ImgList.Add(img.FName);
+            }
+
+            // 如果有新的图片上传
+            if (images != null && images.Count > 0)
+            {
+                // 使用硬编码路径
+                var _imageDirectory = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images"); // 直接写入路径
+
+                // 遍历上传的图片，保存到服务器目录
+                foreach (var file in images)
+                {
+                    if (file.Length > 0)
+                    {
+                        var fileName = Path.GetFileName(file.FileName);
+                        var filePath = Path.Combine(_imageDirectory, fileName);
+
+                        // 保存文件
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await file.CopyToAsync(fileStream);
+                        }
+
+                        // 如果是修改，替换现有的图片
+                        if (productWrap.ImgList != null && productWrap.ImgList.Count > 0)
+                        {
+                            // 可以选择删除原有图片
+                            var oldImage = productWrap.ImgList.FirstOrDefault();
+                            if (!string.IsNullOrEmpty(oldImage))
+                            {
+                                var oldImagePath = Path.Combine(_imageDirectory, oldImage);
+                                if (System.IO.File.Exists(oldImagePath))
+                                {
+                                    System.IO.File.Delete(oldImagePath); // 删除旧图
+                                }
+                            }
+
+                            productWrap.ImgList[0] = fileName; // 更新为新的文件名
+                        }
+                        else
+                        {
+                            // 如果是新增，直接添加到 ImgList
+                            productWrap.ImgList.Add(fileName);
+                        }
+                    }
+                }
+            }
+
+            foreach (var imgName in productWrap.ImgList)
+            {
+                var imgEntity = new TImg
+                {
+                    FProductId = fId,
+                    FName = imgName
+                };
+
+                // 在数据库插入新图片记录
+                await _context.TImgs.AddAsync(imgEntity);
+            }
+
+            // 更新数据库中的图片信息
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Images updated successfully." });
+        }
+
+
+
+
+
+
+
+
+
 
         // GET: TProducts/Create
         public IActionResult Create()
