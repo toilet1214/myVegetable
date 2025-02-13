@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.ViewModels;
+using System.Collections.Generic;
 
 namespace prjVegetable.Controllers
 {
@@ -49,7 +51,7 @@ namespace prjVegetable.Controllers
         [HttpPut]
         public async Task<IActionResult> update([FromBody] CCustomerWrap CustomerWrap)
         {
-            
+
             TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == CustomerWrap.FId);
 
             e.FName = CustomerWrap.FName;
@@ -62,7 +64,7 @@ namespace prjVegetable.Controllers
             e.FEmail = CustomerWrap.FEmail;
             e.FUbn = CustomerWrap.FUbn;
 
-            
+
             await _context.SaveChangesAsync();
 
             return Ok("資料已成功更新");
@@ -112,5 +114,12 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
+        public IActionResult Favorite()
+        {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+            
+            
+            return View();
+        }
     }
 }

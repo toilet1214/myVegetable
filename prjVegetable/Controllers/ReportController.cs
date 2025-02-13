@@ -14,27 +14,20 @@ namespace prjVegetable.Controllers
         }
         public IActionResult List()
         {
-            var datas = from t in _context.TReports select t;
-            List<CReportWrap> list = new List<CReportWrap>();
-            foreach (var t in datas)
-                list.Add(new CReportWrap() { report = t });
+            var list = _context.TReports
+                       .Select(p => new CReportWrap { report = p })
+                       .ToList();
+
             return View(list);
         }
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Details(int id)
         {
-            if (id == null)
-            {
-                return RedirectToAction(nameof(List));
-            }
+            var report = _context.TReports.FirstOrDefault(p => p.FId == id);
+            if (report == null)
+                return NotFound();
 
-            var treport = await _context.TReports
-                .FirstOrDefaultAsync(m => m.FId == id);
-            if (treport == null)
-            {
-                return RedirectToAction(nameof(List));
-            }
-
-            return View(new CReportWrap() { report = treport });
+            var wrap = new CReportWrap { report = report };
+            return View(wrap);
         }
     }
 }
