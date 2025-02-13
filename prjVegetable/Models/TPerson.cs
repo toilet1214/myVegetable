@@ -36,4 +36,6 @@ public partial class TPerson
     public DateTime FCreatedAt { get; set; }
 
     public int FEditor { get; set; }
+
+    public bool FisEmailVerified { get; set; }
 }
