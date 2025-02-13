@@ -111,22 +111,20 @@
                 <div class="mb-3 row">
                     <div class="row">
                         <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
-                        <div v-if="product.Images && product.Images.length > 0" >
+                        <div v-if="product.Images && product.Images.length > 0">
                             <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
-                                <button><i class="bi bi-x-circle-fill"></i></button>
                                 <img :src="'https://localhost:7251/images/' + image"
                                      alt="'商品圖片 ' + (index + 1)"
                                      id="editimg"
                                      class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file"
-                                       :id="update"
-                                       @@change="editFileChanged($event.target, index)" />
+                                       :id="'update' + index"
+                                @@change ="editFileChanged($event.target, index)" />
                             </div>
                         </div>
                         <label for="insert" style="cursor: pointer; color: blue;">新增圖片</label>
-                        <input type="file" id="insert" style="display: none;" onchange="insertFileChange()" />
-                        @* <input type="file" id="insert" @@change="insertFileChange" /> *@
+                        <input type="file" id="insert" style="display: none;" @@change ="insertFileChange()" />
                     </div>
                 </div>
 
@@ -237,7 +235,6 @@
                                     </span>
                                 </div>
                                 <div v-else>loading</div>
-
                             </div>
                         </div>
                     </div>
@@ -246,8 +243,7 @@
             <!-- 返回與編輯按鈕 -->
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
-                <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click="saveImg" id="update" class="btn btn-success">儲存圖片</button>
+                <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button> 
                 <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
             </div>
         </div>
@@ -256,44 +252,40 @@
             <p>載入中...</p>
         </div>
     </div>
-</div></div>
+</div>
 
 @section Scripts
 {
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         const app = Vue.createApp({
             data() {
                 return {
-                    baseAddress:"https://localhost:7251",
+                    baseAddress: "https://localhost:7251",
                     product: {
-                        Images:[],
-                        fStorage:0,
-                        fLaunch:1
+                        Images: [],
+                        fStorage: 0,
+                        fLaunch: 1
                     },
-                    img:[],// 用來存放從後端獲得的人員資料
-                    edit:false, //啟用編輯
+                    img: null,  // 用來存放從後端獲得的圖片資料
+                    edit: false, // 啟用編輯
                 };
             },
             mounted() {
-                this.loadProductId();  // 确保调用正确的 method
+                this.loadProductId();  // 确保调用正确的 method                
             },
             methods: {
                 loadProductId() {
-                        // 获取当前 URL 的路径部分
-                        const path = window.location.pathname;
+                    const path = window.location.pathname;
+                    const pathSegments = path.split('/');
+                    const productId = pathSegments[pathSegments.length - 1];
 
-                        // 假设 URL 路径的格式是 /Person/Details/{id}
-                        const pathSegments = path.split('/'); // 将路径分割为数组
-
-                        // 获取路径的最后一部分作为 ID
-                        const productId = pathSegments[pathSegments.length - 1];
                     if (productId) {
                         axios.get(`/Products/GetProductById/${productId}`)
                             .then(response => {
                                 console.log(response.data);  // 查看返回的產品資料
-                                this.product = response.data; // 把返回的資料賦值給 product
-                                this.product.Images = response.data.images || [];
+                                this.product = response.data;  // 把返回的資料賦值給 product
+                                // 獲取圖片
+                                this.loadProductImages(productId);
                             })
                             .catch(error => {
                                 console.error('資料加載錯誤', error);
@@ -304,17 +296,35 @@
                         console.error('未提供有效的 ID');
                     }
                 },
+
+                loadProductImages(productId) {                   
+
+                    if (!productId) {
+                        console.error('無效的 productId');
+                        return;
+                    }
+                    axios.get(`/Products/GetProductById/${productId}`)
+                        .then(response => {
+                            console.log('pictureInfo:', response.data); 
+                            this.product.Images = response.data;  // 更新圖片列表
+                        })
+                        .catch(error => {
+                            console.log('圖片加載錯誤', error);
+                            this.product.Images = [];  // 如果圖片加載出錯，清空圖片列表
+                        });
+                },
+
                 goToIndex() {
-                    window.location.href = "/Products/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
+                    window.location.href = "/Products/index";  // 返回到列表页面，或者修改为你的页面路径
                 },
 
                 toggleEditting() {
-                this.edit = !this.edit;  // 切換 edit 值
+                    this.edit = !this.edit;  // 切換 edit 值
                 },
 
                 getLabel(field, value) {
                     if (field === 'fStorage') {
-                        switch(value) {
+                        switch (value) {
                             case 0: return '冷凍';
                             case 1: return '冷藏';
                             case 2: return '常溫';
@@ -326,63 +336,13 @@
                     return '';
                 },
 
-                //處理預覽上傳圖片
-                readURL:function(inputFile,img,btn){
-                    if(inputFile.files[0]){ //使用者有上傳檔案
-                        var allowType="image.*";
-                        var file = inputFile.files[0];
-                        if(file.type.match(allowType)){
-                            //預覽使用者選擇的圖片
-                            var reader=new FileReader();
-                            reader.onload=function(e){
-                                img.src=e.target.result;
-                                img.title = file.name;
-                            };
-                            reader.readAsDataURL(file);
-                            //user選文字檔案:readAsText  user選網址:readAsDataURL 陣列:readAsArrayBuffer
-                            btn.prop("disabled",false);
-                        }
-                        else{
-                            alert("不允許的檔案上傳類型！");
-                            inputFile.value="";
-                            btn.prop("disabled",true);
-                        }
-                    }
-                },
-
-
-
-                //選擇文件更新照片
-                editFileChanged:function(inputFile){
-                    //alert("editFileChanged");
-                    let _this=this;
-                     _this.readURL(inputFile, document.querySelector("#editimg"), $("#update"));
-                
-                },
-
-                insertFileChange:function(inputFile){
-                    alert("insertFileChange");
-                    let _this = this;
-                    _this.readURL(inputFile,inputFile.previousSibling,$("#insert"));
-
-                },
-
-               
-                update:function(item){
-
-
-                },
-
-
-             
                 saveProduct() {
                     alert("saveProduct");
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确
-                        const productData =JSON.parse(JSON.stringify(this.product))
+                        const productData = JSON.parse(JSON.stringify(this.product));
                         axios.post(`/Products/update`, productData)
                             .then(response => {
-                                // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
                                 alert("資料已儲存!");
                                 this.toggleEditting();  // 儲存後退出編輯模式
                             })
@@ -393,10 +353,56 @@
                     } else {
                         alert("無效的使用者ID，無法儲存資料");
                     }
-                }
+                },
+
+                insertFileChange(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append("file", file);
+
+                        axios.post(`/Products/UpdateProductImages`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        }).then(response => {
+                            if (response.data.success) {
+                                this.product.Images.push(response.data.imageUrl);  // 將新圖片加入到 product.Images
+                                alert("圖片上傳成功!");
+                            } else {
+                                alert("圖片上傳失敗");
+                            }
+                        }).catch(error => {
+                            console.error('圖片上傳失敗', error);
+                            alert("圖片上傳時發生錯誤");
+                        });
+                    }
+                },
+
+                editFileChanged(target, index) {
+                    const file = target.files[0];
+                    if (file) {
+                        const formData = new FormData();
+                        formData.append("file", file);
+
+                        axios.post(`/Products/UpdateProductImages`, formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' }
+                        }).then(response => {
+                            if (response.data.success) {
+                                this.product.Images[index] = response.data.imageUrl;  // 更新指定索引的圖片
+                                alert('圖片更新成功');
+                            } else {
+                                alert('圖片更新失敗');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('圖片更新失敗', error);
+                            alert("圖片更新時發生錯誤");
+                        });
+                    }
+                },
             }
-            
         });
+
+
 
         app.mount('#app'); // 使用 Vue 3 创造并挂载应用
     </script>
