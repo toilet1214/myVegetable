@@ -9,7 +9,6 @@
 *查詢到的筆數沒有更新
 *還沒有帶入使用者ID
 *列印 沒有庫存盤點單號、基準日、建檔日期
-*只儲存備註的功能異常(庫存調整單的沒有問題)
 
 -->
 <div class="container my-5">
@@ -196,12 +195,16 @@
                             <th>盤點單號</th>
                             <th>盤點基準日</th>
                             <th>建檔日期</th>
+                            <th>備註</th> <!-- 新增備註欄 -->
                         </tr>
                     </thead>
                     <tbody id="inventoryListTableBody">
                         <!-- 這裡會透過 JS 動態填入資料 -->
                     </tbody>
                 </table>
+            </div>
+            <div id="searchResultCount" class="text-muted ms-3">
+                <!-- 查詢結果的筆數會動態顯示在這裡 -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary" id="confirmSelection">確定</button>
@@ -210,6 +213,8 @@
         </div>
     </div>
 </div>
+
+
 
 <!-- 選擇條件來新增 -->
 <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -258,9 +263,6 @@
 
 <!-- 查詢 -->
 <script>
-    let inventoryList = []; // 儲存查詢結果
-    let selectedInventoryMainId = null; // 使用者選擇的 InventoryMainId
-
     document.getElementById('modalSearchButton').addEventListener('click', function () {
         const fId = document.getElementById('searchFId').value.trim();
         const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
@@ -288,30 +290,30 @@
             success: function (response) {
                 console.log("AJAX 成功回應！", response);
 
-                if (response.success && response.inventoryMainList && response.inventoryMainList.length > 0) {
-                    const retrievedInventoryList = response.inventoryMainList;
+                if (response.success && response.inventoryMainList?.length > 0) {
                     const tableBody = document.getElementById('inventoryListTableBody');
                     tableBody.innerHTML = ''; // 清空表格
 
-                    retrievedInventoryList.forEach(item => {
-                        let row = `
+                    response.inventoryMainList.forEach(item => {
+                        const row = `
                         <tr class="inventory-row" data-id="${item.fId}">
                             <td>${item.fId}</td>
                             <td>${item.fBaselineDate ?? ''}</td>
                             <td>${item.fCreatedAt ?? ''}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm selectInventory" data-id="${item.fId}">選擇</button>
-                            </td>
+                            <td>${item.fNote ?? ''}</td> <!-- 新增備註欄位 -->
                         </tr>
                         `;
                         tableBody.insertAdjacentHTML('beforeend', row);
                     });
 
+                    // 更新結果筆數
+                    document.getElementById('searchResultCount').textContent = `符合條件的筆數: ${response.totalCount}`;
+
                     // 顯示查詢結果視窗
                     $("#inventoryListModal").modal("show");
                 } else {
-                    console.error("沒有收到 InventoryMainList！", response);
-                    alert('查無符合條件的資料');
+                    console.error("沒有查到資料或資料格式錯誤", response);
+                    alert(response.message || '查無符合條件的資料');
                 }
             },
             error: function (error) {
@@ -321,16 +323,23 @@
         });
     });
 
-    // 點擊「選擇」按鈕時，設定 selectedInventoryMainId
-    $(document).on('click', '.selectInventory', function () {
-        selectedInventoryMainId = $(this).data('id'); // 設定選中的 InventoryMainId
-        $('.inventory-row').removeClass('table-active'); // 先清除其他選中的狀態
-        $(this).closest('tr').addClass('table-active'); // 高亮當前選擇的行
-        console.log("選擇的 InventoryMainId:", selectedInventoryMainId);
+    // 選擇邏輯：點擊行選擇
+    let selectedInventoryMainId = null; // 用來記錄選中的 ID
+
+    document.getElementById('inventoryListTableBody').addEventListener('click', function (e) {
+        const targetRow = e.target.closest('tr'); // 確保點擊的是行
+        if (targetRow && targetRow.classList.contains('inventory-row')) {
+            selectedInventoryMainId = targetRow.dataset.id; // 設定選中的 ID
+            document.querySelectorAll('.inventory-row').forEach(row => {
+                row.classList.remove('table-active'); // 移除其他行的高亮
+            });
+            targetRow.classList.add('table-active'); // 高亮當前行
+            console.log("選中的 InventoryMainId:", selectedInventoryMainId);
+        }
     });
 
-
-    $(document).on('click', '#confirmSelection', function () {
+    // 確認選擇後跳轉
+    document.getElementById('confirmSelection').addEventListener('click', function () {
         if (!selectedInventoryMainId) {
             alert('請選擇一個盤點單號');
             return;
@@ -339,7 +348,9 @@
         window.location.href = `/Inventory/Detail/${selectedInventoryMainId}`;
     });
 
+
 </script>
+
 
 <!-- 編輯/儲存 -->
 <script>

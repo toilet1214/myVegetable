@@ -26,27 +26,23 @@ namespace prjVegetable.Controllers
         /*--------------- + Detail + ----------------*/
         //GET Inventory/Detail
         [HttpGet]
-        public IActionResult Detail(int id)
+        public IActionResult Detail(int? id)
         {
-            // 查詢當前 ID 是否存在且 FBaselineDate 不為 null
-            var inventoryMain = _context.TInventoryMains
-                .Where(im => im.FId == id && im.FBaselineDate != null)
-                .FirstOrDefault();
-
-            // 如果查不到該 ID，導向第一筆資料
-            if (inventoryMain == null)
+            // 如果沒有提供 ID 或查不到該 ID，導向最新一筆有效資料
+            if (id == null || !_context.TInventoryMains.Any(im => im.FId == id && im.FBaselineDate != null))
             {
-                var firstRecordId = _context.TInventoryMains
+                // 查詢最新一筆有效資料的 ID（以 FId 降序排列）
+                var latestRecordId = _context.TInventoryMains
                     .Where(im => im.FBaselineDate != null)
-                    .OrderBy(im => im.FId)
+                    .OrderByDescending(im => im.FId)
                     .Select(im => im.FId)
                     .FirstOrDefault();
 
-                if (firstRecordId != 0)  // 如果找到第一筆資料，就導向該筆資料
+                if (latestRecordId != 0) // 如果找到最新一筆資料，就導向該筆資料
                 {
-                    return RedirectToAction("Detail", new { id = firstRecordId });
+                    return RedirectToAction("Detail", new { id = latestRecordId });
                 }
-                else  // 如果沒有任何可用資料，則顯示空視圖
+                else // 如果沒有任何有效資料，則顯示空視圖
                 {
                     return View("DetailEmpty", new CInventoryViewModel
                     {
@@ -61,6 +57,12 @@ namespace prjVegetable.Controllers
                 }
             }
 
+            // 查詢對應的 InventoryMain 資料
+            var inventoryMain = _context.TInventoryMains
+                .Where(im => im.FId == id && im.FBaselineDate != null)
+                .FirstOrDefault();
+
+            // 包裝 InventoryMain 資料
             var inventoryMainWrap = new CInventoryMainWrap
             {
                 FId = inventoryMain.FId,
@@ -70,12 +72,15 @@ namespace prjVegetable.Controllers
                 FNote = inventoryMain.FNote,
             };
 
+            // 查詢相關的 InventoryDetails
             var inventoryDetails = _context.TInventoryDetails
                 .Where(detail => detail.FInventoryMainId == inventoryMain.FId)
                 .ToList();
 
+            // 查詢產品資料
             var products = _context.TProducts.ToList();
 
+            // 包裝 InventoryDetails
             var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
             {
                 FId = detail.FId,
@@ -86,6 +91,7 @@ namespace prjVegetable.Controllers
                 FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
             }).ToList();
 
+            // 查詢員工資料（只包含具備特定權限的）
             var employees = _context.TPeople
                 .Where(p => p.FPermission == 1)
                 .ToList();
@@ -93,25 +99,24 @@ namespace prjVegetable.Controllers
             // 使用 SelectList 封裝員工資料
             ViewData["Employees"] = new SelectList(employees, "FId", "FName");
 
-
-            // 將符合條件的員工列表傳遞給視圖
-            ViewData["Employees"] = new SelectList(employees, "fId", "fName");
-
-            // 總 InventoryMain 筆數
-            int totalItemCount = _context.TInventoryMains
-                .Where(im => im.FBaselineDate != null)
-                .Count();
-
-            // 獲取所有有效的 InventoryMain Id 列表
+            // 獲取有效的 InventoryMain Id 列表
             var validIds = _context.TInventoryMains
                 .Where(im => im.FBaselineDate != null)
                 .OrderBy(i => i.FId)
                 .Select(i => i.FId)
                 .ToList();
 
-            // 當前顯示的 InventoryMain Id
-            int currentIndex = validIds.IndexOf(id) + 1;
+            // 獲取當前顯示的資料索引與總數
+            int totalItemCount = validIds.Count;
+            int currentIndex = validIds.IndexOf(id.Value) + 1;
 
+            // 計算前一筆、下一筆、第一筆和最後一筆的 ID
+            var firstId = validIds.Cast<int?>().FirstOrDefault() ?? 0;
+            var lastId = validIds.Cast<int?>().LastOrDefault() ?? 0;
+            var previousId = validIds.Cast<int?>().Where(i => i < id).LastOrDefault(id.Value);
+            var nextId = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault(id.Value);
+
+            // 構建 ViewModel
             var viewModel = new CInventoryViewModel
             {
                 InventoryMain = inventoryMainWrap,
@@ -122,21 +127,18 @@ namespace prjVegetable.Controllers
                     FName = product.FName,
                     FQuantity = product.FQuantity
                 }).ToList(),
-                TotalItemCount = validIds.Count, // 所有有效的 InventoryMain 總數
+                TotalItemCount = totalItemCount, // 所有有效的 InventoryMain 總數
                 CurrentItemCount = currentIndex // 當前顯示的 InventoryMain 是第幾筆
             };
-
-            var firstId = validIds.Cast<int?>().FirstOrDefault() ?? 0;
-            var lastId = validIds.Cast<int?>().LastOrDefault() ?? 0;
-            var previousId = validIds.Cast<int?>().Where(i => i < id).LastOrDefault(id);
-            var nextId = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault(id);
 
             ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
             ViewData["PreviousId"] = previousId;
             ViewData["NextId"] = nextId;
+
             return View(viewModel);
         }
+
 
 
         /*--------------- + Create + ----------------*/
@@ -415,12 +417,13 @@ namespace prjVegetable.Controllers
                 query = query.Where(i => i.FCreatedAt <= fCreatedEndDate.Value);
             }
 
-            // 3. 查詢主檔
+            // 3. 查詢主檔並加上 FNote 欄位
             var inventoryMains = query.Select(i => new CInventoryMainWrap
             {
                 FId = i.FId,
                 FBaselineDate = i.FBaselineDate,
-                FCreatedAt = i.FCreatedAt
+                FCreatedAt = i.FCreatedAt,
+                FNote = i.FNote // 加入 FNote 欄位
             }).ToList();
 
             if (!inventoryMains.Any())
@@ -434,13 +437,9 @@ namespace prjVegetable.Controllers
             return Json(new
             {
                 success = true,
+                TotalCount = inventoryMains.Count,
                 InventoryMainList = inventoryMains
             });
         }
-
-
-
-
-
     }
 }
