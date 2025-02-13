@@ -53,16 +53,13 @@
                 <div class="form-group">
                     <div>
                         <label asp-for="FGender" class="control-label">性別</label>
-                    </div>
-                    <div class="form-check form-check-inline">
-                        <input asp-for="FGender" class="form-check-input" type="radio" id="inlineRadio1" value="0">
-                        <label class="form-check-label" for="inlineRadio1">男</label>
-                    </div>
-
-                    <div class="form-check form-check-inline">
-                        <input asp-for="FGender" class="form-check-input" type="radio" id="inlineRadio2" value="1">
-                        <label class="form-check-label" for="inlineRadio2">女</label>
-                    </div>
+                    </div>                    
+                        <select asp-for="FGender" class="form-control">
+                            <option value="" disabled selected hidden>請選擇</option>
+                            <option value="男">男性</option>
+                            <option value="女">女性</option>
+                            <option value="其他">其他</option>
+                        </select>
                 </div>
             </div>
             <div class="col-6">
@@ -112,21 +109,7 @@
                 <label asp-for="FEmail" class="control-label">電子郵件</label>
                 <input asp-for="FEmail" class="form-control" />
             </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="FCreatedAt" class="control-label" type="hidden">建檔時間</label>
-                    <input asp-for="FCreatedAt" class="form-control" type="hidden" />
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="form-group">
-                    <label asp-for="FEditor" class="control-label" type="hidden">建檔人</label>
-                    <input asp-for="FEditor" class="form-control" type="hidden" />
-                </div>
-            </div>
-        </div>
+        </div>        
         <div class="row mb-3">
             <div class="col-6">
                 <div>

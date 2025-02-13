@@ -25,7 +25,14 @@
                         <div class="row">
                             <label for="fClassification" class="col-md-3 col-form-label">商品分類：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fClassification" :placeholder="product.fClassification" v-model="product.fClassification">
+                                <select class="form-control" id="fClassification" v-model="product.fClassification">
+                                    <option value="根莖">根莖</option>
+                                    <option value="葉菜">葉菜</option>
+                                    <option value="水果">水果</option>
+                                    <option value="蕈菇">蕈菇</option>
+                                    <option value="蔬菜">蔬菜</option>
+                                    <option value="其他">其他</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -71,7 +78,11 @@
                         <div class="row">
                             <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fStorage" :placeholder="product.fStorage" v-model="product.fStorage">
+                                <select class="form-control" id="fStorage" v-model="product.fStorage">
+                                    <option value="0">冷凍</option>
+                                    <option value="1">冷藏</option>
+                                    <option value="2">常溫</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -89,7 +100,10 @@
                         <div class="row">
                             <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fLaunch" :placeholder="product.fLaunch" v-model="product.fLaunch">
+                                <select class="form-control" id="fLaunch" v-model="product.fLaunch">
+                                    <option value="0">下架</option>
+                                    <option value="1">上架</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -99,16 +113,20 @@
                         <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
                         <div v-if="product.Images && product.Images.length > 0">
                             <div v-for="(image, index) in product.Images" :key="index" class="col-md-3">
+                                <button><i class="bi bi-x-circle-fill"></i></button>
                                 <img :src="'https://localhost:7251/images/' + image"
                                      alt="'商品圖片 ' + (index + 1)"
+                                     id="editimg"
                                      class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file"
-                                       :id="'update-' + index"
-                                       @@change="editFileChanged($event, index)" />
+                                       :id="update"
+                                       @@change="editFileChanged($event.target, index)" />
                             </div>
                         </div>
-                        <input type="file" @@change="newImageSelected" />
+                        <label for="insert" style="cursor: pointer; color: blue;">新增圖片</label>
+                        <input type="file" id="insert" style="display: none;" onchange="insertFileChange()" />
+                        @* <input type="file" id="insert" @@change="insertFileChange" /> *@
                     </div>
                 </div>
 
@@ -229,7 +247,8 @@
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
                 <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
-                <button v-if="edit" @@click="saveProduct" class="btn btn-success">儲存修改</button>
+                <button v-if="edit" @@click="saveImg" id="update" class="btn btn-success">儲存圖片</button>
+                <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
             </div>
         </div>
 
@@ -246,11 +265,13 @@
         const app = Vue.createApp({
             data() {
                 return {
+                    baseAddress:"https://localhost:7251",
                     product: {
                         Images:[]
                     },
-                    img:[],// 用來存放從後端獲得的人員資料
+                    img:[],// 用來存放從後端獲得的資料
                     edit:false, //啟用編輯
+                    file: null,
                 };
             },
             mounted() {
@@ -290,58 +311,47 @@
                 this.edit = !this.edit;  // 切換 edit 值
                 },
 
-                //選擇文件更新照片
-                editFileChanged(event,index){
-                    const file = event.target.files[0];
-                    if(file){
-                        //更新對應圖片
-                        const reader = new FileReader();
-                        reader.onload=(e)=>{this.product.Images[index] = e.target.result;};
-                        reader.readAsDataURL(file);
-                        
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('productId', this.product.FId);
-
-                        axios.put('/Products/updateImage', formData, {
-                            headers:{
-                                'Content-Type':'multipart/form-data'
-                            }
-                        }).then(response=>{
-                            alert("圖片更新成功")
-                            this.product.Images[index] = response.data.imageName;
-                        }).catch(error=>{
-                            console.err('上傳失敗', error);
-                            alert('圖片上傳失敗');
-                        })
+                //處理預覽上傳圖片
+                readURL:function(inputFile,img,btn){
+                    if(inputFile.files[0]){ //使用者有上傳檔案
+                        var allowType="image.*";
+                        var file = inputFile.files[0];
+                        if(file.type.match(allowType)){
+                            //預覽使用者選擇的圖片
+                            var reader=new FileReader();
+                            reader.onload=function(e){
+                                img.src=e.target.result;
+                                img.title = file.name;
+                            };
+                            reader.readAsDataURL(file);
+                            //user選文字檔案:readAsText  user選網址:readAsDataURL 陣列:readAsArrayBuffer
+                            btn.prop("disabled",false);
+                        }
+                        else{
+                            alert("不允許的檔案上傳類型！");
+                            inputFile.value="";
+                            btn.prop("disabled",true);
+                        }
                     }
                 },
 
-                // 上传新的图片
-                newImageSelected(event) {
-                    const file = event.target.files[0];  // 获取选择的文件
-                    if (file) {
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('productId', this.product.FId);
+                //選擇文件更新照片
+                editFileChanged:function(inputFile){
+                    //alert("editFileChanged");
+                    let _this=this;
+                     _this.readURL(inputFile, document.querySelector("#editimg"), $("#update"));
 
-                        axios.post('/Products/updateImage', formData, {
-                            headers: {
-                                'Content-Type': 'multipart/form-data'
-                            }
-                        })
-                        .then(response => {
-                            this.product.Images.push(response.data.imageName);  // 将新图片添加到数组
-                            alert("圖片上傳成功");
-                        })
-                        .catch(error => {
-                            console.error('上傳失败', error);
-                            alert("圖片上傳失數");
-                        });
-                    }
+                },
+
+                insertFileChange:function(inputFile){
+                    alert("insertFileChange");
+                    let _this = this;
+                    _this.readURL(inputFile,inputFile.previousSibling,$("#insert"));
+
                 },
 
                 saveProduct() {
+                    alert("saveProduct");
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确
                         const productData =JSON.parse(JSON.stringify(this.product))
@@ -349,6 +359,7 @@
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
                                 alert("資料已儲存!");
+                                this.saveImg();
                                 this.toggleEditting();  // 儲存後退出編輯模式
                             })
                             .catch(error => {
@@ -358,10 +369,28 @@
                     } else {
                         alert("無效的使用者ID，無法儲存資料");
                     }
-                }
-            }
+                },
+
+                saveImg() {
+                    // 假設需要將圖片發送到後端
+                    if (this.file) {
+                        const formData = new FormData();
+                        formData.append("file", this.file);
+                        axios.put("/Products/updateImage", formData)
+                            .then(response => {
+                                console.log("圖片儲存成功！", response);
+                            })
+                            .catch(error => {
+                                console.error("圖片儲存失敗", error);
+                            });
+                    }
+                },
+                
+            }//methods
+
         });
 
         app.mount('#app'); // 使用 Vue 3 创造并挂载应用
     </script>
 }
+
