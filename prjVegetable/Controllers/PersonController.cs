@@ -153,7 +153,7 @@ namespace prjVegetable.Controllers
         {
             // 檢查是否找到對應的使用者
             TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == personwrap.FId);
-
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
             if (e == null)
             {
                 return NotFound("使用者未找到");
@@ -170,7 +170,7 @@ namespace prjVegetable.Controllers
             {
                 // 更新資料，不給使用者修改的欄位（例如密碼）
                 e.FName = personwrap.FName;
-                e.FAccount = personwrap.FAccount;
+                //e.FAccount = personwrap.FAccount;
                 e.FBirth = personwrap.FBirth;
                 e.FPhone = personwrap.FPhone;
                 e.FTel = personwrap.FTel;
@@ -179,9 +179,8 @@ namespace prjVegetable.Controllers
                 e.FUbn = personwrap.FUbn;
                 e.FPermission = personwrap.FPermission;
                 e.FEmp = personwrap.FEmp;
-                e.FEmpTel = personwrap.FEmpTel;
-                e.FCreatedAt = personwrap.FCreatedAt;
-                e.FEditor = personwrap.FEditor;
+                e.FEmpTel = personwrap.FEmpTel;                
+                e.FEditor = UserId;
                 e.FPassword = personwrap.FPassword;
 
                 // 儲存變更

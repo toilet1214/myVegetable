@@ -54,6 +54,7 @@ namespace prjVegetable.Controllers
         public async Task<IActionResult> update([FromBody] CProviderWrap providerwrap) 
         {
             TProvider e = _context.TProviders.FirstOrDefault(c => c.FId == providerwrap.FId);
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
             if (e == null) 
             {
                 return NotFound("未找到相關廠商");
@@ -68,6 +69,7 @@ namespace prjVegetable.Controllers
                 e.FAddress = providerwrap.FAddress;
                 e.FDelivery = providerwrap.FDelivery;
                 e.FInvoiceAdd = providerwrap.FInvoiceAdd;
+                e.FEditor = UserId;
 
                 // 儲存變更
                 await _context.SaveChangesAsync();
