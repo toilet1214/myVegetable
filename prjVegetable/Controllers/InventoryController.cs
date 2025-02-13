@@ -263,16 +263,15 @@ namespace prjVegetable.Controllers
                     .Where(d => viewModel.InventoryDetails.Select(vd => vd.FId).Contains(d.FId))
                     .ToDictionary(d => d.FId, d => d.FActualQuantity);
 
-                // 只更新 TInventoryMain
+                // 更新 TInventoryMain
                 inventoryMain.FBaselineDate = viewModel.InventoryMain.FBaselineDate;
                 inventoryMain.FCreatedAt = viewModel.InventoryMain.FCreatedAt;
                 inventoryMain.FEditor = viewModel.InventoryMain.FEditor;
                 inventoryMain.FNote = viewModel.InventoryMain.FNote;
                 _context.SaveChanges();
 
-                // 變更 TInventoryDetail，並檢查數量是否變更
+                // 更新 TInventoryDetail
                 bool hasQuantityChange = false;
-
                 foreach (var inventoryDetail in viewModel.InventoryDetails)
                 {
                     var detailToUpdate = _context.TInventoryDetails
@@ -280,21 +279,29 @@ namespace prjVegetable.Controllers
 
                     if (detailToUpdate != null)
                     {
-                        // 若 FActualQuantity 有變更，標記 hasQuantityChange 為 true
                         if (originalQuantities.ContainsKey(detailToUpdate.FId) &&
                             originalQuantities[detailToUpdate.FId] != inventoryDetail.FActualQuantity)
                         {
                             hasQuantityChange = true;
                         }
 
-                        // 更新實際庫存數量
                         detailToUpdate.FActualQuantity = inventoryDetail.FActualQuantity;
                     }
                 }
-
                 _context.SaveChanges();
 
-                // 若數量沒有變更，則不新增調整單，直接回傳成功
+                // 更新 TProduct 的 FQuantity
+                foreach (var product in viewModel.Products)
+                {
+                    var productToUpdate = _context.TProducts.FirstOrDefault(p => p.FId == product.FId);
+                    if (productToUpdate != null)
+                    {
+                        productToUpdate.FQuantity = product.FQuantity;
+                    }
+                }
+                _context.SaveChanges();
+
+                // 若數量沒有變更，直接返回成功訊息
                 if (!hasQuantityChange)
                 {
                     return Json(new { success = true });
@@ -363,6 +370,7 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, error = ex.Message });
             }
         }
+
 
 
         /*---------------- + Search + ----------------*/
