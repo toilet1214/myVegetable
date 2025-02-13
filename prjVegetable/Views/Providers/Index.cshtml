@@ -6,7 +6,8 @@
 }
 
 
-<h1>廠商資料列表</h1><br />
+<h1>廠商資料列表</h1>
+<br />
 
 
 <p>
@@ -15,6 +16,9 @@
 <table class="table" id="List">
     <thead>
         <tr>
+            <th>
+                序號
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FId)
             </th>
@@ -41,48 +45,57 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FInvoiceAdd)
-            </th>            
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FUbn)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FTel)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FConnect)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FAccountant)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FDelivery)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
-            </td>            
-            <td>
-                <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a> <br>
-                <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)" class="btn btn-danger">&emsp;移除&emsp;</a>
-            </td>
-        </tr>
-}
+        @{
+            var count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FUbn)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FTel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FConnect)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FAccountant)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FDelivery)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a> <br>
+                        <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)" class="btn btn-danger">&emsp;移除&emsp;</a>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
+
 @section Scripts {
 
     <script>
