@@ -34,6 +34,9 @@ namespace prjVegetable.Models
             set { _comment.FPersonId = value; }
         }
 
+        [DisplayName("會員名稱")]
+        public string PersonName { get; set; }
+
         [Required(ErrorMessage = "必填")]
         [DisplayName("商品Id")]
         public int FProductId

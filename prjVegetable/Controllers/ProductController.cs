@@ -222,9 +222,9 @@ namespace prjVegetable.Controllers
             CProductWrap x = new CProductWrap() { product = p };
 
             x.ImgList = _context.TImgs
-                         .Where(img => img.FProductId == id)  // 只選擇對應的商品圖片
-                         .OrderBy(img => img.FOrderBy)          // 按 Order 排序
-                         .Select(img => img.FName)       // 只選擇圖片路徑
+                         .Where(img => img.FProductId == id)
+                         .OrderBy(img => img.FOrderBy)
+                         .Select(img => img.FName) 
                          .ToList();
 
             var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
@@ -241,31 +241,69 @@ namespace prjVegetable.Controllers
                 x.IsFavorite = false; // 未登入的話，顯示為未加入最愛
             }
 
-
-            //// 取得商品的所有評論
-            //var reviews = _context.TComments
-            //    .Where(c => c.FProductId == id)
-            //    .Select(c => new ProductViewModel
-            //    {
-            //        FId = c.FId,
-            //        FPersonId = c.FPersonId,
-            //        FProductId = c.FProductId,
-            //        FComment = c.FComment,
-            //        FStar = c.FStar,
-            //        FCreatedAt = c.FCreatedAt,
-            //        PersonName = _context.TPersons.Where(p => p.FId == c.FPersonId).Select(p => p.FName).FirstOrDefault()
-            //    })
-            //    .OrderByDescending(c => c.FCreatedAt) // 按照創建日期倒序排列
-            //    .ToList();
-
-            //x.Reviews = reviews;
+            x.CommentList = GetProductComments(id, personId);
 
             return View(x);
         }
 
+        //商品評論
+        private List<CCommentWrap> GetProductComments(int productId, int personId)
+        {
+            var comments = _context.TComments
+               .Where(c => c.FProductId == productId)
+               .Select(c => new
+               {
+                   c.FPersonId,
+                   c.FProductId,
+                   c.FOrderListId,
+                   c.FComment,
+                   c.FStar,
+                   c.FCreatedAt,
+                   PersonName = _context.TPeople
+                       .Where(p => p.FId == c.FPersonId)
+                       .Select(p => p.FName)
+                       .FirstOrDefault(),
+               })
+               .ToList();
+
+            return comments.Select(comment => new CCommentWrap
+            {
+                FPersonId = comment.FPersonId,
+                FProductId = comment.FProductId,
+                FOrderListId = comment.FOrderListId,
+                FComment = comment.FComment,
+                FStar = comment.FStar,
+                FCreatedAt = comment.FCreatedAt,
+                PersonName = comment.PersonName,
+            }).ToList();
+        }
+
+        [HttpGet]
+        public IActionResult GetProductCommentsPaged(int productId, int page = 1, int pageSize = 5)
+        {
+            var comments = _context.TComments
+                .Where(c => c.FProductId == productId)
+                .OrderBy(c => c.FCreatedAt) // 可以按創建時間排序
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new
+                {
+                    c.FPersonId,
+                    c.FProductId,
+                    c.FOrderListId,
+                    c.FComment,
+                    c.FStar,
+                    c.FCreatedAt,
+                    PersonName = _context.TPeople
+                        .Where(p => p.FId == c.FPersonId)
+                        .Select(p => p.FName)
+                        .FirstOrDefault(),
+                })
+                .ToList();
+
+            return Json(comments); // 返回 JSON 格式的評論
+        }
 
 
-
-        
     }
 }

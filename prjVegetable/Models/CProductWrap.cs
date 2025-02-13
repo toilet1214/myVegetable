@@ -18,6 +18,7 @@ namespace prjVegetable.Models
         {
             _product = new TProduct();
             ImgList = new List<string>();
+            CommentList = new List<CCommentWrap>();
         }
 
 
@@ -127,6 +128,7 @@ namespace prjVegetable.Models
 
         public IEnumerable<IFormFile> productImages { get; set; }
         public List<string> ImgList { get; set; }
-        
+        public List<CCommentWrap> CommentList { get; set; }
+
     }
 }
