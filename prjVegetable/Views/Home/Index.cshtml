@@ -3,36 +3,51 @@
 
 }
 
-<!-- 圖片輪播 Carousel Start-->
-@model prjVegetable.ViewModels.CarouselImageViewModel
+@model prjVegetable.ViewModels.CHomePageViewModel
 
-<div class="container mt-5 " data-aos="fade-in" data-aos-duration="1000">
-    <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
-        <div class="carousel-indicators">
-            @for (int i = 0; i < Model.ImagePaths.Count; i++)
-            {
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
-                        aria-label="Slide @(i + 1)"></button>
-            }
+<div>
+    <!-- 圖片輪播 Carousel Start-->
+    <div class="container mt-5" data-aos="fade-in" data-aos-duration="1000">
+        <!-- Carousel 外層 -->
+        <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+
+            <!-- Indicators (底部小點) -->
+            <div class="carousel-indicators">
+                @for (int i = 0; i < Model.UploadImages.ImagePaths.Count; i++)
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide-to="@i"
+                            class="@(i == 0 ? "active" : "")"
+                            aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+
+            <!-- Carousel 內容 -->
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.UploadImages.ImagePaths.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@Model.UploadImages.ImagePaths[i]" class="d-block w-100" alt="Carousel Image @(i + 1)">
+                    </div>
+                }
+            </div>
+
+            <!-- 左側控制按鈕 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <!-- 右側控制按鈕 -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <div class="carousel-inner">
-            @for (int i = 0; i < Model.ImagePaths.Count; i++)
-            {
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Model.ImagePaths[i]" class="d-block w-100" alt="Carousel Image @(i + 1)">
-                </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
+
     <!-- 圖片輪播 Carousel End-->
+    
     <!-- 麵包屑 Breadcrumb-->
     <!-- <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -41,6 +56,7 @@
         <li class="breadcrumb-item active" aria-current="page">Library</li>
       </ol>
     </nav> -->
+    
     <!-- 網站介紹 Start-->
     <hr class="mt-4">
     <h1 data-aos="zoom-in" data-aos-duration="500">- 新鮮直送，健康每一天 -</h1>
@@ -71,52 +87,44 @@
             </div>
         </div>
     </div>
-
     <!-- 網站介紹 End-->
-    <!-- 熱門商品 Card Start-->
+    <!-- 本季熱銷商品 -->
     <hr>
     <h1 data-aos="zoom-in" data-aos-duration="500">- 本季熱銷 -</h1>
     <hr>
-    <div class="row row-cols-1 row-cols-md-3 g-4 my-4 hot-product-card">
-        <div class="col" data-aos="fade-up" data-aos-duration="1500">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel1.jpg" class="card-img-top img-fluid" alt="新鮮草莓">
-                    <div class="card-body">
-                        <h5 class="card-title">新鮮草莓</h5>
-                        <p class="card-text">
-                            當季採摘的新鮮草莓，果肉飽滿香甜，富含維生素C，是您不可錯過的健康水果。
-                        </p>
+    <div id="cardCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.TopProducts.Count; i += 3)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="d-flex justify-content-center gap-3">
+                        @for (int j = i; j < i + 3 && j < Model.TopProducts.Count; j++)
+                        {
+                            <div class="card">
+                                <img src="@Model.TopProducts[j].ImagePath" class="card-img-top" alt="@Model.TopProducts[j].ProductName">
+                                <div class="card-body">
+                                    <h5 class="card-title">@Model.TopProducts[j].ProductName</h5>
+                                    <p class="card-text">@Model.TopProducts[j].ProductDescription</p>
+                                    <div class="text-end">
+                                        <a href="@Url.Action("ProductItem", "Product", new { id = Model.TopProducts[j].ProductId })"
+                                           class="btn btn-primary">了解更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
-            </a>
+            }
         </div>
-        <div class="col" data-aos="fade-up">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel2.jpg" class="card-img-top img-fluid" alt="有機南瓜">
-                    <div class="card-body">
-                        <h5 class="card-title">有機南瓜</h5>
-                        <p class="card-text">
-                            精選產地直送有機南瓜，口感綿密細膩，適合用於製作湯品、甜點或家常料理。
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col" data-aos="fade-up" data-aos-duration="2000">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel3.jpg" class="card-img-top img-fluid" alt="優質蘋果">
-                    <div class="card-body">
-                        <h5 class="card-title">優質蘋果</h5>
-                        <p class="card-text">
-                            脆甜多汁的優質蘋果，每一口都充滿自然的清甜滋味，是家庭必備的健康水果選擇。
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <!-- 熱門商品 Card End-->
+        <button class="carousel-control-prev" type="button" data-bs-target="#cardCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#cardCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 </div>
+
+

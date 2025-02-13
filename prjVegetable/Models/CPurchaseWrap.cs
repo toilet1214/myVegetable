@@ -33,7 +33,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("採購日")]
-        public DateTime? FBuyDate
+        public DateTime FBuyDate
         {
 
             get { return _Purchase.FBuyDate; }
@@ -41,7 +41,7 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("供應商id")]
-        public int? FProviderId
+        public int FProviderId
         {
             get { return _Purchase.FProviderId; }
             set { _Purchase.FProviderId = value; }
@@ -50,7 +50,7 @@ namespace prjVegetable.Models
 
 
         [DisplayName("資料異動人員")]
-        public int? FEditor
+        public int FEditor
         {
             get { return _Purchase.FEditor; }
             set { _Purchase.FEditor = value; }
@@ -61,13 +61,13 @@ namespace prjVegetable.Models
 
 
         [DisplayName("發票格式")]
-        public int? FInvoiceForm
+        public int FInvoiceForm
         {
             get { return _Purchase.FInvoiceForm; }
             set { _Purchase.FInvoiceForm = value; }
         }
         [DisplayName("支付方式")]
-        public int? FPayment
+        public int FPayment
         {
             get { return _Purchase.FPayment; }
             set { _Purchase.FPayment = value; }
@@ -76,28 +76,28 @@ namespace prjVegetable.Models
 
 
         [DisplayName("採購金額")]
-        public int? FPreTax
+        public int FPreTax
         {
             get { return _Purchase.FPreTax; }
             set { _Purchase.FPreTax = value; }
         }
 
         [DisplayName("稅")]
-        public int? FTax
+        public int FTax
         {
             get { return _Purchase.FTax; }
             set { _Purchase.FTax = value; }
         }
 
         [DisplayName("總額")]
-        public int? FTotal
+        public int FTotal
         {
             get { return _Purchase.FTotal; }
             set { _Purchase.FTotal = value; }
         }
 
         [DisplayName("備註")]
-        public string? FNote
+        public string FNote
         {
             get { return _Purchase.FNote; }
             set { _Purchase.FNote = value; }

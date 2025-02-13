@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using prjVegetable.Services;
 using prjVegetable.ViewModels;
 using System.Diagnostics;
 using System.Text.Json;
@@ -23,6 +24,13 @@ namespace prjVegetable.Controllers
 
         public IActionResult Index()
         {
+            // 初始化 Service
+            var service = new CarouselService(_dbContext);
+
+            // 熱門商品資料
+            var topProducts = service.GetTop9Products();
+
+            // 圖片輪播資料
             var uploadsPath = Path.Combine(_environment.WebRootPath, "uploads");
             var images = Directory.Exists(uploadsPath)
                 ? Directory.GetFiles(uploadsPath)
@@ -30,13 +38,19 @@ namespace prjVegetable.Controllers
                     .ToList()
                 : new List<string>();
 
-            var model = new CarouselImageViewModel
+            // 整合 ViewModel
+            var model = new CHomePageViewModel
             {
-                ImagePaths = images
+                TopProducts = topProducts,
+                UploadImages = new CHomePageViewModel.CarouselImageViewModel
+                {
+                    ImagePaths = images
+                }
             };
 
             return View(model);
         }
+
 
 
         public IActionResult About()

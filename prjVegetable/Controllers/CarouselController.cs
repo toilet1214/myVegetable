@@ -23,7 +23,7 @@ namespace prjVegetable.Controllers
                                       .Select(path => $"/uploads/{Path.GetFileName(path)}?t={DateTime.UtcNow.Ticks}")
                                       .ToList();
 
-            var model = new CarouselImageViewModel
+            var model = new CHomePageViewModel.CarouselImageViewModel
             {
                 ImagePaths = imagePaths
             };
@@ -32,7 +32,7 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(CarouselImageViewModel model)
+        public async Task<IActionResult> Upload(CHomePageViewModel.CarouselImageViewModel model)
         {
             var uploadsPath = Path.Combine(_environment.WebRootPath, UploadFolder);
             Directory.CreateDirectory(uploadsPath);  // 確保圖片資料夾存在
@@ -67,7 +67,7 @@ namespace prjVegetable.Controllers
                                       .Select(path => $"/uploads/{Path.GetFileName(path)}?t={DateTime.UtcNow.Ticks}")
                                       .ToList();
 
-            var updatedModel = new CarouselImageViewModel
+            var updatedModel = new CHomePageViewModel.CarouselImageViewModel
             {
                 ImagePaths = imagePaths
             };
