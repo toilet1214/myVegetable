@@ -37,14 +37,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
-                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required value=""/>
+                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
                 <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
-                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required value=1 />
+                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required  />
                 <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
             </div>
         </div>
@@ -54,14 +54,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
-                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required value=1/>
+                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
                 <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
             </div>
         </div>
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
-                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required value=0 />
+                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required  />
                 <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
             </div>
         </div>
@@ -180,8 +180,8 @@
     document.getElementById("addDetail").addEventListener("click", function () {
         var newRow = `<div class="row mb-3 detail-entry">
                 <input type="hidden" class="FGoodsInandOutId" value="0" />
-                <div class="col-3"><input type="text" class="FProductId form-control" placeholder="產品 ID" value=1 /></div>
-                <div class="col-3"><input type="text" class="FCount form-control" placeholder="數量" value=1 /></div>
+                <div class="col-3"><input type="text" class="FProductId form-control" placeholder="產品 ID" /></div>
+                <div class="col-3"><input type="text" class="FCount form-control" placeholder="數量" /></div>
                     <div class="col-3"><input type="text" class="FPrice form-control" placeholder="單價" /></div>
                     <div class="col-3"><input type="text" class="FSum form-control" placeholder="小計" /></div>
             </div>`;
