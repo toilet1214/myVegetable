@@ -155,13 +155,25 @@
             console.error("找不到 ID 為 'SameAsMember' 的 checkbox 元素");
         }
 
-        // 綁定數量更新表單的 AJAX 攔截 (僅針對具有 ajax-qty-form 的表單)
         document.querySelectorAll("form.ajax-qty-form").forEach(function (form) {
             form.addEventListener("submit", function (event) {
                 event.preventDefault();
                 const formData = new FormData(this);
                 const productId = formData.get("productId");
                 const url = this.action;
+
+                // 如果是減少數量的操作 (action URL 包含 "DecreaseQuantity"，大小寫不敏感)
+                if (url.toLowerCase().includes("decreasequantity")) {
+                    const qtyElement = document.getElementById("qty-" + productId);
+                    const currentQty = qtyElement ? parseInt(qtyElement.innerText) : 0;
+                    if (currentQty === 1) {
+                        if (!confirm("目前此商品在購物車數量僅剩一，是否確定移除商品?")) {
+                            return; // 使用者取消則不送出 AJAX 請求
+                        }
+                    }
+                }
+
+                // 若確認則繼續送出 AJAX 請求
                 fetch(url, {
                     method: "POST",
                     body: formData
@@ -174,7 +186,7 @@
                             if (qtyElement) {
                                 qtyElement.innerText = data.newCount;
                             }
-                            // 更新總金額 (更新兩個顯示區域)
+                            // 更新總金額 (兩處更新)
                             const totalPriceElement = document.getElementById("totalPrice");
                             if (totalPriceElement) {
                                 totalPriceElement.innerText = "$" + data.totalPrice;
@@ -189,6 +201,12 @@
                                 if (cartProductContainer) {
                                     cartProductContainer.remove();
                                 }
+                                // 檢查是否已無任何商品，若無則更新 cart-container 的內容
+                                if (document.querySelectorAll(".cart-product").length === 0) {
+                                    // 假設 productListUrl 已在 Razor 中輸出到 JS 變數中
+                                    document.getElementById("cart-container").innerHTML =
+                                        '<p class="text-center">購物車目前沒有商品。 <a href="' + productListUrlJS + '">前往購物</a></p>';
+                                }
                             }
                         } else {
                             alert("更新失敗：" + data.message);
@@ -197,6 +215,7 @@
                     .catch(error => console.error("更新數量失敗:", error));
             });
         });
+
 
         // 綁定移除商品表單的 AJAX 攔截 (針對 ajax-remove-form)
         document.querySelectorAll("form.ajax-remove-form").forEach(function (form) {
