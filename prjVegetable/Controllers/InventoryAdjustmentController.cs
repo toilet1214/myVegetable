@@ -24,7 +24,6 @@ namespace prjVegetable.Controllers
         }
 
         /*--------------- + Detail + ----------------*/
-        //GET InventoryAdjustment/Detail
         [HttpGet]
         public IActionResult Detail(int? id)
         {
@@ -53,7 +52,7 @@ namespace prjVegetable.Controllers
                 return NotFound();
             }
 
-            // 根據傳入的 id 查找相關資料
+            // 將 TInventoryAdjustment 轉換為 CInventoryAdjustmentWrap
             var adjustmentWrap = new CInventoryAdjustmentWrap
             {
                 FId = adjustment.FId,
@@ -84,6 +83,7 @@ namespace prjVegetable.Controllers
                 FPrice = product.FPrice
             }).ToList();
 
+            // 取得盤點人員資料
             var employees = _context.TPeople
                 .Where(p => p.FPermission == 1)
                 .ToList();
@@ -99,7 +99,6 @@ namespace prjVegetable.Controllers
             // 使用 SelectList 封裝員工資料
             ViewData["Employees"] = new SelectList(employees, "FId", "FName");
 
-
             // 創建 ViewModel 並傳遞到視圖
             var viewModel = new CInventoryAdjustmentViewModel
             {
@@ -113,17 +112,26 @@ namespace prjVegetable.Controllers
                 }).ToList()
             };
 
+            // 計算當前記錄的索引及上一筆、下一筆資料的 Id
             var currentIndex = adjustments.FindIndex(a => a.FId == id);
             var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : id;
             var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : id;
             var lastId = adjustments.Any() ? adjustments.Last().FId : id;
 
+            // 判斷是否為第一筆或最後一筆
+            var isFirstRecord = currentIndex == 0;
+            var isLastRecord = currentIndex == adjustments.Count - 1;
+
+            // 將資料傳遞到 View
             ViewData["NextId"] = nextId;
             ViewData["PreviousId"] = previousId;
             ViewData["LastId"] = lastId;
+            ViewData["IsFirstRecord"] = isFirstRecord;
+            ViewData["IsLastRecord"] = isLastRecord;
 
             return View(viewModel);
         }
+
 
         /*--------------- + Delete + ----------------*/
         [HttpGet]
@@ -211,67 +219,76 @@ namespace prjVegetable.Controllers
         }
 
         /*---------------- + Search + ----------------*/
+        [HttpGet]
         public IActionResult Search(int? fId, DateOnly? fBaselineStartDate, DateOnly? fBaselineEndDate, int? fCheckerId)
         {
-            var query = _context.TInventoryAdjustments.AsQueryable();
-
-            // 1. 根據 FId 查詢 (允許其他條件並存)
-            if (fId.HasValue)
+            try
             {
-                query = query.Where(i => i.FId == fId.Value);
-            }
+                var query = _context.TInventoryAdjustments.AsQueryable();
 
-            // 2. 盤點基準日範圍過濾
-            if (fBaselineStartDate.HasValue && fBaselineEndDate.HasValue && fBaselineStartDate > fBaselineEndDate)
-            {
-                return Json(new { success = false, message = "盤點基準日範圍不正確" });
-            }
-
-            if (fBaselineStartDate.HasValue)
-            {
-                query = query.Where(i => i.FadjustmentDate >= fBaselineStartDate.Value);
-            }
-
-            if (fBaselineEndDate.HasValue)
-            {
-                query = query.Where(i => i.FadjustmentDate <= fBaselineEndDate.Value);
-            }
-
-            // 3. 根據盤點人員 FCheckerId 過濾
-            if (fCheckerId.HasValue)
-            {
-                query = query.Where(i => i.FCheckerId == fCheckerId.Value);
-            }
-
-            // 4. 查詢主檔
-            var inventoryAdjustment = query.Select(i => new CInventoryAdjustmentWrap
-            {
-                FId = i.FId,
-                FAdjustmentDate = i.FadjustmentDate,
-                FCheckerId = i.FCheckerId // 回傳盤點人員 ID
-            }).ToList();
-
-            if (!inventoryAdjustment.Any())
-            {
-                return Json(new { success = false, message = "未找到符合條件的盤點主資料。" });
-            }
-
-            _logger.LogInformation("查詢到的 InventoryAdjustment: {0}", JsonConvert.SerializeObject(inventoryAdjustment));
-
-            // 5. 回傳符合條件的 InventoryAdjustment 清單
-            return Json(new
-            {
-                success = true,
-                inventoryAdjustmentList = inventoryAdjustment.Select(i => new
+                // 1. 根據 FId 過濾
+                if (fId.HasValue)
                 {
-                    i.FId,
-                    i.FAdjustmentDate,
-                    i.FCreatedAt,
-                    i.FCheckerId
-                }).ToList()
-            });
+                    query = query.Where(i => i.FId == fId.Value);
+                }
 
+                // 2. 盤點基準日範圍過濾
+                if (fBaselineStartDate.HasValue && fBaselineEndDate.HasValue && fBaselineStartDate > fBaselineEndDate)
+                {
+                    return Json(new { success = false, message = "盤點基準日範圍不正確" });
+                }
+
+                if (fBaselineStartDate.HasValue)
+                {
+                    query = query.Where(i => i.FadjustmentDate >= fBaselineStartDate.Value);
+                }
+
+                if (fBaselineEndDate.HasValue)
+                {
+                    query = query.Where(i => i.FadjustmentDate <= fBaselineEndDate.Value);
+                }
+
+                // 3. 根據盤點人員 FCheckerId 過濾
+                if (fCheckerId.HasValue)
+                {
+                    query = query.Where(i => i.FCheckerId == fCheckerId.Value);
+                }
+
+                // 4. 查詢結果，新增 FNote
+                var inventoryAdjustmentList = (from i in query
+                                               join p in _context.TPeople
+                                               on i.FCheckerId equals p.FId into personGroup
+                                               from person in personGroup.DefaultIfEmpty()
+                                               select new
+                                               {
+                                                   i.FId,
+                                                   FAdjustmentDate = i.FadjustmentDate,
+                                                   FCheckerName = person != null ? person.FName : "未指定",
+                                                   FNote = i.FNote ?? "無備註", // 新增 FNote
+                                                   i.FCreatedAt
+                                               }).ToList();
+
+                // 5. 檢查是否有資料
+                if (!inventoryAdjustmentList.Any())
+                {
+                    return Json(new { success = false, message = "查無符合條件的資料。" });
+                }
+
+                // 6. 回應查詢結果
+                return Json(new
+                {
+                    success = true,
+                    inventoryAdjustmentList = inventoryAdjustmentList
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("查詢失敗：{Message}", ex.Message);
+                return Json(new { success = false, message = "查詢過程中發生錯誤，請稍後再試。" });
+            }
         }
+
+
 
     }
 }

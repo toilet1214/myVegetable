@@ -11,25 +11,71 @@
 *列印 沒有庫存盤點單號、基準日、建檔日期
 
 -->
+<style>
+    /*主單*/
+    .modal-table-container {
+        max-height: 70vh; /* 設定最大高度 */
+        overflow-y: auto; /* 垂直滾動條 */
+        overflow-x: hidden; /* 禁止水平滾動 */
+    }
+
+    .table-bordered {
+        margin-bottom: 0; /* 移除表格底部多餘空間 */
+    }
+
+    /*細項*/
+    .table-container {
+        max-height: 400px; /* 限制表格容器的高度 */
+        overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
+        border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
+    }
+
+    .table {
+        width: 100%; /* 讓表格寬度充滿容器 */
+        border-collapse: collapse; /* 消除表格的內邊距 */
+    }
+
+        .table th, .table td {
+            padding: 8px;
+            text-align: center; /* 文字居中 */
+        }
+
+        .table th {
+            background-color: #f8f9fa; /* 可選：表頭背景色 */
+            font-weight: bold; /* 加粗表頭文字 */
+        }
+</style>
 <div class="container my-5">
         <div class="row d-block mb-3">
             <div class="btn-group" role="group" aria-label="Basic example">
                 <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                     查詢
                 </button>
+            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["FirstId"] })"
+               class="btn btn-primary first-btn"
+               data-current="@Model.InventoryMain.FId"
+               data-first="@ViewData["FirstId"]">
+                <i class="bi bi-skip-start-fill me-2"></i>第一筆
+            </a>
+            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })"
+               class="btn btn-primary prev-btn"
+               data-current="@Model.InventoryMain.FId"
+               data-first="@ViewData["FirstId"]">
+                <i class="bi bi-caret-left-fill me-2"></i>上一筆
+            </a>
+            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })"
+               class="btn btn-primary next-btn"
+               data-current="@Model.InventoryMain.FId"
+               data-last="@ViewData["LastId"]">
+                <i class="bi bi-caret-right-fill me-2"></i>下一筆
+            </a>
+            <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })"
+               class="btn btn-primary last-btn"
+               data-current="@Model.InventoryMain.FId"
+               data-last="@ViewData["LastId"]">
+                <i class="bi bi-skip-end-fill me-2"></i>最後一筆
+            </a>
 
-                <a href="@Url.Action("Detail", "Inventory", new { id = 1 })" class="btn btn-primary">
-                    <i class="bi bi-skip-start-fill me-2"></i>第一筆
-                </a>
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
-                    <i class="bi bi-caret-left-fill me-2"></i>上一筆
-                </a>
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })" class="btn btn-primary">
-                    <i class="bi bi-caret-right-fill me-2"></i>下一筆
-                </a>
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })" class="btn btn-primary">
-                    <i class="bi bi-skip-end-fill me-2"></i>最後一筆
-                </a>
                 <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="bi bi-file-earmark me-2"></i>新增
                 </button>
@@ -90,6 +136,7 @@
                 <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
                 <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
             </div>
+            <div class="table-container">
             <div class="table-responsive" style="max-height: 50%;">
                 <table class="table text-center" id="printTable">
                     <thead>
@@ -129,6 +176,7 @@
                         }
                     </tbody>
                 </table>
+            </div>
             </div>
         </div>
         <hr />
@@ -188,7 +236,7 @@
                 <h5 class="modal-title" id="inventoryListModalLabel">選擇盤點單號</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-table-container">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -228,9 +276,8 @@
                 <form id="inventoryForm" method="post" action="@Url.Action("Create", "Inventory")">
                     <div class="form-group">
                         <label for="BaseDate">盤點基準日</label>
-                        <input type="date" class="form-control" id="BaseDate" name="BaseDate" min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        <input type="date" class="form-control" id="BaseDate" name="BaseDate" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
                     </div>
-
                     <div class="form-group">
                         <label for="ProductStartCode">商品編號區間 (起始)</label>
                         <select class="form-control" id="ProductStartCode" name="ProductStartCode">
@@ -323,7 +370,7 @@
         });
     });
 
-    // 選擇邏輯：點擊行選擇
+    // 選擇邏輯：點擊行選擇並滾動
     let selectedInventoryMainId = null; // 用來記錄選中的 ID
 
     document.getElementById('inventoryListTableBody').addEventListener('click', function (e) {
@@ -334,6 +381,15 @@
                 row.classList.remove('table-active'); // 移除其他行的高亮
             });
             targetRow.classList.add('table-active'); // 高亮當前行
+
+            // 滾動到選中行
+            const container = document.querySelector('.modal-table-container'); // 表格滾動容器
+            const rowPosition = targetRow.offsetTop; // 取得行在表格中的位置
+            container.scrollTo({
+                top: rowPosition - container.offsetHeight / 2 + targetRow.offsetHeight / 2,
+                behavior: 'smooth' // 平滑滾動效果
+            });
+
             console.log("選中的 InventoryMainId:", selectedInventoryMainId);
         }
     });
@@ -347,10 +403,7 @@
         console.log("即將跳轉到:", `/Inventory/Detail/${selectedInventoryMainId}`);
         window.location.href = `/Inventory/Detail/${selectedInventoryMainId}`;
     });
-
-
 </script>
-
 
 <!-- 編輯/儲存 -->
 <script>
@@ -593,4 +646,63 @@
             }
         });
     });
+</script>
+
+<!-- 第一筆與最後一筆的提示-->
+<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+<script>
+        document.addEventListener("DOMContentLoaded", () => {
+        // 第一筆與上一筆按鈕檢查
+        document.querySelectorAll(".first-btn, .prev-btn").forEach(button => {
+            button.addEventListener("click", function (e) {
+                const currentId = parseInt(this.getAttribute("data-current"));
+                const firstId = parseInt(this.getAttribute("data-first"));
+
+                if (currentId === firstId) {
+                    e.preventDefault(); // 阻止預設行為
+                    alert("已經在第一筆資料！");
+                }
+            });
+        });
+
+        // 下一筆與最後一筆按鈕檢查
+        document.querySelectorAll(".next-btn, .last-btn").forEach(button => {
+            button.addEventListener("click", function (e) {
+                const currentId = parseInt(this.getAttribute("data-current"));
+                const lastId = parseInt(this.getAttribute("data-last"));
+
+                if (currentId === lastId) {
+                    e.preventDefault(); // 阻止預設行為
+                    alert("已經在最後一筆資料！");
+                }
+            });
+        });
+    });
+
+</script>
+
+<!-- 確保商品起始Id<結束Id-->
+<script>
+        document.getElementById("ProductStartCode").addEventListener("change", function () {
+        const startCode = parseInt(this.value, 10); // 獲取選定的起始商品編號
+        const endCodeSelect = document.getElementById("ProductEndCode"); // 結束商品下拉選單
+        const options = endCodeSelect.options;
+
+        // 遍歷結束商品選項，隱藏小於或等於起始編號的選項
+        for (let i = 0; i < options.length; i++) {
+            const optionValue = parseInt(options[i].value, 10);
+
+            if (optionValue <= startCode) {
+                options[i].style.display = "none"; // 隱藏選項
+            } else {
+                options[i].style.display = "block"; // 顯示選項
+            }
+        }
+
+        // 如果當前選擇的結束編號不符合條件，重設為第一個符合條件的選項
+        if (parseInt(endCodeSelect.value, 10) <= startCode) {
+            endCodeSelect.value = ""; // 重置為空
+        }
+    });
+
 </script>

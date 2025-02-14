@@ -134,11 +134,12 @@ namespace prjVegetable.Controllers
             ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
             ViewData["PreviousId"] = previousId;
-            ViewData["NextId"] = nextId;
+            ViewData["NextId"] = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault() ?? lastId;
+
+
 
             return View(viewModel);
         }
-
 
 
         /*--------------- + Create + ----------------*/
@@ -240,7 +241,7 @@ namespace prjVegetable.Controllers
         /*---------------- + Save + ------------------*/
         [HttpPost]
         [Route("Inventory/Save/{currentId}")]
-        public async Task<IActionResult> Save(int currentId, [FromBody] CInventoryViewModel viewModel)
+        public async Task<IActionResult> Save(int currentId, [FromBody] CInventoryViewModel viewModel, [FromQuery] bool redirect = true)
         {
             if (!ModelState.IsValid)
             {
@@ -357,14 +358,20 @@ namespace prjVegetable.Controllers
                 _context.SaveChanges();
 
                 // 跳轉到新增的 InventoryAdjustment 詳細頁
-                var newAdjustmentId = inventoryAdjustmentList.FirstOrDefault()?.FId;
-                return Json(new
+                if (redirect)
                 {
-                    success = true,
-                    redirectTo = newAdjustmentId.HasValue
-                        ? $"/InventoryAdjustment/Detail/{newAdjustmentId}"
-                        : $"/Inventory/Detail/{currentId}"
-                });
+                    var newAdjustmentId = inventoryAdjustmentList.FirstOrDefault()?.FId;
+                    return Json(new
+                    {
+                        success = true,
+                        redirectTo = newAdjustmentId.HasValue
+                            ? $"/InventoryAdjustment/Detail/{newAdjustmentId}"
+                            : $"/Inventory/Detail/{currentId}"
+                    });
+                }
+
+                // 如果不跳轉，直接返回成功訊息
+                return Json(new { success = true });
             }
             catch (Exception ex)
             {

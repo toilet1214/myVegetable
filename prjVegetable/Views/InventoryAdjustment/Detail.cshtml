@@ -10,10 +10,44 @@
 *沒有查詢到的筆數
 *還沒有帶入使用者ID
 *列印 沒有庫存盤點單號、調整日期、盤點人員
-*查詢的後的模態框，把創建日期改為編輯者
-*檢查編輯模式是否能選擇編輯者(選擇邏輯同查詢)
 
 -->
+
+<style>
+    /*主單*/
+    .modal-table-container {
+        max-height: 70vh; /* 設定最大高度 */
+        overflow-y: auto; /* 垂直滾動條 */
+        overflow-x: hidden; /* 禁止水平滾動 */
+    }
+
+    .table-bordered {
+        margin-bottom: 0; /* 移除表格底部多餘空間 */
+    }
+
+    /*細項*/
+    .table-container {
+        max-height: 400px; /* 限制表格容器的高度 */
+        overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
+        border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
+    }
+
+    .table {
+        width: 100%; /* 讓表格寬度充滿容器 */
+        border-collapse: collapse; /* 消除表格的內邊距 */
+    }
+
+        .table th, .table td {
+            padding: 8px;
+            text-align: center; /* 文字居中 */
+        }
+
+        .table th {
+            background-color: #f8f9fa; /* 可選：表頭背景色 */
+            font-weight: bold; /* 加粗表頭文字 */
+        }
+
+</style>
 <div class="container my-5">
     <!-- 工具列 start -->
     <div class="row d-block mb-3">
@@ -21,19 +55,31 @@
             <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 查詢
             </button>
-
-            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = 1 })" class="btn btn-primary">
+            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = 1 })"
+               class="btn btn-primary"
+               data-is-first="@ViewData["IsFirstRecord"]?.ToString().ToLower()"
+               id="firstRecordButton">
                 <i class="bi bi-skip-start-fill me-2"></i>第一筆
             </a>
-            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })" class="btn btn-primary">
+            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
+               class="btn btn-primary"
+               data-is-first="@ViewData["IsFirstRecord"]?.ToString().ToLower()"
+               id="previousRecordButton">
                 <i class="bi bi-caret-left-fill me-2"></i>上一筆
             </a>
-            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })" class="btn btn-primary">
+            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
+               class="btn btn-primary"
+               id="nextRecordButton"
+               data-is-last="@ViewData["IsLastRecord"]?.ToString().ToLower()">
                 <i class="bi bi-caret-right-fill me-2"></i>下一筆
             </a>
-            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })" class="btn btn-primary">
+            <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
+               class="btn btn-primary"
+               id="lastRecordButton"
+               data-is-last="@ViewData["IsLastRecord"]?.ToString().ToLower()">
                 <i class="bi bi-skip-end-fill me-2"></i>最後一筆
             </a>
+
             <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal" disabled>
                 <i class="bi bi-file-earmark me-2"></i>新增
             </button>
@@ -85,29 +131,32 @@
     </div>
     <hr />
     <div>
-        <table class="table text-center" id="printTable">
-            <thead>
-                <tr>
-                    <th>商品Id</th>
-                    <th>商品名稱</th>
-                    <th>調整數量</th>
-                    <th>成本</th>
-                    <th>金額</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.InventoryAdjustmentDetail)
-                {
+        <div class="table-container">
+            <table class="table text-center" id="printTable">
+                <thead>
                     <tr>
-                        <td>@item.InventoryAdjustmentDetail.FProductId</td>
-                        <td>@item.FName</td>
-                        <td>@item.InventoryAdjustmentDetail.FQuantity</td>
-                        <td>@item.FCost</td>
-                        <td>@(@item.FCost * item.InventoryAdjustmentDetail.FQuantity)</td>
+                        <th>商品Id</th>
+                        <th>商品名稱</th>
+                        <th>調整數量</th>
+                        <th>成本</th>
+                        <th>金額</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.InventoryAdjustmentDetail)
+                    {
+                        <tr>
+                            <td>@item.InventoryAdjustmentDetail.FProductId</td>
+                            <td>@item.FName</td>
+                            <td>@item.InventoryAdjustmentDetail.FQuantity</td>
+                            <td>@item.FCost</td>
+                            <td>@(@item.FCost * item.InventoryAdjustmentDetail.FQuantity)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
 
@@ -141,8 +190,15 @@
                     <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-0" style="width: 150px;">盤點人員</label>
                     <select asp-for="InventoryAdjustment.FCheckerId" class="form-select form-select-sm w-auto" id="FCheckerId">
                         <option value="">請選擇</option>
-                        <!-- 這裡應該透過後端渲染或 AJAX 動態載入盤點人員 -->
+                        @if (ViewData["Employees"] != null)
+                        {
+                            foreach (var employee in (SelectList)ViewData["Employees"])
+                            {
+                                <option value="@employee.Value">@employee.Text</option>
+                            }
+                        }
                     </select>
+
                 </div>
             </div>
             <div class="modal-footer">
@@ -161,13 +217,14 @@
                 <h5 class="modal-title" id="inventoryListModalLabel">選擇盤點單號</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-table-container">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>盤點單號</th>
                             <th>盤點基準日</th>
-                            <th>建檔日期</th>
+                            <th>盤點人員</th>
+                            <th>備註</th>
                         </tr>
                     </thead>
                     <tbody id="inventoryAdjustmentListTableBody">
@@ -182,12 +239,11 @@
         </div>
     </div>
 </div>
-
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <!-- 查詢 -->
 <script>
-    let inventoryAdjustmentList = []; // 儲存查詢結果
+        let inventoryAdjustmentList = []; // 儲存查詢結果
     let selectedInventoryAdjustmentId = null; // 使用者選擇的 InventoryAdjustmentId
 
     // 綁定查詢按鈕事件
@@ -218,7 +274,6 @@
             success: function (response) {
                 console.log("AJAX 成功回應！", response);
 
-                // 確保 response.inventoryAdjustmentList 存在且長度大於 0
                 if (response.inventoryAdjustmentList && response.inventoryAdjustmentList.length > 0) {
                     console.log("收到 InventoryAdjustmentList！", response.inventoryAdjustmentList);
 
@@ -230,12 +285,9 @@
                         <tr class="inventory-row" data-id="${item.fId}">
                             <td>${item.fId}</td>
                             <td>${item.fAdjustmentDate ?? ''}</td>
-                            <td>${item.fCreatedAt ?? ''}</td>
-                            <td>
-                                <button class="btn btn-primary btn-sm selectInventoryAdjustment" data-id="${item.fId}">選擇</button>
-                            </td>
-                        </tr>
-                        `;
+                            <td>${item.fCheckerName ?? ''}</td>
+                            <td>${item.fNote ?? ''}</td>
+                        </tr>`;
                         tableBody.insertAdjacentHTML('beforeend', row);
                     });
 
@@ -253,16 +305,34 @@
         });
     });
 
-    // 綁定「選擇」按鈕的事件
-    $(document).on('click', '.selectInventoryAdjustment', function () {
-        selectedInventoryAdjustmentId = $(this).data('id'); // 設定選中的 InventoryAdjustmentId
-        $('.inventory-row').removeClass('table-active'); // 先清除其他選中的狀態
-        $(this).closest('tr').addClass('table-active'); // 高亮當前選擇的行
-        console.log("選擇的 InventoryAdjustmentId:", selectedInventoryAdjustmentId);
+    // 綁定表格行點擊事件
+    $(document).on('click', '.inventory-row', function () {
+        selectedInventoryAdjustmentId = $(this).data('id');
+        $('.inventory-row').removeClass('table-active'); // 移除其他行的高亮
+        $(this).addClass('table-active'); // 高亮當前行
+
+        const container = $('.modal-table-container'); // 表格滾動容器
+        const row = $(this); // 被點擊的行
+        container.animate({
+            scrollTop: container.scrollTop() + row.position().top - container.height() / 2 + row.height() / 2
+        }, 300); // 滾動到該行
     });
 
+    // 禁用滾動功能（選用，避免頁面滾動）
+    function disableBodyScroll() {
+        document.body.style.overflow = 'hidden';
+    }
+
+    function enableBodyScroll() {
+        document.body.style.overflow = '';
+    }
+
+    const modal = document.getElementById('inventoryAdjustmentListModal');
+    modal.addEventListener('show.bs.modal', disableBodyScroll);
+    modal.addEventListener('hide.bs.modal', enableBodyScroll);
+
     // 綁定確認按鈕，進行跳轉
-    $(document).on('click', '#confirmSelection', function () {
+    document.getElementById('confirmSelection').addEventListener('click', function () {
         if (!selectedInventoryAdjustmentId) {
             alert('請選擇一個調整單號');
             return;
@@ -270,6 +340,7 @@
         console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
         window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
     });
+
 </script>
 
 <!-- 編輯/儲存 -->
@@ -388,4 +459,55 @@
             `
         });
     }
+</script>
+
+<!-- 第一筆與最後一筆資料提示 -->
+<!-- 由前端判斷，可以減少伺服器的負擔-->
+<script>
+     document.addEventListener("DOMContentLoaded", function () {
+        const firstRecordButton = document.getElementById("firstRecordButton");
+        const previousRecordButton = document.getElementById("previousRecordButton");
+        const nextRecordButton = document.getElementById("nextRecordButton");
+        const lastRecordButton = document.getElementById("lastRecordButton");
+
+        // 第一筆按鈕事件
+        if (firstRecordButton) {
+            firstRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
+                }
+            });
+        }
+
+        // 上一筆按鈕事件
+        if (previousRecordButton) {
+            previousRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
+                }
+            });
+        }
+
+        // 下一筆按鈕事件
+        if (nextRecordButton) {
+            nextRecordButton.addEventListener("click", function (event) {
+                if (nextRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
+
+        // 最後一筆按鈕事件
+        if (lastRecordButton) {
+            lastRecordButton.addEventListener("click", function (event) {
+                if (lastRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
+    });
 </script>
