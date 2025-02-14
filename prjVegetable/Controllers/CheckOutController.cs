@@ -125,24 +125,23 @@ namespace prjVegetable.Controllers
             SQLorder.FMerchantTradeNo = MerchantTradeNo;
             _dbContext.SaveChanges();
             var orderItems = _dbContext.TOrderLists.Where(ol => ol.FOrderId == SQLorder.FId).ToList();
-            string itemName = "";
-            if (orderItems.Any())
+
+            // 依據商品ID群組，取每組的第一筆資料
+            var distinctOrderItems = orderItems
+                .GroupBy(ol => ol.FProductId)
+                .Select(g => g.FirstOrDefault())
+                .ToList();
+
+            List<string> productNames = new List<string>();
+            foreach (var orderItem in distinctOrderItems)
             {
-                List<string> productNames = new List<string>();
-                foreach (var orderItem in orderItems)
+                var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == orderItem.FProductId);
+                if (product != null)
                 {
-                    var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == orderItem.FProductId);
-                    if (product != null)
-                    {
-                        productNames.Add(product.FName); // 假設產品名稱的欄位為 FName
-                    }
+                    productNames.Add(product.FName);
                 }
-                itemName = string.Join(", ", productNames);
             }
-            else
-            {
-                itemName = "無產品";
-            }
+            string itemName = string.Join(", ", productNames);
             //需填入你的網址
             var website = $"https://localhost:7251";
             var ECPayOrder = new Dictionary<string, string>
