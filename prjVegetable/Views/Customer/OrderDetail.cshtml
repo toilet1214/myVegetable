@@ -12,6 +12,8 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="Favorite">我的最愛</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="MyComment">我的評論</a>
             </nav>
         </div>
         <div class="col-md-9">
@@ -36,7 +38,9 @@
                         <th>
                             @Html.DisplayNameFor(model => model.FSum)
                         </th>
-                        <th></th>
+                        <th>
+                            評論
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,6 +68,9 @@
                                 </td>
                                 <td>
                                     @Html.DisplayFor(modelItem => item.FSum)
+                                </td>
+                                <td>
+                                    @Html.ActionLink("評論", "CreateComment", new { id = item.FId })
                                 </td>
                             </tr>
                         }

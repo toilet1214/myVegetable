@@ -52,11 +52,6 @@ namespace prjVegetable.Controllers
 
         }
 
-
-
-
-
-
         public IActionResult Report()
         {
             return View();
@@ -91,15 +86,53 @@ namespace prjVegetable.Controllers
             datas = _context.TOrderLists.Where(p => p.FOrderId == id);
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
-                list.Add(new COrderListWrap() { orderList = t });
+            {
+                list.Add(new COrderListWrap() { orderList = t , IsComment = false });
+            }
+
             return View(list);
         }
 
         public IActionResult Favorite()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            
-            
+            IEnumerable<TFavorite> datas = null;
+
+            datas = _context.TFavorites.Where(p => p.FPersonId == UserId);
+            List<CFavoriteViewModel> list = new List<CFavoriteViewModel>();
+            foreach (var t in datas)
+                list.Add(new CFavoriteViewModel() {
+                    Name = _context.TProducts.Where(p=>p.FId==t.FProductId).Select(p=>p.FName).ToString(),
+                    Popular = _context.TFavorites.Count(f=>f.FProductId==t.FProductId),
+                    FId = t.FId,
+                });
+            return View(list);
+
+        }
+        public async Task<IActionResult> DeleteFavorite(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var Fav = await _context.TFavorites
+                .FirstOrDefaultAsync(m => m.FId == id);
+            if (Fav == null)
+            {
+                return NotFound();
+            }
+            _context.TFavorites.Remove(Fav);
+            _context.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> MyComment()
+        {
+            return View();
+        }
+        public async Task<IActionResult> CreateComment()
+        {
             return View();
         }
     }
