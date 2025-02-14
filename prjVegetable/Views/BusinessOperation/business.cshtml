@@ -21,7 +21,6 @@
         .chart-box {
             width: 48%;
             min-width: 400px;
-            
             padding: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
@@ -37,12 +36,11 @@
 
 <body>
     <div id="app">
-
         <div class="fs-1 fw-bold mt-3">
             <p>採購概況分析</p>
         </div>
 
-        <div class="input-container mt-3 margin-left: 20px">
+        <div class="input-container mt-3">
             <label>選擇時間區間:</label>
             <input type="date" v-model="startDate">
             <span>-</span>
@@ -50,26 +48,20 @@
             <button class="btn btn-success" v-on:click="fetchData">查詢</button>
         </div>
 
-      
         <div>
-			<div class="chart-container mb-3">
-                <div class="fs-1 fw-bold text-center col-6 ">
-                    <div>
-						<p>總金額: {{ totalAmount }} 元 </p>
-                    </div>
-                    <div>
-						<img src="~/images/採購分析.png" />
-                    </div>
-				</div>
-                <div id="chartContainer3" class="chart-box col-6" style="height: 370px;"></div>		
-			</div>
+            <div class="chart-container mb-3">
+                <div class="fs-1 fw-bold text-center col-6">
+                    <p>總金額: {{ totalAmount }} 元</p>
+                    <img src="~/images/採購分析.png" />
+                </div>
+                <div id="chartContainer3" class="chart-box col-6" style="height: 370px;"></div>
+            </div>
 
-            <div class="chart-container mb-3 ">
+            <div class="chart-container mb-3">
                 <div id="chartContainer2" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
                 <div id="chartContainer1" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
-			</div>
+            </div>
         </div>
-
     </div>
 
     <script>
@@ -84,7 +76,6 @@
                 lineChart: null
             },
             methods: {
-                //取得資料
                 fetchData() {
                     $.ajax({
                         url: "/AjaxBusinessOperation/GetPurchaseData",
@@ -98,7 +89,6 @@
                     });
                 },
 
-                //定義標籤
                 formatData(data) {
                     data.paymentMethods.forEach(item => {
                         item.label = item.label === "0" ? "日結" : "月結";
@@ -111,18 +101,13 @@
                     });
                 },
 
-                //pie-bar-line
                 renderCharts(data) {
-                    // 計算總額
                     let total = data.paymentMethods.reduce((sum, item) => sum + item.y, 0);
-
-                    // 轉換為百分比
                     let pieData = data.paymentMethods.map(item => ({
                         label: item.label,
-                        y: total === 0 ? 0 : (item.y / total * 100) // 避免除以 0
+                        y: parseFloat((total === 0 ? 0 : (item.y / total * 100)).toFixed(2)) // 確保小數點後2位
                     }));
 
-                    // 初始化圓餅圖
                     this.pieChart = new CanvasJS.Chart("chartContainer1", {
                         theme: "light2",
                         title: { text: "支付方式分類" },
@@ -130,7 +115,9 @@
                             type: "pie",
                             showInLegend: true,
                             legendText: "{label}",
-                            indexLabel: "{label}: {y.toFixed(2)}%", // 保留兩位小數
+                            indexLabelFormatter: function (e) {
+                                return `${e.dataPoint.label}: ${e.dataPoint.y.toFixed(2)}%`;
+                            },
                             dataPoints: pieData
                         }]
                     });

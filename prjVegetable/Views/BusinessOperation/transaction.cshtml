@@ -1,8 +1,8 @@
-﻿@model IEnumerable<prjVegetable.Models.TInvoice> //會改
+﻿@model IEnumerable<prjVegetable.Models.TInvoice>
 
 @{
-	ViewData["Title"] = "List";
-	Layout = "~/Views/Shared/_LayoutERP.cshtml";
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 <!DOCTYPE html>
 <html>
@@ -11,13 +11,14 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        .chart-container 
-        { display: flex;
+        .chart-container {
+            display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
         }
-        .chart-box 
-        { width: 48%;
+
+        .chart-box {
+            width: 48%;
             min-width: 400px;
             padding: 10px;
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
@@ -39,24 +40,22 @@
 
         <div>
             <div class="chart-container mt-3">
-				<div class="fs-1 fw-bold text-center col-6 ">
-					<p>交易總額: {{ totalAmount }} 元</p>
+                <div class="fs-1 fw-bold text-center col-6 ">
+                    <p>交易總額: {{ totalAmount }} 元</p>
                     <p>交易總數: {{ totalCount }} 筆</p>
                     <img style="width: 25%; height: 50%;" src="~/images/交易紀錄分析.jpg" />
-				</div>
+                </div>
 
-				<div class="chart-box col-6 ">
-					<div id="lineChartContainer" style="height: 370px;"></div>
-				</div>
-			</div>
+                <div class="chart-box col-6 ">
+                    <div id="lineChartContainer" style="height: 370px;"></div>
+                </div>
+            </div>
 
             <div class="chart-container mb-3 mt-3">
                 <div id="pieChartContainer" class="chart-box " style="height: 450px;"></div>
                 <div id="barChartContainer" class="chart-box" style="height: 370px;"></div>
-
-			</div>
+            </div>
         </div>
-
     </div>
 
     <script>
@@ -85,11 +84,22 @@
                     });
                 },
                 renderCharts(data) {
+                    let total = data.invoiceTypes.reduce((sum, item) => sum + item.y, 0);
+                    let pieData = data.invoiceTypes.map(item => ({
+                        label: item.label,
+                        y: total === 0 ? 0 : parseFloat((item.y / total * 100).toFixed(2))
+                    }));
+
                     this.pieChart = new CanvasJS.Chart("pieChartContainer", {
                         theme: "light2",
                         title: { text: "銷項或進項" },
-                        data: [{ type: "pie",
-                        dataPoints: data.invoiceTypes }]
+                        data: [{
+                            type: "pie",
+                            showInLegend: true,
+                            legendText: "{label}",
+                            indexLabel: "{label}: {y}%",
+                            dataPoints: pieData
+                        }]
                     });
 
                     this.barChart = new CanvasJS.Chart("barChartContainer", {
@@ -108,7 +118,6 @@
                             dataPoints: data.timeTrends.map(d => ({ x: new Date(d.x), y: d.y }))
                         }]
                     });
-
 
                     this.pieChart.render();
                     this.barChart.render();
