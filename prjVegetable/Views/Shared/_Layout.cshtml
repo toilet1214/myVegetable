@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vege人 首頁</title>
+    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=LXGW+WenKai+Mono+TC&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -223,106 +223,41 @@
 
     <!-- 聯絡我們 Start -->
     <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="contactUsModalLabel" aria-hidden="true">
-        <div class="modal-dialog contact-width modal-lg">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="contactUsModalLabel">聯絡我們</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row py-2">
-                        <!-- 左側填寫欄位 -->
-                        <div class="col-md-7 ps-4">
-                            <form id="contactForm" class="p-4 form-section" novalidate>
-                                <div class="row mb-3">
-                                    <div class="col-md-6">
-                                        <label for="lastName" class="form-label">
-                                            姓氏 <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="請填寫姓氏" data-placeholder="請填寫姓氏" required>
-                                        <div class="invalid-feedback">請填寫姓氏</div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="firstName" class="form-label">
-                                            名字 <span class="text-danger">*</span>
-                                        </label>
-                                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="請填寫名字" data-placeholder="請填寫名字" required>
-                                        <div class="invalid-feedback">請填寫名字</div>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">
-                                        Email <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="email" class="form-control" id="email" name="email" placeholder="請填寫Email" data-placeholder="請填寫Email" required>
-                                    <div class="invalid-feedback">請填寫正確的Email</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">
-                                        手機 <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="tel" class="form-control" id="phone" name="phone" placeholder="0978-000-000" data-placeholder="0978-000-000" required>
-                                    <div class="invalid-feedback">請填寫正確的手機號碼</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="questionType" class="form-label">
-                                        問題種類 <span class="text-danger">*</span>
-                                    </label>
-                                    <select class="form-select" id="questionType" name="questionType" required>
-                                        <option value="" selected disabled>請選擇問題種類</option>
-                                        <option value="login">帳號或登入問題</option>
-                                        <option value="transaction">交易或訂單問題</option>
-                                        <option value="product">商品問題</option>
-                                        <option value="suggest">建議</option>
-                                        <option value="other">其他</option>
-                                    </select>
-                                    <div class="invalid-feedback">請選擇問題種類</div>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">
-                                        問題描述 <span class="text-danger">*</span>
-                                    </label>
-                                    <textarea class="form-control" id="description" name="description" rows="4" placeholder="請描述您的問題" data-placeholder="請描述您的問題" required></textarea>
-                                    <div class="invalid-feedback">請描述您的問題</div>
-                                </div>
-                                <div class="text-end">
-                                    <button type="submit" class="btn btn-primary very-width">送出</button>
-                                </div>
-                            </form>
+                <div class="modal-body p-4">
+                    <div class="info-section">
+                        <div class="mb-4">
+                            <h5>電子信箱</h5>
+                            <p>表單送出後，您的建議/問題會寄到這裡，我們將在三個工作日內回覆。</p>
+                            <a href="#" class="text-decoration-none"><i class="bi bi-envelope-fill"></i>  VegeP2258@gmail.com</a>
                         </div>
-
-                        <!-- 右側資訊欄 -->
-                        <div class="col-md-5 px-4">
-                            <div class="info-section">
-                                <div class="mb-4">
-                                    <h5>電子信箱</h5>
-                                    <p>表單送出後，您的建議/問題會寄到這裡，我們將在三個工作日內回覆。</p>
-                                    <a href="#" class="text-decoration-none">VegeP2258@gmail.com</a>
-                                </div>
-                                <hr>
-                                <div class="mb-4">
-                                    <h5>連絡電話</h5>
-                                    <p>平日 09:00-12:00</p>
-                                    <a href="#" class="text-decoration-none">0978-446-461、07-7255849 轉 222</a>
-                                </div>
-                                <hr>
-                                <div class="mb-4">
-                                    <h5>公司地址</h5>
-                                    <p>平日 09:00-17:00，來辦公室坐坐。</p>
-                                    <a href="https://maps.app.goo.gl/BPoJnKZRxsTiGLmY9" class="text-decoration-none">801 高雄市前金區中正四路211號8樓之1</a>
-                                </div>
-                                <hr>
-                                <div class="mb-4">
-                                    <h5>社群</h5>
-                                    <p>歡迎關注我們的社群獲得最新消息！</p>
-                                    <a href="https://www.instagram.com/ispan_educate/" class="text-decoration-none">Vege人的Instergram</a>
-                                </div>
-                            </div>
+                        <hr>
+                        <div class="mb-4">
+                            <h5>連絡電話</h5>
+                            <p>平日 09:00-12:00。</p>
+                            <a href="#" class="text-decoration-none"><i class="bi bi-telephone-outbound-fill"></i> 0978-446-461、07-7255849 轉 222</a>
+                        </div>
+                        <hr>
+                        <div class="mb-4">
+                            <h5>公司地址</h5>
+                            <p>平日 09:00-17:00，來辦公室坐坐 <i class="bi bi-cup-fill>。"></i></p>
+                            <a href="https://maps.app.goo.gl/BPoJnKZRxsTiGLmY9" class="text-decoration-none"><i class="bi bi-geo"></i> 801 高雄市前金區中正四路211號8樓之1</a>
+                        </div>
+                        <hr>
+                        <div class="mb-4">
+                            <h5>社群</h5>
+                            <p>歡迎關注我們的社群獲得最新消息！</p>
+                            <a href="https://www.instagram.com/ispan_educate/" class="text-decoration-none"><i class="bi bi-instagram"></i> Vege人的Instergram</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+         </div>
     </div>
     <!-- 聯絡我們 End-->
 
@@ -508,32 +443,6 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
           AOS.init();
-        });
-    </script>
-    <script>
-         document.addEventListener('DOMContentLoaded', () => {
-            'use strict';
-
-            const contactForm = document.getElementById('contactForm');
-
-            contactForm.addEventListener('submit', (event) => {
-                if (!contactForm.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
-                }
-
-                contactForm.classList.add('was-validated'); // 加入驗證樣式
-            });
-
-            // 重置表單驗證狀態
-            const resetForm = () => {
-                contactForm.reset(); // 清空表單資料
-                contactForm.classList.remove('was-validated'); // 移除驗證樣式
-            };
-
-            // 當 Modal 關閉時重置表單
-            const modal = document.getElementById('contactUsModal');
-            modal.addEventListener('hidden.bs.modal', resetForm);
         });
     </script>
 </body>
