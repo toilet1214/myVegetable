@@ -51,6 +51,9 @@
         -moz-appearance: textfield;
     }
 
+    .text-warning {
+        color: #ffb400; /* 黃色 */
+    }
 
 </style>
 
@@ -188,7 +191,7 @@
                             }
                             else
                             {
-                                
+
                             }
                         })
                     </button>
@@ -196,66 +199,92 @@
 
             </ul>
             <div class="tab-content" id="myTabContent">
-    <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
-        @if (!string.IsNullOrEmpty(Model.FOrigin))
-        {
-            <iframe width="100%" height="400"
-                    src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Uri.EscapeDataString(Model.FOrigin)"
-                    allowfullscreen>
-            </iframe>
-        }
-        @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
-    </div>
+                <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
+                    @if (!string.IsNullOrEmpty(Model.FOrigin))
+                    {
+                        <iframe width="100%" height="400"
+                                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Uri.EscapeDataString(Model.FOrigin)"
+                                allowfullscreen>
+                        </iframe>
+                    }
+                    @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
+                </div>
 
-    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-        <div class="reviews-section">
-            <!-- 顧客評論範例 -->
-            @if (Model.CommentList != null && Model.CommentList.Any())
-            {
-                <!-- 動態生成每一條評論 -->
-                @foreach (var comment in Model.CommentList.Take(5))
-                {
-                    <div class="media  d-flex justify-content-between border-bottom pb-1 mb-3">
-                        <div class="media-body">
-                            <h5 class="media-heading user_name">
-                               <i class="fi fi-rr-man-head me-3" style="font-size: 2rem;"></i>@comment.PersonName
-                            </h5>
-                            <p class="review-text">@comment.FComment</p>
-                            <p>
-                                <small>
-                                    <!-- 動態生成評分星星 -->
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        if (i <= comment.FStar)
-                                        {
-                                            <i class="bi bi-star-fill"></i>
-                                        }
-                                        else if (i == comment.FStar + 0.5)
-                                        {
-                                            <i class="bi bi-star-half"></i>
-                                        }
-                                        else
-                                        {
-                                            <i class="bi bi-star"></i>
-                                        }
-                                    }
-                                </small>
-                            </p>
-                        </div>
-                        <p class="pull-right"><small>@comment.FCreatedAt.ToString("yyyy-MM-dd")</small></p>
+                <!-- 顧客評論範例 -->
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="reviews-section">
+
+                        @if (Model.CommentList != null && Model.CommentList.Any())
+                        {
+                            @foreach (var comment in Model.CommentList.Take(5))
+                            {
+                                <div class="media  d-flex justify-content-between border-bottom pb-1 mb-3">
+                                    <div class="media-body">
+                                        <h5 class="media-heading user_name">
+                                            <i class="fi fi-rr-man-head me-3" style="font-size: 2rem;"></i>
+                                            @comment.PersonName
+                                        </h5>
+                                        <p class="review-text">@comment.FComment</p>
+                                        <p>
+                                            <small>
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    if (i <= comment.FStar)
+                                                    {
+                                                        <i class="bi bi-star-fill"></i>
+                                                    }
+                                                    else if (i == comment.FStar + 0.5)
+                                                    {
+                                                        <i class="bi bi-star-half"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="bi bi-star"></i>
+                                                    }
+                                                }
+                                            </small>
+                                        </p>
+                                    </div>
+                                    <p class="pull-right"><small>@comment.FCreatedAt.ToString("yyyy-MM-dd")</small></p>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>目前沒有任何評論。</p>
+                        }
                     </div>
-                }
-            }
-            else
-            {
-                <p>目前沒有任何評論。</p>
-            }
-        </div>
-        <button id="load-more-reviews" class="btn btn-link" onclick="loadMoreReviews()">
-            <i class="bi bi-chevron-down"></i> 顯示更多評論
-        </button>
-    </div>
-</div>
+                    <button id="load-more-reviews" class="btn btn-link" onclick="loadMoreReviews()">
+                        <i class="bi bi-chevron-down"></i> 顯示更多評論
+                    </button>
+
+                    @* <div class="add-comment mt-4">
+                        <h5>添加評論</h5>
+                        
+                            <form id="add-comment-form">
+                                <div class="form-group">
+                                    <label for="user-name">姓名</label>
+                                    <input type="text" class="form-control" id="user-name" value="@User.Identity.Name" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-comment">您的評論</label>
+                                    <textarea class="form-control" id="user-comment" rows="4" placeholder="撰寫您的評論" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="user-rating">評分</label>
+                                    <div id="user-rating" class="star-rating">
+                                        <i class="bi bi-star" data-value="1"></i>
+                                        <i class="bi bi-star" data-value="2"></i>
+                                        <i class="bi bi-star" data-value="3"></i>
+                                        <i class="bi bi-star" data-value="4"></i>
+                                        <i class="bi bi-star" data-value="5"></i>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">提交評論</button>
+                            </form>
+                    </div> *@
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -379,14 +408,14 @@
 
                 var isBuyNow = button.hasClass('btn-secondary');
                 var productId = button.data("productid");
-                var currentUrl = window.location.href; 
+                var currentUrl = window.location.href;
                 var quantityInput = button.closest('.row').prev('.quantity').find('.input-box');
                 var quantity = quantityInput.val();
 
                 // 如果數量無效或超出範圍，提示錯誤
                 if (!quantity || isNaN(quantity) || quantity < 1 || quantity > 10) {
                     alert('請輸入有效的數量（1-10）');
-                    button.prop('disabled', false); 
+                    button.prop('disabled', false);
                     return;
                 }
 
@@ -409,7 +438,7 @@
                                     data: { productId: productId, quantity: quantity },
                                     success: function (response) {
                                         if (response.success) {
-                                            window.location.href = '@Url.Action("Cart", "Cart")'; 
+                                            window.location.href = '@Url.Action("Cart", "Cart")';
                                         } else {
                                              alert('操作失敗: ' + response.message);
                                         }
@@ -451,7 +480,105 @@
             });
 
 
-            //顯示評論
+
+            //星星
+             $(document).ready(function () {
+                // 當用戶點擊星星
+                $("#user-rating i").click(function () {
+                    // 清除所有星星的選中狀態
+                    $("#user-rating i").removeClass("bi-star-fill text-warning").addClass("bi-star");
+
+                    // 添加選中的星星樣式
+                    $(this).prevAll().addClass("bi-star-fill text-warning");  // 更改前面所有星星為 fill
+                    $(this).addClass("bi-star-fill text-warning");  // 更改當前星星為 fill
+
+                    // 記錄當前選中的星星數量（對應評分）
+                    var rating = $(this).data("value");
+                    console.log("選擇的評分是: " + rating);
+
+                    // 可以將選中的星星數量保存到隱藏欄位或其他地方，然後用來提交
+                    $("#user-rating").data("rating", rating);  // 將評分保存在 rating 屬性中
+                });
+            });
+
+            //隱藏姓名
+            function displayName(name) {
+                if (!name || name.length === 0) {
+                    return ''; // 如果姓名為空，返回空字符串
+                }
+
+                if (name.length === 1) {
+                    return name; // 只有一個字符，直接返回
+                }
+
+                if (name.length === 2) {
+                    return name[0] + "*"; // 兩個字符，只保留首個
+                }
+
+                // 對於長度大於2的情況
+                var firstChar = name[0];
+                var lastChar = name[name.length - 1];
+                var maskedMiddle = new Array(name.length - 2 + 1).join('*'); // 隱藏中間字符
+                return firstChar + maskedMiddle + lastChar;
+            }
+
+            //送出表單
+            $("#add-comment-form").submit(function (event) {
+                event.preventDefault();  // 防止表單默認提交
+
+                var commentText = $("#user-comment").val();  // 獲取評論內容
+                var star = $("#user-rating .bi-star-fill").last().data("value");  // 獲取選中的星星評分
+                var productId = @Model.FId;  // 假設從模型中獲取產品 ID
+                var currentUrl = window.location.href;  // 獲取當前頁面 URL
+
+                // 檢查用戶是否登入
+                $.ajax({
+                    url: '@Url.Action("CheckLogin", "Product")',  // 路徑改為你的控制器方法
+                    type: 'GET',
+                    success: function (response) {
+                        console.log(response);  // 輸出登入狀態，便於調試
+                        if (!response.isLoggedIn) {
+                        // 如果未登入，顯示登入模態框
+                        $('#LoginModal').modal('show');
+
+                        // 當登入模態框顯示時，將當前 URL 設置到返回的隱藏輸入框中
+                        $("#LoginModal").on('shown.bs.modal', function () {
+                            $('input[name="returnUrl"]').val(currentUrl);
+                        });
+                        } else {
+                            // 用戶已登入，提交評論
+                            $.ajax({
+                                url: '@Url.Action("AddComment", "Product")',
+                                type: 'POST',
+                                data: {
+                                    productId: productId,
+                                    comment: commentText,
+                                    star: star
+                                },
+                                success: function (response) {
+                                    if (response.success) {
+                                        alert('評論提交成功！');
+                                        // 可選：刷新頁面顯示新評論，或將新評論添加到當前頁面
+                                        location.reload();
+                                    } else {
+                                        alert('操作失敗，請稍後再試');
+                                    }
+                                },
+                                error: function () {
+                                    alert('出現錯誤，請稍後再試');
+                                }
+                            });
+                        }
+                    },
+                    error: function () {
+                        alert('檢查登入狀態時出現錯誤');
+                    }
+                });
+            });
+
+
+
+           
 
 
 

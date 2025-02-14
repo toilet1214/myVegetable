@@ -105,6 +105,7 @@ namespace prjVegetable.Controllers
                     FDescription = p.FDescription,
                     FQuantity = p.FQuantity,
                     FLaunch = p.FLaunch,
+                    FLaunchAt = p.FLaunchAt,
                     FStorage = p.FStorage,
                     FOrigin = p.FOrigin,
                     FEditor = p.FEditor
@@ -119,7 +120,7 @@ namespace prjVegetable.Controllers
 
                 list.Add(pp);
             }
-            
+
 
             ViewData["TotalPages"] = totalPages;
             ViewData["Page"] = page;
@@ -145,13 +146,13 @@ namespace prjVegetable.Controllers
         }
 
 
-
+        //加入我的最愛
         [HttpPost]
         public IActionResult AddToFavorites(int productId)
         {
             var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
             var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
-            var favorite = _context.TFavorites.FirstOrDefault(f=>f.FPersonId ==personId && f.FProductId == productId);
+            var favorite = _context.TFavorites.FirstOrDefault(f => f.FPersonId == personId && f.FProductId == productId);
 
             if (personId == 0)
             {
@@ -165,18 +166,17 @@ namespace prjVegetable.Controllers
                 _context.TFavorites.Add(new TFavorite { FPersonId = personId, FProductId = productId });
                 isFavorite = true;
             }
-            else 
+            else
             {
                 _context.TFavorites.Remove(favorite);
                 isFavorite = false;
-            }
-            //加入我的最愛
+            }            
             _context.SaveChanges();
-            return Json(new {success = true, isFavorite = isFavorite});
+            return Json(new { success = true, isFavorite = isFavorite });
         }
 
 
-
+        //加入購物車
         [HttpPost]
         public IActionResult AddToCart(int productId, int quantity)
         {
@@ -197,13 +197,9 @@ namespace prjVegetable.Controllers
             {
                 FPersonId = personId,
                 FProductId = productId,
-                FCount = quantity 
+                FCount = quantity
             });
-
-            // 將商品加入購物車
-            
             _context.SaveChanges();
-
             return Json(new { success = true });
         }
 
@@ -224,7 +220,7 @@ namespace prjVegetable.Controllers
             x.ImgList = _context.TImgs
                          .Where(img => img.FProductId == id)
                          .OrderBy(img => img.FOrderBy)
-                         .Select(img => img.FName) 
+                         .Select(img => img.FName)
                          .ToList();
 
             var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
@@ -238,19 +234,28 @@ namespace prjVegetable.Controllers
             }
             else
             {
-                x.IsFavorite = false; // 未登入的話，顯示為未加入最愛
+                x.IsFavorite = false;
             }
 
+
             x.CommentList = GetProductComments(id, personId);
+            if (x.CommentList != null)
+            {
+                foreach (var comment in x.CommentList)
+                {
+                    comment.PersonName = DisplayName(comment.PersonName); 
+                }
+            }
 
             return View(x);
         }
 
-        //商品評論
+        //顯示商品評論
         private List<CCommentWrap> GetProductComments(int productId, int personId)
         {
             var comments = _context.TComments
                .Where(c => c.FProductId == productId)
+               .OrderByDescending(c => c.FId)
                .Select(c => new
                {
                    c.FPersonId,
@@ -259,6 +264,7 @@ namespace prjVegetable.Controllers
                    c.FComment,
                    c.FStar,
                    c.FCreatedAt,
+                   c.FId,
                    PersonName = _context.TPeople
                        .Where(p => p.FId == c.FPersonId)
                        .Select(p => p.FName)
@@ -278,12 +284,12 @@ namespace prjVegetable.Controllers
             }).ToList();
         }
 
-        [HttpGet]
+        [HttpGet]  //評論分頁 失敗
         public IActionResult GetProductCommentsPaged(int productId, int page = 1, int pageSize = 5)
         {
             var comments = _context.TComments
                 .Where(c => c.FProductId == productId)
-                .OrderBy(c => c.FCreatedAt) // 可以按創建時間排序
+                .OrderBy(c => c.FCreatedAt)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .Select(c => new
@@ -301,9 +307,69 @@ namespace prjVegetable.Controllers
                 })
                 .ToList();
 
-            return Json(comments); // 返回 JSON 格式的評論
+            return Json(comments);
         }
 
 
+        //加入評論  移到會員中心
+        //[HttpPost]
+        //public IActionResult AddComment(int productId, string comment, int star)
+        //{
+        //    var personIdString = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+        //    var personId = string.IsNullOrEmpty(personIdString) ? 0 : int.Parse(personIdString);
+
+        //    if (personId == 0)
+        //    {
+        //        return Json(new { success = false, message = "請先登入會員才能提交評論。" });
+        //    }
+
+        //    var userName = _context.TPeople
+        //    .Where(p => p.FId == personId)
+        //    .Select(p => p.FName)
+        //    .FirstOrDefault();
+
+        //    if (userName == null)
+        //    {
+        //        return Json(new { success = false, message = "無法找到使用者名稱。" });
+        //    }
+
+        //    var review = new TComment
+        //    {
+        //        FPersonId = personId,
+        //        FProductId = productId,
+        //        FComment = comment,
+        //        FStar = star,
+        //    };
+
+        //    _context.TComments.Add(review);
+        //    _context.SaveChanges();
+
+        //    return Json(new { success = true });
+        //}
+
+
+        //隱藏姓名
+        
+        public string DisplayName(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+                return string.Empty;
+            if (name.Length == 1)
+            {
+                return name;
+            }
+            if (name.Length == 2)
+            {
+                return name[0] + "*"; 
+            }
+            var firstChar = name[0];
+            var lastChar = name[name.Length - 1];
+            var maskedMiddle = new string('*', name.Length - 2);
+            return firstChar + maskedMiddle + lastChar;
+        }
+
     }
+
+
 }
+
