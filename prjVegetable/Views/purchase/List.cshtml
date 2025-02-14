@@ -19,6 +19,9 @@
     <thead>
         <tr>
             <th>
+                序號
+            </th>
+            <th>
                 採購號碼
             </th>
             <th>
@@ -61,6 +64,9 @@
             {
                 count++;
                 <tr>
+                    <td>
+                        @count
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FId)
                     </td>

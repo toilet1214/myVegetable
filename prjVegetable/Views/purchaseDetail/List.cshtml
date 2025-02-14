@@ -19,7 +19,10 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FId)
+                序號
+            </th>
+            <th>
+                ID
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FPurchaseId)
@@ -47,6 +50,9 @@
                 count++;
 
                 <tr>
+                    <td>
+                        @count
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FId)
                     </td>

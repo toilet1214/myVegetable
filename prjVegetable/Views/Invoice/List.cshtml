@@ -19,8 +19,11 @@
 <table class="table" id="List">
     <thead>
         <tr>
-            <th>
+           <th>
                 序號
+            </th>
+            <th>
+                ID
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FNumber)
@@ -66,6 +69,9 @@
             {
                 count++;
                 <tr>
+                    <td>
+                        @count
+                    </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FId)
                     </td>
