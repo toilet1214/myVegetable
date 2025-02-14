@@ -27,36 +27,27 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("Index", "Home"); // 若未登入，跳轉至首頁
             }
 
-            using (DbVegetableContext db = new DbVegetableContext())
-            {
-                string keyword = vm.txtKeyword;
-                IEnumerable<TPurchaseDetail> datas = null;
+            //額外使用"CKeywordViewModels"內的引數，區分request/required 的回傳值
+            DbVegetableContext db = new DbVegetableContext();
+            string keyword = vm.txtKeyword;
 
-                // 先找出該用戶編輯過的採購單
-                var editedPurchases = db.TPurchases
-                                        .Where(p => p.FEditor == userId)
-                                        .Select(p => p.FId)
-                                        .ToList();
+            //view()呈現
+            IEnumerable<TPurchaseDetail> datas = null;
 
-                if (string.IsNullOrEmpty(keyword))
-                {
-                    // 只顯示該使用者編輯過的採購單的明細
-                    datas = db.TPurchaseDetails
-                              .Where(d => editedPurchases.Contains(d.FPurchaseId));
-                }
-                else
-                {
-                    // 附加關鍵字篩選條件
-                    datas = db.TPurchaseDetails
-                              .Where(d => editedPurchases.Contains(d.FPurchaseId) &&
-                                         (d.FPurchaseId.ToString().Contains(keyword)
-                                         || d.FProductId.ToString().Contains(keyword)));
-                }
+            //查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 (2)
+            if (string.IsNullOrEmpty(keyword))
+                datas = from t in db.TPurchaseDetails
+                        select t;
+            else
+                datas = db.TPurchaseDetails.Where(
+                 p => p.FPurchaseId.ToString().Contains(keyword)
+                 || p.FProductId.ToString().Contains(keyword));
 
-                // 包裝成 ViewModel
-                List<CPurchaseDetailWrap> list = datas.Select(d => new CPurchaseDetailWrap() { PurchaseDetail = d }).ToList();
-                return View(list);
-            }
+            //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
+            List<CPurchaseDetailWrap> list = new List<CPurchaseDetailWrap>();
+            foreach (var t in datas)
+                list.Add(new CPurchaseDetailWrap() { PurchaseDetail = t });
+            return View(list);
         }
 
 
@@ -150,29 +141,33 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
             }
 
-            //若驗證失敗，回到編輯頁面
-            if (!ModelState.IsValid)
+            // 建立資料庫上下文
+            using (DbVegetableContext db = new DbVegetableContext())
             {
-                return RedirectToAction("Edit", new { id = p.FId });
-            }
+                // 查找對應的 TPurchaseDetail
+                TPurchaseDetail x = db.TPurchaseDetails.FirstOrDefault(c => c.FId == p.FId);
+                if (x != null)
+                {
+                    x.FPurchaseId = p.FPurchaseId;
+                    x.FProductId = p.FProductId;
+                    x.FCount = p.FCount;
+                    x.FPrice = p.FPrice;
+                    x.FSum = p.FSum;
+                }
 
-            //建立資料庫
-            DbVegetableContext db = new DbVegetableContext();
+                // 查找對應的 TPurchase（通過 FId 關聯）
+                TPurchase y = db.TPurchases.FirstOrDefault(c => c.FId == p.FId);
+                if (y != null)
+                {
+                    y.FEditor = userId; // 更新 FEditor
+                }
 
-            //搜尋id : "p.Fid" 為資料庫裡的id。 "c.Fid"為輸入的id
-            TPurchaseDetail x = db.TPurchaseDetails.FirstOrDefault(c => c.FId == p.FId);
-
-            if (x != null)
-            { 
-                x.FPurchaseId = p.FPurchaseId;
-                x.FProductId= p.FProductId;
-                x.FCount = p.FCount;
-                x.FPrice = p.FPrice;
-                x.FSum = p.FSum;
+                // 一次性保存所有更改
                 db.SaveChanges();
-
             }
+
             return RedirectToAction("List");
         }
+
     }
 }
