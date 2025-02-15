@@ -81,8 +81,18 @@ namespace prjVegetable.Controllers
             // 查詢該產品對應的圖片名稱
             var images = await _context.TImgs
                 .Where(i => i.FProductId == id)
-                .Select(i => i.FName)
+                .Select(i => new 
+                { 
+                    i.FId,
+                    i.FProductId,
+                    i.FName,
+                    i.FOrderBy,
+                    i.FUploadAt,
+                    i.FEditor
+                })
                 .ToListAsync();
+
+            var imagesNames = images.Select(i => i.FName).ToList();
 
             // 如果沒有圖片，設置為空陣列或者 null，根據需求來決定
             var productWithImages = new
@@ -99,36 +109,15 @@ namespace prjVegetable.Controllers
                 product.FOrigin,
                 product.FLaunchAt,
                 product.FEditor,
-                Images = images ?? new List<string>(), // 確保返回空列表而不是 null
+                Images = imagesNames, // 確保返回空列表而不是 null
+                AllImageData = images
             };
 
             return Ok(productWithImages);
-        }
-
-        [HttpGet]//呼叫圖片用
-        public async Task<IActionResult> GetImagesByProductId(int? productId)
-        {
-            if (productId == null || productId == 0)
-            {
-                return BadRequest("找不到產品ID");
-            }
-
-            // 查找該產品的所有圖片
-            var images = await _context.TImgs
-                                       .Where(i => i.FProductId == productId)
-                                       .Select(i => new { i.FId, i.FName })
-                                       .ToListAsync();
-
-            if (images == null || !images.Any())
-            {
-                return NotFound("該產品沒有圖片");
-            }
-
-            return Ok(images);  // 返回圖片列表
-        }
+        }        
 
         [HttpPut]
-        public async Task<IActionResult> update([FromBody] CProductWrap productwrap)
+        public async Task<IActionResult> update(int id,[FromBody] CProductWrap productwrap)
         {
             TProduct e = _context.TProducts.FirstOrDefault(c => c.FId == productwrap.FId);
             
@@ -163,63 +152,50 @@ namespace prjVegetable.Controllers
 
         // HttpPut method for updating product image
         [HttpPut("updateImage")]
-        public async Task<IActionResult> updateImage([FromForm] IFormFile file, [FromForm] int productId)
-        {
-            TImg img = _context.TImgs.FirstOrDefault(e => e.FProductId == productId);
-
-            // Ensure file is provided
+        public async Task<IActionResult> updateImage([FromForm] IFormFile file)
+        {            
             if (file == null || file.Length == 0)
-            {
+    {
                 return BadRequest("未選擇圖片檔案");
             }
-
-            // Check if product exists
-            var product = _context.TProducts.FirstOrDefault(c => c.FId == productId);
-            if (product == null)
-            {
-                return NotFound("未找到相關商品");
-            }
-
             try
             {
-                // Generate a unique file name using Guid to prevent overwriting
-                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                // 你可以將檔案儲存到伺服器的某個資料夾中
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
 
-                // Define the path to save the image file (assuming storing it in wwwroot/images)
-                var filePath = Path.Combine("wwwroot/images", fileName);
+                // 確保資料夾存在
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
 
-                // Save the file to the server
+                // 產生檔案儲存的完整路徑
+                var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+                // 儲存檔案
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
                 }
 
-                // Check if there is already an image record for this product
-                var existingImage = _context.TImgs.FirstOrDefault(i => i.FProductId == productId);
-                if (existingImage == null)
+                var productImage = new TImg
                 {
-                    // No image exists, create a new record
-                    var newImage = new TImg
-                    {
-                        FProductId = productId,
-                        FName = fileName
-                    };
-                    _context.TImgs.Add(newImage);
-                }
-                else
-                {
-                    // Update the existing image record
-                    existingImage.FName = fileName;
-                }
-
-                // Save changes to the database
+                    FProductId = 1,//暫時固定，要再依照前端資料調整
+                    FName=file.FileName,
+                    FOrderBy=1,//需要與前端圖片的orderby更換
+                    FUploadAt = DateOnly.FromDateTime(DateTime.Now),
+                    FEditor=1//需要取得現在使用者
+                };
+                _context.TImgs.Add(productImage);
                 await _context.SaveChangesAsync();
 
-                return Ok("圖片已成功上傳");
+                // 你可以在這裡將圖片資訊儲存到資料庫中，例如檔案路徑等
+                // 在這裡回傳成功訊息
+                return Ok(new { FilePath = file.FileName });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"儲存圖片時發生錯誤: {ex.Message}");
+                return StatusCode(500, $"內部伺服器錯誤: {ex.Message}");
             }
         }
 
