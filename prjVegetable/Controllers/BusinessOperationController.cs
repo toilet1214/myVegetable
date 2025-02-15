@@ -22,45 +22,45 @@ namespace prjVegetable.Controllers
         }
 
         // Session 身份驗證方法
-        private bool CheckUserSession()
-        {
-            if (int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId) && userId > 0)
-            {
-                return true;
-            }
+        //private bool CheckUserSession()
+        //{
+        //    if (int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId) && userId > 0)
+        //    {
+        //        return true;
+        //    }
 
-            // 用户未登录，重定向到登录页
-            return false;
-        }
+        //    // 用户未登录，重定向到登录页
+        //    return false;
+        //}
 
 
         // 銷售概況
         public IActionResult Business()
         {
-            if (!CheckUserSession())
-            {
-                return RedirectToAction("Index", "ERP");
-            }
+            //if (!CheckUserSession())
+            //{
+            //    return RedirectToAction("Index", "ERP");
+            //}
             return View();
         }
 
         // 交易紀錄
         public IActionResult Transaction()
         {
-            if (!CheckUserSession())
-            {
-                return RedirectToAction("Index", "ERP");
-            }
+            //if (!CheckUserSession())
+            //{
+            //    return RedirectToAction("Index", "ERP");
+            //}
             return View();
         }
 
         // 銷售商品分類
         public IActionResult Goods()
         {
-            if (!CheckUserSession())
-            {
-                return RedirectToAction("Index", "ERP");
-            }
+            //if (!CheckUserSession())
+            //{
+            //    return RedirectToAction("Index", "ERP");
+            //}
             return View();
         }
     }

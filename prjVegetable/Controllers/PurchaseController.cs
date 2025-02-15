@@ -169,11 +169,11 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
             }
 
-            //若驗證失敗，回到編輯頁面
-            if (!ModelState.IsValid)
-            {
-                return RedirectToAction("Edit", new { id = p.FId }); 
-            }
+            ////若驗證失敗，回到編輯頁面
+            //if (!ModelState.IsValid)
+            //{
+            //    return RedirectToAction("Edit", new { id = p.FId }); 
+            //}
 
             using (DbVegetableContext db = new DbVegetableContext())
             {
@@ -190,7 +190,7 @@ namespace prjVegetable.Controllers
                     x.FPreTax = p.FPreTax;
                     x.FTax = p.FTax;
                     x.FTotal = p.FTotal;
-                    x.FNote = p.FNote;
+                    x.FNote = p.FNote ?? "";
 
                     db.SaveChanges();
                 }

@@ -57,7 +57,7 @@ namespace prjVegetable.Models
             get { return _tInvoice.FCustomerUbn; }
             set { _tInvoice.FCustomerUbn = value; }
         }
-        [DisplayName("供應商單號")]
+        [DisplayName("供應商ID")]
         public int FProviderId
         {
             get { return _tInvoice.FProviderId; }
@@ -94,6 +94,28 @@ namespace prjVegetable.Models
         {
             get { return _tInvoice.FEditor; }
             set { _tInvoice.FEditor = value; }
+        }
+
+        //----------顯示文字使用-------------------------------------------------
+        // 新增轉換後的屬性
+        [DisplayName("發票格式(顯示)")]
+        public string FFormText
+        {
+            get { return _tInvoice.FForm == "0" ? "二連" : "三連"; }
+        }
+
+        // 新增轉換後的屬性
+        [DisplayName("銷項或進項(顯示)")]
+        public string FInOutText
+        {
+            get { return _tInvoice.FInOut == 0 ? "進項" : "銷項"; }
+        }
+
+        // 新增轉換後的屬性
+        [DisplayName("狀態(顯示)")]
+        public string FStatusText
+        {
+            get { return _tInvoice.FStatus == 0 ? "一般" : "作廢"; }
         }
     }
 }

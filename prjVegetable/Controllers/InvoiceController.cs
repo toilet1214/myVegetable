@@ -106,7 +106,7 @@ namespace prjVegetable.Controllers
             return RedirectToAction("List");
         }
 
-        //----------delete----------------------
+        //----------"delete" 改為"作廢功能"----------------------
         public ActionResult Delete(int? id) //int? => 允許有null
         {
             // 先驗證身分
@@ -126,11 +126,11 @@ namespace prjVegetable.Controllers
                 //open database 
                 DbVegetableContext db = new DbVegetableContext();
 
-                //判斷輸入的id 是否存在資料庫裡面
+                //判斷輸入的id 是否存在資料庫裡面: 點選作廢
                 TInvoice x = db.TInvoices.FirstOrDefault(c => c.FId == id); //Linq 語法: 判斷
                 if (x != null)
                 {
-                    db.TInvoices.Remove(x);
+                    x.FStatus = 1;
                     db.SaveChanges();
                 }
             }
