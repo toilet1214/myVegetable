@@ -149,6 +149,11 @@
         height: 0;
         z-index: 1;
     }
+
+
+    
+
+
 </style>
 
 @{
@@ -213,13 +218,15 @@
             </button>
         }
 
-        <select id="sortOrder" class="form-select">
-            <option value="price_asc">預設排序</option>
-            <option value="price_asc">價格由小到大</option>
-            <option value="price_desc">價格由大到小</option>
-            <option value="publish_date_asc">上架日期由舊到新</option>
-            <option value="publish_date_desc">上架日期由新到舊</option>
-        </select>
+        <form method="get" action="@Url.Action("ProductList", "Product")" id="sortForm">
+            <select id="sortOrder" name="sortOrder" class="form-select" onchange="this.form.submit()">
+                <option value="">預設排序</option>
+                <option value="price_asc">價格由小到大</option>
+                <option value="price_desc">價格由大到小</option>
+                <option value="publish_date_asc">上架日期由舊到新</option>
+                <option value="publish_date_desc">上架日期由新到舊</option>
+            </select>
+        </form>
 
         @using (Html.BeginForm("ProductList", "Product", FormMethod.Get, new { id = "filterForm2" }))
         {
@@ -415,7 +422,7 @@
                             <ul class="pagination justify-content-center" id="pagination">
                                 <!-- 上一頁 -->
                                 <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != 1 ? "" : "disabled")">
-                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Max(1, Convert.ToInt32(ViewData["Page"]) - 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Previous">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Max(1, Convert.ToInt32(ViewData["Page"]) - 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] , sortOrder = ViewData["SortOrder"]})" aria-label="Previous">
                                         <span aria-hidden="true">&laquo;</span>
                                     </a>
                                 </li>
@@ -424,13 +431,13 @@
                                 @for (int i = 1; i <= (int)ViewData["TotalPages"]; i++)
                                 {
                                     <li class="page-item @(i == Convert.ToInt32(ViewData["Page"]) ? "active" : "")">
-                                        <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })">@i</a>
+                                        <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = i, MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"], sortOrder = ViewData["SortOrder"] })">@i</a>
                                     </li>
                                 }
 
                                 <!-- 下一頁 -->
                                 <li class="page-item @(Convert.ToInt32(ViewData["Page"]) != Convert.ToInt32(ViewData["TotalPages"]) ? "" : "disabled")">
-                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Min(Convert.ToInt32(ViewData["TotalPages"]), Convert.ToInt32(ViewData["Page"]) + 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] })" aria-label="Next">
+                                    <a class="page-link" href="@Url.Action("ProductList", new { category = ViewData["Category"], keyword = ViewData["Keyword"], page = Math.Min(Convert.ToInt32(ViewData["TotalPages"]), Convert.ToInt32(ViewData["Page"]) + 1), MinPrice = ViewData["MinPrice"], MaxPrice = ViewData["MaxPrice"] , sortOrder = ViewData["SortOrder"]})" aria-label="Next">
                                         <span aria-hidden="true">&raquo;</span>
                                     </a>
                                 </li>

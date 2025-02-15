@@ -19,7 +19,7 @@ namespace prjVegetable.Controllers
         }
 
         //商品列表
-        public IActionResult ProductList(ProductViewModel pvm, int page)
+        public IActionResult ProductList(ProductViewModel pvm, int page, string sortOrder)
         {
             DbVegetableContext db = new DbVegetableContext();
             List<CProductWrap> list = new List<CProductWrap>();
@@ -48,7 +48,7 @@ namespace prjVegetable.Controllers
             //篩選分類 category
             if (!string.IsNullOrEmpty(keyword))
             {
-                datas = datas.Where(p => p.FClassification.Contains(keyword) || p.FName.Contains(keyword) || p.FDescription.Contains(keyword));
+                datas = datas.Where(p => p.FClassification.Contains(keyword));
             }
 
             // 根據價格範圍進行篩選
@@ -65,6 +65,8 @@ namespace prjVegetable.Controllers
                 datas = datas.Where(p => p.FPrice <= maxPrice.Value);
             }
 
+            // 根據排序參數進行排序
+            datas = ApplySortOrder(datas, sortOrder);
 
             var products = datas.ToList();
 
@@ -128,12 +130,31 @@ namespace prjVegetable.Controllers
             ViewData["Keyword"] = textkeyword;
             ViewData["MinPrice"] = minPrice;
             ViewData["MaxPrice"] = maxPrice;
+            ViewData["SortOrder"] = sortOrder;
 
             return View(list);
         }
 
-
-
+        private IQueryable<TProduct> ApplySortOrder(IQueryable<TProduct> query, string sortOrder)
+        {
+            if (string.IsNullOrEmpty(sortOrder))
+            {
+                return query.OrderBy(p => p.FId); // 預設按 Id 排序
+            }
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    return query.OrderBy(p => p.FPrice);
+                case "price_desc":
+                    return query.OrderByDescending(p => p.FPrice);
+                case "publish_date_asc":
+                    return query.OrderBy(p => p.FLaunchAt);
+                case "publish_date_desc":
+                    return query.OrderByDescending(p => p.FLaunchAt);
+                default:
+                    return query.OrderBy(p => p.FId); // 預設按 Id 排序
+            }
+        }
 
 
         [HttpGet]
