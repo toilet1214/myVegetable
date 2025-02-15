@@ -30,7 +30,7 @@
                 <th>生日</th>
                 <th>手機</th>
                 <th>家用電話</th>
-                <th>電子郵件</th> 
+
                 <th>操作</th>
             </tr>
         </thead>
@@ -45,7 +45,7 @@
                 <td>{{ item.fBirth }}</td>
                 <td>{{ item.fPhone }}</td>
                 <td>{{ item.fTel }}</td>
-                <td>{{ item.fEmail }}</td>
+  
                 <td>
                     <a :href="'/Person/Edit/' + item.fId">編輯資料</a><br />
                     <a :href="'/Person/Details/' + item.fId">詳細資料</a><br />

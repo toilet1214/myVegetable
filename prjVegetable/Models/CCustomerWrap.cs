@@ -28,7 +28,7 @@ namespace prjVegetable.Models
             set { _person.FName = value; }
         }
         [Required(ErrorMessage = "必填")]
-        [DisplayName("帳號")]
+        [DisplayName("電子郵件")]
         public string FAccount
         {
             get { return _person.FAccount; }
@@ -75,13 +75,8 @@ namespace prjVegetable.Models
             get { return _person.FAddress; }
             set { _person.FAddress = value; }
         }
-        [Required(ErrorMessage = "必填")]
-        [DisplayName("Email")]
-        public string FEmail
-        {
-            get { return _person.FEmail; }
-            set { _person.FEmail = value; }
-        }
+
+        
         [DisplayName("統編")]
         public string FUbn
         {

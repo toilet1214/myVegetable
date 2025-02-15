@@ -54,19 +54,14 @@
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">
-                <div>
-                    <label asp-for="FGender" class="control-label">性別</label>
-                </div>                
-                <div class="form-check form-check-inline">
-                    <input asp-for="FGender" class="form-check-input" type="radio" id="inlineRadio1" value="0">
-                    <label class="form-check-label" for="inlineRadio1">男</label>
-                </div>
-
-                <div class="form-check form-check-inline">
-                    <input asp-for="FGender" class="form-check-input" type="radio" id="inlineRadio2" value="1">
-                    <label class="form-check-label" for="inlineRadio2">女</label>
-                </div>
-                @* <span asp-validation-for="FGender" class="text-danger"></span> *@
+                <label asp-for="FGender" class="control-label"></label>
+                <select asp-for="FGender" class="form-control text-start border-1 border-dark w-50">
+                    <option value="" disabled selected hidden>請選擇</option>
+                    <option value="男">男性</option>
+                    <option value="女">女性</option>
+                    <option value="其他">其他</option>
+                </select>
+                
             </div>
         </div>
         <div class="col-6">
@@ -116,13 +111,7 @@
             @* <span asp-validation-for="FAddress" class="text-danger"></span> *@
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="form-group">
-            <label asp-for="FEmail" class="control-label">電子郵件</label>
-            <input asp-for="FEmail" class="form-control" />
-            @* <span asp-validation-for="FEmail" class="text-danger"></span> *@
-        </div>
-    </div>
+    
     <div class="row mb-3">
         <div class="col-6">
             <div class="form-group">

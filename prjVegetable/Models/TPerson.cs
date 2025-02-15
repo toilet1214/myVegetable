@@ -23,8 +23,6 @@ public partial class TPerson
 
     public string FAddress { get; set; } = null!;
 
-    public string FEmail { get; set; } = null!;
-
     public string FUbn { get; set; } = null!;
 
     public int FPermission { get; set; }
@@ -37,5 +35,5 @@ public partial class TPerson
 
     public int FEditor { get; set; }
 
-    public bool FisEmailVerified { get; set; }
+    public bool FIsVerified { get; set; }
 }

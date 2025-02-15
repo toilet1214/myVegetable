@@ -42,7 +42,6 @@ namespace prjVegetable.Controllers
             e.FPhone = CustomerWrap.FPhone;
             e.FTel = CustomerWrap.FTel;
             e.FAddress = CustomerWrap.FAddress;
-            e.FEmail = CustomerWrap.FEmail;
             e.FUbn = CustomerWrap.FUbn;
 
 
