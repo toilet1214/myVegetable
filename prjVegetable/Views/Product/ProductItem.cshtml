@@ -9,14 +9,14 @@
     .quantity {
         width: 170px;
         display: flex;
-        border: 2px solid #333C48;
+        border: 2px solid #8D8266;
         border-radius: 4px;
         overflow: hidden;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
     }
 
     .quantity button {
-        background-color: #3498db;
+        background-color: #8D8266;
         color: #fff;
         border: none;
         cursor: pointer;
@@ -57,33 +57,36 @@
 
 </style>
 
+<div class="container">
+    <!-- 麵包屑 start -->
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Index", "Home")">
+                    首頁
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="@Url.Action("ProductList", "Product")">
+                    產品列表
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                <a href="@Url.Action("ProductList", "Product", new { category = @Model.FClassification })">
+                    @Model.FClassification
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">@Model.FName</li>
+        </ol>
+    </nav>
 
-<!-- 麵包屑 start -->
-<nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item">
-            <a href="@Url.Action("Index", "Home")">
-                首頁
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            <a href="@Url.Action("ProductList", "Product")">
-                產品列表
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">
-            <a href="@Url.Action("ProductList", "Product", new { category = @Model.FClassification })">
-                @Model.FClassification
-            </a>
-        </li>
-        <li class="breadcrumb-item active" aria-current="page">@Model.FName</li>
-    </ol>
-</nav>
+</div>
+
 <div class="container pb-5 mt-4">
     <div class="row">
         <div class="col-12 col-md-6">
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-indicators">
+                <div class="carousel-indicators m-0">
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"
                             aria-current="true" aria-label="Slide 1"></button>
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"
@@ -91,6 +94,12 @@
                     <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"
                             aria-label="Slide 3"></button>
                 </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
+                        data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
                 <div class="carousel-inner">
                     @{
                         int count = 0;
@@ -100,15 +109,9 @@
                             <div class="carousel-item @(count == 1 ? "active" : "")">
                                 <img src="~/Images/@Html.DisplayFor(modelItem => image)" class="d-block w-100" alt="...">
                             </div>
-
                         }
                     }
                 </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators"
-                        data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Previous</span>
-                </button>
                 <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators"
                         data-bs-slide="next">
                     <span class="carousel-control-next-icon" aria-hidden="true"></span>
@@ -116,7 +119,7 @@
                 </button>
             </div>
 
-            <div class="col-12 mt-3 d-flex justify-content-start">
+            <div class="col-12 d-flex justify-content-start">
                 @for (int i = 0; i < Model.ImgList.Count; i++)
                 {
                     <div class="col-2">
@@ -128,43 +131,33 @@
         </div>
         <div class="col-12 col-md-6 ">
             <div class="fs-2 fw-bold">@Model.FName</div>
-            <div class="text-secondary py-3 ">
+            <div>
+                <p class="text-danger fs-2 fw-bold m-0">NT$@Model.product.FPrice</p>
+            </div>
+            <div class="text-secondary">
                 <p class="my-0">@Model.product.FDescription</p>
             </div>
-            <div>
-                <p class="text-danger fs-2 fw-bold">NT$@Model.product.FPrice</p>
-            </div>
-            @* <div>
-                <p>商品編號:</p>
-            </div>
-            <div>
-                <p>供貨狀況: 尚有庫存</p>
-            </div> *@
-
-            <div class="quantity col-12 col-md-6 mb-3">
+            <div class="quantity col-12 col-md-6 my-3">
                 <button class="minus" aria-label="Decrease">&minus;</button>
                 <input type="number" class="input-box" value="1" min="1" max="10">
                 <button class="plus" aria-label="Increase">&plus;</button>
             </div>
-
-
             <div class="row justify-content-center pb-4">
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
                     <button type="button" class="btn addToCartButtonItem btn-outline-secondary" data-productid="@Model.FId">
                         <i class="bi bi-cart"></i>加入購物車
                     </button>
                 </div>
-                <div class="col-12 col-md-6">
+                <div class="col-12 col-md-4">
+                    <button type="button" class="btn  heartButton btn-outline-secondary rounded-pill" data-productid="@Model.FId">
+                        <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
+                    </button>
+                </div>
+                <div class="col-12 col-md-4">
                     <button type="button" class="btn buyNowButtonItem btn-secondary bg-primary w-100" data-productid="@Model.FId">
                         立即購買
                     </button>
                 </div>
-            </div>
-
-            <div class="">
-                <button type="button" class="btn  heartButton btn-outline-secondary rounded-pill" data-productid="@Model.FId">
-                    <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
-                </button>
             </div>
         </div>
     </div>
