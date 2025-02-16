@@ -471,6 +471,9 @@ public partial class DbVegetableContext : DbContext
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fUBN");
+            entity.Property(e => e.FVerificationToken)
+                .HasMaxLength(500)
+                .HasColumnName("fVerificationToken");
         });
 
         modelBuilder.Entity<TProduct>(entity =>

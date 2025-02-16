@@ -36,4 +36,6 @@ public partial class TPerson
     public int FEditor { get; set; }
 
     public bool FIsVerified { get; set; }
+
+    public string? FVerificationToken { get; set; }
 }
