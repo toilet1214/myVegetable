@@ -19,6 +19,8 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TCart> TCarts { get; set; }
 
+    public virtual DbSet<TComment> TComments { get; set; }
+
     public virtual DbSet<TFaq> TFaqs { get; set; }
 
     public virtual DbSet<TFavorite> TFavorites { get; set; }
@@ -107,6 +109,25 @@ public partial class DbVegetableContext : DbContext
                 .HasColumnName("fCount");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
+        });
+
+        modelBuilder.Entity<TComment>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tComment__D9F8227C95EC9453");
+
+            entity.ToTable("tComment");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FComment)
+                .HasColumnType("text")
+                .HasColumnName("fComment");
+            entity.Property(e => e.FCreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fCreatedAt");
+            entity.Property(e => e.FOrderListId).HasColumnName("fOrderListId");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+            entity.Property(e => e.FStar).HasColumnName("fStar");
         });
 
         modelBuilder.Entity<TFaq>(entity =>
