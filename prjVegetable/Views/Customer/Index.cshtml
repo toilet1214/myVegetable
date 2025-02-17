@@ -12,7 +12,7 @@
 <div class="container my-5" id="app">
     <div class="row">
         <div class="col-md-3">
-            <nav class="nav flex-column">
+            <nav class="nav flex-column align-items-start">
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
@@ -265,74 +265,74 @@
 
 @section Scripts
 {
-    <script>
-        $(function () {
-            $("#datepicker").datepicker();
-        });
-    </script>
+        <script>
+            $(function () {
+                $("#datepicker").datepicker();
+            });
+        </script>
 
-    <script>
-        const app = Vue.createApp({
-            data() {
-                return {
-                    Customer: {}, // 用來存放後端獲得的會員資料
-                    edit: 0, // 是否啟用編輯
-                    passwordError: false, // 用來顯示錯誤訊息
-                    OldPassword: '', // 用來輸入舊密碼
-                    newPassword: '', // 用來輸入新密碼
-                    ConfirmPassword: '', // 用來輸入確認密碼
-                };
-            },
-            mounted() {
-                this.loadCustomer(); // 確保調用正確的 method
-            },
-            methods: {
-                loadCustomer() {
-                    axios.get(`/Customer/GetCustomerById`)
-                        .then(response => {
-                            this.Customer = response.data;  // 確保不是 null
-                        });
+        <script>
+            const app = Vue.createApp({
+                data() {
+                    return {
+                        Customer: {}, // 用來存放後端獲得的會員資料
+                        edit: 0, // 是否啟用編輯
+                        passwordError: false, // 用來顯示錯誤訊息
+                        OldPassword: '', // 用來輸入舊密碼
+                        newPassword: '', // 用來輸入新密碼
+                        ConfirmPassword: '', // 用來輸入確認密碼
+                    };
                 },
-                goToIndex() {
-                    window.location.href = "/Customer/Index";  // 返回會員列表
+                mounted() {
+                    this.loadCustomer(); // 確保調用正確的 method
                 },
-                toggleEditing() {
-                    this.edit = 1;  // 切換 edit 值
-                },
-                cancel() {
-                    this.edit = 0;
-                },
-                toggleEditPassword() {
-                    this.edit = 2;
-                },
-                saveCustomer() {
-                    const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
-                    if (this.edit === 2) {
-                        // 在這裡處理密碼更新的邏輯
-                        if (this.OldPassword === this.fPassword) {
-                            this.passwordError = true;
-                            return;
+                methods: {
+                    loadCustomer() {
+                        axios.get(`/Customer/GetCustomerById`)
+                            .then(response => {
+                                this.Customer = response.data;  // 確保不是 null
+                            });
+                    },
+                    goToIndex() {
+                        window.location.href = "/Customer/Index";  // 返回會員列表
+                    },
+                    toggleEditing() {
+                        this.edit = 1;  // 切換 edit 值
+                    },
+                    cancel() {
+                        this.edit = 0;
+                    },
+                    toggleEditPassword() {
+                        this.edit = 2;
+                    },
+                    saveCustomer() {
+                        const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
+                        if (this.edit === 2) {
+                            // 在這裡處理密碼更新的邏輯
+                            if (this.OldPassword === this.fPassword) {
+                                this.passwordError = true;
+                                return;
+                            }
+                            if (this.newPassword !== this.ConfirmPassword) {
+                                this.passwordError = true; 
+                                return;
+                            }
+                            customerData.fPassword = this.newPassword;
+                            this.passwordError = false; // 清除錯誤訊息
                         }
-                        if (this.newPassword !== this.ConfirmPassword) {
-                            this.passwordError = true; 
-                            return;
-                        }
-                        customerData.fPassword = this.newPassword;
-                        this.passwordError = false; // 清除錯誤訊息
+                        axios.put(`/Customer/update`, customerData)
+                            .then(response => {
+                                alert("資料已儲存!");
+                                this.edit = 0;  // 儲存後退出編輯模式
+                            })
+                            .catch(error => {
+                                console.error("儲存客戶資料時發生錯誤:", error);
+                            });
                     }
-                    axios.put(`/Customer/update`, customerData)
-                        .then(response => {
-                            alert("資料已儲存!");
-                            this.edit = 0;  // 儲存後退出編輯模式
-                        })
-                        .catch(error => {
-                            console.error("儲存客戶資料時發生錯誤:", error);
-                        });
                 }
-            }
-        });
+            });
 
-        app.mount("#app"); // 掛載 Vue 應用
-    </script>
+            app.mount("#app"); // 掛載 Vue 應用
+        </script>
 
 }
