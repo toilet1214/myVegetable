@@ -1,13 +1,9 @@
 ﻿@model IEnumerable<prjVegetable.Models.CReportWrap>
-
 @{
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-
-<h1>List</h1>
-
-
+<h1>意見回覆</h1>
 <table class="table" id="List">
     <thead>
         <tr>
@@ -62,7 +58,6 @@
     </tbody>
 </table>
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
