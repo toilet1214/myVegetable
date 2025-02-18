@@ -111,6 +111,12 @@
     });
 
     document.getElementById("submitAllData").addEventListener("click", function () {
+        // 先檢查備註欄位，若為空或只含空白則設定為 "無"
+        let fNoteField = document.querySelector("input[name='GoodsInAndOut.FNote']");
+        if (!fNoteField.value || fNoteField.value.trim() === "") {
+            fNoteField.value = "無";
+        }
+
         let formData = new FormData(document.getElementById("MainForm"));
 
         fetch("/GoodsInAndOut/Create", {
@@ -138,13 +144,14 @@
                     }).then(response => response.json())
                         .then(data => {
                             alert("所有資料提交完成！");
-                            window.location.reload(); // reload 整個頁面
+                            window.location.reload();
                         }).catch(error => console.error("Error:", error));
                 } else {
                     alert("提交失敗：" + data.message);
                 }
             }).catch(error => console.error("Error:", error));
     });
+
 
     // 頁面載入時，取得產品資訊
     document.addEventListener("DOMContentLoaded", function () {
