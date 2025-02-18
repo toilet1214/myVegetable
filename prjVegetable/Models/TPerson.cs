@@ -38,6 +38,4 @@ public partial class TPerson
     public bool FIsVerified { get; set; }
 
     public string? FGoogleId { get; set; }
-
-    public string? FVerificationToken { get; set; }
 }

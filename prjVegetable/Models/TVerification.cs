@@ -9,15 +9,15 @@ public partial class TVerification
 
     public int FPersonId { get; set; }
 
-    public string Ftoken { get; set; } = null!;
+    public string FToken { get; set; } = null!;
 
-    public string FtokenType { get; set; } = null!;
+    public string FTokenType { get; set; } = null!;
 
-    public DateTime? FtokenSentTime { get; set; }
+    public DateTime? FTokenSentTime { get; set; }
 
-    public DateTime FexpirationTime { get; set; }
+    public DateTime FExpirationTime { get; set; }
 
-    public bool FisUsed { get; set; }
+    public bool FIsUsed { get; set; }
 
-    public DateTime? FusedTime { get; set; }
+    public DateTime? FUsedTime { get; set; }
 }

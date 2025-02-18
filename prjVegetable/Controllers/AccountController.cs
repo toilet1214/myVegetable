@@ -16,72 +16,101 @@ namespace prjVegetable.Controllers
     {
         private readonly DbVegetableContext _context;
         private readonly IConfiguration _config;
+
         public AccountController(IConfiguration config, DbVegetableContext context)
         {
             _config = config;
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
+        // 登入
         [HttpPost]
         public IActionResult Login(CLoginViewModel vm, string returnUrl)
         {
-            TPerson user = (new DbVegetableContext()).TPeople.FirstOrDefault(t => t.FAccount.Equals(vm.txtAccount) && t.FPassword.Equals(vm.txtPassword));
-            if (user != null && user.FPassword.Equals(vm.txtPassword))
+            TPerson user = _context.TPeople.FirstOrDefault(t =>
+                t.FAccount == vm.txtAccount && t.FPassword == vm.txtPassword);
+
+            if (user != null)
             {
                 string json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_IS_VERIFIED, user.FIsVerified.ToString());
+
                 TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
                 return Redirect(returnUrl);
             }
-            TempData["ErrorMessage"] = "帳號或密碼錯誤，請再試一次";
+
+            TempData["LoginFail"] = "帳號或密碼錯誤，請再試一次";
             return Redirect(returnUrl);
         }
 
+        // 註冊
         public IActionResult Register()
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> Register(TPerson P)
         {
-            bool exists = _context.TPeople.Any(x => x.FAccount == P.FAccount);
-
-            if (exists)
+            if (_context.TPeople.Any(x => x.FAccount == P.FAccount))
             {
                 TempData["ErrorRegister"] = "這個信箱已經註冊過了！";
                 return RedirectToAction("Register");
             }
 
-            // 產生驗證 Token
-            P.FVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
             P.FIsVerified = false;
-
             _context.TPeople.Add(P);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync(); // 先存入資料庫獲取 FId
 
-            // 發送驗證信
-            await SendVerificationEmail(P.FAccount, P.FVerificationToken);
+            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+            var verification = new TVerification
+            {
+                FPersonId = P.FId,
+                FToken = token,
+                FTokenType = "驗證",
+                FExpirationTime = DateTime.UtcNow.AddMinutes(10),
+                FIsUsed = false
+            };
+
+            _context.TVerifications.Add(verification);
+            await _context.SaveChangesAsync();
+
+            await SendVerificationEmail(P.FAccount, token);
 
             return RedirectToAction("Index", "Home");
         }
+
+        // 驗證 Email
         public IActionResult VerifyEmail(string email, string token)
         {
-            var user = _context.TPeople.FirstOrDefault(u => u.FAccount == email);
-            if (user == null || user.FVerificationToken != token)
+            var verification = _context.TVerifications.FirstOrDefault(v =>
+                v.FToken == token && v.FTokenType == "驗證");
+
+            if (verification == null || verification.FIsUsed || verification.FExpirationTime < DateTime.UtcNow)
             {
                 return Content("驗證失敗，請確認連結是否正確");
             }
 
+            var user = _context.TPeople.FirstOrDefault(u => u.FId == verification.FPersonId && u.FAccount == email);
+
+            if (user == null)
+            {
+                return Content("驗證失敗，請確認連結是否正確");
+            }
+
+            verification.FIsUsed = true;
+            verification.FUsedTime = DateTime.UtcNow;
             user.FIsVerified = true;
-            user.FVerificationToken = null;
             _context.SaveChanges();
 
             return Content("驗證成功，您現在可以登入");
         }
 
+        // 發送驗證 Email
         private async Task SendVerificationEmail(string email, string token)
         {
             var verificationUrl = Url.Action("VerifyEmail", "Account",
@@ -89,7 +118,103 @@ namespace prjVegetable.Controllers
 
             var body = $"請點擊 <a href='{verificationUrl}'>這裡</a> 來驗證您的帳戶。";
 
-            using var smtpClient = new SmtpClient("smtp.gmail.com")
+            await SendEmail(email, "請驗證您的電子郵件", body);
+        }
+
+        // 忘記密碼
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = _context.TPeople.FirstOrDefault(u => u.FAccount == email);
+            if (user == null)
+            {
+                TempData["ErrorForgot"] = "此信箱未註冊！";
+                return RedirectToAction("ForgotPassword");
+            }
+
+            // 產生驗證 Token
+            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+            // 新增驗證 Token 記錄
+            var verification = new TVerification
+            {
+                FPersonId = user.FId,
+                FToken = token,
+                FTokenType = "忘記密碼",
+                FExpirationTime = DateTime.UtcNow.AddMinutes(10),
+                FIsUsed = false
+            };
+
+            _context.TVerifications.Add(verification);
+            await _context.SaveChangesAsync();
+
+            // 發送重設密碼郵件
+            await SendResetPasswordEmail(email, token);
+
+            TempData["SuccessForgot"] = "請檢查您的電子郵件以重設密碼。";
+            return RedirectToAction("ForgotPassword");
+        }
+
+
+        private async Task SendResetPasswordEmail(string email, string token)
+        {
+            var resetUrl = Url.Action("ResetPassword", "Account",
+                new { email = email, token = token }, Request.Scheme);
+
+            var body = $"請點擊 <a href='{resetUrl}'>這裡</a> 來重設您的密碼。";
+
+            await SendEmail(email, "重設您的密碼", body);
+        }
+
+        public IActionResult ResetPassword(string email, string token)
+        {
+            var verification = _context.TVerifications.FirstOrDefault(v =>
+                v.FToken == token && v.FTokenType == "忘記密碼");
+
+            if (verification == null || verification.FIsUsed || verification.FExpirationTime < DateTime.UtcNow)
+            {
+                return Content("密碼重設連結無效或已過期");
+            }
+
+            var vm = new ResetPasswordViewModel { Email = email, Token = token };
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel vm)
+        {
+            var verification = _context.TVerifications.FirstOrDefault(v =>
+                v.FToken == vm.Token && v.FTokenType == "忘記密碼");
+
+            if (verification == null || verification.FIsUsed || verification.FExpirationTime < DateTime.UtcNow)
+            {
+                return Content("密碼重設連結無效或已過期");
+            }
+
+            var user = _context.TPeople.FirstOrDefault(u => u.FId == verification.FPersonId && u.FAccount == vm.Email);
+            if (user == null)
+            {
+                return Content("使用者不存在");
+            }
+
+            user.FPassword = vm.NewPassword;
+            verification.FIsUsed = true;
+            verification.FUsedTime = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+
+            return Content("密碼已成功重設，請使用新密碼登入");
+        }
+
+        // 發送 Email 的通用方法
+        private async Task SendEmail(string toEmail, string subject, string body)
+        {
+            var smtpClient = new SmtpClient(_config["Smtp:Host"])
             {
                 Port = 587,
                 Credentials = new NetworkCredential("vege.man05@gmail.com", "vrdg elte degt sowm"),
@@ -99,44 +224,13 @@ namespace prjVegetable.Controllers
             var mailMessage = new MailMessage
             {
                 From = new MailAddress("vege.man05@gmail.com"),
-                Subject = "請驗證您的電子郵件",
+                Subject = subject,
                 Body = body,
                 IsBodyHtml = true
             };
-            mailMessage.To.Add(email);
+            mailMessage.To.Add(toEmail);
 
             await smtpClient.SendMailAsync(mailMessage);
         }
-        public async Task<IActionResult> ResendVerificationEmail(string email)
-        {
-            var user = _context.TPeople.FirstOrDefault(u => u.FAccount == email);
-            if (user == null)
-            {
-                TempData["ErrorMessage"] = "找不到此 Email";
-                return RedirectToAction("Forgot");
-            }
-            if (user.FIsVerified)
-            {
-                TempData["ErrorMessage"] = "此帳戶已驗證";
-                return RedirectToAction("Index", "Home");
-            }
-
-            // 重新產生驗證 Token
-            user.FVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
-            _context.SaveChanges();
-
-            await SendVerificationEmail(user.FAccount, user.FVerificationToken);
-
-            TempData["SuccessMessage"] = "驗證信已重新發送，請檢查您的信箱";
-            return RedirectToAction("Index", "Home");
-        }
-        public IActionResult Forgot()
-        {
-            return View();
-        }
-
-
     }
-
-
 }

@@ -395,16 +395,15 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TPerson>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227CFE796E52");
+            entity.HasKey(e => e.FId).HasName("PK__tPerson__D9F8227CF1E911B4");
 
             entity.ToTable("tPerson");
 
-            entity.HasIndex(e => e.FAccount, "UQ__tPerson__E12994637B536088").IsUnique();
+            entity.HasIndex(e => e.FAccount, "UQ__tPerson__E1299463E44C244C").IsUnique();
 
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FAccount)
                 .HasMaxLength(500)
-                .HasDefaultValue("")
                 .HasColumnName("fAccount");
             entity.Property(e => e.FAddress)
                 .HasDefaultValue("")
@@ -454,9 +453,6 @@ public partial class DbVegetableContext : DbContext
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fUBN");
-            entity.Property(e => e.FVerificationToken)
-                .HasMaxLength(500)
-                .HasColumnName("fVerificationToken");
         });
 
         modelBuilder.Entity<TProduct>(entity =>
@@ -638,29 +634,29 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TVerification>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tVerific__D9F8227C439DCEF5");
+            entity.HasKey(e => e.FId).HasName("PK__tVerific__D9F8227C6F3022C6");
 
             entity.ToTable("tVerifications");
 
-            entity.HasIndex(e => e.Ftoken, "UQ__tVerific__B6A2AFD845C5DCE1").IsUnique();
+            entity.HasIndex(e => e.FToken, "UQ__tVerific__B6A2AFD803F5EE58").IsUnique();
 
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
-            entity.Property(e => e.FexpirationTime)
+            entity.Property(e => e.FExpirationTime)
                 .HasColumnType("datetime")
                 .HasColumnName("FExpirationTime");
-            entity.Property(e => e.FisUsed).HasColumnName("FIsUsed");
-            entity.Property(e => e.Ftoken)
+            entity.Property(e => e.FIsUsed).HasColumnName("FIsUsed");
+            entity.Property(e => e.FToken)
                 .HasMaxLength(255)
                 .HasColumnName("FToken");
-            entity.Property(e => e.FtokenSentTime)
+            entity.Property(e => e.FTokenSentTime)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("FTokenSentTime");
-            entity.Property(e => e.FtokenType)
+            entity.Property(e => e.FTokenType)
                 .HasMaxLength(20)
                 .HasColumnName("FTokenType");
-            entity.Property(e => e.FusedTime)
+            entity.Property(e => e.FUsedTime)
                 .HasColumnType("datetime")
                 .HasColumnName("FUsedTime");
         });
