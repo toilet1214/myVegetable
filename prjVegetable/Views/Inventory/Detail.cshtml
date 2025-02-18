@@ -46,104 +46,114 @@
         }
 </style>
 <div class="container my-5">
-        <div class="row d-block mb-3">
-            <div class="btn-group" role="group" aria-label="Basic example">
-                <button type="button" id="searchButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                    查詢
-                </button>
+    <div class="d-flex align-items-center flex-wrap gap-3">
+        <!-- 按鈕群組 -->
+        <div class="btn-group me-3" role="group" aria-label="Inventory Navigation">
+            <!-- 第一筆 -->
             <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["FirstId"] })"
-               class="btn btn-primary first-btn"
+               class="btn first-btn"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="第一筆"
                data-current="@Model.InventoryMain.FId"
                data-first="@ViewData["FirstId"]">
-                <i class="bi bi-skip-start-fill me-2"></i>第一筆
+                <i class="bi bi-skip-start-fill"></i>
             </a>
+
+            <!-- 上一筆 -->
             <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })"
-               class="btn btn-primary prev-btn"
+               class="btn prev-btn"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="上一筆"
                data-current="@Model.InventoryMain.FId"
                data-first="@ViewData["FirstId"]">
-                <i class="bi bi-caret-left-fill me-2"></i>上一筆
+                <i class="bi bi-caret-left-fill"></i>
             </a>
+
+            <!-- 下一筆 -->
             <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })"
-               class="btn btn-primary next-btn"
+               class="btn next-btn"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="下一筆"
                data-current="@Model.InventoryMain.FId"
                data-last="@ViewData["LastId"]">
-                <i class="bi bi-caret-right-fill me-2"></i>下一筆
+                <i class="bi bi-caret-right-fill"></i>
             </a>
+
+            <!-- 最後一筆 -->
             <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })"
-               class="btn btn-primary last-btn"
+               class="btn last-btn"
+               data-bs-toggle="tooltip"
+               data-bs-placement="top"
+               title="最後一筆"
                data-current="@Model.InventoryMain.FId"
                data-last="@ViewData["LastId"]">
-                <i class="bi bi-skip-end-fill me-2"></i>最後一筆
+                <i class="bi bi-skip-end-fill"></i>
             </a>
-
-                <button type="button" id="addButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="bi bi-file-earmark me-2"></i>新增
-                </button>
-                <button type="button" class="btn btn-primary" id="editButton" data-ignore-exit>
-                    <i class="bi bi-pencil me-2"></i>編輯
-                </button>
-                <button type="button" class="btn btn-primary d-none" id="saveButton">
-                    <i class="bi bi-floppy me-2"></i>儲存
-                </button>
-                <button type="button" class="btn btn-primary" id="deletebutton" disabled>
-                    <i class="bi bi-trash me-2"></i>刪除
-                </button>
-                <button type="button" class="btn btn-primary me-2" id="printButton" onclick="printTable()">
-                    <i class="bi bi-printer me-2"></i>列印
-                </button>
-            </div>
         </div>
 
-        <!-- 工具列 end -->
-        <hr />
-        <div class="row">
-            <div class="row">
-                <div class="col-5">
-                    <!-- 庫存盤點單號 -->
-                    <div class="d-flex mb-0 align-items-center">
-                        <label asp-for="InventoryMain.FId" class="pe-1 mb-3">庫存盤點單號</label>
-                        <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto mb-3 ms-auto" type="text" readonly />
-                        <span asp-validation-for="InventoryMain.FId" class="text-danger"></span>
-                    </div>
-                    <!-- 盤點基準日 -->
-                    <div class="d-flex mb-0 align-items-center">
-                        <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-3">盤點基準日</label>
-                        <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-                        <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
-                    </div>
-
-                    <!-- 建檔日期 -->
-                    <div class="d-flex align-items-center">
-                        <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-3">建檔日期</label>
-                        <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto mb-3 ms-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
-                        <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger"></span>
-                    </div>
-                </div>
-                <div class="col-7 d-flex">
-                    <div id="inventoryNoteView" class="p-3 border border-primary rounded w-100">@Model.InventoryMain.FNote</div>
-                    <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryMain.FNote</textarea>
-                </div>
-                <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
-                @foreach (var item in Model.InventoryDetails)
-                {
-                    <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
-                }
-            </div>
+        <!-- 庫存盤點單號 -->
+        <div class="d-flex align-items-center">
+            <label asp-for="InventoryMain.FId" class="pe-1 mb-0">庫存盤點單號：</label>
+            <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
+            <span asp-validation-for="InventoryMain.FId" class="text-danger ms-2"></span>
         </div>
-        <hr />
-        <div>
-            <div class="d-flex justify-content-end">
-                <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
-                <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
-            </div>
-            <div class="table-container">
-            <div class="table-responsive" style="max-height: 50%;">
+
+        <!-- 盤點基準日 -->
+        <div class="d-flex align-items-center">
+            <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
+            <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
+            <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger ms-2"></span>
+        </div>
+
+        <!-- 建檔日期 -->
+        <div class="d-flex align-items-center">
+            <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
+            <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
+            <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger ms-0"></span>
+
+        </div>
+
+        <!-- 搜尋按鈕 -->
+        <button type="button" id="searchButton" class="btn"
+                data-bs-toggle="modal"
+                data-bs-target="#exampleModal"
+                data-bs-placement="top"
+                title="點擊進行查詢">
+            <i class="bi bi-search"></i>
+        </button>
+        </div>
+
+    <div class="row">
+        <!-- 備註欄 -->
+        <div class="d-flex mt-3">
+            <div id="inventoryNoteView" class="p-3 border rounded w-100">@Model.InventoryMain.FNote</div>
+            <textarea id="inventoryNoteEdit" class="form-control d-none w-100">@Model.InventoryMain.FNote</textarea>
+        </div>
+
+        <!-- 隱藏的必要欄位 -->
+        <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
+        @foreach (var item in Model.InventoryDetails)
+        {
+            <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+        }
+    </div>
+    <div class="d-flex">
+        <!-- 左邊的表格 -->
+        <div class="table-container flex-grow-1 me-3 mt-3">
+            <div class="table-responsive">
                 <table class="table text-center" id="printTable">
                     <thead>
                         <tr>
-                            <th>商品Id</th>
-                            <th>商品名稱</th>
+                            <th>商品</th>
                             <th>系統庫存數量</th>
+                            <th>
+                                <button type="button" class="btn btn-light" id="syncStockButton" disabled>
+                                    <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </th>
                             <th>實際庫存數量(填入數量)</th>
                             <th>差異數量</th>
                         </tr>
@@ -152,11 +162,9 @@
                         @foreach (var item in Model.InventoryDetails)
                         {
                             <tr>
-                                <td>@Html.DisplayFor(modelItem => item.FProductId)</td>
-                                <td>@Html.DisplayFor(modelItem => item.FName)</td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.FSystemQuantity)
-                                </td>
+                                <td>@($"{item.FProductId} - {item.FName}")</td>
+                                <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
+                                <td></td> <!-- 空白欄位 -->
                                 <td>
                                     <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
                                 </td>
@@ -167,7 +175,7 @@
                                     }
                                     else
                                     {
-                                        @("")
+                                        @(" ")
                                     }
                                 </td>
                                 <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
@@ -177,13 +185,35 @@
                     </tbody>
                 </table>
             </div>
-            </div>
-        </div>
-        <hr />
-        <div class="d-flex mb-3 align-items-center">
-            <span class="ms-auto">共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆</span>
         </div>
 
+        <!-- 右邊的按鈕 -->
+        <div class="d-flex flex-column align-items-center mt-3">
+            <button type="button" class="btn btn-light mb-2" data-bs-toggle="modal" data-bs-target="#addModal">
+                <i class="bi bi-plus-square"></i>
+            </button>
+            <button type="button" class="btn btn-light mb-2" id="editButton" data-ignore-exit>
+                <i class="bi bi-pencil-square"></i>
+            </button>
+            <button type="button" class="btn btn-light mb-2 d-none" id="saveButton">
+                <i class="bi bi-floppy"></i>
+            </button>
+            <button type="button" class="btn btn-light mb-2" id="deletebutton" disabled>
+                <i class="bi bi-trash-fill"></i>
+            </button>
+            <button type="button" class="btn btn-light" id="printButton" onclick="printTable()">
+                <i class="bi bi-printer-fill"></i>
+            </button>
+        </div>
+    </div>
+    <hr/>
+    <div class="d-flex mb-3 align-items-center mt-3">
+        <span class="ms-auto">共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆</span>
+    </div>
+    <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="btn btn-primary me-2" id="syncStockButton" disabled>將系統庫存數量帶入實際庫存數量</button>
+        <button type="button" class="btn btn-primary" id="resetStockButton" disabled>將實際庫存數量歸零</button>
+    </div>
 </div>
 
 <!-- 選擇條件來查詢 -->
@@ -619,19 +649,20 @@
 <!-- 將系統庫存數量帶入實際庫存數量 -->
 <script>
     document.getElementById('syncStockButton').addEventListener('click', function () {
-        const rows = document.querySelectorAll('table tbody tr');
+        const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
 
         rows.forEach(row => {
-            const systemQuantity = row.querySelector('td:nth-child(3)');
-            const actualQuantityInput = row.querySelector('td:nth-child(4) input');
+            const systemQuantity = row.querySelector('td:nth-child(2)'); // 第2欄是系統庫存數量
+            const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第4欄是實際庫存數量的輸入框
 
             if (systemQuantity && actualQuantityInput) {
-                const systemQuantityValue = systemQuantity.textContent.trim();
-                actualQuantityInput.value = systemQuantityValue;
+                const systemQuantityValue = systemQuantity.textContent.trim(); // 取得系統庫存數量值
+                actualQuantityInput.value = systemQuantityValue; // 將其填入實際庫存數量的輸入框
             }
         });
     });
 </script>
+
 
 <!-- 將實際庫存數量歸零 -->
 <script>
@@ -649,7 +680,7 @@
 </script>
 
 <!-- 第一筆與最後一筆的提示-->
-<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+ <!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
 <script>
         document.addEventListener("DOMContentLoaded", () => {
         // 第一筆與上一筆按鈕檢查
