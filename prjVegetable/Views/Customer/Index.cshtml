@@ -76,7 +76,7 @@
                             <div class="row">
                                 <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="datepicker" :placeholder="Customer.fBirth" v-model="Customer.fBirth">
+                                    <input type="date" class="form-control" id="datepicker" :placeholder="Customer.fBirth" v-model="Customer.fBirth">
                                 </div>
                             </div>
                         </div>
@@ -204,7 +204,7 @@
                             <div class="row">
                                 <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" id="datepicker" :value="Customer.fBirth" readonly>
+                                    <input type="date" class="form-control"  :value="Customer.fBirth" readonly>
                                 </div>
                             </div>
                         </div>
@@ -265,11 +265,7 @@
 
 @section Scripts
 {
-        <script>
-            $(function () {
-                $("#datepicker").datepicker();
-            });
-        </script>
+    
 
         <script>
             const app = Vue.createApp({

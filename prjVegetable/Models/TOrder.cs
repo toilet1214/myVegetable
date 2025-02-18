@@ -23,5 +23,5 @@ public partial class TOrder
 
     public string FPhone { get; set; } = null!;
 
-    public string? FNote { get; set; }
+    public string FNote { get; set; } = null!;
 }
