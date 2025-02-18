@@ -112,22 +112,35 @@
                     <div class="row">
                         <label for="fImgName" class="col-md-2 col-form-label">商品照片：</label>
                         <div v-if="product.Images && product.Images.length > 0">
-                            <div>                                
-                                <img :src=`https://localhost:7251/images/${product.Images[0]}` alt="圖片01" class="img-fluid"
+                            <div>
+                                <img v-if="!preview1" :src="`https://localhost:7251/images/${product.Images[0]}`" alt="圖片01" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
-                                     <input type="file" @@change="fileChange($event, 0)">
-
-                                <img :src=`https://localhost:7251/images/${product.Images[1]}` alt="圖片02" class="img-fluid"
+                                <img v-if="preview1" :src="preview1" alt="預覽圖片" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
-                                <input type="file" @@change="fileChange($event, 1)">
-
-                                <img :src=`https://localhost:7251/images/${product.Images[2]}` alt="圖片03" class="img-fluid"
-                                     style="max-width: 25%; margin-bottom: 10px;" />
-                                <input type="file" @@change="fileChange($event, 2)">
+                                <input type="file" accept="image/*" @@change ="previewimage($event, 0)">
+                                <button @@click ="removeImage(0)" v-if="product.Images.length > 0">移除圖片</button> <!-- 移除圖片按鈕 -->
                             </div>
-                        </div>                        
-                        @*<input type="file" id="insert" style="display: none;" onchange="insertFileChange()" />*@
-                        @* <input type="file" id="insert" @@change="insertFileChange" /> *@
+
+                            <!-- 區塊 2: 顯示圖片 2 -->
+                            <div v-if="product.Images.length > 1">
+                                <img v-if="!preview2" :src="`https://localhost:7251/images/${product.Images[1]}`" alt="圖片02" class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <img v-if="preview2" :src="preview2" alt="預覽圖片" class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <input type="file" accept="image/*" @@change ="previewimage($event, 1)">
+                                <button @@click ="removeImage(1)" v-if="product.Images.length > 1">移除圖片</button> <!-- 移除圖片按鈕 -->
+                            </div>
+
+                            <!-- 區塊 3: 顯示圖片 3 -->
+                            <div v-if="product.Images.length > 2">
+                                <img v-if="!preview3" :src="`https://localhost:7251/images/${product.Images[2]}`" alt="圖片03" class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <img v-if="preview3" :src="preview3" alt="預覽圖片" class="img-fluid"
+                                     style="max-width: 25%; margin-bottom: 10px;" />
+                                <input type="file" accept="image/*" @@change ="previewimage($event, 2)">
+                                <button @@click ="removeImage(2)" v-if="product.Images.length > 2">移除圖片</button> <!-- 移除圖片按鈕 -->
+                            </div>
+                        </div>  
                     </div>
                 </div>
 
@@ -229,16 +242,29 @@
                         <div class="row">
                             <label for="fImgName" class="col-md-3 col-form-label">商品照片：</label>
                             <div class="col-md-9">
-                                <div v-if="product.Images && product.Images.length > 0">
-                                    <span v-for="(image, index) in product.Images" :key="index">
-                                        <img :src="'https://localhost:7251/images/' + image"
-                                             alt="'商品圖片 ' + (index + 1)"
-                                             class="img-fluid d-inline-flex"
-                                             style="max-width: 25%; margin-bottom: 10px; " />
-                                    </span>
+                                <div v-if="product.Images && product.Images.length > 0 && product.Images[0]">
+                                    <img :src="'https://localhost:7251/images/' + product.Images[0]"
+                                         alt="商品圖片 1"
+                                         class="img-fluid d-inline-flex"
+                                         style="max-width: 25%; margin-bottom: 10px; " />
                                 </div>
-                                <div v-else>loading</div>
+                                <div v-else-if="product.Images.length === 0">loading</div>
 
+                                <!-- 第二個圖片區塊 -->
+                                <div v-if="product.Images && product.Images.length > 1 && product.Images[1]">
+                                    <img :src="'https://localhost:7251/images/' + product.Images[1]"
+                                         alt="商品圖片 2"
+                                         class="img-fluid d-inline-flex"
+                                         style="max-width: 25%; margin-bottom: 10px; " />
+                                </div>
+
+                                <!-- 第三個圖片區塊 -->
+                                <div v-if="product.Images && product.Images.length > 2 && product.Images[2]">
+                                    <img :src="'https://localhost:7251/images/' + product.Images[2]"
+                                         alt="商品圖片 3"
+                                         class="img-fluid d-inline-flex"
+                                         style="max-width: 25%; margin-bottom: 10px; " />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -270,6 +296,11 @@
                     },                    
                     edit:false, //啟用編輯
                     file: null,
+                    preview:null,
+                    images:null,
+                    preview1:null,
+                    preview2:null,
+                    preview3:null,
                 };
             },
             mounted() {
@@ -291,6 +322,9 @@
                                 console.log(response.data);  // 查看返回的產品資料
                                 this.product = response.data; // 把返回的資料賦值給 product
                                 this.product.Images = response.data.images || [];
+
+                                localStorage.setItem('productImages', JSON.stringify(this.product.Images));
+                                this.displayImages();
                             })
                             .catch(error => {
                                 console.error('資料加載錯誤', error);
@@ -301,6 +335,15 @@
                         console.error('未提供有效的 ID');
                     }
                 },
+
+                displayImages() {
+                    const savedImages = JSON.parse(localStorage.getItem('productImages'));
+
+                    if (savedImages && savedImages.length > 0) {
+                        this.product.Images = savedImages;
+                    }
+                },
+
                 goToIndex() {
                     window.location.href = "/Products/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
                 },
@@ -309,51 +352,69 @@
                 this.edit = !this.edit;  // 切換 edit 值
                 },
 
-                
-
-                //選擇文件更新照片
                 fileChange(event, index) {
                     const file = event.target.files[0];
                     //console.log(inputFile);
                     if (file) { this.uploadfile(file, index); }
                 },
-                async uploadfile(file, index)
-                {
+                async uploadfile(file, index) {
                     const formData = new FormData();
                     formData.append("file", file);
+                    formData.append("index", index);
 
                     try {
                         const response = await fetch('https://localhost:7251/updateImage', {
                             method: 'PUT',
                             body: formData
                         });
+
                         if (response.ok) {
                             const data = await response.json();
-                            console.log("上傳成功", data)
-                            if (data && data.FilePath) {
-                                console.log("圖片路徑:", data.FilePath);  // 確認 FilePath
+                            console.log("上傳成功", data);
 
-                                if (this.product.Images[index]!==data.FilePath )
-                                {
-                                    this.product.Images[index] = data.FilePath
+                            if (data && data.Images) {
+                                console.log("後端回傳的圖片資料:", data.Images);
+
+                                // 確保後端回傳的圖片資料包含正確的排序
+                                // 先移除舊圖片
+                                const oldImage = this.product.Images[index];
+
+                                // 移除舊圖片
+                                const imageIndex = this.product.Images.indexOf(oldImage);
+                                if (imageIndex !== -1) {
+                                    this.product.Images.splice(imageIndex, 1);  // 移除舊圖片
                                 }
-                            } else { console.error("後端回傳的 filePath 是 undefined"); }
-                            //有成功新增圖片到資料夾並將圖片資料寫入資料庫，但回傳的訊息有誤
+                                // 重新排序圖片並更新資料
+                                this.product.Images = data.Images; // 從後端獲取新的圖片陣列（包含正確的排序）
+
+                                // 儲存更新後的產品資料
+                                this.saveProduct();
+                            }
                         } else {
                             const errorData = await response.json();
                             console.error("上傳失敗:", errorData);
                         }
                     } catch (error) {
-                        console.error('"上傳錯誤:"', error)
+                        console.error("上傳錯誤:", error);
                     }
                 },
-                
 
-                insertFileChange:function(inputFile){
-                    alert("insertFileChange");
-                    let _this = this;
-                    _this.readURL(inputFile,inputFile.previousSibling,$("#insert"));
-
+                //瀏覽圖片
+                previewimage:function(event, index){
+                    var input = event.target;
+                    if(input.files){
+                        var reader = new FileReader();
+                        reader.onload = (e)=>{
+                            if(index ===0)
+                            this.preview1 = e.target.result;
+                        }
+                        this.images=input.files[0];
+                        reader.readAsDataURL(input.files[0])
+                    }
+                    if(this.images)
+                    {
+                        this.uploadfile(this.images, index);
+                    }
                 },
 
                 saveProduct() {

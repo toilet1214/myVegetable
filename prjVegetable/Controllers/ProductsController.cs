@@ -81,6 +81,7 @@ namespace prjVegetable.Controllers
             // 查詢該產品對應的圖片名稱
             var images = await _context.TImgs
                 .Where(i => i.FProductId == id)
+                .OrderBy(i=>i.FOrderBy)
                 .Select(i => new 
                 { 
                     i.FId,
@@ -152,11 +153,11 @@ namespace prjVegetable.Controllers
 
         // HttpPut method for updating product image
         [HttpPut("updateImage")]
-        public async Task<IActionResult> updateImage([FromForm] IFormFile file)
+        public async Task<IActionResult> updateImage([FromForm] IFormFile file, [FromForm]int index)
         {            
-            if (file == null || file.Length == 0)
-    {
-                return BadRequest("未選擇圖片檔案");
+            if (file == null || index < 0)
+            {
+                return BadRequest("無效的圖片索引");
             }
             try
             {
@@ -178,20 +179,48 @@ namespace prjVegetable.Controllers
                     await file.CopyToAsync(stream);
                 }
 
+                // 查詢目前已經存在的圖片並取得其 FOrderBy
+                var images = await _context.TImgs
+                    .Where(img => img.FProductId == 1) // 假設產品 ID 是 1，您可以根據需求動態取得此 ID
+                    .OrderBy(img => img.FOrderBy)
+                    .ToListAsync();
+
+                // 確保索引有效
+                if (index >= images.Count)
+                {
+                    return BadRequest("無效的圖片索引");
+                }
+
+                // 取得當前圖片以及要更新的圖片
+                var currentImage = images[index];
+                var currentOrderBy = currentImage.FOrderBy;  // 儲存目前圖片的 FOrderBy
+
+                foreach (var image in images.Where(i=>i.FOrderBy>=currentOrderBy &&i.FOrderBy!= currentImage.FOrderBy)) { image.FOrderBy++; }
+                
+                Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+
                 var productImage = new TImg
                 {
                     FProductId = 1,//暫時固定，要再依照前端資料調整
                     FName=file.FileName,
-                    FOrderBy=1,//需要與前端圖片的orderby更換
+                    FOrderBy= currentOrderBy,//需要與前端圖片的orderby更換
                     FUploadAt = DateOnly.FromDateTime(DateTime.Now),
-                    FEditor=1//需要取得現在使用者
+                    FEditor= UserId//需要取得現在使用者
                 };
                 _context.TImgs.Add(productImage);
+
+                // 更新其他圖片的 FOrderBy
+                _context.TImgs.UpdateRange(images);
                 await _context.SaveChangesAsync();
 
-                // 你可以在這裡將圖片資訊儲存到資料庫中，例如檔案路徑等
+                var updatedImages = await _context.TImgs
+                    .Where(img => img.FProductId == 1)
+                    .OrderBy(img => img.FOrderBy)
+                    .Select(img => img.FName)
+                    .ToListAsync();
+
                 // 在這裡回傳成功訊息
-                return Ok(new { FilePath = file.FileName });
+                return Ok(new { FilePath = file.FileName, Images= updatedImages });
             }
             catch (Exception ex)
             {
