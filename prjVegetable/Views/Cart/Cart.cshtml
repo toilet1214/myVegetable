@@ -93,22 +93,22 @@
                         <!-- 收貨人姓名 -->
                         <div class="mb-4">
                             <label for="shippingName">收貨人姓名</label>
-                            <input type="text" id="shippingName" name="shippingName" class="form-control" style="width:100%;" required />
+                            <input type="text" id="shippingName" name="shippingName" class="form-control" style="width:100%;" placeholder="收貨人姓名" data-placeholder="收貨人姓名" required />
                         </div>
                         <!-- 收貨人電話 -->
                         <div class="mb-4">
                             <label for="shippingPhone">收貨人電話</label>
-                            <input type="text" id="shippingPhone" name="shippingPhone" class="form-control" style="width:100%;" required />
+                            <input type="text" id="shippingPhone" name="shippingPhone" class="form-control" style="width:100%;" placeholder="收貨人電話"  data-placeholder="收貨人電話" required />
                         </div>
                         <!-- 收貨人地址 -->
                         <div class="mb-4">
                             <label for="shippingAddress">收貨人地址</label>
-                            <textarea id="shippingAddress" name="shippingAddress" class="form-control" style="width:100%;" required></textarea>
+                            <textarea id="shippingAddress" name="shippingAddress" class="form-control" style="width:100%;" placeholder="收貨人地址" data-placeholder="收貨人地址" required></textarea>
                         </div>
                         <!-- 備註 -->
                         <div class="mb-4">
                             <label for="note">備註</label>
-                            <textarea id="note" name="note" class="form-control" style="height:100px;width:100%;resize:none;text-align:left;">無</textarea>
+                            <textarea id="note" name="note" class="form-control" style="height:100px;width:100%;resize:none;text-align:left;" placeholder="備註"  data-placeholder="備註">無</textarea>
                         </div>
                         <!-- 前往結帳按鈕，正常提交 -->
                         <button class="btn btn-primary w-100" type="submit">
@@ -259,6 +259,18 @@
                     })
                     .catch(error => console.error("刪除失敗:", error));
             });
+        });
+    });
+
+    document.querySelectorAll('.form-control').forEach(input => {
+        input.addEventListener('focus', function () {
+            this.setAttribute('placeholder', ''); // 清除 placeholder
+        });
+
+        input.addEventListener('blur', function () {
+            if (!this.value) {
+                this.setAttribute('placeholder', this.getAttribute('data-placeholder')); // 恢復 placeholder
+            }
         });
     });
 
