@@ -264,12 +264,12 @@
 
     document.querySelectorAll('.form-control').forEach(input => {
         input.addEventListener('focus', function () {
-            this.setAttribute('placeholder', ''); // 清除 placeholder
+            this.setAttribute('placeholder', ''); 
         });
 
         input.addEventListener('blur', function () {
             if (!this.value) {
-                this.setAttribute('placeholder', this.getAttribute('data-placeholder')); // 恢復 placeholder
+                this.setAttribute('placeholder', this.getAttribute('data-placeholder')); 
             }
         });
     });
