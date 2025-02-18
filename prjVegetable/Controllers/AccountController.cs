@@ -53,6 +53,7 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
+        [HttpPost]
         public async Task<IActionResult> Register(TPerson P)
         {
             if (_context.TPeople.Any(x => x.FAccount == P.FAccount))
@@ -79,10 +80,18 @@ namespace prjVegetable.Controllers
             _context.TVerifications.Add(verification);
             await _context.SaveChangesAsync();
 
-            await SendVerificationEmail(P.FAccount, token);
+            // 發送驗證信，檢查 Email 是否有效
+            var emailSent = await SendVerificationEmail(P.FAccount, token);
+            if (!emailSent)
+            {
+                TempData["ErrorRegister"] = "電子郵件地址無效或發送失敗，請確認後重新註冊。";
+                return RedirectToAction("Register");
+            }
 
+            TempData["SuccessRegister"] = "註冊成功！請檢查您的信箱並完成電子郵件驗證。";
             return RedirectToAction("Index", "Home");
         }
+
 
         // 驗證 Email
         public IActionResult VerifyEmail(string email, string token)
@@ -111,15 +120,42 @@ namespace prjVegetable.Controllers
         }
 
         // 發送驗證 Email
-        private async Task SendVerificationEmail(string email, string token)
+        private async Task<bool> SendVerificationEmail(string email, string token)
         {
-            var verificationUrl = Url.Action("VerifyEmail", "Account",
-                new { email = email, token = token }, Request.Scheme);
+            try
+            {
+                // 確認 Email 格式是否正確
+                if (!IsValidEmail(email))
+                {
+                    Console.WriteLine("無效的 Email 格式：" + email);
+                    return false;
+                }
 
-            var body = $"請點擊 <a href='{verificationUrl}'>這裡</a> 來驗證您的帳戶。";
+                var verificationUrl = Url.Action("VerifyEmail", "Account",
+                    new { email = email, token = token }, Request.Scheme);
 
-            await SendEmail(email, "請驗證您的電子郵件", body);
+                var body = $"請點擊 <a href='{verificationUrl}'>這裡</a> 來驗證您的帳戶。";
+
+                await SendEmail(email, "請驗證您的電子郵件", body);
+                return true; // 發送成功
+            }
+            catch (SmtpFailedRecipientException)
+            {
+                Console.WriteLine($"無法發送郵件，收件地址無效：{email}");
+                return false;
+            }
+            catch (SmtpException ex)
+            {
+                Console.WriteLine("SMTP 錯誤：" + ex.Message);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("其他錯誤：" + ex.Message);
+                return false;
+            }
         }
+
 
         // 忘記密碼
         public IActionResult ForgotPassword()
@@ -231,6 +267,19 @@ namespace prjVegetable.Controllers
             mailMessage.To.Add(toEmail);
 
             await smtpClient.SendMailAsync(mailMessage);
+        }
+        // Email 格式檢測
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

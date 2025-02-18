@@ -11,7 +11,7 @@ public partial class TPerson
 
     public string FAccount { get; set; } = null!;
 
-    public string FPassword { get; set; } = null!;
+    public string? FPassword { get; set; }
 
     public string FGender { get; set; } = null!;
 
@@ -36,6 +36,8 @@ public partial class TPerson
     public int FEditor { get; set; }
 
     public bool FIsVerified { get; set; }
+
+    public string FLoginType { get; set; } = null!;
 
     public string? FGoogleId { get; set; }
 }

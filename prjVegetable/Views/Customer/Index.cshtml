@@ -108,6 +108,20 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <label class="col-md-3 col-form-label">電子信箱驗證：</label>
+                                    <button v-if="!emailVerified && resendCooldown === 0" class="btn btn-warning" @@click="sendVerificationEmail">
+                                        重發驗證信
+                                    </button>
+                                    <button v-if="!emailVerified && resendCooldown > 0" class="btn btn-secondary" disabled>
+                                        {{ resendCooldown }} 秒後可重寄
+                                    </button>
+                                    <span v-if="emailVerified" class="text-success">已驗證</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <form v-if="edit == 2">
@@ -195,7 +209,7 @@
                             <div class="row">
                                 <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control"  :value="Customer.fBirth" readonly>
+                                    <input type="text" class="form-control" :value="Customer.fBirth" readonly>
                                 </div>
                             </div>
                         </div>
@@ -227,6 +241,21 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-6">
+                            <div class="row">
+                                <div class="col-md-9">
+                                    <label class="col-md-3 col-form-label">電子信箱驗證：</label>
+                                    <button v-if="!emailVerified && resendCooldown === 0" class="btn btn-warning" @@click="sendVerificationEmail">
+                                        重發驗證信
+                                    </button>
+                                    <button v-if="!emailVerified && resendCooldown > 0" class="btn btn-secondary" disabled>
+                                        {{ resendCooldown }} 秒後可重寄
+                                    </button>
+                                    <span v-if="emailVerified" class="text-success">已驗證</span>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </form>
                 <!-- 返回與編輯按鈕 -->
@@ -247,68 +276,78 @@
 {
 
 
-            <script>
-                const app = Vue.createApp({
-                    data() {
-                        return {
-                            Customer: {}, // 用來存放後端獲得的會員資料
-                            edit: 0, // 是否啟用編輯
-                            passwordError: false, // 用來顯示錯誤訊息
-                            OldPassword: '', // 用來輸入舊密碼
-                            newPassword: '', // 用來輸入新密碼
-                            ConfirmPassword: '', // 用來輸入確認密碼
-                        };
-                    },
-                    mounted() {
-                        this.loadCustomer(); // 確保調用正確的 method
-                    },
-                    methods: {
-                        loadCustomer() {
-                            axios.get(`/Customer/GetCustomerById`)
-                                .then(response => {
-                                    this.Customer = response.data;  // 確保不是 null
-                                });
-                        },
-                        goToIndex() {
-                            window.location.href = "/Customer/Index";  // 返回會員列表
-                        },
-                        toggleEditing() {
-                            this.edit = 1;  // 切換 edit 值
-                        },
-                        cancel() {
-                            this.edit = 0;
-                        },
-                        toggleEditPassword() {
-                            this.edit = 2;
-                        },
-                        saveCustomer() {
-                            const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
-                            if (this.edit === 2) {
-                                // 在這裡處理密碼更新的邏輯
-                                if (this.OldPassword === this.fPassword) {
-                                    this.passwordError = true;
-                                    return;
-                                }
-                                if (this.newPassword !== this.ConfirmPassword) {
-                                    this.passwordError = true; 
-                                    return;
-                                }
-                                customerData.fPassword = this.newPassword;
-                                this.passwordError = false; // 清除錯誤訊息
-                            }
-                            axios.put(`/Customer/update`, customerData)
-                                .then(response => {
-                                    alert("資料已儲存!");
-                                    this.edit = 0;  // 儲存後退出編輯模式
-                                })
-                                .catch(error => {
-                                    console.error("儲存客戶資料時發生錯誤:", error);
-                                });
+    <script>
+        const app = Vue.createApp({
+            data() {
+                return {
+                    Customer: {},
+                    edit: 0,
+                    passwordError: false,
+                    OldPassword: '',
+                    newPassword: '',
+                    ConfirmPassword: '',
+                    emailVerified: false, // 是否已驗證
+                    resendCooldown: 0, // 倒數計時
+                };
+            },
+            mounted() {
+                this.loadCustomer(); // 確保調用正確的 method
+            },
+            methods: {
+                loadCustomer() {
+                    axios.get(`/Customer/GetCustomerById`)
+                        .then(response => {
+                            this.Customer = response.data;  // 確保不是 null
+                        });
+                },
+                startCooldown() {
+                    this.resendCooldown = 60; // 倒數 60 秒
+                    let interval = setInterval(() => {
+                        this.resendCooldown--;
+                        if (this.resendCooldown <= 0) {
+                            clearInterval(interval);
                         }
+                    }, 1000);
+                },
+                goToIndex() {
+                    window.location.href = "/Customer/Index";  // 返回會員列表
+                },
+                toggleEditing() {
+                    this.edit = 1;  // 切換 edit 值
+                },
+                cancel() {
+                    this.edit = 0;
+                },
+                toggleEditPassword() {
+                    this.edit = 2;
+                },
+                saveCustomer() {
+                    const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
+                    if (this.edit === 2) {
+                        // 在這裡處理密碼更新的邏輯
+                        if (this.OldPassword === this.fPassword) {
+                            this.passwordError = true;
+                            return;
+                        }
+                        if (this.newPassword !== this.ConfirmPassword) {
+                            this.passwordError = true;
+                            return;
+                        }
+                        customerData.fPassword = this.newPassword;
+                        this.passwordError = false; // 清除錯誤訊息
                     }
-                });
-
-                app.mount("#app"); // 掛載 Vue 應用
-            </script>
+                    axios.put(`/Customer/update`, customerData)
+                        .then(response => {
+                            alert("資料已儲存!");
+                            this.edit = 0;  // 儲存後退出編輯模式
+                        })
+                        .catch(error => {
+                            console.error("儲存客戶資料時發生錯誤:", error);
+                        });
+                }
+            }
+        });
+        app.mount("#app"); // 掛載 Vue 應用
+    </script>
 
 }

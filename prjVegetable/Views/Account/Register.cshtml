@@ -43,14 +43,14 @@
                 <div class="row mb-3">
                     <div class="col-md-6 form-group">
                         <label asp-for="FBirth" class="control-label"></label>
-                        <input asp-for="FBirth" type="date" min="1900-01-01" class="form-control text-start w-50 border-1 border-dark" required>
+                        <input asp-for="FBirth" type="date" id="FBirth" class="form-control text-start w-50 border-1 border-dark" required>
                     </div>
                     <div class="col-md-6 form-group">
                         <label asp-for="FGender" class="control-label"></label>
                         <select asp-for="FGender" class="form-control text-start border-1 border-dark w-50" required>
                             <option value="" disabled selected hidden>請選擇</option>
-                            <option value="男">男性</option>
-                            <option value="女">女性</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
                             <option value="其他">其他</option>
                         </select>
                         <span asp-validation-for="FGender" class="text-danger"></span>
@@ -91,6 +91,30 @@
 </div>
 
 @section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let birthInput = document.getElementById("FBirth");
+
+            // 設定最大值為今天，最小值為 200 年前
+            let today = new Date().toISOString().split("T")[0];
+            let minDate = new Date();
+            minDate.setFullYear(minDate.getFullYear() - 200);
+            let minDateString = minDate.toISOString().split("T")[0];
+
+            birthInput.setAttribute("max", today);
+            birthInput.setAttribute("min", minDateString);
+
+            // 阻止手動輸入
+            birthInput.addEventListener("keypress", function (e) {
+                e.preventDefault();
+            });
+
+            birthInput.addEventListener("paste", function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+
     @if (TempData["ErrorRegister"] != null)
     {
         <script>
