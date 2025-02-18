@@ -35,7 +35,7 @@ namespace prjVegetable.Models
             set { _PurchaseDetail.FPurchaseId = value; }
         }
 
-        [DisplayName("商品ID")]
+        [DisplayName("商品名稱")]
         public int FProductId
         {
             get { return _PurchaseDetail.FProductId; }

@@ -33,7 +33,8 @@ namespace prjVegetable.Models
             get { return _InvoiceDetail.FNumber; }
             set { _InvoiceDetail.FNumber = value; }
         }
-        [DisplayName("產品ID")]
+        [DisplayName("產品名稱" +
+            "")]
         public string FProductName
         {
             get { return _InvoiceDetail.FProductName; }
