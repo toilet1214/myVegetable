@@ -149,6 +149,19 @@ namespace prjVegetable.Controllers
             return Json(new { success = true, fId = generatedFId });
         }
 
+        [HttpGet]
+        public IActionResult GetProductsInfo()
+        {
+            var products = _dbContext.TProducts
+                .Select(p => new { p.FId, p.FName,p.FPrice })
+                .ToList();
+            Console.WriteLine($"取得產品數量：{products.Count}");
+            foreach (var prod in products)
+            {
+                Console.WriteLine($"產品ID: {prod.FId}, 名稱: '{prod.FName}', 單價: {prod.FPrice}");
+            }
+            return Json(new { success = true, products});
+        }
 
         // POST: GoodsInAndOut/InsertDetail (批量新增明細)
         [HttpPost]
