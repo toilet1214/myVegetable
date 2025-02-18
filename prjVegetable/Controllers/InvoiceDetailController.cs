@@ -1,11 +1,23 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
+using System.Linq;
 
 namespace prjVegetable.Controllers
 {
     public class InvoiceDetailController : Controller
     {
+        //----------(會員session)------------------
+        private readonly ILogger<InvoiceDetailController> _logger;
+        private readonly DbVegetableContext _dbContext;
+        private readonly IWebHostEnvironment _environment;
+        public InvoiceDetailController(ILogger<InvoiceDetailController> logger, DbVegetableContext dbContext, IWebHostEnvironment environment)
+        {
+            _logger = logger;
+            _dbContext = dbContext;
+            _environment = environment;
+        }
+
         //----------List------------------------
         public IActionResult List(CKeywordViewModel vm)
         {
@@ -34,9 +46,25 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
+
+
         //----------Create------------------------
         public IActionResult Create()
         {
+            //先session
+            var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
+
+            // 先驗證身分
+            if (!checkout == true)
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
             return View();
         }
 
@@ -50,8 +78,19 @@ namespace prjVegetable.Controllers
         }
         //----------delete----------------------
         public ActionResult Delete(int? id) //int? => 允許有null
-
         {
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("List"); // 若驗證失敗，回到List
+            }
+
+            //
             if (id != null)
             {
                 //open database 
@@ -90,8 +129,13 @@ namespace prjVegetable.Controllers
         }
         [HttpPost]
         public IActionResult Edit(TInvoiceDetail p)
-
         {
+            // 先驗證身分
+            if (!int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
+            }
+
             //建立資料庫
             DbVegetableContext db = new DbVegetableContext();
 
@@ -105,9 +149,19 @@ namespace prjVegetable.Controllers
                 x.FCount = p.FCount;
                 x.FPrice = p.FPrice;
                 x.FSum = p.FSum;
-                db.SaveChanges();
-
             }
+
+            // 查找對應的 TInvoice 通過 FPurchaseId 關聯）
+            TInvoice y = db.TInvoices.FirstOrDefault(c => c.FId == p.FId);
+            if (y != null)
+            {
+                y.FEditor = userId; // 更新 FEditor
+            }
+
+            // 一次性保存所有更改
+            db.SaveChanges();
+
+
             return RedirectToAction("List");
         }
 

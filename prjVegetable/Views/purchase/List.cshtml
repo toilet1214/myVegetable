@@ -6,20 +6,23 @@
 }
 
 <h1>採購單管理</h1>
-@using (Html.BeginForm())
+@* @using (Html.BeginForm())
 {
     @:關鍵字 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢">
-}
-<p>
+    <button type="submit" class="btn btn-warning">查詢</button>
+} *@
+<div class="mt-3 mb-3">
+    <a href="@Url.Action("Create")" class="btn btn-primary">新增採購單</a>
+</div>
 
-    <a asp-action="Create">新增採購單</a>
-</p>
-<table class="table">
+<table class="table" id="List">
     <thead>
         <tr>
             <th>
-                序
+                序號
+            </th>
+            <th>
+                採購號碼
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FBuyDate)
@@ -29,10 +32,10 @@
             </th>
 
             <th>
-                @Html.DisplayNameFor(model => model.FInvoiceForm)
+                @Html.DisplayNameFor(model => model.FInvoiceFormText)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FPayment)
+                @Html.DisplayNameFor(model => model.FPaymentText)
             </th>
 
             <th>
@@ -65,6 +68,9 @@
                         @count
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.FId)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.FBuyDate)
                     </td>
                     <td>
@@ -72,10 +78,10 @@
                     </td>
 
                     <td>
-                        @Html.DisplayFor(modelItem => item.FInvoiceForm)
+                        @Html.DisplayFor(modelItem => item.FInvoiceFormText)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FPayment)
+                        @Html.DisplayFor(modelItem => item.FPaymentText)
                     </td>
 
                     <td>
@@ -94,8 +100,8 @@
                         @Html.DisplayFor(modelItem => item.FNote)
                     </td>
                     <td>
-                        @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
-                        @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                        <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
+                        <a href="@Url.Action("Delete", new { id = item.FId })" class="btn btn-danger" onclick="return confirm('確定要刪除嗎?');">刪除</a>
                     </td>
                 </tr>
             }
@@ -106,3 +112,40 @@
 
     </tbody>
 </table>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order": []
+            });
+        });
+    </script>
+
+}

@@ -6,20 +6,24 @@
 }
 
 <h1>發票管理</h1>
-@using (Html.BeginForm())
+@* @using (Html.BeginForm())
 {
-    @:關鍵字 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢">
-}
+    @:任何欄位關鍵字 @Html.TextBox("txtKeyword")
+    <button type="submit" class="btn btn-warning">查詢</button>
+} *@
 
-<p>
-    <a asp-action="Create">新增發票</a>
-</p>
-<table class="table">
+<div class="mt-3 mb-3">
+    <a href="@Url.Action("Create")" class="btn btn-primary">新增發票</a>
+</div>
+
+<table class="table" id="List">
     <thead>
         <tr>
-            <th>
+           <th>
                 序號
+            </th>
+            <th>
+                ID
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FNumber)
@@ -28,7 +32,7 @@
                 @Html.DisplayNameFor(model => model.FDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FForm)
+                @Html.DisplayNameFor(model => model.FFormText)
             </th>
 
             <th>
@@ -44,10 +48,10 @@
                 @Html.DisplayNameFor(model => model.FCustomerUbn)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FInOut)
+                @Html.DisplayNameFor(model => model.FInOutText)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FStatus)
+                @Html.DisplayNameFor(model => model.FStatusText)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FTotal)
@@ -69,13 +73,16 @@
                         @count
                     </td>
                     <td>
+                        @Html.DisplayFor(modelItem => item.FId)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => item.FNumber)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FDate)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FForm)
+                        @Html.DisplayFor(modelItem => item.FFormText)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FCustomerId)
@@ -90,10 +97,10 @@
                         @Html.DisplayFor(modelItem => item.FProviderUbn)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FInOut)
+                        @Html.DisplayFor(modelItem => item.FInOutText)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FStatus)
+                        @Html.DisplayFor(modelItem => item.FStatusText)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FTotal)
@@ -102,8 +109,8 @@
                         @Html.DisplayFor(modelItem => item.FEditor)
                     </td>
                     <td>
-                        @Html.ActionLink("修改", "Edit", new { id = item.FId }) |
-                        @Html.ActionLink("刪除", "Delete", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                        <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
+                        <a href="@Url.Action("Delete", new { id = item.FId,FEditor = item.FEditor })" class="btn btn-danger" onclick="return confirm('確定要作廢嗎?');">作廢</a>
 
                     </td>
                 </tr>
@@ -112,3 +119,39 @@
         }
     </tbody>
 </table>
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order":[]
+            });
+        });
+    </script>
+
+}

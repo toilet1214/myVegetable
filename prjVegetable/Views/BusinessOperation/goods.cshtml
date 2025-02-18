@@ -1,0 +1,121 @@
+﻿@model IEnumerable<prjVegetable.Models.TInvoice>
+
+@{
+    ViewData["Title"] = "List";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .chart-container { 
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+        }
+        .chart-box {
+            width: 48%;
+            min-width: 400px;
+            padding: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div class="fs-1 fw-bold mt-3">
+            <p>銷售商品分析</p>
+        </div>
+        <div class="input-container mt-3 mb-3 margin-left: 20px">
+            <label>選擇時間區間:</label>
+            <input type="date" v-model="startDate">
+            <span>-</span>
+            <input type="date" v-model="endDate">
+            <button class="btn btn-success" v-on:click="fetchData">查詢</button>
+        </div>
+
+        <div class="chart-container">
+            <div id="barChartContainer" class="chart-box" style="height: 450px;"></div>
+            <div id="pieChartContainer" class="chart-box" style="height: 450px;"></div>
+        </div>
+    </div>
+
+    <script>
+        new Vue({
+    el: "#app",
+    data: {
+        startDate: "2024-01-01",
+        endDate: "2025-12-31",
+        barChart: null,
+        pieChart: null,
+        productLabels: {
+            1: "大白菜", 2: "菠菜", 3: "花椰菜", 4: "洋蔥", 5: "白蘿蔔",
+            6: "胡蘿蔔", 7: "番茄", 8: "青椒", 9: "玉米", 10: "茄子",
+            11: "蘋果", 12: "香蕉", 13: "葡萄", 14: "芋頭", 15: "香菇"
+        }
+    },
+    methods: {
+        fetchData() {
+            $.ajax({
+                url: "/AjaxBusinessOperation/GetProductsData",
+                type: "GET",
+                data: { startDate: this.startDate, endDate: this.endDate },
+                success: (res) => {
+                    this.formatData(res);
+                    this.renderCharts(res);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        },
+        formatData(data) {
+            data.productQuantityData.forEach(item => {
+                item.label = this.productLabels[item.label] || item.label;
+            });
+            data.categoryAmountData.forEach(item => {
+                item.label = this.productLabels[item.label] || item.label;
+                item.y = parseFloat(item.y.toFixed(2)); // 百分比取2位小數
+            });
+        },
+        renderCharts(data) {
+            if (!data || !data.productQuantityData || !data.categoryAmountData) {
+                console.error("Invalid data received from API:", data);
+                return;
+            }
+            this.pieChart = new CanvasJS.Chart("pieChartContainer", {
+                title: { text: "商品銷售比例" },
+                theme: "light2",
+                data: [{ 
+                    type: "pie",
+                    showInLegend: true,
+                    legendText: "{label}",
+                    indexLabel: "{label} - {y}%",
+                    dataPoints: data.categoryAmountData
+                }]
+            });
+            this.barChart = new CanvasJS.Chart("barChartContainer", {
+                theme: "light2",
+                title: { text: "銷售商品與數量" },
+                axisY: { title: "銷售數量" },
+                axisX: { title: "銷售商品" },
+                data: [{
+                    type: "column",
+                    showInLegend: true,
+                    legendText: "{label}",
+                    dataPoints: data.productQuantityData
+                }]
+            });
+            this.pieChart.render();
+            this.barChart.render();
+        }
+    }
+});
+
+
+    </script>
+</body>
+</html>

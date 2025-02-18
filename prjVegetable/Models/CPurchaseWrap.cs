@@ -40,7 +40,7 @@ namespace prjVegetable.Models
             set { _Purchase.FBuyDate = value; }
         }
 
-        [DisplayName("供應商id")]
+        [DisplayName("供應商ID")]
         public int FProviderId
         {
             get { return _Purchase.FProviderId; }
@@ -96,5 +96,21 @@ namespace prjVegetable.Models
             get { return _Purchase.FNote; }
             set { _Purchase.FNote = value; }
         }
+
+        //------------顯示文字使用-----------------
+        // 新增轉換後的屬性
+        [DisplayName("發票格式(顯示)")]
+        public string FInvoiceFormText
+        {
+            get { return _Purchase.FInvoiceForm == 0 ? "二連" : "三連"; }
+        }
+
+        // 新增轉換後的屬性
+        [DisplayName("支付方式(顯示)")]
+        public string FPaymentText
+        {
+            get { return _Purchase.FPayment == 0 ? "日結" : "月結"; }
+        }
+
     }
 }
