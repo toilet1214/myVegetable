@@ -118,7 +118,7 @@
                                 <img v-if="preview1" :src="preview1" alt="預覽圖片" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file" accept="image/*" @@change ="previewimage($event, 0)">
-                                <button @@click ="removeImage(0)" v-if="product.Images.length > 0">移除圖片</button> <!-- 移除圖片按鈕 -->
+                                
                             </div>
 
                             <!-- 區塊 2: 顯示圖片 2 -->
@@ -128,7 +128,7 @@
                                 <img v-if="preview2" :src="preview2" alt="預覽圖片" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file" accept="image/*" @@change ="previewimage($event, 1)">
-                                <button @@click ="removeImage(1)" v-if="product.Images.length > 1">移除圖片</button> <!-- 移除圖片按鈕 -->
+                                
                             </div>
 
                             <!-- 區塊 3: 顯示圖片 3 -->
@@ -138,7 +138,7 @@
                                 <img v-if="preview3" :src="preview3" alt="預覽圖片" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file" accept="image/*" @@change ="previewimage($event, 2)">
-                                <button @@click ="removeImage(2)" v-if="product.Images.length > 2">移除圖片</button> <!-- 移除圖片按鈕 -->
+                                
                             </div>
                         </div>  
                     </div>
