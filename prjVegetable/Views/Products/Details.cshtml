@@ -272,7 +272,7 @@
             <!-- 返回與編輯按鈕 -->
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
-                <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary mx-3">編輯資料/取消</button>
                 <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
             </div>
         </div>

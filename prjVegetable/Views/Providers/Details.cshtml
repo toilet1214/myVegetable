@@ -204,7 +204,7 @@
             </form>
             <div>
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回廠商資料列表</a>
-                <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary">編輯資料/取消</button>
+                <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary mx-3">編輯資料/取消</button>
                 <button v-if="edit" @@click="saveProvider" class="btn btn-success" type="submit" :disabled="!isValid">儲存修改</button>
             </div>
         </div>
