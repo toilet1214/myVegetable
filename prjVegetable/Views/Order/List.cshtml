@@ -66,11 +66,34 @@
                     @switch (item.FStatus)
                     {
                         case 0:
-                        break
+                            <p>處理中</p>
+                            break;
+                        case 1:
+                            <p>已確認</p>
+                            break;
+                        case 2:
+                            <p>已完成</p>
+                            break;
+                        case 3:
+                            <p>已取消</p>
+                            break;
                     }
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FPay)
+                    @switch (item.FPay)
+                    {
+                        case 0:
+                            <p>未付款</p>
+                            break;
+                        case 1:
+                            <p>
+                                付款失敗
+                            </p>
+                            break;
+                        case 2:
+                            <p>付款成功</p>
+                            break;
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FOrderAt)
