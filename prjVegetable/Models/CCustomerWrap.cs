@@ -75,13 +75,14 @@ namespace prjVegetable.Models
             get { return _person.FAddress; }
             set { _person.FAddress = value; }
         }
-        [Required(ErrorMessage = "必填")]
-        [DisplayName("Email")]
-        public string FEmail
-        {
-            get { return _person.FEmail; }
-            set { _person.FEmail = value; }
-        }
+        //[Required(ErrorMessage = "必填")]
+        //[DisplayName("Email")]
+        //public string FEmail
+        //{
+        //    get { return _person.FEmail; }
+        //    set { _person.FEmail = value; }
+        //}
+
         [DisplayName("統編")]
         public string FUbn
         {

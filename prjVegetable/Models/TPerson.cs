@@ -11,7 +11,7 @@ public partial class TPerson
 
     public string FAccount { get; set; } = null!;
 
-    public string FPassword { get; set; } = null!;
+    public string? FPassword { get; set; }
 
     public string FGender { get; set; } = null!;
 
@@ -23,17 +23,21 @@ public partial class TPerson
 
     public string FAddress { get; set; } = null!;
 
-    public string FEmail { get; set; } = null!;
-
-    public string? FUbn { get; set; }
+    public string FUbn { get; set; } = null!;
 
     public int FPermission { get; set; }
 
-    public string? FEmp { get; set; }
+    public string FEmp { get; set; } = null!;
 
-    public string? FEmpTel { get; set; }
+    public string FEmpTel { get; set; } = null!;
 
     public DateTime FCreatedAt { get; set; }
 
     public int FEditor { get; set; }
+
+    public bool FIsVerified { get; set; }
+
+    public string FLoginType { get; set; } = null!;
+
+    public string? FGoogleId { get; set; }
 }

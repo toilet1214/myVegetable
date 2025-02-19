@@ -118,7 +118,6 @@
                                 <img v-if="preview1" :src="preview1" alt="預覽圖片" class="img-fluid"
                                      style="max-width: 25%; margin-bottom: 10px;" />
                                 <input type="file" accept="image/*" @@change ="previewimage($event, 0)">
-                                
                             </div>
 
                             <!-- 區塊 2: 顯示圖片 2 -->
@@ -400,19 +399,23 @@
                 },
 
                 //瀏覽圖片
-                previewimage:function(event, index){
+                previewimage: function(event, index) {
                     var input = event.target;
-                    if(input.files){
+                    if (input.files) {
                         var reader = new FileReader();
-                        reader.onload = (e)=>{
-                            if(index ===0)
-                            this.preview1 = e.target.result;
-                        }
-                        this.images=input.files[0];
-                        reader.readAsDataURL(input.files[0])
+                        reader.onload = (e) => {
+                            if (index === 0) {
+                                this.preview1 = e.target.result;
+                            } else if (index === 1) {
+                                this.preview2 = e.target.result;
+                            } else if (index === 2) {
+                                this.preview3 = e.target.result;
+                            }
+                        };
+                        this.images = input.files[0];
+                        reader.readAsDataURL(input.files[0]);
                     }
-                    if(this.images)
-                    {
+                    if (this.images) {
                         this.uploadfile(this.images, index);
                     }
                 },
@@ -428,6 +431,7 @@
                                 alert("資料已儲存!");
                                 this.saveImg();
                                 this.toggleEditting();  // 儲存後退出編輯模式
+                                window.location.reload();
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);

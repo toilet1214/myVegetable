@@ -185,33 +185,33 @@ namespace prjVegetable.Controllers
                     .OrderBy(img => img.FOrderBy)
                     .ToListAsync();
 
-                // 確保索引有效
-                if (index >= images.Count)
+                if (index <0||index>= images.Count) 
                 {
                     return BadRequest("無效的圖片索引");
                 }
 
-                // 取得當前圖片以及要更新的圖片
                 var currentImage = images[index];
-                var currentOrderBy = currentImage.FOrderBy;  // 儲存目前圖片的 FOrderBy
+                var tempOrderby = currentImage.FOrderBy;
 
-                foreach (var image in images.Where(i=>i.FOrderBy>=currentOrderBy &&i.FOrderBy!= currentImage.FOrderBy)) { image.FOrderBy++; }
                 
+
                 Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
 
                 var productImage = new TImg
                 {
                     FProductId = 1,//暫時固定，要再依照前端資料調整
                     FName=file.FileName,
-                    FOrderBy= currentOrderBy,//需要與前端圖片的orderby更換
+                    FOrderBy= currentImage.FOrderBy,//需要與前端圖片的orderby更換
                     FUploadAt = DateOnly.FromDateTime(DateTime.Now),
                     FEditor= UserId//需要取得現在使用者
                 };
                 _context.TImgs.Add(productImage);
 
-                // 更新其他圖片的 FOrderBy
+                currentImage.FOrderBy = tempOrderby;
+
                 _context.TImgs.UpdateRange(images);
                 await _context.SaveChangesAsync();
+
 
                 var updatedImages = await _context.TImgs
                     .Where(img => img.FProductId == 1)

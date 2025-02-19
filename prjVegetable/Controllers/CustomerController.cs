@@ -21,7 +21,7 @@ namespace prjVegetable.Controllers
             {
                 x.FName = p.FName;
                 x.FBirth = p.FBirth;
-                x.FEmail = p.FEmail;
+                //x.FEmail = p.FEmail;
                 x.FPhone = p.FPhone;
                 x.FTel = p.FTel;
                 x.FAddress = p.FAddress;

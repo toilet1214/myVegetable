@@ -54,9 +54,6 @@ namespace prjVegetable.Controllers
                         personIds.Contains(p.FPersonId) ||
                         providerIds.Contains(p.FProviderId) ||
                         p.FDate.ToString().Contains(keyword) ||
-                        p.FProductId.ToString().Contains(keyword) ||
-                        p.FCount.ToString().Contains(keyword) ||
-                        p.FPrice.ToString().Contains(keyword) ||
                         p.FTotal.ToString().Contains(keyword) ||
                         p.FEditor.ToString().Contains(keyword) ||
                         p.FNote.Contains(keyword)

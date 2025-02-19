@@ -66,27 +66,6 @@ namespace prjVegetable.Models
             set { _GoodsInAndOut.FPersonId = value; }
         }
 
-        [DisplayName("商品ID")]
-        public int FProductId
-        {
-            get { return _GoodsInAndOut.FProductId; }
-            set { _GoodsInAndOut.FProductId = value; }
-        }
-
-        [DisplayName("商品數量")]
-        public int FCount
-        {
-            get { return _GoodsInAndOut.FCount; }
-            set { _GoodsInAndOut.FCount = value; }
-        }
-
-        [DisplayName("商品單價")]
-        public int FPrice
-        {
-            get { return _GoodsInAndOut.FPrice; }
-            set { _GoodsInAndOut.FPrice = value; }
-        }
-
         [DisplayName("商品總價")]
         public int FTotal
         {
