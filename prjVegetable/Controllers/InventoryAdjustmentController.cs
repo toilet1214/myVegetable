@@ -112,11 +112,20 @@ namespace prjVegetable.Controllers
                 }).ToList()
             };
 
+            // 動態取得第一筆與最後一筆的 FId
+            var firstId = adjustments.Any() ? adjustments.First().FId : id;
+            var lastId = adjustments.Any() ? adjustments.Last().FId : id;
+
             // 計算當前記錄的索引及上一筆、下一筆資料的 Id
             var currentIndex = adjustments.FindIndex(a => a.FId == id);
-            var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : id;
-            var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : id;
-            var lastId = adjustments.Any() ? adjustments.Last().FId : id;
+            if (currentIndex == -1)
+            {
+                _logger.LogError($"無法找到對應的記錄，FId: {id}");
+                return NotFound(new { message = "找不到對應的記錄。" });
+            }
+
+            var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : -1;
+            var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : -1;
 
             // 判斷是否為第一筆或最後一筆
             var isFirstRecord = currentIndex == 0;
@@ -125,11 +134,13 @@ namespace prjVegetable.Controllers
             // 將資料傳遞到 View
             ViewData["NextId"] = nextId;
             ViewData["PreviousId"] = previousId;
+            ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
             ViewData["IsFirstRecord"] = isFirstRecord;
             ViewData["IsLastRecord"] = isLastRecord;
 
             return View(viewModel);
+
         }
 
 
