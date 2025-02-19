@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Collections.Generic;
+using System.Text.Json;
 
 namespace prjVegetable.Controllers
 {
@@ -16,6 +17,17 @@ namespace prjVegetable.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            int loginType = 0; // 預設值
+
+            if (!string.IsNullOrEmpty(userJson))
+            {
+                var user = JsonSerializer.Deserialize<TPerson>(userJson);
+                loginType = user.FLoginType;
+            }
+
+            // 將 loginType 送到前端（假設是 Razor）
+            ViewBag.LoginType = loginType;
             return View();
         }
 
@@ -25,7 +37,6 @@ namespace prjVegetable.Controllers
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
 
             var Customer = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == UserId);
-
             return Ok(Customer);
         }
 
@@ -86,7 +97,8 @@ namespace prjVegetable.Controllers
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
             {
-                list.Add(new COrderListWrap() { orderList = t , IsComment = false });
+                var product = _context.TProducts.FirstOrDefault(p=>p.FId == t.FProductId);
+                list.Add(new COrderListWrap() { orderList = t , IsComment = false ,ProductName = product.FName});
             }
 
             return View(list);

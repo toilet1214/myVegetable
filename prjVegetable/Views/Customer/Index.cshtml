@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-9">
             <div v-if="Customer" class="row">
-                <form v-if="edit==1">
+                <form v-show="edit===1">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -110,21 +110,16 @@
                         </div>
                         <div class="col-6">
                             <div class="row">
+                                <label class="col-md-3 col-form-label">電子信箱驗證：</label>
                                 <div class="col-md-9">
-                                    <label class="col-md-3 col-form-label">電子信箱驗證：</label>
-                                    <button v-if="!emailVerified && resendCooldown === 0" class="btn btn-warning" @@click="sendVerificationEmail">
-                                        重發驗證信
-                                    </button>
-                                    <button v-if="!emailVerified && resendCooldown > 0" class="btn btn-secondary" disabled>
-                                        {{ resendCooldown }} 秒後可重寄
-                                    </button>
-                                    <span v-if="emailVerified" class="text-success">已驗證</span>
+                                    <label v-if="emailVerified" class="col-form-label text-success">已驗證</label>
+                                    <label v-if="!emailVerified" class="col-form-label text-danger">尚未驗證</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </form>
-                <form v-if="edit == 2">
+                <form v-show="edit === 2">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -159,7 +154,7 @@
 
                 </form>
                 @*顯示樣本*@
-                <form v-if="edit==0">
+                <form v-show="edit===0">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -243,25 +238,21 @@
                         </div>
                         <div class="col-6">
                             <div class="row">
+                                <label class="col-md-3 col-form-label">郵件驗證：</label>
                                 <div class="col-md-9">
-                                    <label class="col-md-3 col-form-label">電子信箱驗證：</label>
-                                    <button v-if="!emailVerified && resendCooldown === 0" class="btn btn-warning" @@click="sendVerificationEmail">
-                                        重發驗證信
+                                    <button v-if="!emailVerified" @@click="resendVerificationEmail" class="btn btn-primary" id="resendButton">
+                                        重新發送驗證信
                                     </button>
-                                    <button v-if="!emailVerified && resendCooldown > 0" class="btn btn-secondary" disabled>
-                                        {{ resendCooldown }} 秒後可重寄
-                                    </button>
-                                    <span v-if="emailVerified" class="text-success">已驗證</span>
+                                    <label v-if="emailVerified" class="col-form-label text-success">已驗證</label>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </form>
                 <!-- 返回與編輯按鈕 -->
                 <div v-if="edit==0">
                     <button @@click="toggleEditing" class="btn btn-primary">編輯資料</button>
-                    <button @@click="toggleEditPassword" class="btn btn-primary">修改密碼</button>
+                    <button v-if="loginType === 0" @@click="toggleEditPassword" class="btn btn-primary">修改密碼</button>
                 </div>
                 <div v-if="edit>=1">
                     <button @@click="cancel" class="btn btn-success">取消</button>
@@ -274,20 +265,41 @@
 
 @section Scripts
 {
+    <script>
+        $(document).ready(function () {
+            $('#resendButton').click(function () {
+                var $this = $(this);
+                var originalText = $this.text();  // 儲存原本的按鈕文字
+                $this.prop('disabled', true);  // 禁用按鈕
+                var countdown = 60;  // 設定倒數秒數
 
+                var timer = setInterval(function () {
+                    $this.text('請 ' + countdown + ' 秒後再試');  // 更新按鈕文字
+                    countdown--;
+
+                    if (countdown < 0) {
+                        clearInterval(timer);
+                        $this.text(originalText);  // 恢復原本的按鈕文字
+                        $this.prop('disabled', false);  // 重新啟用按鈕
+                    }
+                }, 1000);
+            });
+        });
+    </script>
 
     <script>
         const app = Vue.createApp({
             data() {
                 return {
                     Customer: {},
+                    editedCustomer: {}, // 用於編輯的資料
                     edit: 0,
                     passwordError: false,
                     OldPassword: '',
                     newPassword: '',
                     ConfirmPassword: '',
                     emailVerified: false, // 是否已驗證
-                    resendCooldown: 0, // 倒數計時
+                    loginType: parseInt('@ViewBag.LoginType'),
                 };
             },
             mounted() {
@@ -295,25 +307,35 @@
             },
             methods: {
                 loadCustomer() {
-                    axios.get(`/Customer/GetCustomerById`)
+                    axios.get('/Customer/GetCustomerById')
                         .then(response => {
-                            this.Customer = response.data;  // 確保不是 null
+                            if (response.data) {
+                                this.Customer = response.data;
+                                this.emailVerified = this.Customer.fIsVerified; // 從後端獲取
+                            }
+                        })
+                        .catch(error => {
+                            console.error("獲取用戶資料失敗:", error);
                         });
                 },
-                startCooldown() {
-                    this.resendCooldown = 60; // 倒數 60 秒
-                    let interval = setInterval(() => {
-                        this.resendCooldown--;
-                        if (this.resendCooldown <= 0) {
-                            clearInterval(interval);
-                        }
-                    }, 1000);
-                },
-                goToIndex() {
-                    window.location.href = "/Customer/Index";  // 返回會員列表
+                // 重新發送驗證信
+                resendVerificationEmail() {
+                    if (!this.Customer.fAccount) {
+                        alert("無法發送驗證信，請確認您的帳號資訊。");
+                        return;
+                    }
+                    axios.post('/Account/ResendVerificationEmail')
+                        .then(response => {
+                            alert("驗證信已重新發送，請檢查您的信箱！");
+                        })
+                        .catch(error => {
+                            console.error("重寄驗證信失敗:", error);
+                            alert(error.response?.data?.message || "無法發送驗證信，請稍後再試。");
+                        });
                 },
                 toggleEditing() {
-                    this.edit = 1;  // 切換 edit 值
+                    this.editedCustomer = JSON.parse(JSON.stringify(this.Customer)); // 深拷貝
+                    this.edit = 1;
                 },
                 cancel() {
                     this.edit = 0;
@@ -322,14 +344,10 @@
                     this.edit = 2;
                 },
                 saveCustomer() {
-                    const customerData = { ...this.Customer }; // 產生新的物件來避免響應式問題
+                    const customerData = { ...this.editedCustomer }; // 改成 editedCustomer
                     if (this.edit === 2) {
                         // 在這裡處理密碼更新的邏輯
-                        if (this.OldPassword === this.fPassword) {
-                            this.passwordError = true;
-                            return;
-                        }
-                        if (this.newPassword !== this.ConfirmPassword) {
+                        if (this.OldPassword !== this.fPassword || this.newPassword !== this.ConfirmPassword || this.OldPassword === this.newPassword) {
                             this.passwordError = true;
                             return;
                         }
@@ -339,6 +357,7 @@
                     axios.put(`/Customer/update`, customerData)
                         .then(response => {
                             alert("資料已儲存!");
+                            this.Customer = { ...this.editedCustomer }; // 確認後更新
                             this.edit = 0;  // 儲存後退出編輯模式
                         })
                         .catch(error => {

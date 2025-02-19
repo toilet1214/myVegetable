@@ -30,7 +30,10 @@ namespace prjVegetable.Controllers
             datas = _context.TOrderLists.Where(p => p.FOrderId == id);
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
-                list.Add(new COrderListWrap() { orderList = t });
+            {
+                var product = _context.TProducts.FirstOrDefault(p => p.FId == t.FProductId);
+                list.Add(new COrderListWrap() { orderList = t ,ProductName = product.FName});
+            }
             return View(list);
         }
 

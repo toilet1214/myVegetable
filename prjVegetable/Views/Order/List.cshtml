@@ -63,7 +63,11 @@
                     @Html.DisplayFor(modelItem => item.FTotal)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.FStatus)
+                    @switch (item.FStatus)
+                    {
+                        case 0:
+                        break
+                    }
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.FPay)

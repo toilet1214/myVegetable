@@ -53,7 +53,6 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        [HttpPost]
         public async Task<IActionResult> Register(TPerson P)
         {
             if (_context.TPeople.Any(x => x.FAccount == P.FAccount))
@@ -92,6 +91,49 @@ namespace prjVegetable.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ResendVerificationEmail()
+        {
+            // 確保輸入的 Email 不為空
+
+            // 查找用戶
+            var user = JsonSerializer.Deserialize<TPerson>(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER));
+            var userId = user.FId;               // 取得使用者 ID
+
+
+
+            // 產生新的驗證 Token
+            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+
+            // 刪除舊的未使用 Token（確保只有一個有效的驗證碼）
+            var oldTokens = _context.TVerifications
+                .Where(v => v.FPersonId == userId && v.FTokenType == "驗證" && !v.FIsUsed);
+            _context.TVerifications.RemoveRange(oldTokens);
+
+            // 建立新的 Token
+            var verification = new TVerification
+            {
+                FPersonId = userId,
+                FToken = token,
+                FTokenType = "驗證",
+                FExpirationTime = DateTime.UtcNow.AddMinutes(10),
+                FIsUsed = false
+            };
+
+            _context.TVerifications.Add(verification);
+            await _context.SaveChangesAsync();
+
+            // 發送驗證信
+            var emailSent = await SendVerificationEmail(user.FAccount, token);
+            if (!emailSent)
+            {
+                TempData["ErrorResend"] = "無法發送驗證信，請稍後再試。";
+                return BadRequest(emailSent);
+            }
+
+            TempData["SuccessResend"] = "驗證信已重新發送，請檢查您的信箱。";
+            return Ok(emailSent);
+        }
 
         // 驗證 Email
         public IActionResult VerifyEmail(string email, string token)
@@ -127,7 +169,6 @@ namespace prjVegetable.Controllers
                 // 確認 Email 格式是否正確
                 if (!IsValidEmail(email))
                 {
-                    Console.WriteLine("無效的 Email 格式：" + email);
                     return false;
                 }
 
@@ -141,17 +182,14 @@ namespace prjVegetable.Controllers
             }
             catch (SmtpFailedRecipientException)
             {
-                Console.WriteLine($"無法發送郵件，收件地址無效：{email}");
                 return false;
             }
             catch (SmtpException ex)
             {
-                Console.WriteLine("SMTP 錯誤：" + ex.Message);
                 return false;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("其他錯誤：" + ex.Message);
                 return false;
             }
         }
