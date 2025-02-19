@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using prjVegetable.ViewModels;
 using Microsoft.Data.SqlClient;
+using System.Text.Json;
 
 namespace prjVegetable.Controllers
 {
@@ -230,23 +231,21 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(CGoodsInAndOutViewModel model)
+        public IActionResult Edit(CGoodsInAndOutViewModel model, string deletedItems)
         {
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "主表驗證失敗" });
             }
-            // 取得當前登入者 ID
             int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
 
-            // 取得資料庫中現有的主表資料
             var main = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == model.GoodsInAndOut.FId);
             if (main == null)
             {
                 return Json(new { success = false, message = "找不到主表資料" });
             }
 
-            // 更新主表資料（FEditor 更新為當前使用者）
+            // 更新主表資料
             main.FInOut = model.GoodsInAndOut.FInOut;
             main.FDate = model.GoodsInAndOut.FDate;
             main.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
@@ -256,7 +255,28 @@ namespace prjVegetable.Controllers
             main.FNote = model.GoodsInAndOut.FNote;
             main.FEditor = currentUserId;
 
-            // 取得資料庫中現有的細項
+            // **修正 JSON 解析錯誤**
+            if (!string.IsNullOrEmpty(deletedItems))
+            {
+                try
+                {
+                    List<int> deleteIds = JsonSerializer.Deserialize<List<string>>(deletedItems)
+                        .Where(id => int.TryParse(id, out _))
+                        .Select(int.Parse)
+                        .ToList();
+
+                    if (deleteIds.Count > 0)
+                    {
+                        string deleteQuery = $"DELETE FROM TGoodsInAndOutDetail WHERE FId IN ({string.Join(",", deleteIds)})";
+                        _dbContext.Database.ExecuteSqlRaw(deleteQuery);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, message = "刪除時發生錯誤：" + ex.Message });
+                }
+            }
+
             var existingDetails = _dbContext.TGoodsInAndOutDetails
                 .Where(d => d.FGoodsInandOutId == main.FId)
                 .ToList();
@@ -264,7 +284,6 @@ namespace prjVegetable.Controllers
             // 依據提交的細項來更新或新增
             foreach (var detail in model.GoodsInAndOutDetails)
             {
-                // 如果該細項有 FId 表示存在於資料庫，更新資料
                 var existingDetail = existingDetails.FirstOrDefault(d => d.FId == detail.FId);
                 if (existingDetail != null)
                 {
@@ -275,24 +294,16 @@ namespace prjVegetable.Controllers
                 }
                 else
                 {
-                    // 新增的細項：設定主表 FId 並加入
                     detail.FGoodsInandOutId = main.FId;
                     _dbContext.TGoodsInAndOutDetails.Add(detail);
-                }
-            }
-            // 刪除資料庫中存在但在提交模型中被刪除的細項
-            var submittedDetailIds = model.GoodsInAndOutDetails.Select(d => d.FId).ToList();
-            foreach (var existingDetail in existingDetails)
-            {
-                if (!submittedDetailIds.Contains(existingDetail.FId))
-                {
-                    _dbContext.TGoodsInAndOutDetails.Remove(existingDetail);
                 }
             }
 
             _dbContext.SaveChanges();
             return Json(new { success = true });
         }
+
+
 
 
 
