@@ -18,9 +18,9 @@
                 <div class="form-group">
                     <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
                     <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
-                        <option value="0">進貨</option>
-                        <option value="1">出貨</option>
-                        <option value="2">作廢單</option>
+                        <option value="0" >進貨</option>
+                        <option value="1" >出貨</option>
+                        <option value="2" >作廢單</option>
                     </select>
                     <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
                 </div>
@@ -89,8 +89,8 @@
                 <div class="row mb-3 detail-entry">
                     <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
                     <div class="col-3">
-                        <!-- 將原有值存入 data-selected -->
-                        <select class="FProductId form-control" data-selected="@Model.GoodsInAndOutDetails[i].FProductId" required>
+                        <!-- 將原有選擇值存入 data-selected -->
+                        <select asp-for="GoodsInAndOutDetails[i].FProductId" class="FProductId form-control" data-selected="@Model.GoodsInAndOutDetails[i].FProductId" required>
                             <option value="">請選擇產品</option>
                             @foreach (var product in (List<dynamic>)ViewBag.ProductList)
                             {
@@ -143,13 +143,13 @@
 </form>
 
 <script>
-    // 全域變數：存放從 API 取得的產品資訊
-    let productsData = [];
+@*     // 全域變數：存放從 API 取得的產品資訊
+ *@    let productsData = [];
 
-    // 頁面載入時取得會員資訊及產品資訊
-    document.addEventListener("DOMContentLoaded", function () {
-        // 取得會員資訊，更新 FEditor（控制器 GET Edit 也有設定，但可再以 AJAX 更新）
-        fetch('/GoodsInAndOut/GetMemberInfo')
+@*     // 頁面載入時取得會員與產品資訊
+ *@    document.addEventListener("DOMContentLoaded", function () {
+@*         // 取得會員資訊（使用 Session 存放的 CDictionary.SK_LOGINED_USER_ID）
+ *@        fetch('/GoodsInAndOut/GetMemberInfo')
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
@@ -160,16 +160,22 @@
             })
             .catch(error => console.error("錯誤: ", error));
 
-        // 取得產品資訊
-        fetch('/GoodsInAndOut/GetProductsInfo')
+@*         // 取得產品資訊
+ *@        fetch('/GoodsInAndOut/GetProductsInfo')
             .then(response => response.json())
             .then(data => {
                 console.log("GetProductsInfo 回傳資料：", JSON.stringify(data, null, 2));
                 if (data.success) {
                     productsData = data.products;
-                    // 為每個 detail-entry 的產品下拉選單重新載入選項
-                    document.querySelectorAll(".FProductId").forEach(function (selectElem) {
+@*                     // 為所有 detail-entry 的產品下拉選單載入選項
+ *@                    document.querySelectorAll(".FProductId").forEach(function (selectElem) {
                         loadProductOptionsFor(selectElem);
+@*                         // 若 data-selected 屬性存在，設定 select 值後觸發 change 事件
+ *@                        let selectedVal = selectElem.getAttribute("data-selected");
+                        if(selectedVal){
+                            selectElem.value = selectedVal;
+                            selectElem.dispatchEvent(new Event("change"));
+                        }
                     });
                 } else {
                     console.error("無法獲取產品資訊：" + data.message);
@@ -178,101 +184,104 @@
             .catch(error => console.error("錯誤: ", error));
     });
 
-    // 載入產品選單，根據 select 的 data-selected 屬性預設選項
-    function loadProductOptionsFor(selectElem) {
-        let selectedVal = selectElem.getAttribute("data-selected") || "";
-        selectElem.innerHTML = '<option value="">請選擇產品</option>';
-        if (productsData.length === 0) {
-            console.warn("productsData 為空！");
-        }
-        productsData.forEach(product => {
-            let option = document.createElement("option");
-            option.value = product.FId;
-            option.textContent = product.FName;
-            if (selectedVal && selectedVal === product.FId.toString()) {
-                option.selected = true;
+   @*  // 載入產品選單：依據 select 的 data-selected 預設選項 *@
+        function loadProductOptionsFor(selectElem) {
+            selectElem.innerHTML = '<option value="">請選擇產品</option>';
+            if (productsData.length === 0) {
+                console.warn("productsData 為空！");
             }
-            selectElem.appendChild(option);
-        });
-    }
+            productsData.forEach(product => {
+                let option = document.createElement("option");
+                option.value = product.fId; // 改用小寫屬性名稱
+                option.textContent = product.fName;
+                let selectedVal = selectElem.getAttribute("data-selected") || "";
+                if (selectedVal && selectedVal === product.fId.toString()) {
+                    option.selected = true;
+                }
+                selectElem.appendChild(option);
+            });
+        }
 
-    // 當產品下拉選單變更時，自動填入單價並更新小計與總價
-    document.addEventListener("change", function (event) {
-        if (event.target.classList.contains("FProductId")) {
-            let productId = event.target.value;
-            console.log("選擇的產品 ID:", productId);
-            let detailRow = event.target.closest(".detail-entry");
-            let priceInput = detailRow.querySelector(".FPrice");
-            if (productId) {
-                let product = productsData.find(p => p.FId.toString() === productId);
-                console.log("找到的產品：", product);
-                if (product && product.FPrice != null) {
-                    priceInput.value = product.FPrice;
-                    let count = parseFloat(detailRow.querySelector(".FCount").value) || 0;
-                    detailRow.querySelector(".FSum").value = (count * product.FPrice).toFixed(0);
+     @* 當產品下拉選單變更時，透過後端 API 更新單價與小計 *@
+        document.addEventListener("change", function (event) {
+            if (event.target.classList.contains("FProductId")) {
+                let productId = event.target.value;
+                console.log("選擇的產品 ID:", productId);
+                let detailRow = event.target.closest(".detail-entry");
+                let priceInput = detailRow.querySelector(".FPrice");
+                if (productId) {
+                    let product = productsData.find(p => p.fId.toString() === productId);
+                    console.log("找到的產品：", product);
+                    if (product && product.fPrice != null) {
+                        priceInput.value = product.fPrice;
+                        let count = parseFloat(detailRow.querySelector(".FCount").value) || 0;
+                        detailRow.querySelector(".FSum").value = (count * product.fPrice).toFixed(0);
+                    } else {
+                        priceInput.value = "";
+                        detailRow.querySelector(".FSum").value = "";
+                        console.error("無法取得產品單價");
+                    }
                 } else {
                     priceInput.value = "";
                     detailRow.querySelector(".FSum").value = "";
-                    console.error("無法取得產品單價");
                 }
-            } else {
-                priceInput.value = "";
-                detailRow.querySelector(".FSum").value = "";
+                updateTotalPrice();
             }
-            updateTotalPrice();
-        }
-    });
+        });
 
-    // 當使用者輸入數量時，自動計算小計與更新總價
+     @* 當數量變更時，同步更新小計與主表總價 *@
     document.addEventListener("input", function (event) {
         if (event.target.classList.contains("FCount")) {
             let detailRow = event.target.closest(".detail-entry");
-            let count = parseFloat(event.target.value) || 0;
-            let price = parseFloat(detailRow.querySelector(".FPrice").value) || 0;
-            detailRow.querySelector(".FSum").value = (price * count).toFixed(0);
+            let count = parseInt(event.target.value) || 0;
+            let price = parseInt(detailRow.querySelector(".FPrice").value) || 0;
+            detailRow.querySelector(".FSum").value = (price * count);
             updateTotalPrice();
         }
     });
 
-    // 更新主表總價（累計所有細項小計）
+     @* 更新主表總價（累計所有細項小計） *@
     function updateTotalPrice() {
         let total = 0;
         document.querySelectorAll(".FSum").forEach(function (sumElem) {
-            let val = parseFloat(sumElem.value) || 0;
+            let val = parseInt(sumElem.value) || 0;
             total += val;
         });
         document.getElementById("GoodsInAndOut_FTotal").value = total;
     }
 
-    // 新增明細列
-    document.getElementById("addDetail").addEventListener("click", function () {
-        var newRow = `<div class="row mb-3 detail-entry">
-                    <input type="hidden" class="FGoodsInandOutId" value="0" />
-                    <div class="col-3">
-                        <select class="FProductId form-control" data-selected="" required>
-                            <option value="">請選擇產品</option>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <input type="number" class="FCount form-control" placeholder="數量" min="1" required />
-                    </div>
-                    <div class="col-3">
-                        <input type="text" class="FPrice form-control" placeholder="單價" readonly />
-                    </div>
-                    <div class="col-2">
-                        <input type="text" class="FSum form-control" placeholder="小計" readonly />
-                    </div>
-                    <div class="col-1">
-                        <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
-                    </div>
-                </div>`;
-        document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
-        var newSelects = document.querySelectorAll(".FProductId");
-        var lastSelect = newSelects[newSelects.length - 1];
-        loadProductOptionsFor(lastSelect);
-    });
+    @*  新增明細列 *@
+        document.getElementById("addDetail").addEventListener("click", function () {
+            var index = document.querySelectorAll(".detail-entry").length;
+            var newRow = `
+        <div class="row mb-3 detail-entry">
+            <input type="hidden" name="GoodsInAndOutDetails[${index}].FId" value="0" />
+            <div class="col-3">
+                <select name="GoodsInAndOutDetails[${index}].FProductId" class="FProductId form-control" data-selected="" required>
+                    <option value="">請選擇產品</option>
+                </select>
+            </div>
+            <div class="col-2">
+                <input type="number" name="GoodsInAndOutDetails[${index}].FCount" class="FCount form-control" placeholder="數量" min="1" required />
+            </div>
+            <div class="col-2">
+                <input type="text" name="GoodsInAndOutDetails[${index}].FPrice" class="FPrice form-control" placeholder="單價" readonly />
+            </div>
+            <div class="col-2">
+                <input type="text" name="GoodsInAndOutDetails[${index}].FSum" class="FSum form-control" placeholder="小計" readonly />
+            </div>
+            <div class="col-3">
+                <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
+            </div>
+        </div>`;
+            document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
+            var newSelects = document.querySelectorAll(".FProductId");
+            var lastSelect = newSelects[newSelects.length - 1];
+            loadProductOptionsFor(lastSelect);
+        });
 
-    // 全局移除按鈕：移除最後一筆明細
+
+    @*  全局移除按鈕：移除最後一筆明細 *@
     document.getElementById("removeDetail").addEventListener("click", function () {
         var details = document.querySelectorAll(".detail-entry");
         if (details.length > 1) {
@@ -283,7 +292,7 @@
         }
     });
 
-    // 每筆明細獨立移除按鈕功能
+    @*  每筆明細內的獨立移除按鈕功能 *@
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-remove-detail")) {
             let detailRow = event.target.closest(".detail-entry");
@@ -297,7 +306,7 @@
         }
     });
 
-    // 提交更新資料按鈕
+    @*  提交更新資料按鈕 *@
     document.getElementById("submitEditData").addEventListener("click", function () {
         let formData = new FormData(document.getElementById("EditForm"));
         fetch("/GoodsInAndOut/Edit", {
@@ -314,8 +323,8 @@
           }).catch(error => console.error("Error:", error));
     });
 
-    // 取消按鈕，返回列表
-    document.getElementById("cancelEdit").addEventListener("click", function () {
+@*      取消按鈕，返回列表
+ *@    document.getElementById("cancelEdit").addEventListener("click", function () {
         window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
     });
 </script>

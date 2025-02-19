@@ -296,6 +296,18 @@ namespace prjVegetable.Controllers
 
 
 
+        [HttpGet]
+        public IActionResult GetProductPrice(int productId, int count)
+        {
+            var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == productId);
+            if (product == null)
+            {
+                return Json(new { success = false, message = "找不到商品" });
+            }
+            int price = product.FPrice;
+            int subtotal = price * count;
+            return Json(new { success = true, price = price, subtotal = subtotal });
+        }
 
 
         // GET: GoodsInAndOut/Details/5
