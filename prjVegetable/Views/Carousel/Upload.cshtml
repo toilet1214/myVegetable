@@ -5,38 +5,57 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<div class="container my-5">
-    <h2>請選擇圖片上傳</h2>
-
-    <!-- 顯示當前的圖片 -->
-    <div class="current-images mb-4">
-        <h3>目前圖片</h3>
+<div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
+    <div class="container my-5">
         <div class="row">
-            @for (int i = 0; i < Model.ImagePaths.Count; i++)
-            {
-                <div class="col-md-4 text-center">
-                    <img src="@Model.ImagePaths[i]" alt="Carousel Image @(i + 1)" style="max-width: 100%; height: auto;" />
-                    <p>Carousel @(i + 1)</p>
-                </div>
-            }
-        </div>
-    </div>
-
-    <!-- 上傳新圖片表單 -->
-    <h3>請選擇新的圖片進行替換</h3>
-    <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
-        @for (int i = 0; i < Model.ImagePaths.Count; i++)
-        {
-            <div class="mb-3 d-flex align-items-center">
-                <img id="preview@(i + 1)" src="@Model.ImagePaths[i]" style="max-width: 200px; display: block;" />
-                <div class="ms-3">
-                    <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" />
+            <!-- 左邊輪播 -->
+            <div class="col-md-8">
+                <h3 class="mb-4">輪播預覽</h3>
+                <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        @for (int i = 0; i < Model.ImagePaths.Count; i++)
+                        {
+                            <div class="carousel-item @(i == 0 ? "active" : "")">
+                                <img src="@Model.ImagePaths[i]" class="d-block w-100" alt="Carousel Image @(i + 1)" style="max-height: 50vh; object-fit: contain;" />
+                            </div>
+                        }
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#imageCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#imageCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
             </div>
-        }
-        <button type="submit" class="btn btn-primary">上傳圖片</button>
-    </form>
+            <!-- 右邊上傳區塊 -->
+            <div class="col-md-4">
+                <div class="d-flex align-items-baseline mb-4" style="max-width: fit-content;">
+                    <h3 class="mb-0">上傳新圖片</h3>
+                    <span class="text-muted" style="font-size: 0.9rem; margin-left: 10px; white-space: nowrap;">
+                        建議尺寸：1200 x 600
+                    </span>
+                </div>
+                <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <div class="mb-3 d-flex align-items-center">
+                            <img id="preview@(i + 1)" src="@(i < Model.ImagePaths.Count ? Model.ImagePaths[i] : "")" class="me-3" style="max-width: 15vh; height: auto; display: block;" />
+                            <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" class="form-control" />
+                        </div>
+                    }
+                    <div class="d-flex mt-4 justify-content-end">
+                        <button type="submit" class="btn btn-primary">上傳圖片</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
 </div>
+
 
 <script>
     // 預覽選擇的圖片
