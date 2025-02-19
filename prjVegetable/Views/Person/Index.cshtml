@@ -7,12 +7,7 @@
 
 <h1>人員資料列表</h1>
 <br />
-<div id="app">
-    <div>
-        <label class="form-label">搜尋</label>
-        <input v-model="keyword" placeholder="請輸入搜尋" />
-        <button type="button" class="btn btn-primary" @@click="search">查詢</button>
-    </div>
+<div id="app">    
     <!-- 新增資料 -->
     <p>
         <a href="/Person/Create" class="btn btn-outline-primary">新增資料</a>
@@ -46,10 +41,9 @@
                 <td>{{ item.fPhone }}</td>
                 <td>{{ item.fTel }}</td>
                 <td>{{ item.fEmail }}</td>
-                <td>
-                    <a :href="'/Person/Edit/' + item.fId">編輯資料</a><br />
-                    <a :href="'/Person/Details/' + item.fId">詳細資料</a><br />
-                    <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)">移除</a>
+                <td>                    
+                    <a :href="'/Person/Details/' + item.fId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                    <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)" class="btn btn-danger">&emsp;移除&emsp;</a>
                 </td>
             </tr>
         </tbody>
@@ -89,7 +83,7 @@
                     this.$nextTick(() => {
                         this.dataTable = $('#List').DataTable({
                             pageLength: 10,  // 預設顯示 10 筆
-                            lengthMenu: [10, 25, 50, 100], // 可選擇的筆數
+                            lengthMenu: [5, 10, 25, 50], // 可選擇的筆數
                             language: {
                                 emptyTable: "目前沒有任何資料",
                                 lengthMenu: "顯示 _MENU_ 筆資料",

@@ -19,6 +19,8 @@ public partial class DbVegetableContext : DbContext
 
     public virtual DbSet<TCart> TCarts { get; set; }
 
+    public virtual DbSet<TComment> TComments { get; set; }
+
     public virtual DbSet<TFaq> TFaqs { get; set; }
 
     public virtual DbSet<TFavorite> TFavorites { get; set; }
@@ -107,6 +109,25 @@ public partial class DbVegetableContext : DbContext
                 .HasColumnName("fCount");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
             entity.Property(e => e.FProductId).HasColumnName("fProductId");
+        });
+
+        modelBuilder.Entity<TComment>(entity =>
+        {
+            entity.HasKey(e => e.FId).HasName("PK__tComment__D9F8227C5D7922D4");
+
+            entity.ToTable("tComment");
+
+            entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FComment)
+                .HasColumnType("text")
+                .HasColumnName("fComment");
+            entity.Property(e => e.FCreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnName("fCreatedAt");
+            entity.Property(e => e.FOrderListId).HasColumnName("fOrderListId");
+            entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
+            entity.Property(e => e.FStar).HasColumnName("fStar");
         });
 
         modelBuilder.Entity<TFaq>(entity =>
@@ -402,7 +423,6 @@ public partial class DbVegetableContext : DbContext
             entity.Property(e => e.FId).HasColumnName("fId");
             entity.Property(e => e.FAccount)
                 .HasMaxLength(500)
-                .HasDefaultValue("")
                 .HasColumnName("fAccount");
             entity.Property(e => e.FAddress)
                 .HasDefaultValue("")
@@ -415,10 +435,6 @@ public partial class DbVegetableContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("fCreatedAt");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");
-            entity.Property(e => e.FEmail)
-                .HasMaxLength(500)
-                .HasDefaultValue("")
-                .HasColumnName("fEmail");
             entity.Property(e => e.FEmp)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
@@ -431,13 +447,20 @@ public partial class DbVegetableContext : DbContext
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fGender");
+            entity.Property(e => e.FGoogleId)
+                .HasMaxLength(500)
+                .HasColumnName("fGoogleId");
+            entity.Property(e => e.FIsVerified).HasColumnName("fIsVerified");
+            entity.Property(e => e.FLoginType)
+                .HasMaxLength(100)
+                .HasDefaultValue("一般")
+                .HasColumnName("fLoginType");
             entity.Property(e => e.FName)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
                 .HasColumnName("fName");
             entity.Property(e => e.FPassword)
                 .HasMaxLength(500)
-                .HasDefaultValue("")
                 .HasColumnName("fPassword");
             entity.Property(e => e.FPermission).HasColumnName("fPermission");
             entity.Property(e => e.FPhone)

@@ -6,20 +6,22 @@
 }
 
 
-<h1>廠商資料列表</h1><br />
-@using(Html.BeginForm())
-{
-    @:搜尋 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢" class="btn btn-primary">
+<h1>廠商資料列表</h1>
+<br />
 
-}<br />
 
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增廠商資料</a>
 </p>
-<table class="table">
+<table class="table" id="List">
     <thead>
         <tr>
+            <th>
+                序號
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FId)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.FName)
             </th>
@@ -43,44 +45,100 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FInvoiceAdd)
-            </th>            
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.provider.FName)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FUbn)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FTel)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FConnect)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FAccountant)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FAddress)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FDelivery)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
-            </td>            
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br/>
-                <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a> <br>
-                @Html.ActionLink("移除", "Delete", "Tproviders", new { id = item.provider.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
-            </td>
-        </tr>
-}
+        @{
+            var count = 0;
+            foreach (var item in Model)
+            {
+                count++;
+                <tr>
+                    <td>
+                        @count
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FUbn)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FTel)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FConnect)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FAccountant)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FAddress)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FDelivery)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.provider.FInvoiceAdd)
+                    </td>
+                    <td>
+                        <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a> <br>
+                        <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)" class="btn btn-danger">&emsp;移除&emsp;</a>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+            });
+        });
+        function deleteProvider(id) {
+        if (confirm("你確定要刪除這筆資料嗎?")) {
+            $.ajax({
+                url: '/Providers/Delete/' + id,
+                type: 'POST',  // 或 'DELETE'，取決於你的控制器方法是否接受 DELETE 請求
+                success: function (result) {
+                    // 刪除成功後更新頁面，移除該筆資料
+                    location.reload();
+                },
+                error: function () {alert('刪除失敗'); }
+                });
+            }
+        }
+
+    </script>
+
+}

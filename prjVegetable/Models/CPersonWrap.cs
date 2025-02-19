@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace prjVegetable.Models
 {
@@ -22,6 +23,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("姓名")]
+        [Required(ErrorMessage= "必填欄位")]
+        [StringLength(100, MinimumLength = 1)]
         public string FName
         {
 
@@ -30,6 +33,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("帳號")]
+        [Required(ErrorMessage = "必填欄位")]
+        [StringLength(100, MinimumLength = 1)]
         public string FAccount
         {
             get { return _person.FAccount; }
@@ -37,6 +42,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("密碼")]
+        [Required(ErrorMessage = "必填欄位")]
+        [RegularExpression(@"^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$", ErrorMessage = "密碼必須包含英文字母、數字，並且至少 8 個字符長")]
         public string FPassword
         {
             get { return _person.FPassword; }
@@ -58,6 +65,8 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("手機")]
+        [Required(ErrorMessage = "必填欄位")]
+        [RegularExpression(@"^\d{10}$", ErrorMessage = "手機號碼必須是 10 位數字")]
         public string FPhone
         {
             get { return _person.FPhone; }
@@ -72,20 +81,24 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("地址")]
+        [Required(ErrorMessage = "必填欄位")]
         public string FAddress
         {
             get { return _person.FAddress; }
             set { _person.FAddress = value; }
         }
 
-        [DisplayName("電子郵件")]
-        public string FEmail
-        {
-            get { return _person.FEmail; }
-            set { _person.FEmail = value; }
-        }
+        //[DisplayName("電子郵件")]
+        //[EmailAddress]
+        //[RegularExpression(@"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "電子郵件格式不正確")]
+        //public string FEmail
+        //{
+        //    get { return _person.FEmail; }
+        //    set { _person.FEmail = value; }
+        //}
 
         [DisplayName("統編")]
+        [RegularExpression(@"^\d{8}$", ErrorMessage = "統一編號必須是 8 位數字")]
         public string FUbn//統編
         {
             get { return _person.FUbn; }

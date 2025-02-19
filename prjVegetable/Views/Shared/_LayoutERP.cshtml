@@ -131,7 +131,7 @@
 
 
     <footer class="bg-primary py-4 mt-auto text-center position-relative">
-        <div class="row d-block bg-primary text-white mt-3">
+        <div class="row d-block text-white mt-3">
             <p>
                 頁尾
             </p>
@@ -148,18 +148,7 @@
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
 
     @RenderSection("Scripts", required: false)
-    <script src="js/datepicker-zh-TW.js">//日期中文化</script>
-    <script>
-        $(function () {
-            $("#datepicker").datepicker({
-
-                changeMonth: true,
-                changeYear: true,
-                firstDay: 1,
-                yearRange: "1960:2044"
-            });
-        });
-    </script>
+    
 </body>
 
 </html>

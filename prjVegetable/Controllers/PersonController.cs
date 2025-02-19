@@ -46,7 +46,7 @@ namespace prjVegetable.Controllers
                 FPhone = Tp.FPhone,
                 FTel = Tp.FTel,
                 FAddress = Tp.FAddress,
-                FEmail = Tp.FEmail,
+                //FEmail = Tp.FEmail,
                 FUbn = Tp.FUbn,
                 FPermission = Tp.FPermission,
                 FEmp = Tp.FEmp,
@@ -105,6 +105,21 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CPersonWrap tPersonwrap)
         {
+            // 使用 DateOnly.Today 來設置 FCreatedAt 為今天的日期
+            tPersonwrap.person.FCreatedAt = DateTime.Now;  // 設定為今天的日期，去除時間部分
+
+            // 設定 FEditor 為當前使用者的 ID
+            //if (int.TryParse(User.Identity.Name, out int editorId))
+            //{
+            //    tPersonwrap.person.FEditor = editorId;//// 設置為當前使用者的數字 ID
+            //}
+            //else 
+            //{
+            //    // 如果轉換失敗，可以設置為 0 或處理錯誤邏輯
+            //    tPersonwrap.person.FEditor = 0;
+            //}
+
+
             // 將新的 TPerson 物件加入到資料庫上下文
             _context.TPeople.Add(tPersonwrap.person);
 
@@ -138,28 +153,35 @@ namespace prjVegetable.Controllers
         {
             // 檢查是否找到對應的使用者
             TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == personwrap.FId);
-
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
             if (e == null)
             {
                 return NotFound("使用者未找到");
+            }
+
+            var existingAccount = await _context.TPeople.FirstOrDefaultAsync(p => p.FAccount == personwrap.FAccount && p.FId != personwrap.FId);
+
+            if (existingAccount!=null) 
+            {
+                return BadRequest("此帳號已存在，請選擇其他帳號");
             }
 
             try
             {
                 // 更新資料，不給使用者修改的欄位（例如密碼）
                 e.FName = personwrap.FName;
-                e.FAccount = personwrap.FAccount;
+                //e.FAccount = personwrap.FAccount;
                 e.FBirth = personwrap.FBirth;
                 e.FPhone = personwrap.FPhone;
                 e.FTel = personwrap.FTel;
                 e.FAddress = personwrap.FAddress;
-                e.FEmail = personwrap.FEmail;
+                //e.FEmail = personwrap.FEmail;
                 e.FUbn = personwrap.FUbn;
                 e.FPermission = personwrap.FPermission;
                 e.FEmp = personwrap.FEmp;
-                e.FEmpTel = personwrap.FEmpTel;
-                e.FCreatedAt = personwrap.FCreatedAt;
-                e.FEditor = personwrap.FEditor;
+                e.FEmpTel = personwrap.FEmpTel;                
+                e.FEditor = UserId;
+                e.FPassword = personwrap.FPassword;
 
                 // 儲存變更
                 await _context.SaveChangesAsync();
