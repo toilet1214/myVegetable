@@ -25,8 +25,6 @@ public partial class TPerson
 
     public string FUbn { get; set; } = null!;
 
-    public string FUbn { get; set; } = null!;
-
     public int FPermission { get; set; }
 
     public string FEmp { get; set; } = null!;
