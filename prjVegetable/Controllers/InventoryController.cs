@@ -152,22 +152,38 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Create(DateOnly BaseDate, int ProductStartCode, int ProductEndCode)
         {
+            // 查詢範圍內的商品
+            var productsInRange = _context.TProducts
+                .Where(p => p.FId >= ProductStartCode && p.FId <= ProductEndCode)
+                .OrderBy(p => p.FId) // 按商品ID排序，確保範圍描述一致
+                .ToList();
+
+            // 確定範圍的首尾商品
+            var firstProduct = productsInRange.FirstOrDefault();
+            var lastProduct = productsInRange.LastOrDefault();
+
+            // 如果範圍內沒有產品，回傳錯誤訊息
+            if (firstProduct == null || lastProduct == null)
+            {
+                return BadRequest("指定的商品範圍內沒有任何產品！");
+            }
+
+            // 商品範圍描述
+            var productRangeNote = $"{firstProduct.FId}-{firstProduct.FName} ~ {lastProduct.FId}-{lastProduct.FName}";
+
+            // 建立庫存主檔
             var inventoryMain = new TInventoryMain
             {
                 FBaselineDate = BaseDate,
                 FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
                 FEditor = 1,
-                FNote = "新增盤點條件"
+                FNote = $"新增庫存盤點單 - 商品範圍: {productRangeNote}" // 將商品範圍加入備註
             };
 
             _context.TInventoryMains.Add(inventoryMain);
             _context.SaveChanges();
 
             var inventoryDetails = new List<TInventoryDetail>();
-
-            var productsInRange = _context.TProducts
-                .Where(p => p.FId >= ProductStartCode && p.FId <= ProductEndCode)
-                .ToList();
 
             foreach (var product in productsInRange)
             {
@@ -185,8 +201,11 @@ namespace prjVegetable.Controllers
             _context.TInventoryDetails.AddRange(inventoryDetails);
             _context.SaveChanges();
 
+            // 導向到明細頁
             return RedirectToAction("Detail", "Inventory", new { id = inventoryMain.FId });
         }
+
+
 
         /*--------------- + Delete + ----------------*/
         [HttpGet]

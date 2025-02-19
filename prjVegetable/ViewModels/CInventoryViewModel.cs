@@ -13,12 +13,13 @@ namespace prjVegetable.ViewModels
         public int TotalItemCount { get; set; }
         public int CurrentItemCount { get; set; }
 
-
         public class CProductUpdateWrap
         {
             public int FId { get; set; }
             public string? FName { get; set; }
             public int FQuantity { get; set; }
         }
+
+
     }
 }

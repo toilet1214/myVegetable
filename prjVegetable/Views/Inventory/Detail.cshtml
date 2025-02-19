@@ -25,7 +25,7 @@
 
     /*細項*/
     .table-container {
-        max-height: 400px; /* 限制表格容器的高度 */
+        height: 45vh; /* 限制表格容器的高度 */
         overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
         border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
     }
@@ -60,19 +60,19 @@
 
 </style>
 
-
+<div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
 <div class="container my-5">
     <div class="d-flex align-items-center justify-content-between">
         <!-- 左欄，搜尋按鈕與按鈕群組 -->
         <div class="d-flex align-items-center justify-content-start">
             <!-- 搜尋按鈕 -->
-            <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg"
+            <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModal"
                     data-bs-placement="top"
                     title="點擊進行查詢"
                     data-bs-delay="10">
-                <i class="bi bi-search"></i>
+                <i class="bi bi-search">　查詢庫存盤點單</i>
             </button>
 
             <!-- 按鈕群組 -->
@@ -130,22 +130,22 @@
         <!-- 右欄，其他項目 -->
         <div class="d-flex align-items-center justify-content-end">
             <!-- 盤點基準日 -->
-            <div class="d-flex align-items-center justify-content-end me-2">
+            <div class="d-flex align-items-center justify-content-end">
                 <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
                 <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-                <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger ms-2"></span>
+                <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
             </div>
 
             <!-- 建檔日期 -->
-            <div class="d-flex align-items-center justify-content-end me-2">
+            <div class="d-flex align-items-center justify-content-end ms-3">
                 <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
                 <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
                 <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger ms-0"></span>
             </div>
 
             <!-- 庫存盤點單號 -->
-            <div class="d-flex align-items-center justify-content-end me-2">
-                <label asp-for="InventoryMain.FId" class="mb-0">庫存盤點單號：</label>
+            <div class="d-flex align-items-center justify-content-end ms-3">
+                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">庫存盤點單號：</label>
                 <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
                 <span asp-validation-for="InventoryMain.FId" class="text-danger ms-2"></span>
             </div>
@@ -159,12 +159,9 @@
         <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
     }
 
-
-
-
     <div class="d-flex">
         <!-- 左邊的表格 -->
-        <div class="table-container flex-grow-1 me-3 mt-3">
+        <div class="table-container flex-grow-1 me-3 mt-2">
             <div id="printTable">
                 <!-- 顯示庫存盤點單號、盤點基準日與建檔日期（僅列印時顯示） -->
                 <div class="row mb-3 mt-4 print-only" style="display: none; justify-content: flex-start;">
@@ -196,7 +193,7 @@
                                     <td>@($"{item.FProductId} - {item.FName}")</td>
                                     <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
                                     <td>
-                                        <input id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
+                                            <input class="text-center" id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
                                     </td>
                                     <td>
                                         @if (item.FActualQuantity.HasValue)
@@ -218,7 +215,7 @@
             </div>
         </div>
         <!-- 右邊的按鈕 -->
-        <div class="d-flex flex-column align-items-center mt-3">
+        <div class="d-flex flex-column align-items-center mt-2">
             <!-- 新增按鈕 -->
             <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" data-bs-toggle="modal" data-bs-target="#addModal" title="新增" id="addButton">
                 <i class="bi bi-plus-square"></i>
@@ -266,7 +263,8 @@
             @*     <i class="bi bi-trash-fill"></i> *@
             @* </button> *@
     </div>
-    <div class="row mt-3">
+
+    <div class="row mt-2">
         <!-- 左側：備註欄與按鈕 -->
         <div class="col-8 d-flex">
             <button type="button" id="toggleNoteButton" class="btn me-1 mt-2 btn-lg" title="備註按鈕" disabled>
@@ -274,25 +272,24 @@
             </button>
 
             <!-- 備註欄 -->
-            <div class="ms-2 w-100 ">
-                <div id="inventoryNoteDisplay" class="text-break p-2 border rounded bg-white mt-2">
-                    @Model.InventoryMain.FNote
+                <div class="ms-2 w-100">
+                    <textarea id="inventoryNote"
+                              class="p-2 form-control mt-2"
+                              readonly>@Model.InventoryMain.FNote</textarea>
                 </div>
-                <textarea id="inventoryNoteEdit" class="p-2 form-control d-none mt-2">@Model.InventoryMain.FNote</textarea>
-            </div>
         </div>
 
         <!-- 右側：查詢筆數 -->
         <div class="col-3 d-flex justify-content-end align-items-center">
             <span>
-                共查詢到 @Model.TotalItemCount 筆，當前顯示第 @Model.CurrentItemCount 筆
+                    當前顯示第 @Model.CurrentItemCount 筆，共 @Model.TotalItemCount 筆資料
             </span>
         </div>
         <div class="col-1">
         </div>
     </div>
 </div>
-
+</div>
 
 <!-- 選擇條件來查詢 -->
 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -359,7 +356,7 @@
                     </tbody>
                 </table>
             </div>
-            <div id="searchResultCount" class="text-muted ms-3">
+            <div id="searchResultCount" class="text-muted me-4 my-2 text-end">
                 <!-- 查詢結果的筆數會動態顯示在這裡 -->
             </div>
             <div class="modal-footer">
@@ -540,9 +537,20 @@
         inputs.forEach(input => input.disabled = !editable);
         syncStockButton.disabled = !editable;
 
-        // 切換備註顯示和編輯模式
-        inventoryNoteDisplay.classList.toggle("d-none", editable);
-        inventoryNoteEdit.classList.toggle("d-none", !editable);
+        // 切換備註欄位的可編輯狀態
+    const inventoryNote = document.getElementById("inventoryNote");
+    inventoryNote.readOnly = !editable; // 切換 readonly 屬性
+
+        inputs.forEach(input => {
+        // 如果該欄位有值，則保持唯讀，即使進入編輯模式
+        const actualQuantity = parseInt(input.value, 10);
+        if (!isNaN(actualQuantity)) {
+            input.disabled = true; // 已有實際庫存，保持欄位唯讀
+        } else {
+            input.disabled = !editable; // 沒有實際庫存時，按編輯模式控制
+        }
+    });
+
     }
 
     // 編輯按鈕邏輯
@@ -563,7 +571,7 @@
     // 儲存按鈕邏輯
     document.getElementById("saveButton").addEventListener("click", function () {
         isEditing = false;
-        const noteText = inventoryNoteEdit.value; // 取得備註內容
+        const noteText = inventoryNote.value; // 取得備註內容
         saveData(noteText); // 提交儲存資料
         setEditable(isEditing);
         toggleButtons(isEditing);
@@ -765,9 +773,10 @@
 
         rows.forEach(row => {
             const systemQuantity = row.querySelector('td:nth-child(2)'); // 第2欄是系統庫存數量
-            const actualQuantityInput = row.querySelector('td:nth-child(3) input'); // 第4欄是實際庫存數量的輸入框
+            const actualQuantityInput = row.querySelector('td:nth-child(3) input'); // 第3欄是實際庫存數量的輸入框
 
-            if (systemQuantity && actualQuantityInput) {
+            if (systemQuantity && actualQuantityInput && !actualQuantityInput.disabled) {
+                // 僅當輸入框可編輯時進行操作
                 const systemQuantityValue = systemQuantity.textContent.trim(); // 取得系統庫存數量值
                 actualQuantityInput.value = systemQuantityValue; // 將其填入實際庫存數量的輸入框
             }
@@ -775,23 +784,25 @@
     });
 </script>
 
+
 <!-- 將實際庫存數量歸零 -->
 <script>
     document.getElementById('resetStockButton').addEventListener('click', function () {
-        const rows = document.querySelectorAll('table tbody tr');
+        const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
 
         rows.forEach(row => {
-            const actualQuantityInput = row.querySelector('td:nth-child(3) input');
+            const actualQuantityInput = row.querySelector('td:nth-child(3) input'); // 第3欄是實際庫存數量的輸入框
 
-            if (actualQuantityInput) {
-                actualQuantityInput.value = 0;
+            if (actualQuantityInput && !actualQuantityInput.disabled) {
+                // 僅當輸入框可編輯時進行操作
+                actualQuantityInput.value = 0; // 將值設為 0
             }
         });
     });
 </script>
 
 <!-- 第一筆與最後一筆的提示-->
- <!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
 <script>
         document.addEventListener("DOMContentLoaded", () => {
         // 第一筆與上一筆按鈕檢查
