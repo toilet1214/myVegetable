@@ -201,70 +201,71 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == id);
-            if (goodsInAndOut == null)
+            var main = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == id);
+            if (main == null)
             {
                 return NotFound();
             }
-
-            // 從 Session 取得當前使用者的 ID，使用 CDictionary.SK_LOGINED_USER_ID 作為 key
+            // 取得當前登入者 ID，並更新主表的 FEditor
             if (int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
             {
-                goodsInAndOut.FEditor = userId;
+                main.FEditor = userId;
             }
-
             var details = _dbContext.TGoodsInAndOutDetails
-                .Where(d => d.FGoodsInandOutId == id)
-                .ToList();
+                            .Where(d => d.FGoodsInandOutId == id)
+                            .ToList();
 
-            // 將產品清單存入 ViewBag，注意使用 Cast<dynamic>() 轉型
+            // 將產品清單存入 ViewBag，轉型為 dynamic
             ViewBag.ProductList = _dbContext.TProducts
-                .Select(p => new { p.FId, p.FName, p.FPrice })
-                .Cast<dynamic>()
-                .ToList();
+                                .Select(p => new { p.FId, p.FName, p.FPrice })
+                                .Cast<dynamic>()
+                                .ToList();
 
             var viewModel = new CGoodsInAndOutViewModel
             {
-                GoodsInAndOut = goodsInAndOut,
+                GoodsInAndOut = main,
                 GoodsInAndOutDetails = details
             };
-
             return View(viewModel);
         }
-
-
 
         [HttpPost]
         public IActionResult Edit(CGoodsInAndOutViewModel model)
         {
-            // 從 Session 取得當前使用者 ID
-            int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
-
             if (!ModelState.IsValid)
             {
                 return Json(new { success = false, message = "主表驗證失敗" });
             }
+            // 取得當前登入者 ID
+            int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
 
-            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == model.GoodsInAndOut.FId);
-            if (goodsInAndOut == null)
+            // 取得資料庫中現有的主表資料
+            var main = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == model.GoodsInAndOut.FId);
+            if (main == null)
             {
                 return Json(new { success = false, message = "找不到主表資料" });
             }
 
-            // 更新主表資料，並將 FEditor 設為當前登入使用者的 ID
-            goodsInAndOut.FInOut = model.GoodsInAndOut.FInOut;
-            goodsInAndOut.FDate = model.GoodsInAndOut.FDate;
-            goodsInAndOut.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
-            goodsInAndOut.FProviderId = model.GoodsInAndOut.FProviderId;
-            goodsInAndOut.FPersonId = model.GoodsInAndOut.FPersonId;
-            goodsInAndOut.FTotal = model.GoodsInAndOut.FTotal;
-            goodsInAndOut.FNote = model.GoodsInAndOut.FNote;
-            goodsInAndOut.FEditor = userId; // 更新為當前使用者
+            // 更新主表資料（FEditor 更新為當前使用者）
+            main.FInOut = model.GoodsInAndOut.FInOut;
+            main.FDate = model.GoodsInAndOut.FDate;
+            main.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
+            main.FProviderId = model.GoodsInAndOut.FProviderId;
+            main.FPersonId = model.GoodsInAndOut.FPersonId;
+            main.FTotal = model.GoodsInAndOut.FTotal;
+            main.FNote = model.GoodsInAndOut.FNote;
+            main.FEditor = currentUserId;
 
-            // 更新細項資料
+            // 取得資料庫中現有的細項
+            var existingDetails = _dbContext.TGoodsInAndOutDetails
+                .Where(d => d.FGoodsInandOutId == main.FId)
+                .ToList();
+
+            // 依據提交的細項來更新或新增
             foreach (var detail in model.GoodsInAndOutDetails)
             {
-                var existingDetail = _dbContext.TGoodsInAndOutDetails.FirstOrDefault(d => d.FId == detail.FId);
+                // 如果該細項有 FId 表示存在於資料庫，更新資料
+                var existingDetail = existingDetails.FirstOrDefault(d => d.FId == detail.FId);
                 if (existingDetail != null)
                 {
                     existingDetail.FProductId = detail.FProductId;
@@ -272,11 +273,28 @@ namespace prjVegetable.Controllers
                     existingDetail.FPrice = detail.FPrice;
                     existingDetail.FSum = detail.FSum;
                 }
+                else
+                {
+                    // 新增的細項：設定主表 FId 並加入
+                    detail.FGoodsInandOutId = main.FId;
+                    _dbContext.TGoodsInAndOutDetails.Add(detail);
+                }
+            }
+            // 刪除資料庫中存在但在提交模型中被刪除的細項
+            var submittedDetailIds = model.GoodsInAndOutDetails.Select(d => d.FId).ToList();
+            foreach (var existingDetail in existingDetails)
+            {
+                if (!submittedDetailIds.Contains(existingDetail.FId))
+                {
+                    _dbContext.TGoodsInAndOutDetails.Remove(existingDetail);
+                }
             }
 
             _dbContext.SaveChanges();
             return Json(new { success = true });
         }
+
+
 
 
 

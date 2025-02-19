@@ -8,7 +8,6 @@
 <h1>編輯進出貨資料</h1>
 <hr />
 
-<!-- 主表單 -->
 <form asp-action="Edit" method="post" id="EditForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <div class="container">
@@ -17,11 +16,11 @@
         <div class="row mb-3">
             <div class="col-6">
                 <div class="form-group">
-                    <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨/廢棄</label>
+                    <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
                     <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
-                        <option value="0" >進貨</option>
-                        <option value="1" >出貨</option>
-                        <option value="2" >廢棄單</option>
+                        <option value="0">進貨</option>
+                        <option value="1">出貨</option>
+                        <option value="2">作廢單</option>
                     </select>
                     <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
                 </div>
@@ -77,7 +76,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
-                    <input asp-for="GoodsInAndOut.FEditor" id="GoodsInAndOut_FEditor" class="form-control" readonly value="" />
+                    <input asp-for="GoodsInAndOut.FEditor" id="GoodsInAndOut_FEditor" class="form-control" readonly />
                     <span asp-validation-for="GoodsInAndOut.FEditor" class="text-danger"></span>
                 </div>
             </div>
@@ -90,13 +89,14 @@
                 <div class="row mb-3 detail-entry">
                     <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
                     <div class="col-3">
-                        <select class="FProductId form-control" required>
+                        <!-- 將原有值存入 data-selected -->
+                        <select class="FProductId form-control" data-selected="@Model.GoodsInAndOutDetails[i].FProductId" required>
                             <option value="">請選擇產品</option>
                             @foreach (var product in (List<dynamic>)ViewBag.ProductList)
                             {
                                 if (Model.GoodsInAndOutDetails[i].FProductId.ToString() == product.FId.ToString())
                                 {
-                                    <option value="@product.FId" selected>@product.FName</option>
+                                    <option value="@product.FId" selected="selected">@product.FName</option>
                                 }
                                 else
                                 {
@@ -121,7 +121,7 @@
                 </div>
             }
         </div>
-        <!-- 全局新增/刪除按鈕（可選） -->
+        <!-- 全局新增/移除按鈕 -->
         <div class="row mb-3">
             <div class="col-6">
                 <button type="button" id="addDetail" class="btn btn-success">＋ 新增明細</button>
@@ -143,12 +143,12 @@
 </form>
 
 <script>
-    // 全域變數，用來存放從 API 取得的產品資訊
+    // 全域變數：存放從 API 取得的產品資訊
     let productsData = [];
 
-    // 頁面載入時，取得會員資訊並填入 FEditor，以及取得產品資訊
+    // 頁面載入時取得會員資訊及產品資訊
     document.addEventListener("DOMContentLoaded", function () {
-        // 取得會員資訊（透過 CDictionary.SK_LOGINED_USER_ID 存於 Session）
+        // 取得會員資訊，更新 FEditor（控制器 GET Edit 也有設定，但可再以 AJAX 更新）
         fetch('/GoodsInAndOut/GetMemberInfo')
             .then(response => response.json())
             .then(data => {
@@ -178,18 +178,18 @@
             .catch(error => console.error("錯誤: ", error));
     });
 
-    // 載入產品選單資料
+    // 載入產品選單，根據 select 的 data-selected 屬性預設選項
     function loadProductOptionsFor(selectElem) {
+        let selectedVal = selectElem.getAttribute("data-selected") || "";
         selectElem.innerHTML = '<option value="">請選擇產品</option>';
         if (productsData.length === 0) {
             console.warn("productsData 為空！");
         }
         productsData.forEach(product => {
             let option = document.createElement("option");
-            option.value = product.FId; // 注意：此處依據後端傳回的屬性名稱，使用大寫 FId
+            option.value = product.FId;
             option.textContent = product.FName;
-            // 若 select 的當前 value 與該產品 FId 相符則設為 selected
-            if (selectElem.value == product.FId.toString()) {
+            if (selectedVal && selectedVal === product.FId.toString()) {
                 option.selected = true;
             }
             selectElem.appendChild(option);
@@ -204,7 +204,6 @@
             let detailRow = event.target.closest(".detail-entry");
             let priceInput = detailRow.querySelector(".FPrice");
             if (productId) {
-                // 從全域變數中找出對應產品（比對字串）
                 let product = productsData.find(p => p.FId.toString() === productId);
                 console.log("找到的產品：", product);
                 if (product && product.FPrice != null) {
@@ -235,7 +234,7 @@
         }
     });
 
-    // 更新進出貨總價（累計所有細項小計）
+    // 更新主表總價（累計所有細項小計）
     function updateTotalPrice() {
         let total = 0;
         document.querySelectorAll(".FSum").forEach(function (sumElem) {
@@ -250,7 +249,7 @@
         var newRow = `<div class="row mb-3 detail-entry">
                     <input type="hidden" class="FGoodsInandOutId" value="0" />
                     <div class="col-3">
-                        <select class="FProductId form-control" required>
+                        <select class="FProductId form-control" data-selected="" required>
                             <option value="">請選擇產品</option>
                         </select>
                     </div>
@@ -273,7 +272,7 @@
         loadProductOptionsFor(lastSelect);
     });
 
-    // 全局移除按鈕（如果有全局的移除按鈕）
+    // 全局移除按鈕：移除最後一筆明細
     document.getElementById("removeDetail").addEventListener("click", function () {
         var details = document.querySelectorAll(".detail-entry");
         if (details.length > 1) {
@@ -284,7 +283,7 @@
         }
     });
 
-    // 每筆明細內的獨立移除按鈕功能
+    // 每筆明細獨立移除按鈕功能
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-remove-detail")) {
             let detailRow = event.target.closest(".detail-entry");
@@ -315,7 +314,7 @@
           }).catch(error => console.error("Error:", error));
     });
 
-    // 取消按鈕，返回 GoodsInAndOutIndex
+    // 取消按鈕，返回列表
     document.getElementById("cancelEdit").addEventListener("click", function () {
         window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
     });
