@@ -4,6 +4,7 @@
     ViewData["Title"] = "OrderDetail";
 }
 
+
 <h1 class="mt-5">訂單細項</h1>
 <div class="container mt-5">
     <div class="row">
@@ -13,7 +14,7 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Favorite">我的最愛</a>
-                <a class="nav-link" asp-controller="Customer" asp-action="MyComment">我的評論</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
             </nav>
         </div>
         <div class="col-md-9">
@@ -70,9 +71,24 @@
                                     @Html.DisplayFor(modelItem => item.FSum)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("評論", "CreateComment", new { id = item.FId })
+                                    @if (item.OrderStatus == 2)
+                                    {
+                                        @if (item.HasComment)
+                                        {
+                                            @Html.ActionLink("查看評論", "CommentIndex", new { id = item.orderList.FId })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("評論", "AddComment", new { id = item.orderList.FId })
+                                        }
+                                }
+                                else
+                                {
+                                }
                                 </td>
+                                
                             </tr>
+                            
                         }
                     }
                 </tbody>

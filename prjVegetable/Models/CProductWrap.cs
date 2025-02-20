@@ -18,6 +18,7 @@ namespace prjVegetable.Models
         {
             _product = new TProduct();
             ImgList = new List<string>();
+            CommentList = new List<CCommentWrap>();
         }
 
 
@@ -109,7 +110,7 @@ namespace prjVegetable.Models
 
         }
 
-        [Required(ErrorMessage = "必填")]
+        
         [DisplayName("修改人")]
         public int FEditor
         {
@@ -117,15 +118,20 @@ namespace prjVegetable.Models
             set { _product.FEditor = value; }
         }
 
-        [Required(ErrorMessage = "必填")]
+        
         [DisplayName("商品照片")]
         public string FImgName{ get; set; }
 
         public bool IsFavorite
         { get; set; }
 
-
-
+        public bool IsPopular
+        { get; set; }
+        
+        public IEnumerable<IFormFile> productImages { get; set; }
         public List<string> ImgList { get; set; }
+        public List<CCommentWrap> CommentList { get; set; }
+
+        public double AverageStar { get; set; }
     }
 }

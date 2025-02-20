@@ -53,5 +53,9 @@ namespace prjVegetable.Models
         public bool IsComment { get;set; }=false;
         [DisplayName("商品名稱")]
         public string ProductName { get;set; }
+
+
+        public int OrderStatus { get; set; }
+        public bool HasComment { get; set; }
     }
 }

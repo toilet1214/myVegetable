@@ -9,8 +9,8 @@ namespace prjVegetable.ViewModels
         public string category { get; set; }
         public string keyword { get; set; }
 
-        public decimal? MinPrice { get; set; } // 最低價格
-        public decimal? MaxPrice { get; set; } // 最高價格
+        public decimal? MinPrice { get; set; } 
+        public decimal? MaxPrice { get; set; } 
 
         public int CurrentPage { get; set; }
         public int TotalPages { get; set; }

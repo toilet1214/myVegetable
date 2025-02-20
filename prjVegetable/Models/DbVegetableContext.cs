@@ -138,6 +138,7 @@ public partial class DbVegetableContext : DbContext
             entity.ToTable("tGoodsInAndOut");
 
             entity.Property(e => e.FId).HasColumnName("fId");
+            entity.Property(e => e.FCount).HasColumnName("fCount");
             entity.Property(e => e.FDate)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnName("fDate");
@@ -149,6 +150,8 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fNote");
             entity.Property(e => e.FPersonId).HasColumnName("fPersonId");
+            entity.Property(e => e.FPrice).HasColumnName("fPrice");
+            entity.Property(e => e.FProductId).HasColumnName("fProductId");
             entity.Property(e => e.FProviderId).HasColumnName("fProviderId");
             entity.Property(e => e.FTotal).HasColumnName("fTotal");
         });

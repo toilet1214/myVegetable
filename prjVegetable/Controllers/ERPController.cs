@@ -157,14 +157,18 @@ namespace prjVegetable.Controllers
             .ToList();
 
             var MostPopularProduct = _VegetableContext.TFavorites.Join(_VegetableContext.TProducts, f => f.FProductId, p => p.FId, (f, p) => new
+            {f,p}).Join(_VegetableContext.TComments, j => j.p.FId, c => c.FProductId, (j, c) => new
             {
-                f.FProductId,
-                p.FName
-            }).GroupBy(x => x.FName).Select(g => new
+                Name=j.p.FName,
+                j.f.FProductId,
+                c.FStar
+            }).GroupBy(x => x.Name).Select(g => new
             {
                 ProductName = g.Key,
-                Likes = g.Count()
-            }).OrderByDescending(x => x.Likes) 
+                Likes = g.Count(),
+                Star = g.Average(a=>a.FStar)
+
+            }).OrderByDescending(y => y.Likes) 
             .Take(5) 
             .ToList();
 
