@@ -36,7 +36,7 @@
                         <div class="row">
                             <label for="fAccount" class="col-md-3 col-form-label">帳號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount" v-model="person.fAccount" @@input="validateAccount">
+                                <input type="text" class="form-control" id="fAccount" :placeholder="person.fAccount" readonly v-model="person.fAccount" @@input="validateAccount">
                                 <div v-if="accountError" style="color:red;font-size:1rem">帳號已存在</div>
                             </div>
                         </div>
@@ -45,7 +45,7 @@
                         <div class="row">
                             <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword" v-model="person.fPassword" @@input="validatePassword">
+                                <input type="password" class="form-control" id="fPassword" :placeholder="person.fPassword" readonly v-model="person.fPassword" @@input="validatePassword">
                                 <div v-if="passwordError" style="color:red;font-size:1rem">密碼必須包含英文大小寫與數字，並且至少8位</div>
                             </div>
                         </div>
@@ -99,13 +99,7 @@
                         </div>
                     </div>
                     <div class="col-6">
-                        <div class="row">
-                            <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmail" :placeholder="person.fEmail" v-model="person.fEmail" @@input="validateEmail">
-                                <div v-if="emailError" style="color:red;font-size:1rem">請輸入有效電子郵件</div>
-                            </div>
-                        </div>
+                        
                     </div>
                 </div>
                 <div class="mb-3 row">
@@ -172,7 +166,7 @@
                         <div class="row">
                             <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPassword" :value="person.fPassword" readonly v-model="person.fPassword">
+                                <input type="password" class="form-control" id="fPassword" :value="person.fPassword" readonly v-model="person.fPassword">
                             </div>
                         </div>
                     </div>
@@ -224,10 +218,7 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fEmail" class="col-md-3 col-form-label">電子郵件：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEmail" :value="person.fEmail" readonly v-model="person.fEmail">
-                            </div>
+                            
                         </div>
                     </div>
                 </div>
@@ -430,12 +421,7 @@
                     this.phoneError=!phoneRegex.test(this.person.fPhone);
                     this.validateForm();
                 },                
-                validateEmail(){
-                    //電子郵件驗證
-                    const emailRegex = /^\w+([-+.]\w+)*@@\w+([-.]\w+)*\.\w+([-.]\w+)*$/;
-                    this.emailError = !emailRegex.test(this.person.fEmail);
-                    this.validateForm();
-                },
+                
                 validateEmp(){
                 //如果權限=0(員工，就需要填入資料)
                     this.empError = this.person.fPermission === 0 && this.person.fEmpTel === '';
@@ -455,7 +441,6 @@
                         !this.passwordError &&
                         !this.phoneError &&
                         !this.telError &&
-                        !this.emailError &&
                         !this.empError &&
                         !this.empTelError;
                 },
