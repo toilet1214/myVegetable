@@ -279,6 +279,10 @@
     </div>
 </div>
 
+
+<!-- 隱藏的欄位 -->
+<input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
+
 <!-- 查詢結果視窗 -->
 <div class="modal fade" id="inventoryAdjustmentListModal" tabindex="-1" role="dialog" aria-labelledby="inventoryListModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -577,35 +581,53 @@
 </script>
 
 
-<!-- 第一筆與最後一筆的提示-->
-<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+<!-- 第一筆與最後一筆資料提示 -->
+<!-- 由前端判斷，可以減少伺服器的負擔-->
 <script>
-         document.addEventListener("DOMContentLoaded", () => {
-        // 第一筆與上一筆按鈕檢查
-        document.querySelectorAll(".first-btn, .prev-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"), 10);
-                const firstId = parseInt(this.getAttribute("data-first"), 10);
+     document.addEventListener("DOMContentLoaded", function () {
+        const firstRecordButton = document.getElementById("firstRecordButton");
+        const previousRecordButton = document.getElementById("previousRecordButton");
+        const nextRecordButton = document.getElementById("nextRecordButton");
+        const lastRecordButton = document.getElementById("lastRecordButton");
 
-                if (currentId === firstId) {
-                    e.preventDefault(); // 阻止預設行為
-                    alert("已經在第一筆資料！");
+        // 第一筆按鈕事件
+        if (firstRecordButton) {
+            firstRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
                 }
             });
-        });
+        }
 
-        // 下一筆與最後一筆按鈕檢查
-        document.querySelectorAll(".next-btn, .last-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"), 10);
-                const lastId = parseInt(this.getAttribute("data-last"), 10);
-
-                if (currentId === lastId) {
-                    e.preventDefault(); // 阻止預設行為
-                    alert("已經在最後一筆資料！");
+        // 上一筆按鈕事件
+        if (previousRecordButton) {
+            previousRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
                 }
             });
-        });
+        }
+
+        // 下一筆按鈕事件
+        if (nextRecordButton) {
+            nextRecordButton.addEventListener("click", function (event) {
+                if (nextRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
+
+        // 最後一筆按鈕事件
+        if (lastRecordButton) {
+            lastRecordButton.addEventListener("click", function (event) {
+                if (lastRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
     });
-
 </script>
