@@ -129,6 +129,7 @@
             </div>
         </div>
         <!-- 返回與儲存按鈕 -->
+        <!-- 返回與儲存按鈕 -->
         <div class="row mb-3">
             <div class="col-6 text-start">
                 <button type="button" id="cancelEdit" class="btn btn-outline-secondary">返回</button>
@@ -137,12 +138,12 @@
                 <button type="button" id="submitEditData" class="btn btn-primary">儲存</button>
             </div>
         </div>
+
     </div>
 </form>
 
 <script>
     let productsData = [];
-    let deletedItems = [];
 
     document.addEventListener("DOMContentLoaded", function () {
         fetch('/GoodsInAndOut/GetMemberInfo')
@@ -195,7 +196,7 @@
             let detailRow = event.target.closest(".detail-entry");
             let priceInput = detailRow.querySelector(".FPrice");
             let countInput = detailRow.querySelector(".FCount");
-            let count = parseInt(countInput.value) || 1;
+            let count = parseInt(countInput.value) || 1; // 預設數量為 1
 
             if (productId) {
                 fetch(`/GoodsInAndOut/GetProductPrice?productId=${productId}&count=${count}`)
@@ -204,21 +205,17 @@
                         if (data.success) {
                             priceInput.value = data.price;
                             detailRow.querySelector(".FSum").value = data.subtotal;
+                            updateTotalPrice();
                         } else {
                             priceInput.value = "";
                             detailRow.querySelector(".FSum").value = "";
                             console.error("更新失敗：" + data.message);
                         }
-                        updateTotalPrice();
                     })
-                    .catch(error => {
-                        console.error("錯誤:", error);
-                        updateTotalPrice();
-                    });
+                    .catch(error => console.error("錯誤:", error));
             } else {
                 priceInput.value = "";
                 detailRow.querySelector(".FSum").value = "";
-                updateTotalPrice();
             }
         }
     });
@@ -226,50 +223,54 @@
     document.addEventListener("input", function (event) {
         if (event.target.classList.contains("FCount")) {
             let detailRow = event.target.closest(".detail-entry");
-            let count = parseInt(event.target.value) || 0;
-            let price = parseInt(detailRow.querySelector(".FPrice").value) || 0;
-            detailRow.querySelector(".FSum").value = (price * count);
+            let count = parseInt(event.target.value) || 1;
+            let price = parseFloat(detailRow.querySelector(".FPrice").value) || 0;
+            detailRow.querySelector(".FSum").value = (price * count).toFixed(0);
             updateTotalPrice();
         }
     });
 
+
     function updateTotalPrice() {
         let total = 0;
         document.querySelectorAll(".FSum").forEach(function (sumElem) {
-            let val = parseInt(sumElem.value) || 0;
+            let val = parseFloat(sumElem.value) || 0;
             total += val;
         });
         document.getElementById("GoodsInAndOut_FTotal").value = total;
     }
 
     document.getElementById("addDetail").addEventListener("click", function () {
-        let index = document.querySelectorAll('.detail-entry').length;
-        let newRow = document.createElement("div");
-        newRow.classList.add("row", "mb-3", "detail-entry");
-        newRow.innerHTML = `
-            <input type="hidden" class="FGoodsInandOutId" name="GoodsInAndOutDetails[${index}].FGoodsInandOutId" value="0" />
+        let detailCount = document.querySelectorAll(".detail-entry").length; // 計算目前有幾筆明細，設定 index
+
+        var newRow = `<div class="row mb-3 detail-entry">
+            <input type="hidden" name="GoodsInAndOutDetails[${detailCount}].FId" class="FId" value="0" />
             <div class="col-3">
-                <select class="FProductId form-control" name="GoodsInAndOutDetails[${index}].FProductId" required>
+                <select name="GoodsInAndOutDetails[${detailCount}].FProductId" class="FProductId form-control" required>
                     <option value="">請選擇產品</option>
                 </select>
             </div>
             <div class="col-3">
-                <input type="number" class="FCount form-control" name="GoodsInAndOutDetails[${index}].FCount" placeholder="數量" min="1" required />
+                <input type="number" name="GoodsInAndOutDetails[${detailCount}].FCount" class="FCount form-control" placeholder="數量" min="1" required />
             </div>
             <div class="col-3">
-                <input type="text" class="FPrice form-control" name="GoodsInAndOutDetails[${index}].FPrice" placeholder="單價" readonly />
+                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FPrice" class="FPrice form-control" placeholder="單價" readonly />
             </div>
             <div class="col-2">
-                <input type="text" class="FSum form-control" name="GoodsInAndOutDetails[${index}].FSum" placeholder="小計" readonly />
+                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FSum" class="FSum form-control" placeholder="小計" readonly />
             </div>
             <div class="col-1">
                 <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
             </div>
-        `;
-        document.getElementById("details").appendChild(newRow);
-        let newSelect = newRow.querySelector(".FProductId");
-        loadProductOptionsFor(newSelect);
+        </div>`;
+
+        document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
+
+        let newSelects = document.querySelectorAll(".FProductId");
+        let lastSelect = newSelects[newSelects.length - 1];
+        loadProductOptionsFor(lastSelect);
     });
+
 
     document.getElementById("removeDetail").addEventListener("click", function () {
         let details = document.querySelectorAll(".detail-entry");
@@ -289,29 +290,58 @@
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-remove-detail")) {
             let detailRow = event.target.closest(".detail-entry");
-            let detailId = detailRow.querySelector("input.FGoodsInandOutId").value;
-
-            // 只有已存入資料庫的細項才需要加入刪除列表
-            if (detailId !== "0") {
-                deletedItems.push(detailId);
+            let details = document.querySelectorAll(".detail-entry");
+            if (details.length > 1) {
+                detailRow.remove();
+                updateTotalPrice();
+            } else {
+                alert("至少需要一筆明細！");
             }
-            detailRow.remove();
-            updateTotalPrice();
         }
     });
 
 
-    document.getElementById("submitEditData").addEventListener("click", function () {
-        let formData = new FormData(document.getElementById("EditForm"));
-        formData.append("deletedItems", JSON.stringify(deletedItems));
-        deletedItems.forEach((id, index) => {
-            formData.append(`DeletedItems[${index}]`, id);
+    function submitEditData() {
+        let formData = new FormData();
+
+        // 主表資料
+        formData.append("GoodsInAndOut.FId", document.querySelector("input[name='GoodsInAndOut.FId']").value);
+        formData.append("GoodsInAndOut.FInOut", document.querySelector("select[name='GoodsInAndOut.FInOut']").value);
+        formData.append("GoodsInAndOut.FDate", document.querySelector("input[name='GoodsInAndOut.FDate']").value);
+        formData.append("GoodsInAndOut.FInvoiceId", document.querySelector("input[name='GoodsInAndOut.FInvoiceId']").value);
+        formData.append("GoodsInAndOut.FProviderId", document.querySelector("input[name='GoodsInAndOut.FProviderId']").value);
+        formData.append("GoodsInAndOut.FPersonId", document.querySelector("input[name='GoodsInAndOut.FPersonId']").value);
+        formData.append("GoodsInAndOut.FTotal", document.querySelector("input[name='GoodsInAndOut.FTotal']").value);
+        formData.append("GoodsInAndOut.FNote", document.querySelector("input[name='GoodsInAndOut.FNote']").value);
+        formData.append("GoodsInAndOut.FEditor", document.querySelector("input[name='GoodsInAndOut.FEditor']").value);
+
+        // 細項資料
+        document.querySelectorAll(".detail-entry").forEach((row, index) => {
+            let fIdInput = row.querySelector("input[name$='.FId']");
+            if (!fIdInput) {
+                console.error(`❌ 找不到細項 FId，index: ${index}`);
+                return; // 避免提交時發生錯誤
+            }
+
+            formData.append(`GoodsInAndOutDetails[${index}].FId`, fIdInput.value || "0");
+            formData.append(`GoodsInAndOutDetails[${index}].FProductId`, row.querySelector(".FProductId").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FCount`, row.querySelector(".FCount").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FPrice`, row.querySelector(".FPrice").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FSum`, row.querySelector(".FSum").value);
         });
+
+        console.log("✅ 送出的 FormData：", formData);
 
         fetch("/GoodsInAndOut/Edit", {
             method: "POST",
             body: formData
-        }).then(response => response.json())
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP 錯誤: " + response.status);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     alert("資料已更新！");
@@ -319,12 +349,21 @@
                 } else {
                     alert("更新失敗：" + data.message);
                 }
-            }).catch(error => console.error("Error:", error));
+            })
+            .catch(error => {
+                console.error("提交錯誤:", error);
+                alert("提交失敗，請檢查控制台錯誤訊息！");
+            });
+    }
+
+    // 讓按鈕綁定點擊事件
+    document.getElementById("submitEditData").addEventListener("click", submitEditData);
+
+
+
+
+    document.getElementById("cancelEdit").addEventListener("click", function () {
+        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
     });
-
-
-        document.getElementById("cancelEdit").addEventListener("click", function () {
-            deletedItems = []; 
-            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
-        });
+    
 </script>

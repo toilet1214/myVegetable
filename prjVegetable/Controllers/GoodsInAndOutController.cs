@@ -207,7 +207,6 @@ namespace prjVegetable.Controllers
             {
                 return NotFound();
             }
-            // 取得當前登入者 ID，並更新主表的 FEditor
             if (int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
             {
                 main.FEditor = userId;
@@ -216,7 +215,6 @@ namespace prjVegetable.Controllers
                             .Where(d => d.FGoodsInandOutId == id)
                             .ToList();
 
-            // 將產品清單存入 ViewBag，轉型為 dynamic
             ViewBag.ProductList = _dbContext.TProducts
                                 .Select(p => new { p.FId, p.FName, p.FPrice })
                                 .Cast<dynamic>()
@@ -231,21 +229,23 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(CGoodsInAndOutViewModel model, string deletedItems)
+        public IActionResult Edit(CGoodsInAndOutViewModel model)
         {
-            if (!ModelState.IsValid)
+            if (model == null || model.GoodsInAndOut == null)
             {
-                return Json(new { success = false, message = "主表驗證失敗" });
+                return Json(new { success = false, message = "提交的資料無效" });
             }
+
+            Console.WriteLine($"收到的 FId: {model.GoodsInAndOut.FId}");
+
             int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
 
             var main = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == model.GoodsInAndOut.FId);
             if (main == null)
             {
-                return Json(new { success = false, message = "找不到主表資料" });
+                return Json(new { success = false, message = $"找不到主表資料，FId: {model.GoodsInAndOut.FId}" });
             }
 
-            // 更新主表資料
             main.FInOut = model.GoodsInAndOut.FInOut;
             main.FDate = model.GoodsInAndOut.FDate;
             main.FInvoiceId = model.GoodsInAndOut.FInvoiceId;
@@ -255,56 +255,32 @@ namespace prjVegetable.Controllers
             main.FNote = model.GoodsInAndOut.FNote;
             main.FEditor = currentUserId;
 
-            // **修正 JSON 解析錯誤**
-            if (!string.IsNullOrEmpty(deletedItems))
-            {
-                try
-                {
-                    List<int> deleteIds = JsonSerializer.Deserialize<List<string>>(deletedItems)
-                        .Where(id => int.TryParse(id, out _))
-                        .Select(int.Parse)
-                        .ToList();
+            _dbContext.SaveChanges(); 
+            _dbContext.Database.ExecuteSqlRaw("DELETE FROM TGoodsInAndOutDetail WHERE FGoodsInandOutId = @p0", main.FId);
 
-                    if (deleteIds.Count > 0)
-                    {
-                        string deleteQuery = $"DELETE FROM TGoodsInAndOutDetail WHERE FId IN ({string.Join(",", deleteIds)})";
-                        _dbContext.Database.ExecuteSqlRaw(deleteQuery);
-                    }
-                }
-                catch (Exception ex)
+            if (model.GoodsInAndOutDetails != null && model.GoodsInAndOutDetails.Count > 0)
+            {
+                var sql = new List<string>();
+                var parameters = new List<object>();
+
+                for (int i = 0; i < model.GoodsInAndOutDetails.Count; i++)
                 {
-                    return Json(new { success = false, message = "刪除時發生錯誤：" + ex.Message });
+                    var detail = model.GoodsInAndOutDetails[i];
+                    sql.Add($"(@p{i * 5}, @p{i * 5 + 1}, @p{i * 5 + 2}, @p{i * 5 + 3}, @p{i * 5 + 4})");
+
+                    parameters.Add(main.FId);
+                    parameters.Add(detail.FProductId);
+                    parameters.Add(detail.FCount);
+                    parameters.Add(detail.FPrice);
+                    parameters.Add(detail.FSum);
                 }
+
+                string query = "INSERT INTO TGoodsInAndOutDetail (FGoodsInandOutId, FProductId, FCount, FPrice, FSum) VALUES " + string.Join(", ", sql);
+                _dbContext.Database.ExecuteSqlRaw(query, parameters.ToArray()); 
             }
 
-            var existingDetails = _dbContext.TGoodsInAndOutDetails
-                .Where(d => d.FGoodsInandOutId == main.FId)
-                .ToList();
-
-            // 依據提交的細項來更新或新增
-            foreach (var detail in model.GoodsInAndOutDetails)
-            {
-                var existingDetail = existingDetails.FirstOrDefault(d => d.FId == detail.FId);
-                if (existingDetail != null)
-                {
-                    existingDetail.FProductId = detail.FProductId;
-                    existingDetail.FCount = detail.FCount;
-                    existingDetail.FPrice = detail.FPrice;
-                    existingDetail.FSum = detail.FSum;
-                }
-                else
-                {
-                    detail.FGoodsInandOutId = main.FId;
-                    _dbContext.TGoodsInAndOutDetails.Add(detail);
-                }
-            }
-
-            _dbContext.SaveChanges();
             return Json(new { success = true });
         }
-
-
-
 
 
         [HttpGet]
