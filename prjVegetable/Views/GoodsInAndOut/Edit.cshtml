@@ -1,4 +1,4 @@
-﻿@model prjVegetable.Models.CGoodsInAndOutViewModel
+﻿@model prjVegetable.ViewModels.CGoodsInAndOutViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -8,122 +8,327 @@
 <h1>編輯進出貨資料</h1>
 <hr />
 
-<!-- 主表單 (TGoodsInAndOut) -->
 <form asp-action="Edit" method="post" id="EditForm">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="container">
+        <h3>進出貨基本資料</h3>
+        <input type="hidden" asp-for="GoodsInAndOut.FId" />
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
+                    <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
+                        <option value="0" >進貨</option>
+                        <option value="1" >出貨</option>
+                        <option value="2" >作廢單</option>
+                    </select>
+                    <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
+                    <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" required />
+                    <span asp-validation-for="GoodsInAndOut.FDate" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
+                    <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
+                    <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
+                    <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required />
+                    <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
+                    <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
+                    <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
+                    <input asp-for="GoodsInAndOut.FTotal" id="GoodsInAndOut_FTotal" class="form-control" required readonly />
+                    <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
+                    <input asp-for="GoodsInAndOut.FNote" class="form-control" type="text" required />
+                    <span asp-validation-for="GoodsInAndOut.FNote" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
+                    <input asp-for="GoodsInAndOut.FEditor" id="GoodsInAndOut_FEditor" class="form-control" readonly />
+                    <span asp-validation-for="GoodsInAndOut.FEditor" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <h3>進出貨明細</h3>
+        <div id="details">
+            @for (int i = 0; i < Model.GoodsInAndOutDetails.Count; i++)
+            {
+                <div class="row mb-3 detail-entry">
+                    <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
+                    <div class="col-3">
+                        <label class="control-label">商品名稱</label>
+                        <select asp-for="GoodsInAndOutDetails[i].FProductId" class="FProductId form-control" data-selected="@Model.GoodsInAndOutDetails[i].FProductId" required>
+                            <option value="">請選擇產品</option>
+                            @foreach (var product in (List<dynamic>)ViewBag.ProductList)
+                            {
+                                if (Model.GoodsInAndOutDetails[i].FProductId.ToString() == product.FId.ToString())
+                                {
+                                    <option value="@product.FId" selected="selected">@product.FName</option>
+                                }
+                                else
+                                {
+                                    <option value="@product.FId">@product.FName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label class="control-label">數量</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FCount" class="FCount form-control" placeholder="數量" type="number" min="1" required />
+                    </div>
+                    <div class="col-2">
+                        <label class="control-label">單價</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FPrice" class="FPrice form-control" placeholder="單價" readonly />
+                    </div>
+                    <div class="col-2">
+                        <label class="control-label">小計</label>
+                        <input asp-for="GoodsInAndOutDetails[i].FSum" class="FSum form-control" placeholder="小計" readonly />
+                    </div>
+                    <div class="col-3 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
+                    </div>
+                </div>
+            }
+        </div>
+        <!-- 全局新增/移除按鈕 -->
+        <div class="row mb-3">
+            <div class="col-6">
+                <button type="button" id="addDetail" class="btn btn-success">＋ 新增明細</button>
+            </div>
+        </div>
+        <!-- 返回與儲存按鈕 -->
+        <!-- 返回與儲存按鈕 -->
+        <div class="row mb-3">
+            <div class="col-6 text-start">
+                <button type="button" id="cancelEdit" class="btn btn-outline-secondary">返回</button>
+            </div>
+            <div class="col-6 text-end">
+                <button type="button" id="submitEditData" class="btn btn-primary">儲存</button>
+            </div>
+        </div>
 
-    <h3>進出貨基本資料</h3>
-    <input type="hidden" asp-for="GoodsInAndOut.FId" />
-
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨/廢棄</label>
-                <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
-                    <option value="0">進貨</option>
-                    <option value="1">出貨</option>
-                    <option value="2">廢棄單</option>
-                </select>
-                <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
-                <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" required />
-                <span asp-validation-for="GoodsInAndOut.FDate" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
-                <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" required />
-                <span asp-validation-for="GoodsInAndOut.FInvoiceId" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
-                <input asp-for="GoodsInAndOut.FProviderId" class="form-control" required />
-                <span asp-validation-for="GoodsInAndOut.FProviderId" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
-                <input asp-for="GoodsInAndOut.FPersonId" class="form-control" required />
-                <span asp-validation-for="GoodsInAndOut.FPersonId" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
-                <input asp-for="GoodsInAndOut.FTotal" class="form-control" required />
-                <span asp-validation-for="GoodsInAndOut.FTotal" class="text-danger"></span>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mb-3">
-        <div class="col-6">
-            <div class="form-group">
-                <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
-                <input asp-for="GoodsInAndOut.FNote" class="form-control" type="text" required />
-                <span asp-validation-for="GoodsInAndOut.FNote" class="text-danger"></span>
-            </div>
-        </div>
     </div>
 </form>
 
-<hr />
-
-<!-- 進出貨明細 -->
-<h3>進出貨明細</h3>
-<div id="details">
-    @for (int i = 0; i < Model.GoodsInAndOutDetails.Count; i++)
-    {
-        <div class="row mb-3 detail-entry">
-            <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
-            <div class="col-3">
-                <input asp-for="GoodsInAndOutDetails[i].FProductId" class="form-control" placeholder="產品 ID" />
-            </div>
-            <div class="col-3">
-                <input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" placeholder="數量" />
-            </div>
-            <div class="col-3">
-                <input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" placeholder="單價" />
-            </div>
-            <div class="col-3">
-                <input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" placeholder="小計" />
-            </div>
-        </div>
-    }
-</div>
-
-<!-- 送出更新 & 返回 -->
-<div class="row mb-3">
-    <div class="col-6 text-start">
-        <button type="button" id="cancelEdit" class="btn btn-secondary">返回</button>
-    </div>
-    <div class="col-6 text-end">
-        <button type="button" id="submitEditData" class="btn btn-primary">儲存</button>
-    </div>
-</div>
-
 <script>
-    document.getElementById("submitEditData").addEventListener("click", function () {
-        let formData = new FormData(document.getElementById("EditForm"));
+    let productsData = [];
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch('/GoodsInAndOut/GetMemberInfo')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("GoodsInAndOut_FEditor").value = data.data.ID;
+                } else {
+                    console.error("無法獲取會員資訊: " + data.message);
+                }
+            })
+            .catch(error => console.error("錯誤: ", error));
+
+        fetch('/GoodsInAndOut/GetProductsInfo')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    productsData = data.products;
+                    document.querySelectorAll(".FProductId").forEach(function (selectElem) {
+                        loadProductOptionsFor(selectElem);
+                        let selectedVal = selectElem.getAttribute("data-selected");
+                        if (selectedVal) {
+                            selectElem.value = selectedVal;
+                            selectElem.dispatchEvent(new Event("change"));
+                        }
+                    });
+                } else {
+                    console.error("無法獲取產品資訊：" + data.message);
+                }
+            })
+            .catch(error => console.error("錯誤: ", error));
+    });
+
+    function loadProductOptionsFor(selectElem) {
+        selectElem.innerHTML = '<option value="">請選擇產品</option>';
+        productsData.forEach(product => {
+            let option = document.createElement("option");
+            option.value = product.fId;
+            option.textContent = product.fName;
+            if (selectElem.getAttribute("data-selected") === product.fId.toString()) {
+                option.selected = true;
+            }
+            selectElem.appendChild(option);
+        });
+    }
+
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("FProductId")) {
+            let productId = event.target.value;
+            let detailRow = event.target.closest(".detail-entry");
+            let priceInput = detailRow.querySelector(".FPrice");
+            let countInput = detailRow.querySelector(".FCount");
+            let count = parseInt(countInput.value) || 1; // 預設數量為 1
+
+            if (productId) {
+                fetch(`/GoodsInAndOut/GetProductPrice?productId=${productId}&count=${count}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            priceInput.value = data.price;
+                            detailRow.querySelector(".FSum").value = data.subtotal;
+                            updateTotalPrice();
+                        } else {
+                            priceInput.value = "";
+                            detailRow.querySelector(".FSum").value = "";
+                            console.error("更新失敗：" + data.message);
+                        }
+                    })
+                    .catch(error => console.error("錯誤:", error));
+            } else {
+                priceInput.value = "";
+                detailRow.querySelector(".FSum").value = "";
+            }
+        }
+    });
+
+    document.addEventListener("input", function (event) {
+        if (event.target.classList.contains("FCount")) {
+            let detailRow = event.target.closest(".detail-entry");
+            let count = parseInt(event.target.value) || 1;
+            let price = parseFloat(detailRow.querySelector(".FPrice").value) || 0;
+            detailRow.querySelector(".FSum").value = (price * count).toFixed(0);
+            updateTotalPrice();
+        }
+    });
+
+
+    function updateTotalPrice() {
+        let total = 0;
+        document.querySelectorAll(".FSum").forEach(function (sumElem) {
+            let val = parseFloat(sumElem.value) || 0;
+            total += val;
+        });
+        document.getElementById("GoodsInAndOut_FTotal").value = total;
+    }
+
+    document.getElementById("addDetail").addEventListener("click", function () {
+        let detailCount = document.querySelectorAll(".detail-entry").length; // 計算目前有幾筆明細，設定 index
+
+        var newRow = `<div class="row mb-3 detail-entry">
+            <input type="hidden" name="GoodsInAndOutDetails[${detailCount}].FId" class="FId" value="0" />
+            <div class="col-3">
+                <select name="GoodsInAndOutDetails[${detailCount}].FProductId" class="FProductId form-control" required>
+                    <option value="">請選擇產品</option>
+                </select>
+            </div>
+            <div class="col-3">
+                <input type="number" name="GoodsInAndOutDetails[${detailCount}].FCount" class="FCount form-control" placeholder="數量" min="1" required />
+            </div>
+            <div class="col-3">
+                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FPrice" class="FPrice form-control" placeholder="單價" readonly />
+            </div>
+            <div class="col-2">
+                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FSum" class="FSum form-control" placeholder="小計" readonly />
+            </div>
+            <div class="col-1">
+                <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
+            </div>
+        </div>`;
+
+        document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
+
+        let newSelects = document.querySelectorAll(".FProductId");
+        let lastSelect = newSelects[newSelects.length - 1];
+        loadProductOptionsFor(lastSelect);
+    });
+
+
+
+    document.addEventListener("click", function (event) {
+        if (event.target.classList.contains("btn-remove-detail")) {
+            let detailRow = event.target.closest(".detail-entry");
+            let details = document.querySelectorAll(".detail-entry");
+            if (details.length > 1) {
+                detailRow.remove();
+                updateTotalPrice();
+            } else {
+                alert("至少需要一筆明細！");
+            }
+        }
+    });
+
+
+    function submitEditData() {
+        let formData = new FormData();
+
+        // 主表資料
+        formData.append("GoodsInAndOut.FId", document.querySelector("input[name='GoodsInAndOut.FId']").value);
+        formData.append("GoodsInAndOut.FInOut", document.querySelector("select[name='GoodsInAndOut.FInOut']").value);
+        formData.append("GoodsInAndOut.FDate", document.querySelector("input[name='GoodsInAndOut.FDate']").value);
+        formData.append("GoodsInAndOut.FInvoiceId", document.querySelector("input[name='GoodsInAndOut.FInvoiceId']").value);
+        formData.append("GoodsInAndOut.FProviderId", document.querySelector("input[name='GoodsInAndOut.FProviderId']").value);
+        formData.append("GoodsInAndOut.FPersonId", document.querySelector("input[name='GoodsInAndOut.FPersonId']").value);
+        formData.append("GoodsInAndOut.FTotal", document.querySelector("input[name='GoodsInAndOut.FTotal']").value);
+        formData.append("GoodsInAndOut.FNote", document.querySelector("input[name='GoodsInAndOut.FNote']").value);
+        formData.append("GoodsInAndOut.FEditor", document.querySelector("input[name='GoodsInAndOut.FEditor']").value);
+
+        // 細項資料
+        document.querySelectorAll(".detail-entry").forEach((row, index) => {
+            let fIdInput = row.querySelector("input[name$='.FId']");
+            if (!fIdInput) {
+                console.error(`❌ 找不到細項 FId，index: ${index}`);
+                return; // 避免提交時發生錯誤
+            }
+
+            formData.append(`GoodsInAndOutDetails[${index}].FId`, fIdInput.value || "0");
+            formData.append(`GoodsInAndOutDetails[${index}].FProductId`, row.querySelector(".FProductId").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FCount`, row.querySelector(".FCount").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FPrice`, row.querySelector(".FPrice").value);
+            formData.append(`GoodsInAndOutDetails[${index}].FSum`, row.querySelector(".FSum").value);
+        });
+
+        console.log("✅ 送出的 FormData：", formData);
 
         fetch("/GoodsInAndOut/Edit", {
             method: "POST",
             body: formData
-        }).then(response => response.json())
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP 錯誤: " + response.status);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     alert("資料已更新！");
@@ -131,11 +336,21 @@
                 } else {
                     alert("更新失敗：" + data.message);
                 }
-            }).catch(error => console.error("Error:", error));
-    });
+            })
+            .catch(error => {
+                console.error("提交錯誤:", error);
+                alert("提交失敗，請檢查控制台錯誤訊息！");
+            });
+    }
 
-    //  取消按鈕，返回 GoodsInAndOutIndex
+    // 讓按鈕綁定點擊事件
+    document.getElementById("submitEditData").addEventListener("click", submitEditData);
+
+
+
+
     document.getElementById("cancelEdit").addEventListener("click", function () {
         window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
     });
+    
 </script>

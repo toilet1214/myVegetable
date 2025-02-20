@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@{
+    // 取得 Session 中的登入使用者 ID
+    var loggedUserId = ViewContext.HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+}
+<!DOCTYPE html>
 <html lang="zh-TW" class="h-100">
 
 <head>
@@ -65,8 +69,20 @@
                                     <i class="bi bi-person-fill fs-4 me-3"></i>
                                 </a>
                             }
-                            <a data-bs-toggle="offcanvas" href="#offcanvasCart" role="button"
-                               aria-controls="offcanvasExample"><i class="bi bi-bag-fill nav-icon fs-4 me-3"></i></a>
+                            
+                            @if (!string.IsNullOrEmpty(loggedUserId))
+                            {
+                                <a asp-action="Cart" asp-controller="Cart" role="button">
+                                    <i class="bi bi-bag-fill fs-4 me-3"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#LoginModal" role="button">
+                                    <i class="bi bi-bag-fill fs-4 me-3"></i>
+                                </a>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -183,6 +199,8 @@
          </div>
     </div>
     <!-- 聯絡我們 End-->
+
+
 
     <!-- 登入 Start -->
 
@@ -301,14 +319,14 @@
     @{
         if (TempData.Peek("LoginFail") != null)
         {
-            <script>
+                    <script>
 
                 alert(@Json.Serialize(TempData["LoginFail"]));
 
-                var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
-                myModal.show();
+                        var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
+                        myModal.show();
 
-            </script>
+                    </script>
         }
         @if (TempData.Peek("WelcomeMessage") != null)
         {

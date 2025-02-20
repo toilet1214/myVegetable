@@ -1,4 +1,9 @@
-﻿@model prjVegetable.Models.CGoodsInAndOutViewModel
+﻿@model prjVegetable.ViewModels.CGoodsInAndOutViewModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
 
 <h1>進出貨資料詳情</h1>
 <hr />
@@ -7,50 +12,70 @@
 <form id="DetailsForm">
     <input type="hidden" asp-for="GoodsInAndOut.FId" />
 
-    <div class="row mb-3">
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
-            <select asp-for="GoodsInAndOut.FInOut" class="form-control" disabled style="min-width: 400px;">
-                <option value="0">進貨</option>
-                <option value="1">出貨</option>
-            </select>
+    <div class="container">
+        <h3>進出貨基本資料</h3>
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
+                    <select asp-for="GoodsInAndOut.FInOut" class="form-control" disabled>
+                        <option value="0">進貨</option>
+                        <option value="1">出貨</option>
+                        <option value="2">作廢單</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
+                    <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" readonly />
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FDate" class="control-label">日期</label>
-            <input asp-for="GoodsInAndOut.FDate" class="form-control" type="date" readonly style="min-width: 400px;" />
-        </div>
-    </div>
 
-    <div class="row mb-3">
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
-            <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" readonly style="min-width: 400px;" />
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FInvoiceId" class="control-label">發票 ID</label>
+                    <input asp-for="GoodsInAndOut.FInvoiceId" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
+                    <input asp-for="GoodsInAndOut.FProviderId" class="form-control" readonly />
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FProviderId" class="control-label">供應商 ID</label>
-            <input asp-for="GoodsInAndOut.FProviderId" class="form-control" readonly style="min-width: 400px;" />
-        </div>
-    </div>
 
-    <div class="row mb-3">
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
-            <input asp-for="GoodsInAndOut.FPersonId" class="form-control" readonly style="min-width: 400px;" />
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FPersonId" class="control-label">客戶 ID</label>
+                    <input asp-for="GoodsInAndOut.FPersonId" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
+                    <input asp-for="GoodsInAndOut.FTotal" class="form-control" readonly />
+                </div>
+            </div>
         </div>
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FTotal" class="control-label">進出貨總價</label>
-            <input asp-for="GoodsInAndOut.FTotal" class="form-control" readonly style="min-width: 400px;" />
-        </div>
-    </div>
 
-    <div class="row mb-3">
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
-            <input asp-for="GoodsInAndOut.FNote" class="form-control" readonly style="min-width: 400px;" />
-        </div>
-        <div class="col-6">
-            <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
-            <input asp-for="GoodsInAndOut.FEditor" class="form-control" readonly style="min-width: 400px;" />
+        <div class="row mb-3">
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FNote" class="control-label">備註</label>
+                    <input asp-for="GoodsInAndOut.FNote" class="form-control" readonly />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-group">
+                    <label asp-for="GoodsInAndOut.FEditor" class="control-label">編輯人</label>
+                    <input asp-for="GoodsInAndOut.FEditor" class="form-control" readonly />
+                </div>
+            </div>
         </div>
     </div>
 </form>
@@ -64,10 +89,22 @@
     {
         <div class="row mb-3 detail-entry">
             <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
-            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FProductId" class="form-control" placeholder="產品 ID" readonly style="min-width: 400px;" /></div>
-            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" placeholder="數量" readonly style="min-width: 400px;" /></div>
-            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" placeholder="單價" readonly style="min-width: 400px;" /></div>
-            <div class="col-3"><input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" placeholder="小計" readonly style="min-width: 400px;" /></div>
+            <div class="col-3">
+                <label class="control-label">商品名稱</label>
+                <input type="text" class="form-control ProductName" data-product-id="@Model.GoodsInAndOutDetails[i].FProductId" placeholder="產品名稱" readonly />
+            </div>
+            <div class="col-3">
+                <label class="control-label">數量</label>
+                <input asp-for="GoodsInAndOutDetails[i].FCount" class="form-control" placeholder="數量" readonly />
+            </div>
+            <div class="col-3">
+                <label class="control-label">單價</label>
+                <input asp-for="GoodsInAndOutDetails[i].FPrice" class="form-control" placeholder="單價" readonly />
+            </div>
+            <div class="col-3">
+                <label class="control-label">小計</label>
+                <input asp-for="GoodsInAndOutDetails[i].FSum" class="form-control" placeholder="小計" readonly />
+            </div>
         </div>
     }
 </div>
@@ -82,5 +119,25 @@
 <script>
     document.getElementById("backToIndex").addEventListener("click", function () {
         window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        fetch("/GoodsInAndOut/GetProductsInfo")
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    let productsData = data.products;
+                    document.querySelectorAll(".ProductName").forEach((input) => {
+                        let productId = input.getAttribute("data-product-id");
+                        let product = productsData.find(p => p.fId.toString() === productId);
+                        if (product) {
+                            input.value = product.fName;
+                        }
+                    });
+                } else {
+                    console.error("無法獲取產品資訊：" + data.message);
+                }
+            })
+            .catch(error => console.error("錯誤: ", error));
     });
 </script>

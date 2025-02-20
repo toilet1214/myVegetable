@@ -5,48 +5,24 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-
-<h1>進出貨資料列表</h1><br />
-@using(Html.BeginForm())
-{
-    @:搜尋 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢" class="btn btn-primary">
-
-}<br />
+<h1>進出貨資料列表</h1>
 
 <p>
-    <a asp-action="Create" class="btn btn-outline-primary">新增進出貨貨單資料</a>
+    <a asp-action="Create" asp-controller="GoodsInAndOut" class="btn btn-outline-primary">新增進出貨貨單資料</a>
 </p>
-<table class="table">
+
+<table class="table" id="List">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.FId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FInOut)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FInvoiceId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FProviderId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPersonId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FTotal)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FEditor)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FNote)
-            </th>
+            <th>@Html.DisplayNameFor(model => model.FId)</th>
+            <th>@Html.DisplayNameFor(model => model.FInOut)</th>
+            <th>@Html.DisplayNameFor(model => model.FDate)</th>
+            <th>@Html.DisplayNameFor(model => model.FInvoiceId)</th>
+            <th>@Html.DisplayNameFor(model => model.FProviderId)</th>
+            <th>@Html.DisplayNameFor(model => model.FPersonId)</th>
+            <th>@Html.DisplayNameFor(model => model.FTotal)</th>
+            <th>@Html.DisplayNameFor(model => model.FEditor)</th>
+            <th>@Html.DisplayNameFor(model => model.FNote)</th>
             <th>操作</th>
         </tr>
     </thead>
@@ -55,7 +31,7 @@
         {
             <tr>
                 <td>@Html.DisplayFor(modelItem => item.FId)</td>
-                <td>@Html.DisplayFor(modelItem => item.FInOutText)</td> <!-- 顯示進出貨狀態的對應文字 -->
+                <td>@Html.DisplayFor(modelItem => item.FInOutText)</td> <!-- 顯示進出貨狀態 -->
                 <td>@Html.DisplayFor(modelItem => item.FDate)</td>
                 <td>@Html.DisplayFor(modelItem => item.FInvoiceId)</td>
                 <td>@Html.DisplayFor(modelItem => item.FProviderName)</td> <!-- 顯示供應商名稱 -->
@@ -64,10 +40,65 @@
                 <td>@Html.DisplayFor(modelItem => item.FEditor)</td>
                 <td>@Html.DisplayFor(modelItem => item.FNote)</td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br />
-                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
+                    <a asp-action="Edit" asp-route-id="@item.FId" class="btn btn-warning btn-sm">編輯</a>
+                    <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-info btn-sm">詳情</a>
+                    <button type="button" class="btn btn-danger btn-sm btn-invalid" data-id="@item.FId">作廢</button>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50],
+                "lengthChange": true,
+            });
+
+            $(".btn-invalid").click(function () {
+                let fId = $(this).data("id");
+                if (confirm("確定要作廢這筆資料嗎？")) {
+                    $.ajax({
+                        url: "/GoodsInAndOut/Invalidate",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ FId: fId }),
+                        success: function (response) {
+                            if (response.success) {
+                                alert("作廢成功！");
+                                location.reload();
+                            } else {
+                                alert("作廢失敗：" + response.message);
+                            }
+                        },
+                        error: function () {
+                            alert("作廢請求失敗，請稍後再試！");
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
