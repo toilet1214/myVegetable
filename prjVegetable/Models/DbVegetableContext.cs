@@ -295,6 +295,7 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValue("")
                 .HasColumnName("fCustomerUbn");
             entity.Property(e => e.FDate)
+                .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fDate");
             entity.Property(e => e.FEditor).HasColumnName("fEditor");

@@ -15,7 +15,87 @@
    "T4TemplatePath": null,
    "Tables": [
       {
+         "Name": "[dbo].[tAboutUs]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tCart]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tFAQ]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tGoodsInAndOut]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tGoodsInAndOutDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tImg]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tInventoryDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tInventoryMain]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tInvoice]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tInvoiceDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tOrder]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tOrderList]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tPaymentReversal]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tPaymentReversalDetail]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[tPerson]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tProduct]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tProvider]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tPurchase]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tPurchaseDetail]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tReceiptReversal]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[tReceiptReversalDetail]",
          "ObjectType": 0
       }
    ],

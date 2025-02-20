@@ -1,5 +1,102 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    ViewData["Title"] = "Q&A";
+
 }
+
+<style>
+    .QAtable {
+        width: 70%;
+        margin: 0 auto;
+        background-color: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+        line-height: 1.8;
+        color: #333;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .qa-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        border-left: 5px solid #4CAF50;
+        padding-left: 10px;
+    }
+
+    .qa-item {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .qa-item:last-child {
+        border-bottom: none;
+    }
+
+    .question {
+        flex: 0 0 40%;
+        font-weight: bold;
+        color: #4CAF50;
+    }
+
+    .answer {
+        flex: 0 0 60%;
+    }
+
+    .highlight {
+        font-weight: bold;
+        color: #FF5722;
+    } 
+
+</style>
+<!-- 麵包屑 Breadcrumb-->
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="">現在位置：</li>
+        <li class="breadcrumb-item"><a href="index.html">首頁</a></li>
+        <li class="breadcrumb-item active" aria-current="Faq">常見問題</li>
+    </ol>
+</nav>
+<div class="container mt-4">
+    <div class="QAtable">
+        <div class="qa-title animate__animated animate__fadeInLeft">常見問題 Q&A</div>
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">如何下單？</div>
+            <div class="answer animate__animated animate__fadeInDown">您可以透過我們的網站或APP進行下單，選擇喜歡的蔬果組合並結帳即可。<span class="highlight">完成付款後</span>，我們會立即處理您的訂單。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">配送範圍有哪些？</div>
+            <div class="answer animate__animated animate__fadeInDown">目前我們配送範圍涵蓋全高雄市區，偏遠地區需加收<span class="highlight">額外配送費用</span>，詳細費用請聯繫客服查詢。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">有哪些付款方式？</div>
+            <div class="answer animate__animated animate__fadeInDown">我們提供多種付款方式，包括<span class="highlight">信用卡</span>、<span class="highlight">行動支付</span>（如Line Pay、Apple Pay）以及<span class="highlight">貨到付款</span>，讓您可以選擇最方便的方式完成交易。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">可以指定送達時間嗎？</div>
+            <div class="answer animate__animated animate__fadeInDown">可以，您可在下單時選擇期望的配送時段，例如<span class="highlight">上午 9-12 點</span>或<span class="highlight">下午 2-6 點</span>。如需特殊時段配送，請聯繫客服協助處理。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">如果收到的蔬果不新鮮怎麼辦？</div>
+            <div class="answer animate__animated animate__fadeInDown">若您收到的商品有問題，請在<span class="highlight">24 小時內</span>聯繫客服，並提供照片或其他證明，我們將盡快提供<span class="highlight">退換貨服務</span>，確保您的權益。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">可以修改或取消訂單嗎？</div>
+            <div class="answer animate__animated animate__fadeInDown">若訂單尚未出貨，您可以聯繫客服進行<span class="highlight">訂單修改或取消</span>。但如訂單已出貨，我們將無法取消或變更，敬請見諒。</div>
+        </div>
+
+        <div class="qa-item">
+            <div class="question animate__animated animate__fadeInDown">配送時間通常需要多久？</div>
+            <div class="answer animate__animated animate__fadeInDown">一般來說，下單後<span class="highlight">1-2 天內</span>即可送達。如遇節假日或特殊情況，配送可能會有所延遲，我們會主動通知您最新狀況。</div>
+        </div>
+    </div>
+</div>

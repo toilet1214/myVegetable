@@ -51,8 +51,8 @@ namespace prjVegetable.Models
         [DisplayName("上傳日期")]
         public DateOnly FUploadAt
         {
-            get { return img.FUploadAt; }
-            set { img.FUploadAt = value; }
+            get { return _img.FUploadAt; }
+            set { _img.FUploadAt = value; }
         }
 
         [Required(ErrorMessage = "必填")]

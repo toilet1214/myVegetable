@@ -254,20 +254,6 @@ namespace prjVegetable.Controllers
         }
         
 
-        //盤點作業 by允7
-        public IActionResult Inventory()
-        {
-            ViewBag.AddUrl = Url.Action("AddItem", "Inventory");
-            var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
-            return View(TInventoryDetail);
-        }
-
-        public IActionResult InventoryAdjustment()
-        {
-            ViewBag.AddUrl = Url.Action("AddItem", "Inventory");
-            var TInventoryDetail = _VegetableContext.TInventoryDetails.ToList();
-            return View(TInventoryDetail);
-        }
 
         public IActionResult CardSetting()
         {

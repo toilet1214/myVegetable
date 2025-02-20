@@ -1,38 +1,53 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+
 }
 
-<!-- 圖片輪播 Carousel Start-->
-@model List<string>
+@model prjVegetable.ViewModels.CHomePageViewModel
 
-<div class="container my-5">
-    <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
-        <div class="carousel-indicators">
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="@i" class="@(i == 0 ? "active" : "")"
-                        aria-label="Slide @(i + 1)"></button>
-            }
+<div>
+    <!-- 圖片輪播 Carousel Start-->
+    <div class="container mt-5" data-aos="fade-in" data-aos-duration="1000">
+        <!-- Carousel 外層 -->
+        <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+
+            <!-- Indicators (底部小點) -->
+            <div class="carousel-indicators">
+                @for (int i = 0; i < Model.UploadImages.ImagePaths.Count; i++)
+                {
+                    <button type="button" data-bs-target="#carouselExampleIndicators"
+                            data-bs-slide-to="@i"
+                            class="@(i == 0 ? "active" : "")"
+                            aria-label="Slide @(i + 1)"></button>
+                }
+            </div>
+
+            <!-- Carousel 內容 -->
+            <div class="carousel-inner">
+                @for (int i = 0; i < Model.UploadImages.ImagePaths.Count; i++)
+                {
+                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                        <img src="@Model.UploadImages.ImagePaths[i]" class="d-block w-100" alt="Carousel Image @(i + 1)">
+                    </div>
+                }
+            </div>
+
+            <!-- 左側控制按鈕 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+
+            <!-- 右側控制按鈕 -->
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
         </div>
-        <div class="carousel-inner">
-            @for (int i = 0; i < Model.Count; i++)
-            {
-                <div class="carousel-item @(i == 0 ? "active" : "")">
-                    <img src="@Model[i]" class="d-block w-100" alt="Carousel Image @(i + 1)">
-                </div>
-            }
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
     </div>
 
     <!-- 圖片輪播 Carousel End-->
+    
     <!-- 麵包屑 Breadcrumb-->
     <!-- <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -41,83 +56,75 @@
         <li class="breadcrumb-item active" aria-current="page">Library</li>
       </ol>
     </nav> -->
+    
     <!-- 網站介紹 Start-->
-    <hr class="mt-5">
-    <h1>- 新鮮蔬果，每日配送 -</h1>
+    <hr class="mt-4">
+    <h1 data-aos="zoom-in" data-aos-duration="500"><i class="bi bi-brightness-high-fill"></i> 新鮮直送，健康每一天 <i class="bi bi-brightness-high-fill"></i></h1>
     <hr>
-    <div class="row g-0 overflow-hidden my-5 pb-4">
+    <div class="row g-0 overflow-hidden my-4">
         <div class="col-lg-8 mb-3">
-            <div class="lc-block">
-                <img src="./images/Carousel1.jpg" alt="">
+            <div class="lc-block" data-aos="fade-right">
+                <img src="./images/Carousel1.jpg" alt="" class="img-fluid">
             </div>
         </div>
-        <div class="col-lg-4 py-5 ps-3 d-flex align-items-center">
+        <div class="col-lg-4 py-5 ps-4 d-flex align-items-center" data-aos="fade-down" data-aos-duration="1500">
             <div class="lc-block">
-                <h3>Lorem Ipsum</h3>
-                <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit.</p>
+                <h3>當日採收，新鮮直送 <i class="bi bi-box2-fill"></i></h3>
+                <p>我們精選當季優質蔬果，嚴格控管品質，確保每一口都新鮮美味。每日配送，讓您輕鬆享受健康生活。</p>
             </div>
         </div>
-        <div class="col-lg-4 d-flex align-items-center py-5 pe-3">
+        <div class="col-lg-4 d-flex align-items-center py-5 pe-3 mt-3" data-aos="fade-down" data-aos-duration="1500">
             <div class="lc-block">
-                <h3>Title Here</h3>
-                <p>
-                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Eos omnis eveniet quisquam maiores fuga nisi
-                    ratione iste porro! Similique numquam maxime vitae amet, iste dignissimos illum. Possimus consequatur
-                    culpa et quibusdam dignissimos sit ullam.
-                </p>
+                <h3>嚴選產地，安心保證 <i class="bi bi-geo"></i></h3>
+                <p>我們與在地農場合作，選用無農藥或低殘留的優質農產品，讓您與家人吃得安心又滿足。</p>
+                <br />
+                <p>從產地到餐桌，每一步都用心把關。</p>
             </div>
         </div>
-        <div class="col-lg-8">
+        <div class="col-lg-8 mb-3 mt-3" data-aos="fade-left">
             <div class="lc-block">
-                <img src="./images/Carousel3.jpg" alt="">
+                <img src="./images/Carousel2.jpg" alt="" class="img-fluid">
             </div>
         </div>
     </div>
     <!-- 網站介紹 End-->
-    <!-- 熱門商品 Card Start-->
+    <!-- 本季熱銷商品 -->
     <hr>
-    <h1>- 本季熱銷 -</h1>
+    <h1 data-aos="zoom-in" data-aos-duration="500"><i class="bi bi-fire"></i> 本季熱銷 <i class="bi bi-fire"></i></h1>
     <hr>
-    <div class="row row-cols-1 row-cols-md-3 g-4 my-4 hot-product-card">
-        <div class="col">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel1.jpg" class="card-img-top img-fluid" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                            This is a wider card with supporting text below as a natural lead-in to additional
-                            content. This content is a little bit longer.
-                        </p>
+    <div id="cardCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < Model.TopProducts.Count; i += 3)
+            {
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <div class="d-flex justify-content-center gap-3">
+                        @for (int j = i; j < i + 3 && j < Model.TopProducts.Count; j++)
+                        {
+                            <div class="card" data-aos="fade-in" data-aos-duration="1000">
+                                <img src="@Model.TopProducts[j].ImagePath" class="card-img-top" alt="@Model.TopProducts[j].ProductName">
+                                <div class="card-body">
+                                    <h5 class="card-title">@Model.TopProducts[j].ProductName</h5>
+                                    <p class="card-text">@Model.TopProducts[j].ProductDescription</p>
+                                    <div class="text-end">
+                                        <a href="@Url.Action("ProductItem", "Product", new { id = Model.TopProducts[j].ProductId })"
+                                           class="btn btn-primary">了解更多</a>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                     </div>
                 </div>
-            </a>
+            }
         </div>
-        <div class="col">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel2.jpg" class="card-img-top img-fluid" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <div class="col">
-            <a href="" class="text-decoration-none">
-                <div class="card h-100 shadow-sm">
-                    <img src="~/images/Carousel3.jpg" class="card-img-top img-fluid" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-                        <p class="card-text">
-                            This is a wider card with supporting text below as a natural lead-in to additional
-                            content. This card has even longer content than the first to show that equal height action.
-                        </p>
-                    </div>
-                </div>
-            </a>
-        </div>
-        <!-- 熱門商品 Card End-->
+        <button class="carousel-control-prev" type="button" data-bs-target="#cardCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#cardCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
     </div>
 </div>
+
+
