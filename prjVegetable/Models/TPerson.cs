@@ -37,7 +37,7 @@ public partial class TPerson
 
     public bool FIsVerified { get; set; }
 
-    public string FLoginType { get; set; } = null!;
+    public int FLoginType { get; set; }
 
     public string? FGoogleId { get; set; }
 }

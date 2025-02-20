@@ -53,10 +53,14 @@
                 </div>
                 <div class="mb-3 row">
                     <div class="col-6">
-                        <div class="row">
+                        <div class="row">                            
                             <label for="fGender" class="col-md-3 col-form-label">性別：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fGender" :value="person.fGender" v-model="person.fGender">
+                                <select class="form-control" id="fGender" v-model="person.fGender">
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                    <option value="其他">其他</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -182,7 +186,7 @@
                         <div class="row">
                             <label for="fGender" class="col-md-3 col-form-label">性別：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fGender" :value="person.fGender" readonly v-model="person.fGender">
+                                <input type="text" class="form-control" id="fGender" v-model="person.fGender" readonly>
                             </div>
                         </div>
                     </div>
@@ -316,6 +320,7 @@
                         fUbn:'',
                         fEmp:'',
                         fEmpTel:'',
+                        fGender:'其他',
                     },  // 用來存放從後端獲得的人員資料
                     personBackup:{},//用來保存原始資料的備份
                     nameError:false,
