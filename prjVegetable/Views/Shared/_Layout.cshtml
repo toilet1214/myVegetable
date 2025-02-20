@@ -2,9 +2,9 @@
 <html lang="zh-TW" class="h-100">
 
 <head>
-     <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>LEGO_HERE 首頁</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEGO_HERE 首頁</title>
 
     <link rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" />
@@ -17,8 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <!-- Boostrap CSS -->
-
-<<body class="h-100 d-flex flex-column">
+<
+<body class="h-100 d-flex flex-column">
     <!-- 導覽列 navbar Start-->
     <main class="flex-shrink-0 ">
         <header>
@@ -55,15 +55,15 @@
                             </a>
                             @if (TempData.Peek("IsLogIn") != null)
                             {
-                                    <a asp-controller="Customer" asp-action="Index">
-                                        <i class="bi bi-person-fill fs-4 me-3"></i>
-                                    </a>
+                                <a asp-controller="Customer" asp-action="Index">
+                                    <i class="bi bi-person-fill fs-4 me-3"></i>
+                                </a>
                             }
                             else
                             {
-                                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#LoginModal">
-                                        <i class="bi bi-person-fill fs-4 me-3"></i>
-                                    </a>
+                                <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#LoginModal">
+                                    <i class="bi bi-person-fill fs-4 me-3"></i>
+                                </a>
                             }
                             <a data-bs-toggle="offcanvas" href="#offcanvasCart" role="button"
                                aria-controls="offcanvasExample"><i class="bi bi-bag-fill fs-4 me-3"></i></a>
@@ -155,8 +155,8 @@
                                 <p class="card-price px-3">NT$150</p>
                             </div>
                         </div>
-                            <hr class="w-100 mt-4">
-                            <a asp-action="Cart" asp-controller="Cart" class="w-100 btn btn-primary btn-lg">查看購物車</a>
+                        <hr class="w-100 mt-4">
+                        <a asp-action="Cart" asp-controller="Cart" class="w-100 btn btn-primary btn-lg">查看購物車</a>
 
                     </div>
                 </div>
@@ -174,7 +174,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form asp-action="Login" asp-controller="Account" class="needs-validation" novalidate>
+                    <form asp-action="Login" asp-controller="Account" class="needs-validation" >
                         <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
 
                         <!-- 帳號輸入框 -->
@@ -182,7 +182,8 @@
                             @Html.TextBox("txtaccount", "", new
                                 {
                                     @class = "form-control-login custom-input",
-                                    placeholder = "請輸入帳號"
+                                    placeholder = "請輸入帳號",
+                                    required = "required"
                                 })
                         </div>
                         <div class="my-5"></div>
@@ -192,7 +193,8 @@
                             @Html.Password("txtpassword", "", new
                                 {
                                     @class = "form-control-login custom-input",
-                                    placeholder = "請輸入密碼 ( 8-20 英數字 )"
+                                    placeholder = "請輸入密碼 ( 8-20 英數字 )",
+                                    required = "required"
                                 })
                         </div>
 
@@ -356,16 +358,28 @@
 
 
     @{
-        if (TempData["LoginFail"] != null)
+        if (TempData.Peek("LoginFail") != null)
         {
-                    <script>
+            <script>
 
-                        alert("登入失敗，請重試一次");
+                alert(@Json.Serialize(TempData["LoginFail"]));
 
-                        var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
-                        myModal.show();
+                var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
+                myModal.show();
 
-                    </script>
+            </script>
+        }
+        @if (TempData.Peek("WelcomeMessage") != null)
+        {
+            <script>
+                alert(@Json.Serialize(TempData["WelcomeMessage"]));
+            </script>
+        }
+        @if (TempData.Peek("SuccessRegister") != null) // 註冊成功，顯示通知並跳轉
+        {
+            <script>
+                alert('@Html.Raw(TempData["SuccessRegister"].ToString())');
+            </script>
         }
     }
     @await RenderSectionAsync("Scripts", required: false)

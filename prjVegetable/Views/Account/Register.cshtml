@@ -115,12 +115,13 @@
         });
     </script>
 
-    @if (TempData["ErrorRegister"] != null)
+    @if (TempData.Peek("ErrorRegister") != null)
     {
         <script>
             alert('@Html.Raw(TempData["ErrorRegister"].ToString())');
         </script>
     }
+    
 }
 
 

@@ -39,10 +39,11 @@ namespace prjVegetable.Controllers
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_IS_VERIFIED, user.FIsVerified.ToString());
 
                 TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
+                TempData["WelcomeMessage"] = $"歡迎回來，{user.FAccount}！";
                 return Redirect(returnUrl);
             }
 
-            TempData["LoginFail"] = "帳號或密碼錯誤，請再試一次";
+            TempData["LoginFail"] = "登入失敗，請重試一次";
             return Redirect(returnUrl);
         }
 

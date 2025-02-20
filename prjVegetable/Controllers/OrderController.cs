@@ -26,16 +26,21 @@ namespace prjVegetable.Controllers
         {
             if (id == null)
                 return RedirectToAction("Order");
-            IEnumerable<TOrderList> datas = null;
-            datas = _context.TOrderLists.Where(p => p.FOrderId == id);
+
+            // 先用 .ToList() 把查詢結果載入到記憶體
+            List<TOrderList> datas = _context.TOrderLists
+                                             .Where(p => p.FOrderId == id)
+                                             .ToList();
+
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in datas)
             {
                 var product = _context.TProducts.FirstOrDefault(p => p.FId == t.FProductId);
-                list.Add(new COrderListWrap() { orderList = t ,ProductName = product.FName});
+                list.Add(new COrderListWrap() { orderList = t, ProductName = product?.FName });
             }
             return View(list);
         }
+
 
 
     }
