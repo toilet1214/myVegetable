@@ -264,7 +264,7 @@ namespace prjVegetable.Controllers
             {
                 foreach (var comment in x.CommentList)
                 {
-                    comment.PersonName = DisplayName(comment.PersonName); 
+                    comment.FPersonName = DisplayName(comment.FPersonName); 
                 }
             }
 
@@ -301,7 +301,7 @@ namespace prjVegetable.Controllers
                 FComment = comment.FComment,
                 FStar = comment.FStar,
                 FCreatedAt = comment.FCreatedAt,
-                PersonName = comment.PersonName,
+                FPersonName = comment.PersonName,
             }).ToList();
         }
 

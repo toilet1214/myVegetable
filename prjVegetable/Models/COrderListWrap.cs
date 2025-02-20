@@ -50,5 +50,9 @@ namespace prjVegetable.Models
             get { return _orderList.FSum; }
             set { _orderList.FSum = value; }
         }
+
+
+        public int OrderStatus { get; set; }
+        public bool HasComment { get; set; }
     }
 }
