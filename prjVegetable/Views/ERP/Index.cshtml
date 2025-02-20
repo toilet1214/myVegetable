@@ -723,8 +723,30 @@
                 var totalLikesCell = $('<td></td>').text(product.Likes); 
                 row.append(totalLikesCell);
 
-                var totalRateCell = $('<td></td>').text(product.Star); 
-                row.append(totalRateCell);
+                        // 假設 product.Star 是從後端取得的平均星級
+        var totalRateCell = $('<td></td>');
+
+        // 這裡根據 product.Star 值生成星星的 HTML
+        var starsHtml = '';
+        for (var i = 1; i <= 5; i++) {
+            if (i <= Math.floor(product.Star)) { // 滿星
+                starsHtml += '<i class="bi bi-star-fill"></i>';
+            } else if (i - 0.5 <= product.Star && product.Star < i) { // 半星
+                starsHtml += '<i class="bi bi-star-half"></i>';
+            } else { // 空星
+                starsHtml += '<i class="bi bi-star"></i>';
+            }
+        }
+
+        // 把星星和數字結合在一起，顯示數字和星星
+        var starsWithNumber = starsHtml + ' ' + product.Star.toFixed(1); // .toFixed(1) 使數字顯示1位小數
+
+        // 將星星與數字的 HTML 放進 totalRateCell 中
+        totalRateCell.html(starsWithNumber);
+
+        // 然後將這個單元格添加到你的表格行中
+        row.append(totalRateCell);
+
 
                 $('#LikesRank').append(row); // 將這一行加入到表格中
             });
