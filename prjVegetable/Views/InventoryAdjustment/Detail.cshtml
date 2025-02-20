@@ -64,96 +64,64 @@
 
 <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
 <div class="container my-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <!-- 左欄，搜尋按鈕與按鈕群組 -->
-        <div class="d-flex align-items-center justify-content-start">
-            <!-- 搜尋按鈕 -->
-            <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    data-bs-placement="top"
-                    title="點擊進行查詢"
-                    data-bs-delay="10">
-                <i class="bi bi-search">　查詢庫存調整單</i>
-            </button>
+        <div class="d-flex align-items-center justify-content-between w-100 flex-nowrap">
+            <!-- 左欄，搜尋按鈕與按鈕群組 -->
+            <div class="d-flex align-items-center justify-content-start flex-wrap">
+                <!-- 搜尋按鈕 -->
+                <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        data-bs-placement="top"
+                        title="點擊進行查詢"
+                        data-bs-delay="10">
+                    <i class="bi bi-search">　查詢庫存調整單</i>
+                </button>
 
-            <!-- 按鈕群組 -->
-            <div class="btn-group d-flex me-3" role="group" aria-label="Inventory Navigation">
-                <!-- 第一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["FirstId"] })"
-                   class="btn first-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="第一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-start-fill"></i>
-                </a>
+                <!-- 按鈕群組 -->
+                <div class="btn-group me-3" role="group">
+                    <!-- 第一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["FirstId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-skip-start-fill"></i>
+                    </a>
+                    <!-- 上一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-caret-left-fill"></i>
+                    </a>
+                    <!-- 下一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-caret-right-fill"></i>
+                    </a>
+                    <!-- 最後一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-skip-end-fill"></i>
+                    </a>
+                </div>
+            </div>
 
-                <!-- 上一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
-                   class="btn prev-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="上一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-left-fill"></i>
-                </a>
-
-                <!-- 下一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
-                   class="btn next-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="下一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-right-fill"></i>
-                </a>
-
-                <!-- 最後一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
-                   class="btn last-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="最後一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-end-fill"></i>
-                </a>
+            <!-- 右欄，其他項目 -->
+            <div class="d-flex align-items-center justify-content-end">
+                <!-- 調整日期 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">調整日期：</label>
+                    <input asp-for="InventoryAdjustment.FAdjustmentDate" class="form-control form-control-sm w-auto" type="text" id="FBaselineDate" value="@Model.InventoryAdjustment.FAdjustmentDate.ToString("yyyy-MM-dd")" readonly />
+                </div>
+                <!-- 盤點人員 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">盤點人員：</label>
+                    <input class="form-control form-control-sm w-auto" type="text" value="@ViewData["CheckerName"]" readonly />
+                </div>
+                <!-- 庫存調整單號 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">調整單號：</label>
+                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" readonly />
+                </div>
             </div>
         </div>
 
-        <!-- 右欄，其他項目 -->
-        <div class="d-flex align-items-center justify-content-end">
-                <!-- 庫存盤點單號 -->
-                <div class="d-flex mb-0 align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FId" class="pe-1 mb-0">庫存調整單號：</label>
-                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FId" class="text-danger"></span>
-                </div>
-                <!-- 調整日期 -->
-                <div class="d-flex mb-0 align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-0">調整日期：</label>
-                    <input asp-for="InventoryAdjustment.FAdjustmentDate" class="form-control form-control-sm w-auto" type="text" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FAdjustmentDate" class="text-danger"></span>
-                </div>
-                <!-- 盤點人員 -->
-                <div class="d-flex align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-0">盤點人員：</label>
-                    <input class="form-control form-control-sm w-auto" type="text" value="@ViewData["CheckerName"]" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FCheckerId" class="text-danger"></span>
-                </div>
-
-                <!-- 隱藏的欄位 -->
-                <input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
-        </div>
-    </div>
         <div class="d-flex">
             <!-- 左邊的表格 -->
             <div class="table-container flex-grow-1 me-3 mt-2">

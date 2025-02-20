@@ -130,24 +130,21 @@
         <!-- 右欄，其他項目 -->
         <div class="d-flex align-items-center justify-content-end">
             <!-- 盤點基準日 -->
-            <div class="d-flex align-items-center justify-content-end">
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
                 <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
                 <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-                <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
             </div>
 
             <!-- 建檔日期 -->
-            <div class="d-flex align-items-center justify-content-end ms-3">
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
                 <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
                 <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
-                <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger ms-0"></span>
             </div>
 
             <!-- 庫存盤點單號 -->
-            <div class="d-flex align-items-center justify-content-end ms-3">
-                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">庫存盤點單號：</label>
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
+                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">盤點單號：</label>
                 <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
-                <span asp-validation-for="InventoryMain.FId" class="text-danger ms-2"></span>
             </div>
         </div>
     </div>
