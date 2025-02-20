@@ -402,7 +402,9 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fCreatedAt");
-            entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FEditor)
+                .HasDefaultValue(0)
+                .HasColumnName("fEditor");
             entity.Property(e => e.FEmp)
                 .HasMaxLength(500)
                 .HasDefaultValue("")
@@ -481,7 +483,7 @@ public partial class DbVegetableContext : DbContext
 
         modelBuilder.Entity<TProvider>(entity =>
         {
-            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CCA852AB9");
+            entity.HasKey(e => e.FId).HasName("PK__tProvide__D9F8227CEBBFBBF7");
 
             entity.ToTable("tProvider");
 

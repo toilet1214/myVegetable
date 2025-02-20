@@ -23,17 +23,17 @@ public partial class TPerson
 
     public string FAddress { get; set; } = null!;
 
-    public string FUbn { get; set; } = null!;
+    public string? FUbn { get; set; }
 
     public int FPermission { get; set; }
 
-    public string FEmp { get; set; } = null!;
+    public string? FEmp { get; set; }
 
-    public string FEmpTel { get; set; } = null!;
+    public string? FEmpTel { get; set; }
 
     public DateTime FCreatedAt { get; set; }
 
-    public int FEditor { get; set; }
+    public int? FEditor { get; set; }
 
     public bool FIsVerified { get; set; }
 
