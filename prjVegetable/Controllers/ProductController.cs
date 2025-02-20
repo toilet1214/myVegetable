@@ -29,6 +29,9 @@ namespace prjVegetable.Controllers
             // 設置 ViewBag.Category，用來在麵包屑顯示
             ViewBag.Category = string.IsNullOrEmpty(keyword) ? "所有產品" : keyword;
 
+            //熱銷標籤
+            var popularProductIds = PopularProduct();
+
             // 取得篩選的最低價格和最高價格
             //decimal精確數值的資料型別，小數點後兩位
             decimal? minPrice = pvm.MinPrice;
@@ -120,6 +123,9 @@ namespace prjVegetable.Controllers
                 // 設定該產品是否為收藏
                 pp.IsFavorite = favoriteProductIds.Contains(p.FId);
 
+                // 設定該產品是否為熱門商品
+                pp.IsPopular = popularProductIds.Contains(p.FId);
+
                 list.Add(pp);
             }
 
@@ -131,6 +137,7 @@ namespace prjVegetable.Controllers
             ViewData["MinPrice"] = minPrice;
             ViewData["MaxPrice"] = maxPrice;
             ViewData["SortOrder"] = sortOrder;
+            ViewData["PopularProductIds"] = popularProductIds;
 
             return View(list);
         }
@@ -166,6 +173,31 @@ namespace prjVegetable.Controllers
             return Json(new { isLoggedIn = isLoggedIn });
         }
 
+        //熱門標籤
+        public List<int> PopularProduct()
+        { 
+            DbVegetableContext db = new DbVegetableContext();
+            List<CProductWrap> list = new List<CProductWrap>();
+
+            var completedOrders = db.TOrders
+                                .Where(o=>o.FStatus == 2)
+                                .Select(o=>o.FId)
+                                .ToList();
+
+            var orderlist = db.TOrderLists
+                            .Where(ol => completedOrders.Contains(ol.FOrderId))
+                            .GroupBy(ol => ol.FProductId)
+                            .Select(g => new
+                            {
+                                ProductId = g.Key,
+                                TotalCount = g.Sum(ol => ol.FCount)
+                            })
+                            .OrderByDescending(g => g.TotalCount)
+                            .Take(5)
+                            .ToList();
+
+            return orderlist.Select(x => x.ProductId).ToList();
+        }
 
         //加入我的最愛
         [HttpPost]

@@ -125,7 +125,9 @@ namespace prjVegetable.Models
         public bool IsFavorite
         { get; set; }
 
-
+        public bool IsPopular
+        { get; set; }
+        
         public IEnumerable<IFormFile> productImages { get; set; }
         public List<string> ImgList { get; set; }
         public List<CCommentWrap> CommentList { get; set; }

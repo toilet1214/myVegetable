@@ -720,10 +720,10 @@
                 var productNameCell = $('<td></td>').text(product.ProductName); // 商品名稱
                 row.append(productNameCell);
 
-                var totalLikesCell = $('<td></td>').text(product.Likes); // 總銷售數量
+                var totalLikesCell = $('<td></td>').text(product.Likes); 
                 row.append(totalLikesCell);
 
-                var totalRateCell = $('<td></td>').text(""); // 總營收
+                var totalRateCell = $('<td></td>').text(product.Star); 
                 row.append(totalRateCell);
 
                 $('#LikesRank').append(row); // 將這一行加入到表格中

@@ -155,9 +155,11 @@ namespace prjVegetable.Controllers
                             FStar = x.comment.FStar,
                             FPersonName = db.TPeople.Where(pp => pp.FId == x.comment.FPersonId).FirstOrDefault().FName,
                             FProductName = db.TProducts.Where(p => p.FId == x.comment.FProductId).FirstOrDefault().FName,
-                            FOrderId = x.orderList.FOrderId
+                            FOrderId = x.orderList.FOrderId,
+                            FCreatedAt = x.comment.FCreatedAt
 
                         })
+                         .OrderByDescending(x => x.FCreatedAt)
                         .ToList();
 
             return View(datas);
