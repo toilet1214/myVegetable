@@ -6,6 +6,27 @@
 }
 
 <style>
+    .carousel-control-prev,
+    .carousel-control-next {
+        width: 50px; /* 調整按鈕大小 */
+        height: 50px;
+        background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色圓底 */
+        border-radius: 50%; /* 讓背景變成圓形 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 50%;
+    }
+
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        filter: invert(1); /* 讓箭頭變成白色 */
+        width: 20px; /* 調整箭頭大小 */
+        height: 20px;
+    }
+    
+    
     .quantity {
         width: 170px;
         display: flex;
@@ -51,8 +72,14 @@
         -moz-appearance: textfield;
     }
 
-    .text-warning {
-        color: #ffb400; /* 黃色 */
+    .star-averating i {
+        font-size: 1.5rem;
+        margin-right: 5px;
+        color: #ffc107 !important;
+    }
+
+    .star-rating i {
+        color: #ffc107 !important;
     }
 
 </style>
@@ -193,20 +220,40 @@
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
-                    @if (!string.IsNullOrEmpty(Model.FOrigin))
+                    @*  @if (!string.IsNullOrEmpty(Model.FOrigin))
                     {
-                        <iframe width="100%" height="400"
-                                src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Uri.EscapeDataString(Model.FOrigin)"
-                                allowfullscreen>
-                        </iframe>
-                    }
+                    <iframe width="100%" height="400"
+                    src="https://www.google.com/maps/embed/v1/place?key=YOUR_API_KEY&q=@Uri.EscapeDataString(Model.FOrigin)"
+                    allowfullscreen>
+                    </iframe>
+                    } *@
                     @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
                 </div>
 
                 <!-- 顧客評論範例 -->
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="reviews-section">
-
+                        <div class="average-rating">
+                            @* <h5>平均評分: @Model.AverageStar.ToString("0.0") ⭐</h5> *@
+                            <h5 class="d-inline-flex">平均評分 @Model.AverageStar.ToString("0.0")</h5>
+                            <p class="d-inline-flex star-averating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= Math.Floor(Model.AverageStar)) // 滿星
+                                    {
+                                        <i class="bi bi-star-fill"></i>
+                                    }
+                                    else if (i - 0.5 <= Model.AverageStar && Model.AverageStar < i) // 半星
+                                    {
+                                        <i class="bi bi-star-half"></i>
+                                    }
+                                    else // 空星
+                                    {
+                                        <i class="bi bi-star"></i>
+                                    }
+                                }
+                            </p>
+                        </div>
                         @if (Model.CommentList != null && Model.CommentList.Any())
                         {
                             @foreach (var comment in Model.CommentList.Take(5))
@@ -215,10 +262,10 @@
                                     <div class="media-body">
                                         <h5 class="media-heading user_name">
                                             <i class="fi fi-rr-man-head me-3" style="font-size: 2rem;"></i>
-                                            @comment.PersonName
+                                            @comment.FPersonName
                                         </h5>
                                         <p class="review-text">@comment.FComment</p>
-                                        <p>
+                                        <p class="star-rating">
                                             <small>
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
@@ -252,29 +299,29 @@
                     </button>
 
                     @* <div class="add-comment mt-4">
-                        <h5>添加評論</h5>
-                        
-                            <form id="add-comment-form">
-                                <div class="form-group">
-                                    <label for="user-name">姓名</label>
-                                    <input type="text" class="form-control" id="user-name" value="@User.Identity.Name" readonly>
-                                </div>
-                                <div class="form-group">
-                                    <label for="user-comment">您的評論</label>
-                                    <textarea class="form-control" id="user-comment" rows="4" placeholder="撰寫您的評論" required></textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label for="user-rating">評分</label>
-                                    <div id="user-rating" class="star-rating">
-                                        <i class="bi bi-star" data-value="1"></i>
-                                        <i class="bi bi-star" data-value="2"></i>
-                                        <i class="bi bi-star" data-value="3"></i>
-                                        <i class="bi bi-star" data-value="4"></i>
-                                        <i class="bi bi-star" data-value="5"></i>
-                                    </div>
-                                </div>
-                                <button type="submit" class="btn btn-primary">提交評論</button>
-                            </form>
+                    <h5>添加評論</h5>
+
+                    <form id="add-comment-form">
+                    <div class="form-group">
+                    <label for="user-name">姓名</label>
+                    <input type="text" class="form-control" id="user-name" value="@User.Identity.Name" readonly>
+                    </div>
+                    <div class="form-group">
+                    <label for="user-comment">您的評論</label>
+                    <textarea class="form-control" id="user-comment" rows="4" placeholder="撰寫您的評論" required></textarea>
+                    </div>
+                    <div class="form-group">
+                    <label for="user-rating">評分</label>
+                    <div id="user-rating" class="star-rating">
+                    <i class="bi bi-star" data-value="1"></i>
+                    <i class="bi bi-star" data-value="2"></i>
+                    <i class="bi bi-star" data-value="3"></i>
+                    <i class="bi bi-star" data-value="4"></i>
+                    <i class="bi bi-star" data-value="5"></i>
+                    </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交評論</button>
+                    </form>
                     </div> *@
                 </div>
             </div>

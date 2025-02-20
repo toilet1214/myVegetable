@@ -1,0 +1,128 @@
+﻿@model prjVegetable.Models.CCommentWrap
+
+@{
+    ViewData["Title"] = "AddComment";
+}
+
+<style>
+    /* 星星的基本樣式 */
+    .star-rating i {
+        cursor: pointer;
+        font-size: 1.5rem;
+        margin-right: 5px;
+    }
+
+    /* 滑鼠懸停時的星星樣式 */
+    .star-rating i:hover {
+        color: #ffc107 !important;
+    }
+
+    /* 已選中的星星樣式 */
+    .star-rating i.active {
+        color: #ffc107 !important;
+    }
+
+</style>
+
+<h1 class="mt-5">待評論</h1>
+<hr />
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-3">
+            <nav class="nav flex-column align-items-start">
+                <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
+                <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
+            </nav>
+        </div>
+
+        <div class="col-md-9">
+            <form asp-action="AddComment">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group" style="display:none;">
+                    <label asp-for="FPersonId" class="control-label"></label>
+                    <input asp-for="FPersonId" class="form-control" />
+                    <span asp-validation-for="FPersonId" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label asp-for="FProductId" class="control-label"></label>
+                    <input asp-for="FProductId" class="form-control" />
+                    <span asp-validation-for="FProductId" class="text-danger"></span>
+                </div>
+                <div class="form-group" style="display:none;">
+                    <label asp-for="FOrderListId" class="control-label"></label>
+                    <input asp-for="FOrderListId" class="form-control" />
+                    <span asp-validation-for="FOrderListId" class="text-danger"></span>
+                </div>
+                <div class="form-group" >
+                    <label asp-for="FOrderId" class="control-label" style="display: inline;"></label>
+                    <span class="form-control border-0" style="display: inline;">@Model.FOrderId</span>
+                    @*<input asp-for="FOrderId" class="form-control" style="display: inline;" />
+                    <span asp-validation-for="FOrderId" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <label asp-for="FProductName" class="control-label" style="display: inline;"></label>
+                    <span class="form-control border-0" style="display: inline;">@Model.FProductName</span>
+                    @*<input asp-for="FProductName" class="form-control" readonly />*@
+                    @* <span asp-validation-for="FProductName" class="text-danger"></span> *@
+                </div>
+                <div class="form-group">
+                    <label asp-for="FComment" class="control-label" style="display: inline-block;"></label>
+                    <textarea asp-for="FComment" class="form-control" style="display: inline-block; height: 200px; resize: none;"></textarea>
+                    <span asp-validation-for="FComment" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FStar" class="control-label" style="display: inline;"></label>
+                    <div id="user-rating" class="star-rating" style="display: inline;">
+                        <i class="bi bi-star" data-value="1"></i>
+                        <i class="bi bi-star" data-value="2"></i>
+                        <i class="bi bi-star" data-value="3"></i>
+                        <i class="bi bi-star" data-value="4"></i>
+                        <i class="bi bi-star" data-value="5"></i>
+                    </div>
+                    <input type="hidden" name="FStar" id="user-rating-value" />
+                    @*<input asp-for="FStar" class="form-control" />*@
+                    <span asp-validation-for="FStar" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="送出評論" class="btn btn-primary" />
+                </div>
+                <div>
+                    <a asp-action="OrderDetail" class="btn">取消評論</a>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+            $(function () {
+                //點擊星星
+                $(document).ready(function () {
+                    $("#user-rating i").click(function () {
+                        // 清除所有星星的選中狀態（先移除所有實心和黃色樣式）
+                        $("#user-rating i").removeClass("bi-star-fill").addClass("bi-star").removeClass("text-warning");
+
+                        // 將當前星星和之前的星星都變成實心黃色
+                        $(this).prevAll().removeClass("bi-star").addClass("bi-star-fill text-warning");
+                        $(this).removeClass("bi-star").addClass("bi-star-fill text-warning");
+
+                        // 記錄當前選中的星星數量（對應評分）
+                        var rating = $(this).data("value");
+                        console.log("選擇的評分是: " + rating);
+
+                        // 將評分保存到隱藏欄位
+                        $("#user-rating").data("rating", rating);
+                    });
+                });
+                });
+
+    </script>
+
+
+}

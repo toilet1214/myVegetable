@@ -264,9 +264,11 @@ namespace prjVegetable.Controllers
             {
                 foreach (var comment in x.CommentList)
                 {
-                    comment.PersonName = DisplayName(comment.PersonName); 
+                    comment.FPersonName = DisplayName(comment.FPersonName); 
                 }
             }
+
+            x.AverageStar = AverageStar(id);
 
             return View(x);
         }
@@ -301,8 +303,23 @@ namespace prjVegetable.Controllers
                 FComment = comment.FComment,
                 FStar = comment.FStar,
                 FCreatedAt = comment.FCreatedAt,
-                PersonName = comment.PersonName,
+                FPersonName = comment.PersonName,
             }).ToList();
+        }
+
+        //平均分數星星
+        private double AverageStar(int productId)
+        {
+            var stars = _context.TComments
+                        .Where(c => c.FProductId == productId)
+                        .Select(c => c.FStar)
+                        .ToList();
+
+            if (!stars.Any()) return 0; // 沒有評價時回傳 0
+
+            return stars.Average(); // 只計算平均值，不做四捨五入
+            //避免除以零
+            // return stars.Any()?stars.Average():0 ;
         }
 
         [HttpGet]  //評論分頁 失敗

@@ -130,5 +130,6 @@ namespace prjVegetable.Models
         public List<string> ImgList { get; set; }
         public List<CCommentWrap> CommentList { get; set; }
 
+        public double AverageStar { get; set; }
     }
 }

@@ -19,7 +19,11 @@ namespace prjVegetable.Models
             _comment = new TComment();
         }
 
+        // 訂單細項
+        public TOrderList orderList { get; set; }
 
+        [Required(ErrorMessage = "必填")]
+        [DisplayName("評價序號")]
         public int FId 
         {
             get { return _comment.FId; }
@@ -27,31 +31,38 @@ namespace prjVegetable.Models
         }
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("會員Id")]
+        [DisplayName("會員ID")]
         public int FPersonId
         {
             get { return _comment.FPersonId; }
             set { _comment.FPersonId = value; }
         }
 
-        [DisplayName("會員名稱")]
-        public string PersonName { get; set; }
+        [DisplayName("姓名")]
+        public string FPersonName { get; set; }
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("商品Id")]
+        [DisplayName("商品ID")]
         public int FProductId
         {
             get { return _comment.FProductId; }
             set { _comment.FProductId = value; }
         }
+        [DisplayName("商品名稱")]
+        public string FProductName { get; set; }
+
 
         [Required(ErrorMessage = "必填")]
-        [DisplayName("訂單細項Id")]
+        [DisplayName("訂單細項ID")]
         public int FOrderListId
         {
             get { return _comment.FOrderListId; }
             set { _comment.FOrderListId = value; }
         }
+
+
+        [DisplayName("訂單編號")]
+        public int FOrderId { get; set; }
 
         [Required(ErrorMessage = "必填")]
         [DisplayName("評論")]
