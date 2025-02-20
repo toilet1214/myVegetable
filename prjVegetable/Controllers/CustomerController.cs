@@ -106,13 +106,19 @@ namespace prjVegetable.Controllers
             foreach (var t in orderList)
             {
                 var hasComment = _context.TComments
-                .Where(c => c.FOrderListId == t.FId && c.FProductId == t.FProductId && c.FPersonId == userId)
-                .Any();
+                                .Where(c => c.FOrderListId == t.FId && c.FProductId == t.FProductId && c.FPersonId == userId)
+                                .Any();
+
+                var productName = _context.TProducts
+                                .Where(p => p.FId == t.FProductId)
+                                .Select(p => p.FName)
+                                .FirstOrDefault() ?? "未知商品";
                 list.Add(new COrderListWrap() 
                 {
                     orderList = t, 
                     OrderStatus = order.FStatus,
                     HasComment = hasComment,
+                    ProductName = productName
                 });
             }
                 

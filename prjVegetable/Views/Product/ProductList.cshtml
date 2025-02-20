@@ -161,11 +161,12 @@
     /* 商品card */
     .card-title {
         font-size: 20px !important;
+        font-weight: bold;
     }
 
     /* 商品card  顯示字數*/
     .card-text {
-        white-space: nowrap;
+        white-space: normal;
         overflow: hidden;
         text-overflow: ellipsis;
         max-width: 100%;
@@ -194,8 +195,6 @@
             background-color: lightpink; /* 滑鼠 hover 顏色 */
             border-color: lightpink; /* 滑鼠 hover 邊框顏色 */
         }
-
-
 
 </style>
 
@@ -348,7 +347,8 @@
                     <div class="col product-item mb-4" data-publish-date="@item.FLaunchAt">
                         <a href="@Url.Action("ProductItem", "Product", new { id = item.FId })" class="text-decoration-none">
 
-                            <div class="card h-80 shadow-sm d-flex flex-column ">
+                            <div class="card h-80 shadow-sm ">
+
                                 @* <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div> *@
                                 @if (item.IsPopular)
                                 {
@@ -358,21 +358,24 @@
                                 }
                                 @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@
                                 @* <img src="~/Images/@Html.DisplayFor(modelItem => item.FImgName)" class="card-img-top img-fluid" alt="Image"> *@
+
                                 <img src="~/Images/@(string.IsNullOrEmpty(item.FImgName) ? "NoImage.jpg" : item.FImgName)" class="card-img-top img-fluid" alt="Image">                                <div class="card-body d-flex align-items-center">
-                                    <p class="card-title m-0">@Html.DisplayFor(modelItem => item.FName)</p>
-                                    <p class="card-text m-0">【@Html.DisplayFor(modelItem => item.FDescription)】</p>
-                                    <div class="d-flex justify-content-between w-100">
-                                        <span class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</span>
-                                        <div class="d-flex">
-                                            <button class="btn heartButton p-0 btnicon" data-productid="@item.FId">
-                                                <i class="heart-icon @((item.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i>
-                                            </button>
-                                            <button class="btn addToCartButtonList p-0 btnicon" data-productid="@item.FId">
-                                                <i class="bi bi-cart"></i>
-                                            </button>
+                                    <div class="card-body ">
+                                        <p class="card-title m-0 text-truncate">@Html.DisplayFor(modelItem => item.FName)</p>
+                                        @* <p class="card-text m-0">【@Html.DisplayFor(modelItem => item.FDescription)】</p> *@
+                                        <div class="d-flex justify-content-between w-100">
+                                            <span class="card-text">NT @Html.DisplayFor(modelItem => item.FPrice)</span>
+                                            <div class="d-flex">
+                                                <button class="btn heartButton p-0 btnicon" data-productid="@item.FId">
+                                                    <i class="heart-icon @((item.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i>
+                                                </button>
+                                                <button class="btn addToCartButtonList p-0 btnicon" data-productid="@item.FId">
+                                                    <i class="bi bi-cart"></i>
+                                                </button>
+                                            </div>
                                         </div>
+                                        <p class="card-text"><span class="hidden-launch-date">@Html.DisplayFor(modelItem => item.FLaunchAt)</span></p>
                                     </div>
-                                    <p class="card-text"><span class="hidden-launch-date">@Html.DisplayFor(modelItem => item.FLaunchAt)</span></p>
                                 </div>
                             </div>
                         </a>
@@ -462,12 +465,12 @@
                 }
 
                 // 當用戶選擇排序方式時，更新並提交表單
-                var form =document.querySelector("form");
-                    if (form) {
-                        form.submit();
-                    }else{
-                        console.error("表單不存在！");
-                    }
+                var form = document.querySelector("form");
+                if (form) {
+                    form.submit();
+                } else {
+                    console.error("表單不存在！");
+                }
 
             }
 
@@ -569,13 +572,13 @@
                 const fromPosition = from.value - to.min;
                 const toPosition = to.value - to.min;
                 controlSlider.style.background = `linear-gradient(
-                                                to right,
-                                                ${sliderColor} 0%,
-                                                ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
-                                                ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
-                                                ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
-                                                ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
-                                                ${sliderColor} 100%)`;
+                                                                to right,
+                                                                ${sliderColor} 0%,
+                                                                ${sliderColor} ${(fromPosition) / (rangeDistance) * 100}%,
+                                                                ${rangeColor} ${((fromPosition) / (rangeDistance)) * 100}%,
+                                                                ${rangeColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                                                ${sliderColor} ${(toPosition) / (rangeDistance) * 100}%,
+                                                                ${sliderColor} 100%)`;
             }
 
             function setToggleAccessible(currentTarget) {
