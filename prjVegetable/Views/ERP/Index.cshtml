@@ -723,7 +723,27 @@
                 var totalLikesCell = $('<td></td>').text(product.Likes); 
                 row.append(totalLikesCell);
 
-                var totalRateCell = $('<td></td>').text(product.Star); 
+
+                var totalRateCell = $('<td></td>');
+                var starContainer = $('<p class="d-inline-flex star-averating"></p>');
+                
+                var starValue = product.Star;
+                var wholeStars = Math.floor(starValue); // 整數部分
+                var halfStar = (starValue - wholeStars) >= 0.5 ? true : false; // 判斷是否有半顆星
+                
+                for (var i = 1; i <= 5; i++) {
+                    if (i <= wholeStars) {
+                        starContainer.append('<i class="bi bi-star-fill"></i>'); // 滿星
+                    } else if (halfStar && i === wholeStars + 1) {
+                        starContainer.append('<i class="bi bi-star-half"></i>'); // 半顆星
+                        halfStar = false; // 只顯示一顆半星
+                    } else {
+                        starContainer.append('<i class="bi bi-star"></i>'); // 空星
+                    }
+                }
+                
+                totalRateCell.append(starContainer);
+                totalRateCell.append(' ' + starValue.toFixed(1)); // 顯示數字，確保只有 .0 和 .5
                 row.append(totalRateCell);
 
                 $('#LikesRank').append(row); // 將這一行加入到表格中
