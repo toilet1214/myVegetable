@@ -89,6 +89,7 @@
                 <div class="row mb-3 detail-entry">
                     <input type="hidden" asp-for="GoodsInAndOutDetails[i].FId" />
                     <div class="col-3">
+                        <label class="control-label">商品名稱</label>
                         <select asp-for="GoodsInAndOutDetails[i].FProductId" class="FProductId form-control" data-selected="@Model.GoodsInAndOutDetails[i].FProductId" required>
                             <option value="">請選擇產品</option>
                             @foreach (var product in (List<dynamic>)ViewBag.ProductList)
@@ -105,15 +106,18 @@
                         </select>
                     </div>
                     <div class="col-2">
+                        <label class="control-label">數量</label>
                         <input asp-for="GoodsInAndOutDetails[i].FCount" class="FCount form-control" placeholder="數量" type="number" min="1" required />
                     </div>
                     <div class="col-2">
+                        <label class="control-label">單價</label>
                         <input asp-for="GoodsInAndOutDetails[i].FPrice" class="FPrice form-control" placeholder="單價" readonly />
                     </div>
                     <div class="col-2">
+                        <label class="control-label">小計</label>
                         <input asp-for="GoodsInAndOutDetails[i].FSum" class="FSum form-control" placeholder="小計" readonly />
                     </div>
-                    <div class="col-3">
+                    <div class="col-3"></br>
                         <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
                     </div>
                 </div>
