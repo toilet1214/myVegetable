@@ -46,7 +46,7 @@ namespace prjVegetable.Controllers
                 FPhone = Tp.FPhone,
                 FTel = Tp.FTel,
                 FAddress = Tp.FAddress,
-                //FEmail = Tp.FEmail,
+                
                 FUbn = Tp.FUbn,
                 FPermission = Tp.FPermission,
                 FEmp = Tp.FEmp,
@@ -175,7 +175,7 @@ namespace prjVegetable.Controllers
                 e.FPhone = personwrap.FPhone;
                 e.FTel = personwrap.FTel;
                 e.FAddress = personwrap.FAddress;
-                //e.FEmail = personwrap.FEmail;
+               
                 e.FUbn = personwrap.FUbn;
                 e.FPermission = personwrap.FPermission;
                 e.FEmp = personwrap.FEmp;

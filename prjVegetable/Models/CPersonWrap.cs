@@ -88,14 +88,7 @@ namespace prjVegetable.Models
             set { _person.FAddress = value; }
         }
 
-        //[DisplayName("電子郵件")]
-        //[EmailAddress]
-        //[RegularExpression(@"^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$", ErrorMessage = "電子郵件格式不正確")]
-        //public string FEmail
-        //{
-        //    get { return _person.FEmail; }
-        //    set { _person.FEmail = value; }
-        //}
+
 
         [DisplayName("統編")]
         [RegularExpression(@"^\d{8}$", ErrorMessage = "統一編號必須是 8 位數字")]

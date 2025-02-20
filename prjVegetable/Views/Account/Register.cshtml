@@ -15,42 +15,42 @@
         <div class="card-body">
             <form asp-action="Register">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <!-- 會員姓名 -->
+                <div class="mb-3 form-group">
+                    <label asp-for="FName" class="control-label"></label>
+                    <input asp-for="FName" class="form-control text-start w-100 border-1 border-dark" required>
+                    <span asp-validation-for="FName" class="text-danger"></span>
+                </div>
                 <!-- 會員帳號 -->
                 <div class="mb-3 form-group">
                     <label asp-for="FAccount" class="control-label"></label>
-                    <input asp-for="FAccount" class="form-control text-start w-100 border-1 border-dark">
+                    <input asp-for="FAccount" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="FAccount" class="text-danger"></span>
                 </div>
                 <!-- 會員密碼 -->
                 <div class="mb-3 form-group">
                     <label asp-for="FPassword" class="control-label"></label>
-                    <input asp-for="FPassword" type="password" class="form-control text-start w-100 border-1 border-dark">
+                    <input asp-for="FPassword" type="password" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="FPassword" class="text-danger"></span>
                 </div>
                 <div class="mb-3 form-group">
                     <label asp-for="ConfirmPassword" class="control-label"></label>
-                    <input asp-for="ConfirmPassword" type="password" class="form-control text-start w-100 border-1 border-dark" />
+                    <input asp-for="ConfirmPassword" type="password" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-                <!-- 會員姓名 -->
-                <div class="mb-3 form-group">
-                    <label asp-for="FName" class="control-label"></label>
-                    <input asp-for="FName" class="form-control text-start w-100 border-1 border-dark">
-                    <span asp-validation-for="FName" class="text-danger"></span>
                 </div>
 
                 <!-- 生日與性別並排 -->
                 <div class="row mb-3">
                     <div class="col-md-6 form-group">
                         <label asp-for="FBirth" class="control-label"></label>
-                        <input asp-for="FBirth" type="date" class="form-control text-start w-50 border-1 border-dark">
+                        <input asp-for="FBirth" type="date" id="FBirth" class="form-control text-start w-50 border-1 border-dark" required>
                     </div>
                     <div class="col-md-6 form-group">
                         <label asp-for="FGender" class="control-label"></label>
-                        <select asp-for="FGender" class="form-control text-start border-1 border-dark w-50">
+                        <select asp-for="FGender" class="form-control text-start border-1 border-dark w-50" required>
                             <option value="" disabled selected hidden>請選擇</option>
-                            <option value="男">男性</option>
-                            <option value="女">女性</option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
                             <option value="其他">其他</option>
                         </select>
                         <span asp-validation-for="FGender" class="text-danger"></span>
@@ -59,7 +59,7 @@
                 <!-- 會員手機 -->
                 <div class="mb-3 form-group">
                     <label asp-for="FPhone" class="control-label"></label>
-                    <input asp-for="FPhone" class="form-control text-start w-100 border-1 border-dark">
+                    <input asp-for="FPhone" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="FPhone" class="text-danger"></span>
                 </div>
                 <!-- 會員家電 -->
@@ -71,20 +71,15 @@
                 <!-- 會員地址 -->
                 <div class="mb-3 form-group">
                     <label asp-for="FAddress" class="control-label"></label>
-                    <input asp-for="FAddress" class="form-control text-start w-100 border-1 border-dark">
+                    <input asp-for="FAddress" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="FAddress" class="text-danger"></span>
                 </div>
-                <!-- 會員Email -->
-                @*<div class="mb-3">
-                    <label asp-for="FEmail" class="control-label"></label>
-                    <input asp-for="FEmail" class="form-control text-start w-100 border-1 border-dark">
-                    <span asp-validation-for="FEmail" class="text-danger"></span>
-                </div>*@
+               
                 <!-- 會員統編 -->
                 <div class="mb-3">
                     <label asp-for="FUbn" class="control-label"></label>
-                    <input asp-for="FUbn" class="form-control text-start w-100 border-1 border-dark">
-                    <span asp-validation-for="FUbn" class="text-danger"></span>
+                    <input asp-for="FUbn" class="form-control text-start w-100 border-1 border-dark" >
+                    
                 </div>
                 <!-- 按鈕 -->
                 <div class="form-group d-flex justify-content-end mt-4">
@@ -96,12 +91,37 @@
 </div>
 
 @section Scripts {
-    @if (TempData["ErrorRegister"] != null)
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let birthInput = document.getElementById("FBirth");
+
+            // 設定最大值為今天，最小值為 200 年前
+            let today = new Date().toISOString().split("T")[0];
+            let minDate = new Date();
+            minDate.setFullYear(minDate.getFullYear() - 200);
+            let minDateString = minDate.toISOString().split("T")[0];
+
+            birthInput.setAttribute("max", today);
+            birthInput.setAttribute("min", minDateString);
+
+            // 阻止手動輸入
+            birthInput.addEventListener("keypress", function (e) {
+                e.preventDefault();
+            });
+
+            birthInput.addEventListener("paste", function (e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+
+    @if (TempData.Peek("ErrorRegister") != null)
     {
         <script>
             alert('@Html.Raw(TempData["ErrorRegister"].ToString())');
         </script>
     }
+    
 }
 
 

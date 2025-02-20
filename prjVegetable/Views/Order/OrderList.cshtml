@@ -17,7 +17,7 @@
                 @Html.DisplayNameFor(model => model.FOrderId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FProductId)
+                @Html.DisplayNameFor(model => model.ProductName)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FPrice)
@@ -44,9 +44,8 @@
                         @Html.DisplayFor(modelItem => item.FOrderId)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FProductId)
+                        @Html.DisplayFor(modelItem => item.ProductName)
                     </td>
-
                     <td>
                         @Html.DisplayFor(modelItem => item.FPrice)
                     </td>
@@ -62,7 +61,7 @@
     </tbody>
 </table>
 <div>
-    <a asp-action="List">返回</a>
+    <a asp-action="List" class="btn btn-primary">返回</a>
 </div>
 
 @section Scripts {
@@ -76,10 +75,11 @@
                 "info": true, // 顯示資訊
                 "autoWidth": false, // 禁用自動調整寬度
                 "language": {
+                    "emptyTable": "目前沒有任何資料",
                     "lengthMenu": "顯示 _MENU_ 筆資料",
                     "zeroRecords": "沒有符合的資料",
                     "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
-                    "infoEmpty": "沒有可顯示的資料",
+                    "infoEmpty": "",
                     "infoFiltered": "(從 _MAX_ 筆資料過濾)",
                     "search": "搜尋：",
                     "paginate": {

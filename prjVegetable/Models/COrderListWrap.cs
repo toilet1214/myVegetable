@@ -50,5 +50,8 @@ namespace prjVegetable.Models
             get { return _orderList.FSum; }
             set { _orderList.FSum = value; }
         }
+        public bool IsComment { get;set; }=false;
+        [DisplayName("商品名稱")]
+        public string ProductName { get;set; }
     }
 }

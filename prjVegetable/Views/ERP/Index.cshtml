@@ -43,13 +43,13 @@
                                 <li class="dropdown-header text-start">
                                     <h6>篩選</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#">今天</a></li>
-                                <li><a class="dropdown-item" href="#">這個月</a></li>
-                                <li><a class="dropdown-item" href="#">今年</a></li>
+                                <li><a class="dropdown-item" href="#">當日</a></li>
+                                <li><a class="dropdown-item" href="#">當月</a></li>
+                                <li><a class="dropdown-item" href="#">當年</a></li>
                             </ul>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title fw-bold fs-5">瀏覽人次 <span id="VisitorsDate">| 今天</span></h5>
+                            <h5 class="card-title fw-bold fs-5">瀏覽人次 <span id="VisitorsDate">| 當日</span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-fire display-6"></i>
@@ -72,13 +72,13 @@
                                 <li class="dropdown-header text-start">
                                     <h6>篩選</h6>
                                 </li>
-                                <li><a class="dropdown-item" href="#">今天</a></li>
-                                <li><a class="dropdown-item" href="#">這個月</a></li>
-                                <li><a class="dropdown-item" href="#">今年</a></li>
+                                <li><a class="dropdown-item" href="#">當日</a></li>
+                                <li><a class="dropdown-item" href="#">當月</a></li>
+                                <li><a class="dropdown-item" href="#">當年</a></li>
                             </ul>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title fw-bold fs-5">訂單數 <span id="OrdersDate">| 今天</span></h5>
+                            <h5 class="card-title fw-bold fs-5">訂單數 <span id="OrdersDate">| 當日</span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-cart-check-fill display-6"></i>
@@ -128,12 +128,12 @@
                                     <h6>篩選</h6>
                                 </li>
                                 <li><a class="dropdown-item" href="#">不限</a></li>
-                                <li><a class="dropdown-item" href="#">這個月</a></li>
-                                <li><a class="dropdown-item" href="#">今年</a></li>
+                                <li><a class="dropdown-item" href="#">當月</a></li>
+                                <li><a class="dropdown-item" href="#">當年</a></li>
                             </ul>
                         </div>
                         <div class="card-body pb-0">
-                            <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRankDate">| 這個月</span></h5>
+                            <h5 class="card-title fw-bold fs-5">銷售排行 <span id="SalesRankDate">| 當月</span></h5>
                             <table class="table table-borderless">
                                 <thead>
                                     <tr>
@@ -201,8 +201,8 @@
                             <h6>篩選</h6>
                         </li>
                         <li><a class="dropdown-item" href="#">不限</a></li>
-                        <li><a class="dropdown-item" href="#">這個月</a></li>
-                        <li><a class="dropdown-item" href="#">今年</a></li>
+                        <li><a class="dropdown-item" href="#">當月</a></li>
+                        <li><a class="dropdown-item" href="#">當年</a></li>
                     </ul>
                 </div>
                 <div class="card-body pb-0">
@@ -257,15 +257,15 @@
             }
             document.getElementById("VisitorsDate").innerHTML = "| " + VisitorsFilter;
             switch (VisitorsFilter) {
-                case "今天":
+                case "當日":
                     Visitors.innerHTML = TotalVisitorsDay.toLocaleString();
                     SetDefaultCard(@ViewBag.VisitorsPercentageDay, VisitorsPercentage);
                     break;
-                case "這個月":
+                case "當月":
                     Visitors.innerHTML = TotalVisitorsMonth.toLocaleString();
                     SetDefaultCard(@ViewBag.VisitorsPercentageMonth, VisitorsPercentage);
                     break;
-                case "今年":
+                case "當年":
                     Visitors.innerHTML = TotalVisitorsYear.toLocaleString();
                     SetDefaultCard(@ViewBag.VisitorsPercentageYear, VisitorsPercentage);
                     break;
@@ -288,15 +288,15 @@
             }
             document.getElementById("OrdersDate").innerHTML = "| " + OrdersFilter;
             switch (OrdersFilter) {
-                case "今天":
+                case "當日":
                     Orders.innerHTML = TotalOrdersDay.toLocaleString();
                     SetDefaultCard(@ViewBag.OrdersPercentageDay, OrdersPercentage);
                     break;
-                case "這個月":
+                case "當月":
                     Orders.innerHTML = TotalOrdersMonth.toLocaleString();
                     SetDefaultCard(@ViewBag.OrdersPercentageMonth, OrdersPercentage);
                     break;
-                case "今年":
+                case "當年":
                     Orders.innerHTML = TotalOrdersYear.toLocaleString();
                     SetDefaultCard(@ViewBag.OrdersPercentageYear, OrdersPercentage);
                     break;
@@ -645,10 +645,10 @@
                     case "不限":
                         PieAll();
                         break;
-                    case "這個月":
+                    case "當月":
                         PieMonth();
                         break;
-                    case "今年":
+                    case "當年":
                         PieYear();
                         break;
                 }
@@ -694,10 +694,10 @@
                     case "不限":
                         SalesRank(BestSellingProductAll);
                         break;
-                    case "這個月":
+                    case "當月":
                         SalesRank(BestSellingProductMonth);
                         break;
-                    case "今年":
+                    case "當年":
                         SalesRank(BestSellingProductYear);
                         break;
                 }
