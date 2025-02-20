@@ -134,135 +134,6 @@ main {
     flex-direction: column;
 }
 
-/*+-*/
-.ctrl {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 95%;
-    max-width: 180px;
-    height: 35px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff;
-}
-
-.ctrl__counter {
-    position: relative;
-    width: 200px;
-    height: 100px;
-    color: #333C48;
-    text-align: center;
-    overflow: hidden;
-}
-
-.ctrl__counter.is-input .ctrl__counter-num {
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: opacity 100ms ease-in;
-    transition: opacity 100ms ease-in;
-}
-
-.ctrl__counter.is-input .ctrl__counter-input {
-    visibility: visible;
-    opacity: 1;
-    -webkit-transition: opacity 100ms ease-in;
-    transition: opacity 100ms ease-in;
-}
-
-.ctrl__counter-input {
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative;
-    z-index: 2;
-    box-shadow: none;
-    outline: none;
-    border: none;
-    color: #333C48;
-    font-size: 30px;
-    line-height: 100px;
-    text-align: center;
-    visibility: hidden;
-    opacity: 0;
-    -webkit-transition: opacity 100ms ease-in;
-    transition: opacity 100ms ease-in;
-}
-
-.ctrl__button {
-    flex: 0 0 30px;
-    height: 35px;
-    line-height: 35px;
-    text-align: center;
-    background-color: #8498a7;
-    color: #fff;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 150ms ease-in, transform 100ms ease-in;
-}
-
-.ctrl__button:hover {
-    background-color: #90a2b0;
-}
-
-.ctrl__button:active {
-    background-color: #778996;
-}
-
-.ctrl__button--decrement {
-    border-radius: 5px 0 0 5px;
-}
-
-.ctrl__button--increment {
-    border-radius: 0 5px 5px 0;
-}
-
-
-.ctrl__counter-num {
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    line-height: 100px;
-    visibility: visible;
-    opacity: 1;
-    -webkit-transition: opacity 100ms ease-in;
-    transition: opacity 100ms ease-in;
-}
-
-.ctrl__counter-num.is-increment-hide {
-    opacity: 0;
-    -webkit-transform: translateY(-50px);
-    transform: translateY(-50px);
-    -webkit-animation: increment-prev 100ms ease-in;
-    animation: increment-prev 100ms ease-in;
-}
-
-.ctrl__counter-num.is-increment-visible {
-    opacity: 1;
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-    -webkit-animation: increment-next 100ms ease-out;
-    animation: increment-next 100ms ease-out;
-}
-
-.ctrl__counter-num.is-decrement-hide {
-    opacity: 0;
-    -webkit-transform: translateY(50px);
-    transform: translateY(50px);
-    -webkit-animation: decrement-prev 100ms ease-in;
-    animation: decrement-prev 100ms ease-in;
-}
-
-.ctrl__counter-num.is-decrement-visible {
-    opacity: 1;
-    -webkit-transform: translateY(0);
-    transform: translateY(0);
-    -webkit-animation: decrement-next 100ms ease-out;
-    animation: decrement-next 100ms ease-out;
-}
 
 /* ---------- up_to_top -----------*/
 #up-to-top {
@@ -413,20 +284,6 @@ main {
 }
 
 /*-------------------------------------*/
-
-/*img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-}*/
-
-
-/*.card-text small {
-    font-size: 0.875rem;
-    color: #6c757d;
-}*/
-
-
 .lc-block {
     font-family: LXGW WenKai Mono TC, Tahoma, sans-serif;
     font-size: 22px;
@@ -706,3 +563,5 @@ h1 {
 .very-width{
     width: 100%;
 }
+
+/*--------------- link ----------------------*/

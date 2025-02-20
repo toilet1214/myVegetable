@@ -136,91 +136,6 @@
     <!-- up to top btn-->
     <button onclick="topFunction()" id="up-to-top" title="Go to top"><i class="bi bi-arrow-up fs-3"></i></button>
 
-    <!-- 購物車側邊攔展開 start -->
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart" aria-labelledby="My Cart">
-        <div class="offcanvas-header justify-content-center">
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div class="order-md-last">
-                <h4 class="d-flex justify-content-between align-items-center mb-3">
-                    <span class="text-primary">購物車(3)</span>
-                </h4>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/06.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="cart-card-body">
-                                <h5 class="cart-card-title px-3 mb-1">暖纖毛室內拖鞋/棕</h5>
-                                <p class="cart-card-price px-3">NT$200</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/02.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="cart-card-body">
-                                <h5 class="cart-card-title px-3 mb-1">烏龍茶</h5>
-                                <p class="cart-card-price px-3">NT$280</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="cart-card my-2">
-                    <div class="row g-0 d-flex align-items-center px-2 py-2">
-                        <div class="col-md-2 image-container">
-                            <img class="cart-card-img" src="./images/04.jpg" alt="...">
-                        </div>
-                        <div class="col-md-6">
-                            <div class="cart-card-body">
-                                <h5 class="cart-card-title px-3 mb-1">大沙發/灰</h5>
-                                <p class="cart-card-price px-3">NT$150</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4 ps-2">
-                            <div class='ctrl'>
-                                <div class='ctrl__button ctrl__button--decrement'>&ndash;</div>
-                                <div class='ctrl__counter'>
-                                    <input class='ctrl__counter-input' maxlength='10' type='text' value='0'>
-                                    <div class='ctrl__counter-num'>0</div>
-                                </div>
-                                <div class='ctrl__button ctrl__button--increment'>+</div>
-                            </div>
-                        </div>
-                        <hr class="w-100 mt-4">
-                        <button onclick="location.href='@Url.Action("Cart", "Home")'" class="w-100 btn btn-primary btn-lg" type="submit">結帳</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <!-- 聯絡我們 Start -->
     <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="contactUsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -234,28 +149,36 @@
                         <div class="mb-4">
                             <h5>電子信箱</h5>
                             <p>表單送出後，您的建議/問題會寄到這裡，我們將在三個工作日內回覆。</p>
-                            <a href="#" class="text-decoration-none"><i class="bi bi-envelope-fill"></i>  VegeP2258@gmail.com</a>
+                            <a href="mailto:VegeP2258@gmail.com" style="color: #464E19; text-decoration: none;">
+                                <i class="bi bi-envelope-fill"></i> VegeP2258@gmail.com
+                            </a>
                         </div>
                         <hr>
                         <div class="mb-4">
                             <h5>連絡電話</h5>
                             <p>平日 09:00-12:00。</p>
-                            <a href="#" class="text-decoration-none"><i class="bi bi-telephone-outbound-fill"></i> 0978-446-461、07-7255849 轉 222</a>
+                            <a href="tel:0978446461" style="color: #464E19; text-decoration: none;">
+                                <i class="bi bi-telephone-outbound-fill"></i> 0978-446-461
+                            </a>、
+                            <a href="tel:077255849,222" style="color: #464E19; text-decoration: none;">
+                                07-7255849 轉 222
+                            </a>
                         </div>
                         <hr>
                         <div class="mb-4">
                             <h5>公司地址</h5>
-                            <p>平日 09:00-17:00，來辦公室坐坐 <i class="bi bi-cup-fill>。"></i></p>
-                            <a href="https://maps.app.goo.gl/BPoJnKZRxsTiGLmY9" class="text-decoration-none"><i class="bi bi-geo"></i> 801 高雄市前金區中正四路211號8樓之1</a>
+                            <p>平日 09:00-17:00，來辦公室坐坐 <i class="bi bi-cup-fill"></i></p>
+                            <a href="https://maps.app.goo.gl/BPoJnKZRxsTiGLmY9" style="color: #464E19; text-decoration: none;"><i class="bi bi-geo"></i> 801 高雄市前金區中正四路211號8樓之1</a>
                         </div>
                         <hr>
                         <div class="mb-4">
                             <h5>社群</h5>
                             <p>歡迎關注我們的社群獲得最新消息！</p>
-                            <a href="https://www.instagram.com/ispan_educate/" class="text-decoration-none"><i class="bi bi-instagram"></i> Vege人的Instergram</a>
+                            <a href="https://www.instagram.com/ispan_educate/" style="color: #464E19; text-decoration: none;"><i class="bi bi-instagram"></i> Vege人的Instagram</a>
                         </div>
                     </div>
                 </div>
+
             </div>
          </div>
     </div>
@@ -323,9 +246,8 @@
     </div>
     <!-- 登入 End-->
     
-
-
     <!-- Script 段落-->
+
     <!-- 購物車功能 Start -->
     <script>
         (function () {

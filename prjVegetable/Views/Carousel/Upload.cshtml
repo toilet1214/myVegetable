@@ -11,6 +11,7 @@
             <!-- 左邊輪播 -->
             <div class="col-md-8">
                 <h3 class="mb-4">輪播預覽</h3>
+                <hr/>
                 <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         @for (int i = 0; i < Model.ImagePaths.Count; i++)
@@ -38,6 +39,7 @@
                         建議尺寸：1200 x 600
                     </span>
                 </div>
+                <hr />
                 <form asp-action="Upload" asp-controller="Carousel" method="post" enctype="multipart/form-data">
                     @for (int i = 0; i < 5; i++)
                     {
