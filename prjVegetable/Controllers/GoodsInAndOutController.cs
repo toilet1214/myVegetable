@@ -323,9 +323,30 @@ namespace prjVegetable.Controllers
             return View(viewModel);
         }
 
+        [HttpPost]
+        public IActionResult Invalidate([FromBody] TGoodsInAndOut request)
+        {
+            if (request == null || request.FId == 0)
+            {
+                return Json(new { success = false, message = "無效的請求" });
+            }
 
+            var record = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == request.FId);
+            if (record == null)
+            {
+                return Json(new { success = false, message = "找不到該筆資料" });
+            }
 
+            if (int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId))
+            {
+                record.FInOut = 2;  // 設定為作廢
+                record.FEditor = userId;
+                _dbContext.SaveChanges();
+                return Json(new { success = true });
+            }
 
+            return Json(new { success = false, message = "無法取得當前使用者" });
+        }
 
     }
 }
