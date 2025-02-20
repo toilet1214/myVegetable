@@ -128,9 +128,6 @@
             <div class="col-6">
                 <button type="button" id="addDetail" class="btn btn-success">＋ 新增明細</button>
             </div>
-            <div class="col-6 text-end">
-                <button type="button" id="removeDetail" class="btn btn-danger">－ 移除最後一筆</button>
-            </div>
         </div>
         <!-- 返回與儲存按鈕 -->
         <!-- 返回與儲存按鈕 -->
@@ -276,20 +273,6 @@
     });
 
 
-    document.getElementById("removeDetail").addEventListener("click", function () {
-        let details = document.querySelectorAll(".detail-entry");
-        if (details.length > 1) {
-            let lastRow = details[details.length - 1];
-            let detailId = lastRow.querySelector("input.FGoodsInandOutId").value;
-            if (detailId !== "0") {
-                deletedItems.push(detailId);
-            }
-            lastRow.remove();
-            updateTotalPrice();
-        } else {
-            alert("至少需要一筆明細！");
-        }
-    });
 
     document.addEventListener("click", function (event) {
         if (event.target.classList.contains("btn-remove-detail")) {
