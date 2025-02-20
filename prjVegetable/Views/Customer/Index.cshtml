@@ -334,17 +334,20 @@
                         });
                 },
                 toggleEditing() {
-                    this.editedCustomer = JSON.parse(JSON.stringify(this.Customer)); // 深拷貝
+                    this.editedCustomer = JSON.parse(JSON.stringify(this.Customer));
                     this.edit = 1;
                 },
                 cancel() {
+                    if (this.edit === 1) {
+                        this.Customer = JSON.parse(JSON.stringify(this.editedCustomer));
+                    }
                     this.edit = 0;
                 },
                 toggleEditPassword() {
                     this.edit = 2;
                 },
                 saveCustomer() {
-                    const customerData = { ...this.editedCustomer }; // 改成 editedCustomer
+                    const customerData = JSON.parse(JSON.stringify(this.Customer))
                     if (this.edit === 2) {
                         // 在這裡處理密碼更新的邏輯
                         if (this.OldPassword !== this.fPassword || this.newPassword !== this.ConfirmPassword || this.OldPassword === this.newPassword) {
@@ -357,7 +360,6 @@
                     axios.put(`/Customer/update`, customerData)
                         .then(response => {
                             alert("資料已儲存!");
-                            this.Customer = { ...this.editedCustomer }; // 確認後更新
                             this.edit = 0;  // 儲存後退出編輯模式
                         })
                         .catch(error => {
