@@ -301,28 +301,29 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            //  從資料庫獲取 TGoodsInAndOut (主表)
-            var goodsInAndOut = _dbContext.TGoodsInAndOuts.FirstOrDefault(t => t.FId == id);
-            if (goodsInAndOut == null)
+            var main = _dbContext.TGoodsInAndOuts.FirstOrDefault(x => x.FId == id);
+            if (main == null)
             {
-                return NotFound(); //  若無此 FId則返回 404
+                return NotFound();
             }
 
-            //  從資料庫獲取 TGoodsInAndOutDetail (細項表)
             var details = _dbContext.TGoodsInAndOutDetails
-                .Where(d => d.FGoodsInandOutId == id)
-                .ToList();
+                            .Where(d => d.FGoodsInandOutId == id)
+                            .ToList();
 
-            //  封裝至 ViewModel
+            ViewBag.ProductList = _dbContext.TProducts
+                                .Select(p => new { p.FId, p.FName })
+                                .ToList();
+
             var viewModel = new CGoodsInAndOutViewModel
             {
-                GoodsInAndOut = goodsInAndOut,
+                GoodsInAndOut = main,
                 GoodsInAndOutDetails = details
             };
-
-            //  將 ViewModel 傳遞至 Details.cshtml
             return View(viewModel);
         }
+
+
 
 
 
