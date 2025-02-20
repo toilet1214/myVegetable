@@ -116,11 +116,7 @@ namespace prjVegetable.Controllers
                 });
             }
                 
-            foreach (var t in datas)
-            {
-                var product = _context.TProducts.FirstOrDefault(p=>p.FId == t.FProductId);
-                list.Add(new COrderListWrap() { orderList = t , IsComment = false ,ProductName = product.FName});
-            }
+           
 
             return View(list);
         }
@@ -212,7 +208,7 @@ namespace prjVegetable.Controllers
         }
 
 
-        }
+        
         public async Task<IActionResult> DeleteFavorite(int? id)
         {
             if (id == null)
@@ -231,13 +227,6 @@ namespace prjVegetable.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        public async Task<IActionResult> MyComment()
-        {
-            return View();
-        }
-        public async Task<IActionResult> CreateComment()
-        {
-            return View();
-        }
+
     }
 }
