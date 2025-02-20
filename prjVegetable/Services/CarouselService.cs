@@ -16,8 +16,8 @@ namespace prjVegetable.Services
         /*---------------- 熱門商品輪播 ------------------*/
         public List<CHomePageViewModel.CarouselCardViewModel> GetTop9Products()
         {
-            // 計算六個月前的日期
-            DateOnly sixMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-6));
+            // 計算三個月前的日期
+            DateOnly threeMonthsAgo = DateOnly.FromDateTime(DateTime.Now.AddMonths(-3));
 
             // LINQ 查詢
             var query = (
@@ -26,7 +26,7 @@ namespace prjVegetable.Services
                 join p in _context.TProducts on d.FProductId equals p.FId
                 join img in _context.TImgs on p.FId equals img.FProductId into imgGroup
                 from img in imgGroup.DefaultIfEmpty() // LEFT JOIN，避免產品沒有圖片
-                where g.FInOut == 1 && g.FDate.CompareTo(sixMonthsAgo) >= 0
+                where g.FInOut == 1 && g.FDate.CompareTo(threeMonthsAgo) >= 0
                 group new { d, img } by new
                 {
                     ProductId = p.FId,
