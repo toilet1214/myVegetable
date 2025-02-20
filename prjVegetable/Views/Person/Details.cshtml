@@ -46,7 +46,7 @@
                             <label for="fPassword" class="col-md-3 col-form-label">密碼：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fPassword" :placeholder="person.fPassword" v-model="person.fPassword" @@input="validatePassword">
-                                <div v-if="passwordError" style="color:red;font-size:1rem">密碼必須包含英數字，並且至少8位</div>
+                                <div v-if="passwordError" style="color:red;font-size:1rem">密碼必須包含英文大小寫與數字，並且至少8位</div>
                             </div>
                         </div>
                     </div>

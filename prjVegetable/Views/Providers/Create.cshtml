@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<h1>新增資料</h1>
+<h1>新增供應商資料</h1>
 
 <hr />
 <form asp-action="Create">
@@ -15,14 +15,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FName" class="control-label"></label>
-                    <input asp-for="FName" class="form-control" />
+                    <input asp-for="FName" class="form-control" required/>
                     <span asp-validation-for="FName" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FUbn" class="control-label"></label>
-                    <input asp-for="FUbn" class="form-control" />
+                    <input asp-for="FUbn" class="form-control" required />
                     <span asp-validation-for="FUbn" class="text-danger"></span>
                 </div>
             </div>
@@ -31,14 +31,14 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FConnect" class="control-label"></label>
-                    <input asp-for="FConnect" class="form-control" />
+                    <input asp-for="FConnect" class="form-control" required />
                     <span asp-validation-for="FConnect" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FTel" class="control-label"></label>
-                    <input asp-for="FTel" class="form-control" />
+                    <input asp-for="FTel" class="form-control" required />
                     <span asp-validation-for="FTel" class="text-danger"></span>
                 </div>
             </div>
@@ -47,7 +47,7 @@
             <div class="col-6">
                 <div class="form-group">
                     <label asp-for="FAccountant" class="control-label"></label>
-                    <input asp-for="FAccountant" class="form-control" />
+                    <input asp-for="FAccountant" class="form-control" required />
                     <span asp-validation-for="FAccountant" class="text-danger"></span>
                 </div>
             </div>
@@ -58,7 +58,7 @@
             <div class="col-12">
                 <div class="form-group">
                     <label asp-for="FAddress" class="control-label"></label>
-                    <input asp-for="FAddress" class="form-control" />
+                    <input asp-for="FAddress" class="form-control" required />
                     <span asp-validation-for="FAddress" class="text-danger"></span>
                 </div>
             </div>
