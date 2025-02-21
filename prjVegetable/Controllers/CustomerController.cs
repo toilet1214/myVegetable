@@ -236,7 +236,7 @@ namespace prjVegetable.Controllers
             _context.TFavorites.Remove(Fav);
             _context.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Favorite));
         }
 
     }
