@@ -178,14 +178,14 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult AddComment(TComment c)
         {
-
+            var OId = _context.TOrderLists.Where(p => p.FId == c.FOrderListId).FirstOrDefault().FOrderId;
             c.FStar = c.FStar == 0 ? 5 : c.FStar;
 
             _context.TComments.Add(c);
             _context.SaveChanges();
 
 
-            return RedirectToAction("OrderDetail", new { id = c.FOrderListId });
+            return RedirectToAction("OrderDetail", new { id = OId });
 
         }
 
