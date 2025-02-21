@@ -184,8 +184,9 @@ namespace prjVegetable.Controllers
             _context.TComments.Add(c);
             _context.SaveChanges();
 
-            
-            return RedirectToAction("Order");
+
+            return RedirectToAction("OrderDetail", new { id = c.FOrderListId });
+
         }
 
         public IActionResult CommentIndex()

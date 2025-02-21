@@ -91,7 +91,7 @@
                     <input type="submit" value="送出評論" class="btn btn-primary" />
                 </div>
                 <div>
-                    <a asp-action="OrderDetail" class="btn">取消評論</a>
+                    @Html.ActionLink("取消評論", "OrderDetail", new { id = Model.FOrderListId })
                 </div>
             </form>
         </div>
