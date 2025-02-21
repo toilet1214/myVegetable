@@ -36,7 +36,6 @@ namespace prjVegetable.Controllers
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
-                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_IS_VERIFIED, user.FIsVerified.ToString());
 
                 TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
                 TempData["WelcomeMessage"] = $"歡迎回來，{user.FAccount}！";
