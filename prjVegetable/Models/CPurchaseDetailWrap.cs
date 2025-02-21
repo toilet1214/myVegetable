@@ -64,5 +64,14 @@ namespace prjVegetable.Models
             get { return _PurchaseDetail.FSum; }
             set { _PurchaseDetail.FSum = value; }
         }
+
+        //------------------(產品名稱-提高使用者名稱)------------------------------------
+        [DisplayName("商品名稱(顯示)")]
+        public string? FProductIdVision
+        {
+            get;
+            set;
+        }
+
     }
 }

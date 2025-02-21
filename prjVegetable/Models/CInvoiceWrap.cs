@@ -57,7 +57,7 @@ namespace prjVegetable.Models
             get { return _tInvoice.FCustomerUbn; }
             set { _tInvoice.FCustomerUbn = value; }
         }
-        [DisplayName("供應商ID")]
+        [DisplayName("供應商名稱")]
         public int FProviderId
         {
             get { return _tInvoice.FProviderId; }
@@ -117,5 +117,8 @@ namespace prjVegetable.Models
         {
             get { return _tInvoice.FStatus == 0 ? "一般" : "作廢"; }
         }
+
+        [DisplayName("供應商名稱(顯示)")]
+        public string? FProviderName { get; set; }
     }
 }

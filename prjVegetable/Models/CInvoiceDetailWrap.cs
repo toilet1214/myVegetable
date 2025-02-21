@@ -58,5 +58,14 @@ namespace prjVegetable.Models
             get { return _InvoiceDetail.FSum; }
             set { _InvoiceDetail.FSum = value; }
         }
+
+        //--------------(產品名稱-提高使用者體驗)-----------------------------------------------
+        [DisplayName("產品名稱(顯示)")]
+        public string FProductNameVision
+        {
+            get { return _InvoiceDetail.FProductName; }
+            set { _InvoiceDetail.FProductName = value; }
+        }
+
     }
 }

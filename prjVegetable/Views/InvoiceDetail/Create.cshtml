@@ -22,27 +22,22 @@
                 <input asp-for="FNumber" class="form-control" />
                 <span asp-validation-for="FNumber" class="text-danger"></span>
             </div>
+
+
             <div class="form-group">
                 <label asp-for="FProductName" class="control-label"></label>
                 <select asp-for="FProductName" class="form-control">
-                    <option value="大白菜">大白菜</option>
-                    <option value="菠菜">菠菜</option>
-                    <option value="花椰菜">花椰菜</option>
-                    <option value="洋蔥">洋蔥</option>
-                    <option value="白蘿蔔">白蘿蔔</option>
-                    <option value="胡蘿蔔">胡蘿蔔</option>
-                    <option value="番茄">番茄</option>
-                    <option value="青椒">青椒</option>
-                    <option value="玉米">玉米</option>
-                    <option value="茄子">茄子</option>
-                    <option value="蘋果">蘋果</option>
-                    <option value="香蕉">香蕉</option>
-                    <option value="葡萄">葡萄</option>
-                    <option value="芋頭">芋頭</option>
-                    <option value="香菇">香菇</option>
+                    <option value="">請選擇商品</option>
+                    @foreach (var item in ViewBag.ProductList)
+                    {
+                        <option value="@item.FName">@item.FName</option>
+                    }
                 </select>
                 <span asp-validation-for="FProductName" class="text-danger"></span>
             </div>
+
+
+
             <div class="form-group">
                 <label asp-for="FCount" class="control-label"></label>
                 <input asp-for="FCount" class="form-control" />

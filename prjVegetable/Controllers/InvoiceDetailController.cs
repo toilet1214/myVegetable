@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Linq;
@@ -65,7 +66,14 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("List"); // 若驗證失敗，回到List
             }
 
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProducts
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
+
             return View();
+
+            
         }
 
         [HttpPost]
@@ -123,6 +131,11 @@ namespace prjVegetable.Controllers
             // 如果找不到該客戶，重導向到 List 動作
             if (x == null)
                 return RedirectToAction("List");
+
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProducts
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
 
             // 將找到的客戶資料傳遞到 View
             return View(w);

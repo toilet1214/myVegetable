@@ -40,7 +40,7 @@ namespace prjVegetable.Models
             set { _Purchase.FBuyDate = value; }
         }
 
-        [DisplayName("供應商ID")]
+        [DisplayName("供應商名稱")]
         public int FProviderId
         {
             get { return _Purchase.FProviderId; }
@@ -111,6 +111,11 @@ namespace prjVegetable.Models
         {
             get { return _Purchase.FPayment == 0 ? "日結" : "月結"; }
         }
+
+        [DisplayName("供應商名稱(顯示)")]
+        public string? FProviderName { get; set; }
+
+
 
     }
 }

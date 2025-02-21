@@ -20,55 +20,56 @@ namespace prjVegetable.Controllers
 
         //----------List------------------------
         public IActionResult List(CKeywordViewModel vm)
-		{
-            //先session
+        {
+            // 取得登入使用者 ID
             var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
 
-            // 先驗證身分
-            if (!checkout == true)
+            if (!checkout)
             {
-                
-                return RedirectToAction("Index","Home"); // 若未登入，跳轉至登入頁面
+                return RedirectToAction("Index", "Home"); // 未登入則導回首頁
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    return RedirectToAction("List","Purchase"); // 若驗證成功，回到Views():Purchase/List
-            //}
-
-            //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
             DbVegetableContext db = new DbVegetableContext();
-			string? keyword = vm.txtKeyword;
+            string? keyword = vm.txtKeyword;
+
+            // 先查詢所有的供應商名稱，轉為 Dictionary 方便查找
+            var providers = db.TProviders.ToDictionary(p => p.FId, p => p.FName);
+
+            IEnumerable<TPurchase> datas;
+
+            // 根據關鍵字篩選採購資料
+            if (string.IsNullOrEmpty(keyword))
+            {
+                datas = db.TPurchases.ToList();
+            }
+            else
+            {
+                datas = db.TPurchases.Where(p =>
+                    p.FId.ToString().Contains(keyword) ||
+                    p.FBuyDate.ToString().Contains(keyword) ||
+                    p.FProviderId.ToString().Contains(keyword) ||
+                    p.FInvoiceForm.ToString().Contains(keyword) ||
+                    p.FTotal.ToString().Contains(keyword) ||
+                    p.FTax.ToString().Contains(keyword) ||
+                    p.FPreTax.ToString().Contains(keyword) ||
+                    p.FNote.ToString().Contains(keyword) ||
+                    p.FEditor.ToString().Contains(keyword)
+                ).ToList();
+            }
+
+            // 轉換成 CPurchaseWrap，並加入供應商名稱
+            List<CPurchaseWrap> list = datas.Select(t => new CPurchaseWrap()
+            {
+                Purchase = t,
+                FProviderName = providers.ContainsKey(t.FProviderId) ? providers[t.FProviderId] : "未知供應商"
+            }).ToList();
+
+            return View(list);
+        }
 
 
-			//view()呈現
-			IEnumerable<TPurchase> datas = null;
-
-			//查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 或(2)目前資料筆數
-			if (string.IsNullOrEmpty(keyword))
-				datas = from t in db.TPurchases
-						select t;
-			else
-				datas = db.TPurchases.Where(
-				p =>p.FId.ToString().Contains(keyword)
-                || p.FBuyDate.ToString().Contains(keyword)
-                || p.FProviderId.ToString().Contains(keyword)
-                || p.FInvoiceForm.ToString().Contains(keyword)
-                || p.FTotal.ToString().Contains(keyword)
-                || p.FTax.ToString().Contains(keyword)
-                || p.FPreTax.ToString().Contains(keyword)
-				|| p.FNote.ToString().Contains(keyword)
-				|| p.FEditor.ToString().Contains(keyword));
-
-			//原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
-			List<CPurchaseWrap> list = new List<CPurchaseWrap>();
-			foreach (var t in datas)
-				list.Add(new CPurchaseWrap() { Purchase = t });
-			return View(list);
-		}
-
-		//----------Create------------------------
-		public IActionResult Create()
+        //----------Create------------------------
+        public IActionResult Create()
 		{
 			//先session
             var checkout=int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
@@ -83,6 +84,11 @@ namespace prjVegetable.Controllers
             {
                 return RedirectToAction("List"); // 若驗證失敗，回到List
             }
+
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProviders
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
 
             //insert id into FEditor
             var viewModel = new CPurchaseWrap
@@ -155,9 +161,13 @@ namespace prjVegetable.Controllers
 			// 如果找不到該客戶，重導向到 List 動作
 			if (x == null)
 				return RedirectToAction("List");
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProviders
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
 
-			// 將找到的客戶資料傳遞到 View
-			return View(c);
+            // 將找到的客戶資料傳遞到 View
+            return View(c);
 		}
 
         [HttpPost]
@@ -169,11 +179,11 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("List"); // 若未登入，跳轉至登入頁面
             }
 
-            ////若驗證失敗，回到編輯頁面
-            //if (!ModelState.IsValid)
-            //{
-            //    return RedirectToAction("Edit", new { id = p.FId }); 
-            //}
+            //若驗證失敗，回到編輯頁面
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Edit", new { id = p.FId });
+            }
 
             using (DbVegetableContext db = new DbVegetableContext())
             {
