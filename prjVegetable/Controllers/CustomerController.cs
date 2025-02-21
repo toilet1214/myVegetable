@@ -7,6 +7,12 @@ namespace prjVegetable.Controllers
 {
     public class CustomerController : Controller
     {
+        private readonly DbVegetableContext _context;
+
+        public CustomerController(DbVegetableContext context)
+        {
+            _context = context ?? throw new ArgumentNullException(nameof(context));  // 添加防止 null 的檢查;
+        }
         public IActionResult Index()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
@@ -68,10 +74,9 @@ namespace prjVegetable.Controllers
 
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
 
-            DbVegetableContext db = new DbVegetableContext();
 
-            var orderList = db.TOrderLists.Where(ol => ol.FOrderId == id).ToList();
-            var order = db.TOrders.FirstOrDefault(p => p.FId == id && p.FPersonId == userId);
+            var orderList = _context.TOrderLists.Where(ol => ol.FOrderId == id).ToList();
+            var order = _context.TOrders.FirstOrDefault(p => p.FId == id && p.FPersonId == userId);
 
             //IEnumerable<TOrderList> datas = null;
             //datas = db.TOrderLists.Where(p => p.FOrderId == id);
@@ -79,7 +84,7 @@ namespace prjVegetable.Controllers
             List<COrderListWrap> list = new List<COrderListWrap>();
             foreach (var t in orderList)
             {
-                var hasComment = db.TComments
+                var hasComment = _context.TComments
                 .Where(c => c.FOrderListId == t.FId && c.FProductId == t.FProductId && c.FPersonId == userId)
                 .Any();
                 list.Add(new COrderListWrap() 
@@ -102,11 +107,10 @@ namespace prjVegetable.Controllers
                 return RedirectToAction("OrderDetail");
             }
 
-            DbVegetableContext db = new DbVegetableContext();
             
-            var orderList = db.TOrderLists.FirstOrDefault(ol => ol.FId == id);
-            var order = db.TOrders.FirstOrDefault(o => o.FId == orderList.FOrderId);
-            var product = db.TProducts.FirstOrDefault(p => p.FId == orderList.FProductId);
+            var orderList = _context.TOrderLists.FirstOrDefault(ol => ol.FId == id);
+            var order = _context.TOrders.FirstOrDefault(o => o.FId == orderList.FOrderId);
+            var product = _context.TProducts.FirstOrDefault(p => p.FId == orderList.FProductId);
 
             var CCommentWrap = new CCommentWrap
             {
@@ -124,11 +128,11 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult AddComment(TComment c)
         {
-            DbVegetableContext db = new DbVegetableContext();
+
             c.FStar = c.FStar == 0 ? 5 : c.FStar;
 
-            db.TComments.Add(c);
-            db.SaveChanges();
+            _context.TComments.Add(c);
+            _context.SaveChanges();
 
             
             return RedirectToAction("Order");
@@ -137,13 +141,12 @@ namespace prjVegetable.Controllers
         public IActionResult CommentIndex()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            DbVegetableContext db = new DbVegetableContext();
-            //var product = db.TProducts.FirstOrDefault(p=>p.FId ==)
-            //var person = db.TPeople.FirstOrDefault(pp=>pp.FId ==)
-            var datas = db.TComments
+
+
+            var datas = _context.TComments
                         .Where(c => c.FPersonId == UserId)
                         .Join(
-                            db.TOrderLists,
+                            _context.TOrderLists,
                             comment => comment.FOrderListId,
                             orderList => orderList.FId,
                             (comment, orderList) => new { comment, orderList }
@@ -153,8 +156,8 @@ namespace prjVegetable.Controllers
                             FId = x.comment.FId,
                             FComment = x.comment.FComment,
                             FStar = x.comment.FStar,
-                            FPersonName = db.TPeople.Where(pp => pp.FId == x.comment.FPersonId).FirstOrDefault().FName,
-                            FProductName = db.TProducts.Where(p => p.FId == x.comment.FProductId).FirstOrDefault().FName,
+                            FPersonName = _context.TPeople.Where(pp => pp.FId == x.comment.FPersonId).FirstOrDefault().FName,
+                            FProductName = _context.TProducts.Where(p => p.FId == x.comment.FProductId).FirstOrDefault().FName,
                             FOrderId = x.orderList.FOrderId,
                             FCreatedAt = x.comment.FCreatedAt
 
