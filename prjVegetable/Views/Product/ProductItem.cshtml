@@ -6,6 +6,18 @@
 }
 
 <style>
+
+    .btn.buyNowButtonItem {
+        background-color: #8D8266; /* 設置正常的背景顏色 */
+        border-color: #8D8266; /* 設置邊框顏色 */
+    }
+
+    .btn.buyNowButtonItem:hover {
+        background-color: #D6CBB0; /* 設置懸停時的背景顏色 */
+        border-color: #D6CBB0; /* 如果有邊框，設置懸停時邊框顏色 */
+        color: #fff; /* 懸停時設置文字顏色為白色 */
+    }
+
     .carousel-control-prev,
     .carousel-control-next {
         width: 50px; /* 調整按鈕大小 */
@@ -30,7 +42,7 @@
     .quantity {
         width: 170px;
         display: flex;
-        border: 2px solid #8D8266;
+        border: none;
         border-radius: 4px;
         overflow: hidden;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
@@ -39,7 +51,7 @@
     .quantity button {
         background-color: #8D8266;
         color: #fff;
-        border: none;
+        border: 1px solid #D6CBB0;
         cursor: pointer;
         font-size: 20px;
         width: 40px;
@@ -49,13 +61,13 @@
     }
 
     .quantity button:hover {
-        background-color: #2980b9;
+        background-color: #D6CBB0;
     }
 
     .input-box {
         width: 100px;
         text-align: center;
-        border: none;
+        border: 1px solid #D6CBB0;
         padding: 8px 10px;
         font-size: 16px;
         outline: none;
@@ -174,6 +186,7 @@
                     <button type="button" class="btn addToCartButtonItem btn-outline-secondary" data-productid="@Model.FId">
                         <i class="bi bi-cart"></i>加入購物車
                     </button>
+                    <div class="cart-success-message text-success" style="display: none;">成功加入購物車！</div>
                 </div>
                 <div class="col-12 col-md-4">
                     <button type="button" class="btn  heartButton btn-outline-secondary rounded-pill" data-productid="@Model.FId">
@@ -181,7 +194,7 @@
                     </button>
                 </div>
                 <div class="col-12 col-md-4">
-                    <button type="button" class="btn buyNowButtonItem btn-secondary bg-primary w-100" data-productid="@Model.FId">
+                    <button type="button" class="btn buyNowButtonItem  w-100" data-productid="@Model.FId">
                         立即購買
                     </button>
                 </div>
@@ -496,7 +509,7 @@
                                     data: { productId: productId, quantity: quantity },
                                     success: function (response) {
                                         if (response.success) {
-                                            alert("成功加入購物車");
+                                            button.closest('.col-12').find('.cart-success-message').fadeIn().delay(1000).fadeOut();
                                         } else {
                                             alert('操作失敗');
                                         }
