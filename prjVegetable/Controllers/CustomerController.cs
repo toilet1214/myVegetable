@@ -130,19 +130,24 @@ namespace prjVegetable.Controllers
         public IActionResult Favorite()
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            IEnumerable<TFavorite> datas = null;
 
-            datas = _context.TFavorites.Where(p => p.FPersonId == UserId);
-            List<CFavoriteViewModel> list = new List<CFavoriteViewModel>();
-            foreach (var t in datas)
-                list.Add(new CFavoriteViewModel() {
-                    Name = _context.TProducts.Where(p=>p.FId==t.FProductId).Select(p=>p.FName).ToString(),
-                    Popular = _context.TFavorites.Count(f=>f.FProductId==t.FProductId),
-                    FId = t.FId,
-                });
+            var list = _context.TFavorites
+                .Where(f => f.FPersonId == UserId)
+                .Join(_context.TProducts,
+                      favorite => favorite.FProductId,
+                      product => product.FId,
+                      (favorite, product) => new CFavoriteViewModel
+                      {
+                          Name = product.FName,
+                          Popular = _context.TFavorites.Count(f => f.FProductId == favorite.FProductId),
+                          FId = favorite.FId
+                      })
+                .ToList();
+
             return View(list);
+
         }
-        
+
 
         public IActionResult AddComment(int? id) //orderlistid
         {
