@@ -231,7 +231,7 @@
                         <div class="row">
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="product.fEditor" readonly>
+                                <input type="text" class="form-control" id="fEditor" :value="fEditorName" readonly>
                             </div>
                         </div>
                     </div>
@@ -270,7 +270,7 @@
                 </div>
             </form>
             <!-- 返回與編輯按鈕 -->
-            <div>
+            <div class="mb-3">
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回商品列表</a>
                 <button v-if="product.fId" @@click="toggleEditting" class="btn btn-primary mx-3">編輯資料/取消</button>
                 <button v-if="edit" @@click="saveProduct" id="update" class="btn btn-success">儲存修改</button>
@@ -291,15 +291,17 @@
             data() {
                 return {
                     product: {
-                        Images:[]
-                    },                    
+                        Images:[],
+                        fEditor:'',
+                    },
+                    fEditorName: '',
                     edit:false, //啟用編輯
                     file: null,
                     preview:null,
                     images:null,
                     preview1:null,
                     preview2:null,
-                    preview3:null,
+                    preview3:null,                    
                 };
             },
             mounted() {
@@ -321,6 +323,7 @@
                                 console.log(response.data);  // 查看返回的產品資料
                                 this.product = response.data; // 把返回的資料賦值給 product
                                 this.product.Images = response.data.images || [];
+                                this.getEditorName();
 
                                 localStorage.setItem('productImages', JSON.stringify(this.product.Images));
                                 this.displayImages();
@@ -340,6 +343,19 @@
 
                     if (savedImages && savedImages.length > 0) {
                         this.product.Images = savedImages;
+                    }
+                },
+
+                getEditorName() {
+                    if (this.product.fEditor != null && this.product.fEditor != 0) {
+                        axios.get(`/Person/GetPersonById/${this.product.fEditor}`)
+                            .then(response => {
+                                console.log(response.data);
+                                this.fEditorName = response.data.fName
+                            })
+                            .catch(error => {
+                                console.error("無法獲取資料", error)
+                            })
                     }
                 },
 

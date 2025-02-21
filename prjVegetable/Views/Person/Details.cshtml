@@ -284,14 +284,14 @@
                         <div class="row">
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="person.fEditor" readonly>
+                                <input type="text" class="form-control" id="fEditor" :value="fEditorName" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
             <!-- 返回與編輯按鈕 -->
-            <div>
+            <div class="mb-3">
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回員工與會員列表</a>
                 <button v-if="person.fId" @@click="toggleEditting" class="btn btn-primary mx-3">編輯資料/取消</button>
                 <button v-if="edit" @@click="savePerson" class="btn btn-success" type="submit" :disabled="!isValid">儲存修改</button>
@@ -321,7 +321,9 @@
                         fEmp:'',
                         fEmpTel:'',
                         fGender:'其他',
+                        fEditor:'',
                     },  // 用來存放從後端獲得的人員資料
+                    fEditorName:'',
                     personBackup:{},//用來保存原始資料的備份
                     nameError:false,
                     ubnError:false,
@@ -354,6 +356,7 @@
                             .then(response => {
                                 console.log(response.data);  // 查看 API 返回的资料
                                 this.person = response.data //? [response.data] : [];  直接将返回的对象赋值给 `person`
+                                this.getEditorName();
                             })
                             .catch(error => {
                                 console.error('资料加载错误', error);
@@ -363,9 +366,24 @@
                         console.error('未提供有效的 ID');
                     }
                 },
+
+                getEditorName(){
+                    if(this.person.fEditor != null && this.person.fEditor != 0)
+                    {
+                        axios.get(`/Person/GetPersonById/${this.person.fEditor}`)
+                        .then(response=>{
+                            console.log(response.data);
+                            this.fEditorName = response.data.fName
+                        })
+                        .catch(error=>{
+                            console.error("無法獲取資料", error)
+                        })
+                    }
+                },
+
                 goToIndex() {
                     window.location.href = "/Person/index";  // 返回到员工与会员列表页面，或者修改为你的页面路径
-                },
+                },               
 
                 toggleEditting() {
                     if(this.edit){
@@ -429,7 +447,7 @@
                     axios.put(`/Person/update/${this.person.fAccount}`)
                         .then(response=>{
                             this.accountError=false;
-                            this.validateForm //帳號有效時檢查其他欄位
+                            this.validateForm() //帳號有效時檢查其他欄位
                         })
                         .catch(error=>{
                             this.accountError=true;
@@ -460,7 +478,7 @@
                 },
                 validateEmpTel(){
                     //如果權限=0(員工，就需要填入資料)
-                    this.empTelError = this.person.fPermission === 0 && this.person.empTel === '';
+                    this.empTelError = this.person.fPermission === 0 && this.person.fempTel === '';
                     this.validateForm();
                 },
                 validateForm(){

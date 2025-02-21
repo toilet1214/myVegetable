@@ -103,7 +103,7 @@
                         <div class="row">
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" v-model="provider.fEditor">
+                                <input type="text" class="form-control" id="fEditor" :value="fEditorName" v-model="fEditorName">
                             </div>
                         </div>
                     </div>
@@ -196,13 +196,13 @@
                         <div class="row">
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fEditor" :value="provider.fEditor" readonly v-model="provider.fEditor">
+                                <input type="text" class="form-control" id="fEditor" :value="fEditorName" readonly v-model="fEditorName">
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-            <div>
+            <div class="mb-3">
                 <a href="#" @@click="goToIndex" class="btn btn-outline-primary">回廠商資料列表</a>
                 <button v-if="provider.fId" @@click="toggleEditting" class="btn btn-primary mx-3">編輯資料/取消</button>
                 <button v-if="edit" @@click="saveProvider" class="btn btn-success" type="submit" :disabled="!isValid">儲存修改</button>
@@ -232,6 +232,7 @@
                         fInvoiceAdd:'',
                         fEditor:'',
                     },  // 用來存放從後端獲得的人員資料
+                    fEditorName:'',
                     providerBackup:{},
                     nameError:false,
                     connectError:false,
@@ -260,6 +261,7 @@
                             .then(response => {
                                 console.log(response.data);  // 查看 API 返回的资料
                                 this.provider = response.data //? [response.data] : [];  直接将返回的对象赋值给 `provider`
+                                this.getEditorName();
                             })
                             .catch(error => {
                                 console.error('资料加载错误', error);
@@ -271,6 +273,19 @@
                 },
                 goToIndex() {
                     window.location.href = "/Providers/index";  // 返回到廠商列表页面，或者修改为你的页面路径
+                },
+
+                getEditorName() {
+                    if (this.provider.fEditor != null && this.provider.fEditor != 0) {
+                        axios.get(`/Person/GetPersonById/${this.provider.fEditor}`)
+                            .then(response => {
+                                console.log(response.data);
+                                this.fEditorName = response.data.fName
+                            })
+                            .catch(error => {
+                                console.error("無法獲取資料", error)
+                            })
+                    }
                 },
 
                 toggleEditting() {
