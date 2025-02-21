@@ -38,6 +38,8 @@ namespace prjVegetable.Controllers
             DbVegetableContext db = new DbVegetableContext();
             string? keyword = vm.txtKeyword;
 
+            // 先查詢所有的供應商名稱，轉為 Dictionary 方便查找
+            var providers = db.TProviders.ToDictionary(p => p.FId, p => p.FName);
 
             //view()呈現
             IEnumerable<TInvoice> datas = null;
@@ -62,9 +64,18 @@ namespace prjVegetable.Controllers
                 || p.FId.ToString().Contains(keyword));
 
             //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
-            List<CInvoiceWrap> list = new List<CInvoiceWrap>();
-            foreach (var t in datas)
-                list.Add(new CInvoiceWrap() { TInvoice = t });
+            //List<CInvoiceWrap> list = new List<CInvoiceWrap>();
+            //foreach (var t in datas)
+            //    list.Add(new CInvoiceWrap() { TInvoice = t });
+
+            List<CInvoiceWrap> list = datas.Select(t => new CInvoiceWrap()
+            {
+                TInvoice = t,
+                FProviderName = providers.ContainsKey(t.FProviderId) ? providers[t.FProviderId] : "未知供應商"
+            }).ToList();
+
+
+
             return View(list);
         }
 
@@ -84,6 +95,11 @@ namespace prjVegetable.Controllers
             {
                 return RedirectToAction("List"); // 若驗證失敗，回到List
             }
+
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProviders
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
 
             //insert id into FEditor
             var viewModel = new CInvoiceWrap
@@ -153,6 +169,11 @@ namespace prjVegetable.Controllers
             // 如果找不到該客戶，重導向到 List 動作
             if (x == null)
                 return RedirectToAction("List");
+
+            // 取得 TProduct 的所有 FName，并传递给前端
+            ViewBag.ProductList = _dbContext.TProviders
+                                         .Select(p => new { p.FId, p.FName })
+                                         .ToList();
 
             // 將找到的客戶資料傳遞到 View
             return View(c);
