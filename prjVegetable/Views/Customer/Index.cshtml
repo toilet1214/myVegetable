@@ -350,7 +350,7 @@
                     const customerData = JSON.parse(JSON.stringify(this.Customer))
                     if (this.edit === 2) {
                         // 在這裡處理密碼更新的邏輯
-                        if (this.OldPassword !== this.fPassword || this.newPassword !== this.ConfirmPassword || this.OldPassword === this.newPassword) {
+                        if (this.OldPassword !== this.Customer.fPassword || this.newPassword !== this.ConfirmPassword || this.OldPassword === this.newPassword) {
                             this.passwordError = true;
                             return;
                         }
