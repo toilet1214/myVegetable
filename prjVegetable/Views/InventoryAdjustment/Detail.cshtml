@@ -331,11 +331,17 @@
         const fAdjustmentEndDate = document.getElementById('FAdjustmentEndDate').value.trim();
         const fCheckerId = document.getElementById('FCheckerId').value.trim();
 
-        // 檢查是否至少輸入一個條件
-        if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
-            alert('請至少填寫一個查詢條件');
-            return;
-        }
+            // 檢查是否至少輸入一個條件
+    if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
+        Swal.fire({
+            title: '提示',
+            text: '請至少填寫一個查詢條件',
+            icon: 'warning',
+            confirmButtonText: '確定'
+        });
+        return;
+    }
+
 
         const requestData = {
             fId: fId || null,
@@ -409,21 +415,28 @@
     modal.addEventListener('show.bs.modal', disableBodyScroll);
     modal.addEventListener('hide.bs.modal', enableBodyScroll);
 
-    // 綁定確認按鈕，進行跳轉
+        // 綁定確認按鈕，進行跳轉
     document.getElementById('confirmSelection').addEventListener('click', function () {
         if (!selectedInventoryAdjustmentId) {
-            alert('請選擇一個調整單號');
+            Swal.fire({
+                title: '提示',
+                text: '請選擇一個調整單號',
+                icon: 'warning',
+                confirmButtonText: '確定'
+            });
             return;
         }
         console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
         window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
     });
+    
+
 
 </script>
 
 <!-- 編輯/儲存 -->
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
             const editButton = document.getElementById("editButton");
             const saveButton = document.getElementById("saveButton");
             const cancelEditButton = document.getElementById("cancelEditButton");
@@ -479,58 +492,96 @@
             }
         ]; // 包裝為陣列
 
-        $.ajax({
-            url: '/InventoryAdjustment/Save/' + currentId,
-            method: 'POST',
-            data: JSON.stringify(requestData), // 傳遞陣列
-            contentType: 'application/json',
-            success: function (response) {
-                if (response.success) {
-                    alert("備註更新成功！");
-                } else {
-                    alert('錯誤: ' + response.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("錯誤: " + error);
+           $.ajax({
+        url: '/InventoryAdjustment/Save/' + currentId,
+        method: 'POST',
+        data: JSON.stringify(requestData), // 傳遞陣列
+        contentType: 'application/json',
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    title: "已更新備註",
+                    icon: "info",
+                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: "錯誤",
+                    text: response.error,
+                    icon: "error"
+                });
             }
-        });
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: "錯誤",
+                text: "發生錯誤，請稍後再試。詳細資訊：" + error,
+                icon: "error"
+            });
+        }
+    });
+
     }
 
-        });
+      });
 </script>
 
 <!-- 刪除 -->
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('deleteButton').addEventListener('click', function () {
             const inventoryAdjustmentsId = document.querySelector('input[name="currentId"]').value;
 
-            if (confirm('您確定要刪除此調整資料嗎？此操作無法撤銷！')) {
-                fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `id=${inventoryAdjustmentsId}`,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = data.redirectTo;
-                    } else {
-                        alert('刪除失敗，請稍後再試。');
-                    }
-                })
-                .catch(error => {
-                    console.error('錯誤:', error);
-                    alert('發生錯誤，請稍後再試。');
-                });
-            }
+            Swal.fire({
+                title: '您確定要刪除此調整資料嗎？',
+                text: '此操作無法撤銷！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `id=${inventoryAdjustmentsId}`,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: '刪除成功',
+                                icon: 'success',
+                                timer: 1500, // 成功後顯示 1.5 秒
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = data.redirectTo; // 跳轉頁面
+                            });
+                        } else {
+                            Swal.fire({
+                                title: '刪除失敗',
+                                text: '請稍後再試。',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('錯誤:', error);
+                        Swal.fire({
+                            title: '發生錯誤',
+                            text: '請稍後再試。',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
         });
     });
-
 </script>
+
 
 <!-- 列印 -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
@@ -632,3 +683,5 @@
         }
     });
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
