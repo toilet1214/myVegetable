@@ -421,24 +421,46 @@
                 },
 
                 saveProduct() {
-                    alert("saveProduct");
+                        Swal.fire({
+                            title: '儲存中',
+                            text: '儲存中請稍後',
+                            icon: 'info',
+                            timer:3000,
+                            showConfirmButton: false,
+                            willOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确
                         const productData =JSON.parse(JSON.stringify(this.product))
                         axios.put(`/Products/update`, productData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
-                                alert("資料已儲存!");
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '資料已儲存!',
+                                    text: '產品資料儲存成功。',
+                                    timer:3000,
+                                });
                                 this.saveImg();
                                 this.toggleEditting();  // 儲存後退出編輯模式
                                 window.location.reload();
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
-                                alert("儲存資料時發生錯誤");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '儲存失敗',
+                                    text: '儲存資料時發生錯誤',
+                                });
                             });
                     } else {
-                        alert("無效的使用者ID，無法儲存資料");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '無效的使用者ID',
+                            text: '無法儲存資料，請檢查使用者ID。',
+                        });
                     }
                 },
 

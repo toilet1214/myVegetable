@@ -149,13 +149,48 @@
                 </td>
                 <td>
                     @* <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br /> *@
-                    <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary">詳細資料</a><br />
-                    @Html.ActionLink("移除", "Delete", "TProducts", new { id = item.product.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
+                    <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                    <a href="javascript:void(0);" class="btn btn-danger delete-link" data-id="@item.FId">&emsp;移除&emsp;</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+@section Scripts{
+    <script>
+        function deleteProducts(id) {
+            Swal.fire({
+                title: '確定要刪除這筆資料嗎？',
+                text: '這個動作無法復原！',
+                icon: 'warning',
+                showCancelButton: true,  // 顯示取消按鈕
+                confirmButtonText: '刪除',
+                cancelButtonText: '取消',
+                reverseButtons: true  // 反轉按鈕順序
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 確保刪除的請求 URL 正確
+                    axios.post(`/Products/Delete/${id}`).then(() => {
+                        Swal.fire('已刪除', '資料已成功刪除', 'success');
+                        location.reload();
+                    }).catch(error => {
+                        console.error('刪除失敗', error);
+                        Swal.fire('錯誤!!', '刪除資料失敗，請稍後再試', 'error');
+                    });
+                }
+            });
+        }
 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-link').forEach(function(deleteLink) {
+                deleteLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const id = deleteLink.getAttribute('data-id');  // 使用正確的屬性名稱
+                    deleteProducts(id);
+                });
+            });
+        });
+    </script>
+}

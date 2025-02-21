@@ -120,17 +120,27 @@
                 },
                 // 刪除人員資料
                 confirmDelete(id) {
-                    if (confirm('確定要刪除這筆資料嗎?')) {
-                        axios.delete(`/Person/Delete?id=${id}`)
-                            .then(() => {
-                                // 刪除後重新載入資料
-                                this.loadPeople(); // 重新加載資料
-                            })
-                            .catch(error => {
-                                console.error('刪除失敗', error);
+                    Swal.fire({
+                        title: '確定要刪除這筆資料嗎？',
+                        text: '這個動作無法復原！',
+                        icon: 'warning',
+                        showCancelButton: true,  // 顯示取消按鈕
+                        confirmButtonText: '刪除',
+                        cancelButtonText: '取消',
+                        reverseButtons: true  // 反轉按鈕順序
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            axios.delete(`/Person/Delete?id=${id}`).then(() => {
+                                this.loadPeople();
+                                Swal.fire('已刪除', '資料已成功刪除', 'success');
+                            }).catch(error => {
+                                console.error('刪除失敗', error); // 修正了這裡的錯誤
+                                Swal.fire('錯誤!!', '刪除資料失敗，請稍後再試', 'error');
                             });
-                    }
-                }
+                        }
+                    });
+                },
+
             } // 這裡結束 methods 部分
         }); // 這裡結束 Vue.createApp 的程式碼
 

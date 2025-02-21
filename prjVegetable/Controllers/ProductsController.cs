@@ -303,9 +303,9 @@ namespace prjVegetable.Controllers
                 return NotFound();
             }
             _context.TProducts.Remove(tProduct);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
 
 

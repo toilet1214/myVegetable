@@ -84,7 +84,7 @@
                         <div class="row">
                             <label for="fDelivery" class="col-md-3 col-form-label">廠商送貨地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fDelivery" :placeholder="provider.fDelivery" v-model="provider.fDelivery">
+                                <input type="text" class="form-control" id="fDelivery" :placeholder="provider.fDelivery" v-model="provider.fDelivery" @@input="validateDelivery">
 
                             </div>
                         </div>
@@ -95,7 +95,7 @@
                         <div class="row">
                             <label for="fInvoiceAdd" class="col-md-3 col-form-label">廠商發票地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fInvoiceAdd" :placeholder="provider.fInvoiceAdd" v-model="provider.fInvoiceAdd">
+                                <input type="text" class="form-control" id="fInvoiceAdd" :placeholder="provider.fInvoiceAdd" v-model="provider.fInvoiceAdd" @@input="validateInvoiceAdd">
                             </div>
                         </div>
                     </div>
@@ -290,19 +290,31 @@
                         axios.put(`/Providers/update`, providerData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
-                                alert("資料已儲存!");
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '資料已儲存!',
+                                    text: '資料儲存成功。',
+                                });
                                 this.toggleEditting();  // 儲存後退出編輯模式
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
-                                alert("儲存資料時發生錯誤");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '儲存失敗',
+                                    text: '儲存資料時發生錯誤。',
+                                });
                             });
                     } else {
-                        alert("無效的使用者ID，無法儲存資料");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '無效的使用者ID',
+                            text: '無法儲存資料，請檢查使用者ID。',
+                        });
                     }
                 },
                 validateName(){
-                    this.nameError=this.provider.fName.trim().lemgth===0;
+                    this.nameError=this.provider.fName.trim().length===0;
                     this.validateForm();
                 },
                 validateConnect(){
@@ -321,7 +333,15 @@
                     this.validateForm();
                 },
                 validateAddress(){
-                    this.addressError=this.provider.fAddress.trim().lemgth===0;
+                    this.addressError=this.provider.fAddress.trim().length===0;
+                    this.validateForm();
+                },
+                validateDelivery() {
+                    this.deliveryError = this.provider.fDelivery.trim().length === 0;
+                    this.validateForm();
+                },
+                validateInvoiceAdd() {
+                    this.invoiceAddError = this.provider.fInvoiceAdd.trim().length === 0;
                     this.validateForm();
                 },
                 validateForm(){
@@ -330,7 +350,9 @@
                         !this.connectError &&
                         !this.telError &&
                         !this.ubnError &&
-                        !this.addressError;
+                        !this.addressError &&
+                        !this.deliveryError &&
+                        !this.invoiceAddError;
                 },
             }
         });

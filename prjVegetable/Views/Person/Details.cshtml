@@ -310,7 +310,7 @@
         const app = Vue.createApp({
             data() {
                 return {
-                    person: {
+                    person: {                        
                         fName:'',
                         fAccount:'',
                         fPassword:'',
@@ -384,16 +384,28 @@
                         axios.put(`/Person/update`, personData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
-                                alert("資料已儲存!");
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '資料已儲存!',
+                                    text: '資料儲存成功。',
+                                });
                                 this.toggleEditting();  // 儲存後退出編輯模式
                                 this.loadPersonId();
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
-                                alert("儲存資料時發生錯誤");
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '儲存失敗',
+                                    text: '儲存資料時發生錯誤。',
+                                });
                             });
                     } else {
-                        alert("無效的使用者ID，無法儲存資料");
+                        Swal.fire({
+                            icon: 'warning',
+                            title: '無效的使用者ID',
+                            text: '無法儲存資料，請檢查使用者ID。',
+                        });
                     }
                 },
                 validateName(){//名字不可以空白
