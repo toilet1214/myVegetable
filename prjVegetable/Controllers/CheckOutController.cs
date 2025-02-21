@@ -138,10 +138,10 @@ namespace prjVegetable.Controllers
                 var product = _dbContext.TProducts.FirstOrDefault(p => p.FId == orderItem.FProductId);
                 if (product != null)
                 {
-                    productNames.Add(product.FName);
+                    productNames.Add(product.FName.Trim());
                 }
             }
-            string itemName = string.Join(", ", productNames);
+            string itemName = string.Join("#", productNames);
             //需填入你的網址
             var website = $"https://localhost:7251";
             var ECPayOrder = new Dictionary<string, string>
