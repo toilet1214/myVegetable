@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +19,19 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession();
 builder.Services.AddControllersWithViews()
     .AddSessionStateTempDataProvider();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+})
+.AddCookie()
+.AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = "你的GoogleClientId";
+    googleOptions.ClientSecret = "你的GoogleClientSecret";
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,7 +49,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseSession();
+app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllerRoute(
     name: "default",
