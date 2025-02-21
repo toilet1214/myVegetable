@@ -46,7 +46,13 @@ namespace prjVegetable.Controllers
             TempData["LoginFail"] = "登入失敗，請重試一次";
             return Redirect(returnUrl);
         }
+        public IActionResult LogOut()
+        {
+            HttpContext.Session.Clear(); // 清除所有 Session
 
+            TempData["LogoutMessage"] = "您已成功登出";
+            return RedirectToAction("Index", "Home");
+        }
         // 註冊
         public IActionResult Register()
         {

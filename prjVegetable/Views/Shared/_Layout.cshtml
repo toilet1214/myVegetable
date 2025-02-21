@@ -342,6 +342,12 @@
                 alert('@Html.Raw(TempData["SuccessRegister"].ToString())');
             </script>
         }
+        @if (TempData.Peek("LogoutMessage") != null) // 註冊成功，顯示通知並跳轉
+        {
+            <script>
+                alert('@Html.Raw(TempData["LogoutMessage"].ToString())');
+            </script>
+        }
     }
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
