@@ -370,9 +370,10 @@
                             Swal.fire({
                                 title: "資料已儲存!",
                                 icon: "success"
+                            }).then(() => {
+                                location.reload();  // 這裡執行頁面刷新
                             });
                             this.edit = 0;  // 儲存後退出編輯模式
-
                         });
                 }
             }

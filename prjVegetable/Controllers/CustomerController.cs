@@ -63,7 +63,7 @@ namespace prjVegetable.Controllers
             e.FTel = CustomerWrap.FTel;
             e.FAddress = CustomerWrap.FAddress;
             e.FUbn = CustomerWrap.FUbn;
-
+            e.FGender = CustomerWrap.FGender;
 
             await _context.SaveChangesAsync();
 
