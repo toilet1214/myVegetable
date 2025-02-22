@@ -113,6 +113,9 @@
     </div>
 </form>
 
+
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {
@@ -205,6 +208,7 @@
                     success: function (response) {
                         alert("上傳成功！");
                         window.location.href = '@Url.Action("Index", "Products")';
+
                     },
                     error: function () {
                         alert("上傳失敗！");

@@ -6,24 +6,13 @@
 }
 
 <style>
-
-    .btn.buyNowButtonItem {
-        background-color: #8D8266; /* 設置正常的背景顏色 */
-        border-color: #8D8266; /* 設置邊框顏色 */
-    }
-
-    .btn.buyNowButtonItem:hover {
-        background-color: #D6CBB0; /* 設置懸停時的背景顏色 */
-        border-color: #D6CBB0; /* 如果有邊框，設置懸停時邊框顏色 */
-        color: #fff; /* 懸停時設置文字顏色為白色 */
-    }
-
+    /*輪播 箭頭*/
     .carousel-control-prev,
     .carousel-control-next {
-        width: 50px; /* 調整按鈕大小 */
+        width: 50px; 
         height: 50px;
-        background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色圓底 */
-        border-radius: 50%; /* 讓背景變成圓形 */
+        background-color: rgba(0, 0, 0, 0.5); 
+        border-radius: 50%; 
         display: flex;
         align-items: center;
         justify-content: center;
@@ -38,7 +27,7 @@
         height: 20px;
     }
     
-    
+    /*數量*/
     .quantity {
         width: 170px;
         display: flex;
@@ -61,13 +50,13 @@
     }
 
     .quantity button:hover {
-        background-color: #D6CBB0;
+        background-color: #ACA38A;
     }
 
     .input-box {
         width: 100px;
         text-align: center;
-        border: 1px solid #D6CBB0;
+        border: 1px solid #ACA38A;
         padding: 8px 10px;
         font-size: 16px;
         outline: none;
@@ -84,6 +73,28 @@
         -moz-appearance: textfield;
     }
 
+    /*加入購物車*/ /*加入我的最愛*/
+    .btn.addToCartButtonItem:hover,
+    .btn.heartButton:hover {
+        background-color: #ACA38A;
+        border-color: #ACA38A;
+        color: #fff;
+    }
+
+    /*立即購買*/
+    .btn.buyNowButtonItem {
+        background-color: #8D8266; 
+        border-color: #8D8266; 
+    }
+
+    .btn.buyNowButtonItem:hover {
+        background-color: #ACA38A;
+        border-color: #ACA38A;
+        color: #fff; 
+    }
+
+
+    /*評論星星*/
     .star-averating i {
         font-size: 1.5rem;
         margin-right: 5px;
@@ -189,7 +200,7 @@
                     <div class="cart-success-message text-success" style="display: none;">成功加入購物車！</div>
                 </div>
                 <div class="col-12 col-md-4">
-                    <button type="button" class="btn  heartButton btn-outline-secondary rounded-pill" data-productid="@Model.FId">
+                    <button type="button" class="btn heartButton btn-outline-secondary" data-productid="@Model.FId">
                         <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
                     </button>
                 </div>
@@ -217,19 +228,19 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
                             role="tab" aria-controls="profile" aria-selected="false">
-                        顧客評價 (@{
-                            if (Model.CommentList != null)
-                            {
-                                @Model.CommentList.Count()
-                            }
-                            else
-                            {
+                        顧客評價 (
+                                    @{if (Model.CommentList != null)
+                                        {
+                                            @Model.CommentList.Count()
+                                        }
+                                        else
+                                        {
 
-                            }
-                        })
+                                        }
+                                    }
+                                )
                     </button>
                 </li>
-
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
@@ -246,9 +257,9 @@
                 <!-- 顧客評論範例 -->
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     <div class="reviews-section">
-                        <div class="average-rating">
+                        <div class="average-rating mb-5">
                             @* <h5>平均評分: @Model.AverageStar.ToString("0.0") ⭐</h5> *@
-                            <h5 class="d-inline-flex">平均評分 @Model.AverageStar.ToString("0.0")</h5>
+                            
                             <p class="d-inline-flex star-averating">
                                 @for (int i = 1; i <= 5; i++)
                                 {
@@ -266,39 +277,46 @@
                                     }
                                 }
                             </p>
+                            <h5 class="d-inline-flex">@Model.AverageStar.ToString("0.0")分</h5>
                         </div>
                         @if (Model.CommentList != null && Model.CommentList.Any())
                         {
-                            @foreach (var comment in Model.CommentList.Take(5))
+                            @foreach (var comment in Model.CommentList.Take(10))
                             {
-                                <div class="media  d-flex justify-content-between border-bottom pb-1 mb-3">
+                                <div class="media d-flex justify-content-between border-bottom pb-1 mb-3">
                                     <div class="media-body">
-                                        <h5 class="media-heading user_name">
+                                        <div class="d-flex align-items-start">
                                             <i class="fi fi-rr-man-head me-3" style="font-size: 2rem;"></i>
-                                            @comment.FPersonName
-                                        </h5>
+                                            <div class="d-flex flex-column">
+                                                <h5 class="user_name m-0">@comment.FPersonName</h5>
+                                                <small class="text-muted">@comment.FCreatedAt.ToString("yyyy-MM-dd")</small>
+                                                
+                                            </div>
+                                            <p class="star-rating ">
+                                                <small>
+                                                    @for (int i = 1; i <= 5; i++)
+                                                    {
+                                                        if (i <= comment.FStar)
+                                                        {
+                                                            <i class="bi bi-star-fill"></i>
+                                                        }
+                                                        else if (i == comment.FStar + 0.5)
+                                                        {
+                                                            <i class="bi bi-star-half"></i>
+                                                        }
+                                                        else
+                                                        {
+                                                            <i class="bi bi-star"></i>
+                                                        }
+                                                    }
+                                                </small>
+                                            </p>
+                                            
+                                        </div>
+                                        
                                         <p class="review-text">@comment.FComment</p>
-                                        <p class="star-rating">
-                                            <small>
-                                                @for (int i = 1; i <= 5; i++)
-                                                {
-                                                    if (i <= comment.FStar)
-                                                    {
-                                                        <i class="bi bi-star-fill"></i>
-                                                    }
-                                                    else if (i == comment.FStar + 0.5)
-                                                    {
-                                                        <i class="bi bi-star-half"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <i class="bi bi-star"></i>
-                                                    }
-                                                }
-                                            </small>
-                                        </p>
                                     </div>
-                                    <p class="pull-right"><small>@comment.FCreatedAt.ToString("yyyy-MM-dd")</small></p>
+                                    
                                 </div>
                             }
                         }

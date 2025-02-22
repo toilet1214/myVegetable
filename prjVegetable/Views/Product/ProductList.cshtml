@@ -31,13 +31,13 @@
         transition: all 0.3s;
     }
 
-        .imgicon i {
-            font-size: 2rem;
-        }
+    .imgicon i {
+        font-size: 2rem;
+    }
 
-        .imgicon:hover {
-            background-color: rgb(174, 146, 105);
-        }
+    .imgicon:hover {
+            background-color: #ACA38A;
+    }
 
 
     .hidden-launch-date {
@@ -54,6 +54,11 @@
         width: auto;
     }
 
+    #dropdownMenuButton1:hover {
+        background-color: #ACA38A;
+    }
+    
+
     #collapseExample {
         position: absolute;
         top: 42px;
@@ -62,10 +67,10 @@
         width: 300px;
     }
 
-        #collapseExample .modal-body {
-            padding: 5px 5px;
-            margin: 10px;
-        }
+    #collapseExample .modal-body {
+        padding: 5px 5px;
+        margin: 10px;
+    }
 
     .lightbox-close {
         color: black;
@@ -88,6 +93,9 @@
     .sliders_control {
         position: relative;
         min-height: 30px;
+        display: flex;
+        justify-content: center; 
+        width: 100%; /* 確保不會縮小 */
     }
 
     .form_control {
@@ -98,12 +106,14 @@
         color: #635a5a;
     }
 
+    
+
     input[type=range]::-webkit-slider-thumb {
         -webkit-appearance: none;
         pointer-events: all;
         width: 24px;
         height: 24px;
-        background-color: #fff;
+        background-color: #8D8266;
         border-radius: 50%;
         box-shadow: 0 0 0 1px #C6C6C6;
         cursor: pointer;
@@ -114,19 +124,19 @@
         pointer-events: all;
         width: 24px;
         height: 24px;
-        background-color: #fff;
+        background-color: #8D8266;
         border-radius: 50%;
-        box-shadow: 0 0 0 1px #C6C6C6;
+        box-shadow: 0 0 0 1px #8D8266;
         cursor: pointer;
     }
-
+    
     input[type=range]::-webkit-slider-thumb:hover {
-        background: #f7f7f7;
+        background: #ACA38A;
     }
 
     input[type=range]::-webkit-slider-thumb:active {
-        box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
-        -webkit-box-shadow: inset 0 0 3px #387bbe, 0 0 9px #387bbe;
+        box-shadow: inset 0 0 3px #8D8266, 0 0 9px #8D8266;
+        -webkit-box-shadow: inset 0 0 3px #8D8266, 0 0 9px #8D8266;
     }
 
     input[type="number"] {
@@ -148,7 +158,7 @@
         height: 4px;
         width: 100%;
         position: absolute;
-        background-color: #C6C6C6;
+        background-color: #A59B80;
         pointer-events: none;
     }
 
@@ -157,8 +167,17 @@
         z-index: 1;
     }
 
+    #applyFilter:hover{
+        background-color: #ACA38A;
+    }
 
-    /* 商品card */
+    /* filter icon */
+    .btn-link{
+        color: #8D8266;
+    }
+
+
+    /* 商品card 提示橫幅*/
     .cart-success-message {
         display: none;
         position: absolute;
@@ -197,12 +216,13 @@
     color:red;
     }
 
+
+    /* 商品card  顯示字數*/
     .card-title {
         font-size: 20px !important;
         font-weight: bold;
     }
-
-    /* 商品card  顯示字數*/
+    
     .card-text {
         white-space: normal;
         overflow: hidden;
@@ -229,10 +249,56 @@
         transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
-        .btnicon:hover {
-            background-color: lightpink; /* 滑鼠 hover 顏色 */
-            border-color: lightpink; /* 滑鼠 hover 邊框顏色 */
-        }
+    .btnicon:hover {
+        background-color: lightpink; /* 滑鼠 hover 顏色 */
+        border-color: lightpink; /* 滑鼠 hover 邊框顏色 */
+    }
+
+
+    /* 分頁頁碼 */
+    /* 移除數字的邊框，使其看起來像純文字 */
+    .pagination .page-item .page-link {
+        border: none;
+        background: transparent;
+        color: #333;
+        font-size: 18px;
+        padding: 8px 8px;
+    }
+
+    /* 被點選的頁碼：圓形框 */
+    .pagination .page-item.active .page-link {
+        background-color: #d1c9a2 !important; /* 背景色 */
+        color: #fff !important; /* 文字顏色 */
+        border-radius: 50%; /* 圓形 */
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right:3px;
+        margin-left:3px;
+    }
+
+    /* 向前 & 向後的箭頭：圓形框 */
+    .pagination .page-item:first-child .page-link,
+    .pagination .page-item:last-child .page-link {
+        background-color: #ddd; /* 預設灰色背景 */
+        border-radius: 50%; /* 圓形 */
+        padding: 8px 12px;
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 向前 & 向後箭頭 hover 效果 */
+    .pagination .page-item:first-child .page-link:hover,
+    .pagination .page-item:last-child .page-link:hover {
+            background-color: #d1c9a2; /* 橘色 */
+        color: white;
+    }
+
 
 </style>
 
@@ -362,7 +428,7 @@
                                 </div>
 
                                 <div class="d-flex justify-content-end ">
-                                    <button id="applyFilter" class="btn btn-secondary btn-sm me-3 ms-3 ">確定</button>
+                                    <button id="applyFilter" class="btn btn-sm me-3 ms-3 ">確定</button>
                                 </div>
                             </div>
                         </div>
@@ -719,7 +785,7 @@
 
                                     if (response.success) {
                                         var card = button.closest('.product-item'); // 確保能夠找到這個卡片
-                                        card.find('.fav-success-message').fadeIn().delay(1000).fadeOut();
+                                        card.find('.fav-success-message').fadeIn().delay(500).fadeOut();
                                         if (response.isFavorite) {
                                             heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
                                         } else {
@@ -772,7 +838,7 @@
                                     if (response.success) {
                                         //alert("成功加入購物車");
                                         var card = button.closest('.product-item');
-                                        card.find('.cart-success-message').fadeIn().delay(1000).fadeOut();
+                                        card.find('.cart-success-message').fadeIn().delay(500).fadeOut();
                                     } else {
                                         alert('操作失敗');
                                     }
