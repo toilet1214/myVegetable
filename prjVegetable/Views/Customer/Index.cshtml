@@ -22,7 +22,7 @@
         </div>
         <div class="col-md-9">
             <div v-if="Customer" class="row">
-                <form v-show="edit===1">
+                <form v-if="edit===1">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                 </form>
-                <form v-show="edit === 2">
+                <form v-if="edit === 2">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -154,7 +154,7 @@
 
                 </form>
                 @*顯示樣本*@
-                <form v-show="edit===0">
+                <form v-if="edit===0">
                     <div class="mb-3 row">
                         <div class="col-6">
                             <div class="row">
@@ -313,24 +313,30 @@
                                 this.Customer = response.data;
                                 this.emailVerified = this.Customer.fIsVerified; // 從後端獲取
                             }
-                        })
-                        .catch(error => {
-                            console.error("獲取用戶資料失敗:", error);
                         });
                 },
                 // 重新發送驗證信
                 resendVerificationEmail() {
                     if (!this.Customer.fAccount) {
-                        alert("無法發送驗證信，請確認您的帳號資訊。");
+                        Swal.fire({
+                            title: "無法發送驗證信，請確認您的帳號資訊。",
+                            icon: "error"
+                        });
                         return;
                     }
                     axios.post('/Account/ResendVerificationEmail')
                         .then(response => {
-                            alert("驗證信已重新發送，請檢查您的信箱！");
+                            Swal.fire({
+                                title: "驗證信已發送，請檢查您的信箱！",
+                                icon: "success"
+                            });
                         })
                         .catch(error => {
-                            console.error("重寄驗證信失敗:", error);
-                            alert(error.response?.data?.message || "無法發送驗證信，請稍後再試。");
+                            Swal.fire({
+                                title: error.response?.data?.message,
+                                text: "無法發送驗證信，請稍後再試。",
+                                icon: "error"
+                            });
                         });
                 },
                 toggleEditing() {
@@ -359,11 +365,14 @@
                     }
                     axios.put(`/Customer/update`, customerData)
                         .then(response => {
-                            alert("資料已儲存!");
+                            console.log(customerData);
+                            console.log("更新成功:", response.data);
+                            Swal.fire({
+                                title: "資料已儲存!",
+                                icon: "success"
+                            });
                             this.edit = 0;  // 儲存後退出編輯模式
-                        })
-                        .catch(error => {
-                            console.error("儲存客戶資料時發生錯誤:", error);
+
                         });
                 }
             }

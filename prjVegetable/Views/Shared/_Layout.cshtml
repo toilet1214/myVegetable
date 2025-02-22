@@ -60,9 +60,9 @@
                             </a>
                             @if (TempData.Peek("IsLogIn") != null)
                             {
-                                
-                                <button class="dropdown border-0 bg-white p-0" >
-                                <a id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill fs-4 me-3"></i></a>
+
+                                <button class="dropdown border-0 bg-white p-0">
+                                    <a id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill fs-4 me-3"></i></a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         <li><a class="dropdown-item" asp-controller="Customer" asp-action="Index"><i class="bi bi-person-fill"></i> 會員中心</a></li>
                                         @{
@@ -78,10 +78,10 @@
                                         {
                                             <li><a class="dropdown-item" asp-controller="ERP" asp-action="Index"><i class="bi bi-gear"></i> 後台管理</a></li>
                                         }
-                                        <li><a class="dropdown-item" asp-controller="Account" asp-action="LogOut"><i class="bi bi-box-arrow-right"></i> 登出</a></li>
+                                        <li><a class="dropdown-item" onclick="confirmLogout()"><i class="bi bi-box-arrow-right"></i> 登出</a></li>
                                     </ul>
                                 </button>
-                                
+
                             }
                             else
                             {
@@ -89,7 +89,7 @@
                                     <i class="bi bi-person-fill fs-4 me-3"></i>
                                 </a>
                             }
-                            
+
                             @if (!string.IsNullOrEmpty(loggedUserId))
                             {
                                 <a asp-action="Cart" asp-controller="Cart" role="button">
@@ -168,7 +168,6 @@
         </div>
     </footer>
     <!-- footer End-->
-
     <!-- up to top btn-->
     <button onclick="topFunction()" id="up-to-top" title="Go to top"><i class="bi bi-arrow-up fs-3"></i></button>
 
@@ -216,12 +215,9 @@
                 </div>
 
             </div>
-         </div>
+        </div>
     </div>
     <!-- 聯絡我們 End-->
-
-
-
     <!-- 登入 Start -->
 
     <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -232,7 +228,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body pt-5">
-                    <form asp-action="Login" asp-controller="Account" class="needs-validation" >
+                    <form asp-action="Login" asp-controller="Account" class="needs-validation">
                         <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
 
                         <!-- 帳號輸入框 -->
@@ -339,39 +335,69 @@
     @{
         if (TempData.Peek("LoginFail") != null)
         {
-                    <script>
+            <script>
+                Swal.fire({
+                    title: "登入失敗",
+                    text: @Json.Serialize(TempData["LoginFail"]),
+                    icon: "error"
+                });
 
-                alert(@Json.Serialize(TempData["LoginFail"]));
+                var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
+                myModal.show();
 
-                        var myModal = new bootstrap.Modal(document.getElementById('LoginModal'));
-                        myModal.show();
-
-                    </script>
+            </script>
         }
         @if (TempData.Peek("WelcomeMessage") != null)
         {
             <script>
-                alert(@Json.Serialize(TempData["WelcomeMessage"]));
+                Swal.fire({
+                    title: "登入成功",
+                    text: @Json.Serialize(TempData["WelcomeMessage"]),
+                    icon: "success"
+                });
             </script>
         }
         @if (TempData.Peek("SuccessRegister") != null) // 註冊成功，顯示通知並跳轉
         {
             <script>
-                alert('@Html.Raw(TempData["SuccessRegister"].ToString())');
+                Swal.fire({
+                    title: "註冊成功",
+                    text: @Html.Raw(TempData["SuccessRegister"].ToString()),
+                    icon: "success"
+                });
             </script>
         }
-        @if (TempData.Peek("LogoutMessage") != null) // 註冊成功，顯示通知並跳轉
+        @if (TempData.Peek("LogoutMessage") != null)
         {
             <script>
-                alert('@Html.Raw(TempData["LogoutMessage"].ToString())');
+                Swal.fire({
+                    title: @Html.Raw(TempData["LogoutMessage"].ToString())
+                                });
             </script>
         }
     }
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-          AOS.init();
+            AOS.init();
         });
     </script>
-     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        function confirmLogout() {
+            Swal.fire({
+                title: "確定要登出嗎？",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "是的，登出",
+                cancelButtonText: "取消"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "@Url.Action("LogOut", "Account")";
+                }
+            });
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

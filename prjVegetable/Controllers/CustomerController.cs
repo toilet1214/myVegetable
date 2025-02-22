@@ -43,8 +43,17 @@ namespace prjVegetable.Controllers
         [HttpPut]
         public async Task<IActionResult> update([FromBody] CCustomerWrap CustomerWrap)
         {
+            if (CustomerWrap == null || CustomerWrap.FId == 0)
+            {
+                return BadRequest("請求資料錯誤，缺少 FId");
+            }
 
-            TPerson e = _context.TPeople.FirstOrDefault(c => c.FId == CustomerWrap.FId);
+            TPerson e = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == CustomerWrap.FId);
+
+            if (e == null)
+            {
+                return NotFound("找不到對應的會員");
+            }
 
             e.FName = CustomerWrap.FName;
             e.FAccount = CustomerWrap.FAccount;

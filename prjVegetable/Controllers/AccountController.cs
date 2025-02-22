@@ -45,7 +45,7 @@ namespace prjVegetable.Controllers
                 return Redirect(returnUrl);
             }
 
-            TempData["LoginFail"] = "登入失敗，請重試一次";
+            TempData["LoginFail"] = "帳號或密碼錯誤，請重試一次";
             return Redirect(returnUrl);
         }
         public IActionResult LogOut()
