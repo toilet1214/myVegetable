@@ -48,27 +48,9 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fDescription" :placeholder="product.fDescription" v-model="product.fDescription">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-6">
-                        <div class="row">
                             <label for="fQuantity" class="col-md-3 col-form-label">庫存數量：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fQuantity" :placeholder="product.fQuantity" v-model="product.fQuantity">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="datepicker" :placeholder="product.fLaunchAt" v-model="product.fLaunchAt">
                             </div>
                         </div>
                     </div>
@@ -88,16 +70,6 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fOrigin" class="col-md-3 col-form-label">產地：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fOrigin" :placeholder="product.fOrigin" v-model="product.fOrigin">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-6">
-                        <div class="row">
                             <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
                             <div class="col-md-9">
                                 <select class="form-control" id="fLaunch" v-model="product.fLaunch">
@@ -107,6 +79,47 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fOrigin" class="col-md-3 col-form-label">產地：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fOrigin" :placeholder="product.fOrigin" v-model="product.fOrigin">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :placeholder="product.fLaunchAt" v-model="product.fLaunchAt">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control"  id="fDescription" :placeholder="product.fDescription" v-model="product.fDescription">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fIntroduction" class="col-md-3 col-form-label">商品介紹：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control"  id="fIntroduction" :placeholder="product.fIntroduction" v-model="product.fIntroduction">
+                            </div>
+                        </div>
+                    </div>
+                    
+                                         
                 </div>
                 <div class="mb-3 row">
                     <div class="row">
@@ -175,27 +188,9 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
-                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="fDescription" :value="product.fDescription" readonly>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mb-3 row">
-                    <div class="col-6">
-                        <div class="row">
                             <label for="fQuantity" class="col-md-3 col-form-label">庫存數量：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fQuantity" :value="product.fQuantity" readonly>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div class="row">
-                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" id="datepicker" :value="product.fLaunchAt" readonly>
                             </div>
                         </div>
                     </div>
@@ -211,9 +206,27 @@
                     </div>
                     <div class="col-6">
                         <div class="row">
+                            <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fLaunch" :value="product.fLaunch" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">                    
+                    <div class="col-6">
+                        <div class="row">
                             <label for="fOrigin" class="col-md-3 col-form-label">產地：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fOrigin" :value="product.fOrigin" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fLaunchAt" class="col-md-3 col-form-label">上架日期：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="datepicker" :value="product.fLaunchAt" readonly>
                             </div>
                         </div>
                     </div>
@@ -221,9 +234,9 @@
                 <div class="mb-3 row">
                     <div class="col-6">
                         <div class="row">
-                            <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
+                            <label for="fDescription" class="col-md-3 col-form-label">商品描述：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fLaunch" :value="product.fLaunch" readonly>
+                                <input type="text" class="form-control" id="fDescription" :value="product.fDescription" readonly>
                             </div>
                         </div>
                     </div>
@@ -232,6 +245,16 @@
                             <label for="fEditor" class="col-md-3 col-form-label">修改人：</label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" id="fEditor" :value="product.fEditor" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 row">
+                    <div class="col-6">
+                        <div class="row">
+                            <label for="fIntroduction" class="col-md-3 col-form-label">商品介紹：</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" id="fIntroduction" :value="product.fIntroduction" readonly>
                             </div>
                         </div>
                     </div>
@@ -421,21 +444,37 @@
                 },
 
                 saveProduct() {
-                    alert("saveProduct");
+                    //alert("saveProduct");
                     if (this.product.fId) {
                         console.log(this.product);  // 打印数据，确认数据是否正确
                         const productData =JSON.parse(JSON.stringify(this.product))
                         axios.put(`/Products/update`, productData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
-                                alert("資料已儲存!");
-                                this.saveImg();
-                                this.toggleEditting();  // 儲存後退出編輯模式
-                                window.location.reload();
+                                //alert("資料已儲存!");
+                                //this.saveImg();
+                                //this.toggleEditting();  // 儲存後退出編輯模式
+                                //window.location.reload();
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "儲存成功!",
+                                    text: "資料已成功儲存。",
+                                    confirmButtonText: "OK"
+                                }).then(() => {
+                                    this.saveImg();
+                                    this.toggleEditting();  // 儲存後退出編輯模式
+                                    window.location.reload();
+                                });
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
-                                alert("儲存資料時發生錯誤");
+                                //alert("儲存資料時發生錯誤");
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "儲存失敗",
+                                    text: "儲存資料時發生錯誤。",
+                                    confirmButtonText: "確定"
+                                });
                             });
                     } else {
                         alert("無效的使用者ID，無法儲存資料");

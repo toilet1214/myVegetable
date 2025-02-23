@@ -21,7 +21,14 @@
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FClassification" class="control-label"></label>
-                <input asp-for="FClassification" class="form-control" required />
+                <select asp-for="FClassification" class="form-control" required>
+                    <option value="根莖">根莖</option>
+                    <option value="葉菜">葉菜</option>
+                    <option value="水果">水果</option>
+                    <option value="蕈菇">蕈菇</option>
+                    <option value="蔬菜箱">蔬菜箱</option>
+                    <option value="其他">其他</option>
+                </select>
             </div>
         </div>
     </div>
@@ -40,7 +47,6 @@
         </div>
     </div>
     <div class="row mb-3">
-
         <div class="col-6">
             <div class="form-group">
                 <label asp-for="FStorage" class="control-label"></label>
@@ -60,7 +66,6 @@
                 </select>
             </div>
         </div>
-
     </div>
     <div class="row mb-3">
         <div class="col-6">
@@ -206,12 +211,27 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        alert("上傳成功！");
-                        window.location.href = '@Url.Action("Index", "Products")';
-
+                        //alert("上傳成功！");
+                        //window.location.href = '@Url.Action("Index", "Products")';
+                        Swal.fire({
+                            icon: 'success',
+                            title: '✅ 新增成功！',
+                            text: '商品已成功新增。',
+                            showConfirmButton: 'ok',
+                            //showConfirmButton: false,
+                            //timer: 3000  
+                        }).then(() => {
+                            window.location.href = '@Url.Action("Index", "Products")';
+                        });
                     },
                     error: function () {
-                        alert("上傳失敗！");
+                        //alert("上傳失敗！");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '❌ 上傳失敗！',
+                            text: '請檢查網路連線或稍後再試。',
+                            confirmButtonColor: '#d33'
+                        });
                     }
                 });
             });

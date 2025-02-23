@@ -254,6 +254,12 @@
         border-color: lightpink; /* 滑鼠 hover 邊框顏色 */
     }
 
+    /*熱門標籤*/
+    .IsFavoritetag{
+        background-color:lightpink;
+        color:yellow;
+    }
+
 
     /* 分頁頁碼 */
     /* 移除數字的邊框，使其看起來像純文字 */
@@ -295,7 +301,7 @@
     /* 向前 & 向後箭頭 hover 效果 */
     .pagination .page-item:first-child .page-link:hover,
     .pagination .page-item:last-child .page-link:hover {
-            background-color: #d1c9a2; /* 橘色 */
+        background-color: #d1c9a2;
         color: white;
     }
 
@@ -456,8 +462,14 @@
                                 @* <div class="position-absolute bg-warning text-danger fw-bold p-3 start-0 top-0">人氣1</div> *@
                                 @if (item.IsPopular)
                                 {
-                                    <div class="position-absolute bg-danger text-white fw-bold p-2 start-0 top-0 rounded-end">
+                                    <div class="position-absolute bg-danger text-white p-1 start-0 top-0 rounded-end">
                                         <i class="bi bi-fire text-warning"></i>熱銷中
+                                    </div>
+                                }
+                                @if (item.IsFavoritetag)
+                                {
+                                    <div class="IsFavoritetag position-absolute p-1 @(item.IsPopular ? "end-0" : "start-0") top-0 rounded-end">
+                                        <i class="fi fi-rr-heart text-danger"></i> 最受喜愛
                                     </div>
                                 }
                                 @* ~/Img/@Html.DisplayFor(modelItem => item.FImgName) *@

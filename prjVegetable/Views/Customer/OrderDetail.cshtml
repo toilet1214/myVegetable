@@ -82,10 +82,11 @@
                                         {
                                             @Html.ActionLink("評論", "AddComment", new { id = item.orderList.FId })
                                         }
-                                }
-                                else
-                                {
-                                }
+                                    }
+                                    else
+                                    {
+                                        <p>訂單尚未完成</p>
+                                    }
                                 </td>
                                 
                             </tr>

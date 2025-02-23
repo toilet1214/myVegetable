@@ -31,6 +31,7 @@ namespace prjVegetable.Controllers
 
             //熱銷標籤
             var popularProductIds = PopularProduct();
+            var topfavoriteProductIds = FavoriteProduct();
 
             // 取得篩選的最低價格和最高價格
             //decimal精確數值的資料型別，小數點後兩位
@@ -125,6 +126,7 @@ namespace prjVegetable.Controllers
 
                 // 設定該產品是否為熱門商品
                 pp.IsPopular = popularProductIds.Contains(p.FId);
+                pp.IsFavoritetag = topfavoriteProductIds.Contains(p.FId);
 
                 list.Add(pp);
             }
@@ -173,7 +175,7 @@ namespace prjVegetable.Controllers
             return Json(new { isLoggedIn = isLoggedIn });
         }
 
-        //熱門標籤
+        //熱銷標籤
         public List<int> PopularProduct()
         { 
             DbVegetableContext db = new DbVegetableContext();
@@ -197,6 +199,27 @@ namespace prjVegetable.Controllers
                             .ToList();
 
             return orderlist.Select(x => x.ProductId).ToList();
+        }
+
+        //顧客最愛
+        public List<int> FavoriteProduct()
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            List<CProductWrap> list = new List<CProductWrap>();
+
+            var topfavorite = db.TFavorites
+                               .GroupBy(f => f.FProductId)
+                               .Select(g => new
+                               {
+                                   ProductId = g.Key,
+                                   FavoriteCount = g.Count()
+
+                               })
+                               .OrderByDescending(g => g.FavoriteCount)
+                               .Take(5)
+                               .ToList();
+
+            return topfavorite.Select(X=>X.ProductId).ToList();
         }
 
         //加入我的最愛
@@ -419,7 +442,6 @@ namespace prjVegetable.Controllers
 
 
         //隱藏姓名
-        
         public string DisplayName(string name)
         {
             if (string.IsNullOrEmpty(name))

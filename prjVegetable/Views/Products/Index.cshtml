@@ -17,17 +17,17 @@
 </style>
 
 <h1>商品資料列表</h1>
-<br />
+@* <br />
 @using (Html.BeginForm())
 {
     @:搜尋 @Html.TextBox("txtKeyword")
     <input type="submit" value="查詢" class="btn btn-primary">
 }
-<br />
+<br /> *@
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
-<table class="table">
+<table id="List" class="table">
     <thead>
         <tr>
             <th>
@@ -45,9 +45,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.FPrice)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.FDescription)
-            </th>
+            </th> *@
             @* <th>
                 @Html.DisplayNameFor(model => model.FIntroduction)
             </th> *@
@@ -66,9 +66,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.FLaunch)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FEditor)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -100,9 +98,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FPrice)
                 </td>
-                <td>
+                @* <td>
                     @Html.DisplayFor(modelItem => item.product.FDescription)
-                </td>
+                </td> *@
                 @* <td>
                     @Html.DisplayFor(modelItem => item.product.FIntroduction)
                 </td> *@
@@ -139,17 +137,79 @@
                         @:上架
                     }
                 </td>
+                
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.FEditor)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
-                    @Html.ActionLink("移除", "Delete", "Products", new { id = item.product.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
+                    <a asp-action="Details" asp-route-id="@item.product.FId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                   @*  @Html.ActionLink("移除", "Delete", "Products", new { id = item.product.FId },
+                             new { onclick = "return confirm('確定要刪除嗎?')" }) *@
+                    <a href="javascript:void(0);" class="delete-btn btn btn-danger" data-id="@item.product.FId">移除</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".delete-btn").forEach(button => {
+                button.addEventListener("click", function () {
+                    let productId = this.getAttribute("data-id"); // 取得產品ID
+
+                    Swal.fire({
+                        title: "確定要刪除嗎？",
+                        text: "刪除後將無法恢復！",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#d33",
+                        cancelButtonColor: "#3085d6",
+                        confirmButtonText: "是的，刪除！",
+                        cancelButtonText: "取消"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // 轉址到刪除動作
+                            window.location.href = `/Products/Delete/${productId}`;
+                        }
+                    });
+                });
+            });
+        });
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "emptyTable": "目前沒有任何資料",
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的資料",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+                "columnDefs": [
+                    { "orderable": false, "targets": [-1] }
+                ],
+                "order": []
+            });
+        });
+    </script>
+}
+
 
 

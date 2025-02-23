@@ -157,7 +157,7 @@
                         {
                             count++;
                             <div class="carousel-item @(count == 1 ? "active" : "")">
-                                <img src="~/Images/@Html.DisplayFor(modelItem => image)" class="d-block w-100" alt="...">
+                                <img src="~/Images/@Html.DisplayFor(modelItem => image)" class="d-block w-75" alt="...">
                             </div>
                         }
                     }
@@ -205,10 +205,13 @@
                     </button>
                 </div>
                 <div class="col-12 col-md-4">
-                    <button type="button" class="btn buyNowButtonItem  w-100" data-productid="@Model.FId">
+                    <button type="button" class="btn buyNowButtonItem btn-secondary w-100" data-productid="@Model.FId">
                         立即購買
                     </button>
                 </div>
+            </div>
+            <div class="mt-3">
+                @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
             </div>
         </div>
     </div>
@@ -222,7 +225,7 @@
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="introduction-tab" data-bs-toggle="tab" data-bs-target="#introduction"
                             type="button" role="tab" aria-controls="introduction" aria-selected="true">
-                        商品介紹
+                        訂購須知
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
@@ -251,7 +254,10 @@
                     allowfullscreen>
                     </iframe>
                     } *@
-                    @Html.Raw(Model.FIntroduction.Replace(Environment.NewLine, "<br>"))
+                    
+                    <img src="~/Images/productintro3.jpg" class="d-block w-50 m-2" alt="蔬菜箱介紹">
+                    <img src="~/Images/productintro1.jpg" class="d-block w-50 m-2" alt="配送方式">
+                    <img src="~/Images/productintro2.jpg" class="d-block w-50 m-2" alt="鑑賞保存">                    
                 </div>
 
                 <!-- 顧客評論範例 -->
