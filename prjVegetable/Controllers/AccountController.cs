@@ -111,7 +111,8 @@ namespace prjVegetable.Controllers
                     {
                         _context.TPeople.Add(user);
                         await _context.SaveChangesAsync();
-                        Debug.WriteLine("新用戶創建成功");
+                        TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
+                        TempData["WelcomeMessage"] = $"歡迎加入，{user.FAccount}！";
                     }
                     catch (Exception ex)
                     {
@@ -159,8 +160,6 @@ namespace prjVegetable.Controllers
                 return Json(new { success = false, message = "登入失敗：" + ex.Message });
             }
         }
-
-
 
         public async Task<IActionResult> Logout()
         {
