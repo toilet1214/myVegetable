@@ -5,7 +5,11 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 @section Styles {
-    
+    <style>
+        .btn.no-visual-change:disabled {
+            pointer-events: none;
+        }
+    </style>
 }
 
 <h1>訂單資料</h1>
@@ -66,16 +70,16 @@
                     @switch (item.FStatus)
                     {
                         case 0:
-                            <p>處理中</p>
+                            <P class="btn btn-warning nochange">處理中</P>
                             break;
                         case 1:
-                            <p>已確認</p>
+                            <button class="btn btn-primary" onclick="ConfirmOrder(this, @item.FId)">已確認</button>
                             break;
                         case 2:
-                            <p>已完成</p>
+                            <P class="btn btn-success nochange">已完成</P>
                             break;
                         case 3:
-                            <p>已取消</p>
+                            <P class="btn btn-secondary nochange">已取消</P>
                             break;
                     }
                 </td>
@@ -86,9 +90,7 @@
                             <p>未付款</p>
                             break;
                         case 1:
-                            <p>
-                                付款失敗
-                            </p>
+                            <p>付款失敗</p>
                             break;
                         case 2:
                             <p>付款成功</p>
@@ -118,7 +120,61 @@
     </tbody>
 </table>
 @section Scripts {
+    <script>
+        function ConfirmOrder(button, orderId) {
+            Swal.fire({
+                title: "選擇動作",
+                text: "請選擇要執行的訂單狀態",
+                icon: "question",
+                showCancelButton: true,
+                showDenyButton: true,
+                confirmButtonText: "完成訂單",
+                denyButtonText: "取消訂單",
+                cancelButtonText: "取消"
+            }).then((result) => {
+                let newStatus = null;
 
+                if (result.isConfirmed) {
+                    newStatus = 2; // 完成訂單
+                } else if (result.isDenied) {
+                    newStatus = 3; // 取消訂單
+                } else {
+                    return; // 使用者選擇取消，不做任何動作
+                }
+
+                // 發送 AJAX 請求更新狀態
+                $.ajax({
+                    url: '/Order/UpdateOrderStatus',  // 替換成你的後端 API 路徑
+                    type: 'POST',
+                    data: { id: orderId, status: newStatus },
+                    success: function (response) {
+                        if (response.success) {
+                            let td = $(button).closest('td'); // 找到當前狀態的 <td>
+
+                            // 更新 UI
+                            let statusHtml = "";
+                            switch (newStatus) {
+                                case 2:
+                                    statusHtml = '<P class="btn btn-success nochange">已完成</P>';
+                                    break;
+                                case 3:
+                                    statusHtml = '<P class="btn btn-secondary nochange">已取消</P>';
+                                    break;
+                            }
+                            td.html(statusHtml);
+
+                            Swal.fire("更新成功！", "訂單狀態已變更", "success");
+                        } else {
+                            Swal.fire("錯誤", "更新失敗，請稍後再試", "error");
+                        }
+                    },
+                    error: function () {
+                        Swal.fire("錯誤", "請求失敗，請檢查網絡連線", "error");
+                    }
+                });
+            });
+        }
+    </script>
     <script>
         $(document).ready(function () {
             $('#List').DataTable({

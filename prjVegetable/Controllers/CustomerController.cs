@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text.Json;
 
 namespace prjVegetable.Controllers
@@ -17,25 +20,38 @@ namespace prjVegetable.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            int loginType = 1;
             var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
-            int loginType = 0; // 預設值
-
-            if (!string.IsNullOrEmpty(userJson))
+            if (string.IsNullOrEmpty(userJson))
             {
-                var user = JsonSerializer.Deserialize<TPerson>(userJson);
-                loginType = user.FLoginType;
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
             }
-
-            // 將 loginType 送到前端（假設是 Razor）
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
+            loginType = user.FLoginType;
             ViewBag.LoginType = loginType;
             return View();
+
+
+            // 將 loginType 送到前端（假設是 Razor）
+            
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCustomerById()
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
+            int UserId = user.FId;
             var Customer = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == UserId);
             return Ok(Customer);
         }
@@ -76,37 +92,59 @@ namespace prjVegetable.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Report(TReport P)
+        public async Task<IActionResult> Report(TReport P)
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-            P.FPersonId = UserId;
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
+            P.FPersonId = user.FId;
             _context.TReports.Add(P);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public IActionResult Order()
+        public async Task<IActionResult> Order()
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
             IEnumerable<TOrder> datas = null;
 
-            datas = _context.TOrders.Where(p => p.FPersonId == UserId);
+            datas = _context.TOrders.Where(p => p.FPersonId == user.FId);
             List<COrderWrap> list = new List<COrderWrap>();
             foreach (var t in datas)
                 list.Add(new COrderWrap() { order = t });
             return View(list);
         }
 
-        public IActionResult OrderDetail(int? id) //orderid
+        public async Task<IActionResult> OrderDetail(int? id) //orderid
         {
             if (id == null)
                 return RedirectToAction("Order");
 
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
-
-
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
             var orderList = _context.TOrderLists.Where(ol => ol.FOrderId == id).ToList();
-            var order = _context.TOrders.FirstOrDefault(p => p.FId == id && p.FPersonId == userId);
+            var order = _context.TOrders.FirstOrDefault(p => p.FId == id && p.FPersonId == user.FId);
 
             //IEnumerable<TOrderList> datas = null;
             //datas = db.TOrderLists.Where(p => p.FOrderId == id);
@@ -115,33 +153,40 @@ namespace prjVegetable.Controllers
             foreach (var t in orderList)
             {
                 var hasComment = _context.TComments
-                                .Where(c => c.FOrderListId == t.FId && c.FProductId == t.FProductId && c.FPersonId == userId)
+                                .Where(c => c.FOrderListId == t.FId && c.FProductId == t.FProductId && c.FPersonId == user.FId)
                                 .Any();
 
                 var productName = _context.TProducts
                                 .Where(p => p.FId == t.FProductId)
                                 .Select(p => p.FName)
                                 .FirstOrDefault() ?? "未知商品";
-                list.Add(new COrderListWrap() 
+                list.Add(new COrderListWrap()
                 {
-                    orderList = t, 
+                    orderList = t,
                     OrderStatus = order.FStatus,
                     HasComment = hasComment,
                     ProductName = productName
                 });
             }
-                
-           
+
+
 
             return View(list);
         }
 
-        public IActionResult Favorite()
+        public async Task<IActionResult> Favorite()
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
             var list = _context.TFavorites
-                .Where(f => f.FPersonId == UserId)
+                .Where(f => f.FPersonId == user.FId)
                 .Join(_context.TProducts,
                       favorite => favorite.FProductId,
                       product => product.FId,
@@ -158,15 +203,15 @@ namespace prjVegetable.Controllers
         }
 
 
-        public IActionResult AddComment(int? id) //orderlistid
+        public async Task<IActionResult> AddComment(int? id) //orderlistid
         {
-            
+
             if (id == null)
             {
                 return RedirectToAction("OrderDetail");
             }
 
-            
+
             var orderList = _context.TOrderLists.FirstOrDefault(ol => ol.FId == id);
             var order = _context.TOrders.FirstOrDefault(o => o.FId == orderList.FOrderId);
             var product = _context.TProducts.FirstOrDefault(p => p.FId == orderList.FProductId);
@@ -185,7 +230,7 @@ namespace prjVegetable.Controllers
 
         //加入評論
         [HttpPost]
-        public IActionResult AddComment(TComment c)
+        public async Task<IActionResult> AddComment(TComment c)
         {
             var OId = _context.TOrderLists.Where(p => p.FId == c.FOrderListId).FirstOrDefault().FOrderId;
             c.FStar = c.FStar == 0 ? 5 : c.FStar;
@@ -198,13 +243,19 @@ namespace prjVegetable.Controllers
 
         }
 
-        public IActionResult CommentIndex()
+        public async Task<IActionResult> CommentIndex()
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int UserId);
-
-
+            var userJson = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER);
+            if (string.IsNullOrEmpty(userJson))
+            {
+                await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                HttpContext.Session.Clear();
+                TempData["LogoutMessage"] = "請重新登入";
+                return RedirectToAction("Index", "Home");
+            }
+            var user = JsonSerializer.Deserialize<TPerson>(userJson);
             var datas = _context.TComments
-                        .Where(c => c.FPersonId == UserId)
+                        .Where(c => c.FPersonId == user.FId)
                         .Join(
                             _context.TOrderLists,
                             comment => comment.FOrderListId,
@@ -229,7 +280,7 @@ namespace prjVegetable.Controllers
         }
 
 
-        
+
         public async Task<IActionResult> DeleteFavorite(int? id)
         {
             if (id == null)

@@ -1,4 +1,22 @@
 ﻿/* --------- 通用樣式 ---------- */
+.w-divider-h-1 {
+    display: inline-block;
+    width: 100%; /* 分隔线的宽度 */
+    border-top: 1px solid #ccc; /* 设置分隔线的样式 */
+}
+
+    .w-divider-h-1 + .w-divider-h-1 {
+        margin-left: 10px; /* 在分隔线之间添加间距 */
+        margin-right: 10px;
+    }
+
+    .w-divider-h-1 span {
+        display: inline-block;
+        padding: 0 10px;
+        background-color: white; /* 文字背景为白色，避免文字和分隔线重叠 */
+        font-weight: bold;
+        color: black; /* 文字颜色 */
+    }
 
 main {
     display: flex;

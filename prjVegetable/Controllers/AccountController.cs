@@ -12,6 +12,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.Google;
+using Google.Apis.Auth;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using System;
+using System.Linq;
+using System.Diagnostics;
 
 namespace prjVegetable.Controllers
 {
@@ -30,8 +36,7 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Login(CLoginViewModel vm, string returnUrl)
         {
-            TPerson user = _context.TPeople.FirstOrDefault(t =>
-                t.FAccount == vm.txtAccount && t.FPassword == vm.txtPassword);
+            TPerson user = _context.TPeople.FirstOrDefault(t => t.FAccount == vm.txtAccount && t.FPassword == vm.txtPassword);
 
             if (user != null)
             {
@@ -39,6 +44,10 @@ namespace prjVegetable.Controllers
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
+                var claims = new List<Claim>
+                {
+                    new Claim("LOGINED_USER", json) // 存整個 JSON
+                };
 
                 TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
                 TempData["WelcomeMessage"] = $"歡迎回來，{user.FAccount}！";
@@ -48,9 +57,115 @@ namespace prjVegetable.Controllers
             TempData["LoginFail"] = "帳號或密碼錯誤，請重試一次";
             return Redirect(returnUrl);
         }
-        public IActionResult LogOut()
+        
+        public IActionResult GoogleLogin()
         {
-            HttpContext.Session.Clear(); // 清除所有 Session
+            var properties = new AuthenticationProperties
+            {
+                RedirectUri = "/signin-google"
+            };
+            return Challenge(properties, GoogleDefaults.AuthenticationScheme); // 開始 Google 認證
+        }
+        [HttpPost]
+        public async Task<IActionResult> GoogleResponse([FromForm] string credential)
+        {
+            try
+            {
+                var handler = new JwtSecurityTokenHandler();
+                var jsonToken = handler.ReadToken(credential) as JwtSecurityToken;
+
+                if (jsonToken == null)
+                {
+                    Debug.WriteLine("Token 解析失敗");
+                    return Json(new { success = false, message = "無效的 Token" });
+                }
+                Debug.WriteLine($"Token: {credential}");
+                // 解析 Google Token 取得使用者資訊
+                string email = jsonToken.Claims.FirstOrDefault(c => c.Type == "email")?.Value;
+                string name = jsonToken.Claims.FirstOrDefault(c => c.Type == "name")?.Value;
+                string googleId = jsonToken.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+
+                Debug.WriteLine($"Google 登入資訊: Email={email}, Name={name}, GoogleId={googleId}");
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    return Json(new { success = false, message = "無法取得 Email" });
+                }
+
+                // 檢查用戶是否已存在
+                var user = await _context.TPeople.FirstOrDefaultAsync(u => u.FAccount == email);
+
+                if (user == null)
+                {
+                    // 創建新用戶
+                    user = new TPerson
+                    {
+                        FName = name ?? "Google User",
+                        FAccount = email,
+                        FGoogleId = googleId,
+                        FLoginType = 1,
+                        FIsVerified = true
+                    };
+
+                    try
+                    {
+                        _context.TPeople.Add(user);
+                        await _context.SaveChangesAsync();
+                        Debug.WriteLine("新用戶創建成功");
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"創建用戶失敗: {ex.Message}");
+                        return Json(new { success = false, message = "創建用戶失敗：" + ex.Message });
+                    }
+                }
+                else
+                {
+                    TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
+                    TempData["WelcomeMessage"] = $"歡迎回來，{user.FAccount}！";
+                    // 更新用戶登入資訊
+                    if (!string.IsNullOrEmpty(user.FGoogleId))
+                    {
+                        user.FGoogleId = googleId;
+                        user.FLoginType = 1;
+                        user.FIsVerified = true;
+                    }
+                    await _context.SaveChangesAsync();
+                }
+
+                // **存入 Session**
+                string json = JsonSerializer.Serialize(user);
+                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
+                Debug.WriteLine(json);
+                // **設定驗證 Cookie**
+                var claims = new List<Claim>
+                {
+                    new Claim("UserData", json) // 存整個 JSON
+                };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(
+                    CookieAuthenticationDefaults.AuthenticationScheme,
+                    new ClaimsPrincipal(identity));
+                return Json(new
+                {
+                    success = true,
+                    redirectUrl = "/Home/Index"
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Google 登入失敗: {ex.Message}");
+                return Json(new { success = false, message = "登入失敗：" + ex.Message });
+            }
+        }
+
+
+
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            HttpContext.Session.Clear();
 
             TempData["LogoutMessage"] = "您已成功登出";
             return RedirectToAction("Index", "Home");

@@ -41,7 +41,20 @@ namespace prjVegetable.Controllers
             return View(list);
         }
 
+        [HttpPost]
+        public IActionResult UpdateOrderStatus(int id, int status)
+        {
+            var order = _context.TOrders.FirstOrDefault(o => o.FId == id);
+            if (order == null)
+            {
+                return Json(new { success = false, message = "訂單不存在" });
+            }
 
+            order.FStatus = status;
+            _context.SaveChanges();
+
+            return Json(new { success = true });
+        }
 
     }
 }
