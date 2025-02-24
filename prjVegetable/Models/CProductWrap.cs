@@ -135,7 +135,7 @@ namespace prjVegetable.Models
         public IEnumerable<IFormFile> productImages { get; set; }
         public List<string> ImgList { get; set; }
         public List<CCommentWrap> CommentList { get; set; }
-
         public double AverageStar { get; set; }
+        public List<CProductWrap> RelatedProducts { get; set; }
     }
 }

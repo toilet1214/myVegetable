@@ -321,11 +321,40 @@ namespace prjVegetable.Controllers
                     comment.FPersonName = DisplayName(comment.FPersonName); 
                 }
             }
-
             x.AverageStar = AverageStar(id);
+            x.RelatedProducts = GetRelatedProducts(id, x.FClassification);
 
             return View(x);
         }
+
+        //相似商品
+        private List<CProductWrap> GetRelatedProducts(int currentProductId, string category)
+        {
+            // 獲取同分類的其他商品，排除當前商品
+            var relatedProducts = _context.TProducts
+                .Where(p => p.FClassification == category
+                       && p.FId != currentProductId
+                       && p.FLaunch == 1)
+                .OrderBy(r => Guid.NewGuid()) // 隨機排序
+                .Take(6)  // 取6個商品
+                .ToList();
+
+            // 轉換成 CProductWrap
+            var result = relatedProducts.Select(p => new CProductWrap
+            {
+                FId = p.FId,
+                FName = p.FName,
+                FPrice = p.FPrice,
+                FDescription = p.FDescription,
+                FImgName = _context.TImgs
+                    .Where(i => i.FProductId == p.FId && i.FOrderBy == 1)
+                    .Select(i => i.FName)
+                    .FirstOrDefault()
+            }).ToList();
+
+            return result;
+        }
+
 
         //顯示商品評論
         private List<CCommentWrap> GetProductComments(int productId, int personId)
