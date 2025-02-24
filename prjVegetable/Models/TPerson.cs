@@ -33,7 +33,7 @@ public partial class TPerson
 
     public DateTime FCreatedAt { get; set; }
 
-    public int FEditor { get; set; }
+    public int? FEditor { get; set; }
 
     public bool FIsVerified { get; set; }
 

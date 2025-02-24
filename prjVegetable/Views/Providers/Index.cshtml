@@ -88,7 +88,7 @@
                     </td>
                     <td>
                         <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a> <br>
-                        <a href="javascript:void(0);" onclick="deleteProvider(@item.FId)" class="btn btn-danger">&emsp;移除&emsp;</a>
+                        <a href="javascript:void(0);" class="btn btn-danger delete-link" data-id="@item.FId">&emsp;移除&emsp;</a>
                     </td>
                 </tr>
             }
@@ -97,7 +97,6 @@
 </table>
 
 @section Scripts {
-
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
@@ -125,20 +124,39 @@
                 "lengthChange": true, // 允許改變筆數
             });
         });
-        function deleteProvider(id) {
-        if (confirm("你確定要刪除這筆資料嗎?")) {
-            $.ajax({
-                url: '/Providers/Delete/' + id,
-                type: 'POST',  // 或 'DELETE'，取決於你的控制器方法是否接受 DELETE 請求
-                success: function (result) {
-                    // 刪除成功後更新頁面，移除該筆資料
-                    location.reload();
-                },
-                error: function () {alert('刪除失敗'); }
-                });
-            }
-        }
 
+        // 使用 Axios 進行刪除操作
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.delete-link').forEach(function (deleteLink) {
+                deleteLink.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const id = deleteLink.getAttribute('data-id');
+
+                    Swal.fire({
+                        title: '確定要刪除這筆資料嗎？',
+                        text: '這個動作無法復原！',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: '刪除',
+                        cancelButtonText: '取消',
+                        reverseButtons: true
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // 使用 axios 發送刪除請求
+                            axios.post(`/Providers/Delete/${id}`).then(() => {
+                                Swal.fire('已刪除', '資料已成功刪除', 'success');
+                                // 刪除後更新頁面
+                                location.reload();
+                            }).catch(error => {
+                                console.error('刪除失敗', error);
+                                Swal.fire('錯誤!!', '刪除資料失敗，請稍後再試', 'error');
+                            });
+                        }
+                    });
+                });
+            });
+        });
     </script>
 
 }

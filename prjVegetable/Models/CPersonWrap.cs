@@ -6,6 +6,7 @@ namespace prjVegetable.Models
     public class CPersonWrap
     {
         private TPerson _person = null;
+        
         public TPerson person
         {
             get { return _person; }
@@ -127,10 +128,10 @@ namespace prjVegetable.Models
         }
 
         [DisplayName("修改人")]
-        public int FEditor
+        public int? FEditor
         {
             get { return _person.FEditor; }
             set { _person.FEditor = value; }
-        }
+        }        
     }
 }

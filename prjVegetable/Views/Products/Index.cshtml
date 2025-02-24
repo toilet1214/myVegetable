@@ -18,16 +18,11 @@
 
 <h1>商品資料列表</h1>
 <br />
-@using (Html.BeginForm())
-{
-    @:搜尋 @Html.TextBox("txtKeyword")
-    <input type="submit" value="查詢" class="btn btn-primary">
-}
-<br />
+
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
-<table class="table">
+<table class="table" id="List">
     <thead>
         <tr>
             <th>
@@ -65,10 +60,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FLaunch)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FEditor)
-            </th>
+            </th>            
             <th></th>
         </tr>
     </thead>
@@ -138,18 +130,78 @@
                     {
                         @:上架
                     }
-                </td>
+                </td>                
                 <td>
-                    @Html.DisplayFor(modelItem => item.product.FEditor)
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.FId">詳細資料</a><br />
-                    @Html.ActionLink("移除", "Delete", "Products", new { id = item.product.FId },
-                             new { onclick = "return confirm('確定要刪除嗎?')" })
+                    @* <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br /> *@
+                    <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a><br />
+                    <a href="javascript:void(0);" class="btn btn-danger delete-link" data-id="@item.FId">&emsp;移除&emsp;</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
+@section Scripts{
+    <script>
+        function deleteProducts(id) {
+            Swal.fire({
+                title: '確定要刪除這筆資料嗎？',
+                text: '這個動作無法復原！',
+                icon: 'warning',
+                showCancelButton: true,  // 顯示取消按鈕
+                confirmButtonText: '刪除',
+                cancelButtonText: '取消',
+                reverseButtons: true  // 反轉按鈕順序
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // 確保刪除的請求 URL 正確
+                    axios.post(`/Products/Delete/${id}`).then(() => {
+                        Swal.fire('已刪除', '資料已成功刪除', 'success');
+                        location.reload();
+                    }).catch(error => {
+                        console.error('刪除失敗', error);
+                        Swal.fire('錯誤!!', '刪除資料失敗，請稍後再試', 'error');
+                    });
+                }
+            });
+        }
 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.delete-link').forEach(function(deleteLink) {
+                deleteLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    const id = deleteLink.getAttribute('data-id');  // 使用正確的屬性名稱
+                    deleteProducts(id);
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $('#List').DataTable({
+                "paging": true, // 啟用分頁
+                "lengthChange": false, // 允許用戶改變每頁顯示數量
+                "searching": true, // 啟用搜尋
+                "ordering": true, // 啟用排序
+                "info": true, // 顯示資訊
+                "autoWidth": false, // 禁用自動調整寬度
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
+                "lengthChange": true, // 允許改變筆數
+            });
+        });
+    </script>
+}

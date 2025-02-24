@@ -365,7 +365,9 @@ public partial class DbVegetableContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime")
                 .HasColumnName("fCreatedAt");
-            entity.Property(e => e.FEditor).HasColumnName("fEditor");
+            entity.Property(e => e.FEditor)
+                .HasDefaultValue(0)
+                .HasColumnName("fEditor");
             entity.Property(e => e.FEmp)
                 .HasMaxLength(500)
                 .HasDefaultValue("")

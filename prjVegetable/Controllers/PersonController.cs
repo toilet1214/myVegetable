@@ -32,8 +32,6 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public async Task<IEnumerable<CPersonWrap>> GetPeople()
         {
-
-
             // 確保使用 ToListAsync() 來進行異步查詢並將結果返回
             return await _context.TPeople.Select(Tp => new CPersonWrap
             {
@@ -46,15 +44,15 @@ namespace prjVegetable.Controllers
                 FPhone = Tp.FPhone,
                 FTel = Tp.FTel,
                 FAddress = Tp.FAddress,
-                
                 FUbn = Tp.FUbn,
                 FPermission = Tp.FPermission,
                 FEmp = Tp.FEmp,
                 FEmpTel = Tp.FEmpTel,
                 FCreatedAt = Tp.FCreatedAt,
-                FEditor = Tp.FEditor
+                FEditor = Tp.FEditor,                
             })
         .ToArrayAsync();  // 確保將資料轉換成清單並且異步返回
+            
         }
         //API刪除人員資料
         [HttpDelete]
