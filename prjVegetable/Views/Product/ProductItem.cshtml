@@ -81,7 +81,7 @@
         color: #fff;
     }
 
-    
+
 
     /*立即購買*/
     .btn.buyNowButtonItem {
@@ -89,11 +89,11 @@
         border-color: #8D8266;
     }
 
-    .btn.buyNowButtonItem:hover {
-        background-color: #ACA38A;
-        border-color: #ACA38A;
-        color: #fff;
-    }
+        .btn.buyNowButtonItem:hover {
+            background-color: #ACA38A;
+            border-color: #ACA38A;
+            color: #fff;
+        }
 
 
     /*評論星星*/
@@ -191,11 +191,11 @@
             </div>
             <div class="quantity col-12 col-md-6 my-3">
                 <button class="minus" aria-label="Decrease">&minus;</button>
-                <input type="number" class="input-box" value="1" min="1" max="10">
+                <input type="number" class="input-box" id="productQuantity" value="1" min="1" max="10">
                 <button class="plus" aria-label="Increase">&plus;</button>
             </div>
-            <div class="row justify-content-center pb-4">
-                <div class="col-12 col-md-4">
+            <div class="row pb-4">
+                <div class="col-12 col-md-3">
                     <button type="button" class="btn addToCartButtonItem btn-outline-secondary" data-productid="@Model.FId">
                         <i class="bi bi-cart"></i>加入購物車
                     </button>
@@ -203,7 +203,7 @@
                         成功加入購物車！
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <button type="button" class="btn heartButton btn-outline-secondary" data-productid="@Model.FId">
                         <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
                     </button>
@@ -214,7 +214,10 @@
                         移除最愛！
                     </div>
                 </div>
-                <div class="col-12 col-md-4">
+
+            </div>
+            <div class="row pb-4">
+                <div class="col-12 col-md-9">
                     <button type="button" class="btn buyNowButtonItem btn-secondary w-100" data-productid="@Model.FId">
                         立即購買
                     </button>
@@ -266,9 +269,11 @@
                     </iframe>
                     } *@
 
-                    <img src="~/Images/productintro3.jpg" class="d-block w-50 m-2" alt="蔬菜箱介紹">
-                    <img src="~/Images/productintro1.jpg" class="d-block w-50 m-2" alt="配送方式">
-                    <img src="~/Images/productintro2.jpg" class="d-block w-50 m-2" alt="鑑賞保存">
+                    @* <img src="~/Images/productintro1.jpg" class="d-block w-50 m-2" alt="配送方式"> *@
+                    <div class="row d-flex justify-content-between m-3">
+                        <img src="~/Images/productintro3.jpg" class=" d-block w-50 " alt="蔬菜箱介紹">
+                        <img src="~/Images/productintro2.jpg" class=" d-block w-50 " alt="鑑賞保存">
+                    </div>
                 </div>
 
                 <!-- 顧客評論範例 -->
@@ -376,6 +381,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts
 {
@@ -501,8 +507,7 @@
                 var isBuyNow = button.hasClass('btn-secondary');
                 var productId = button.data("productid");
                 var currentUrl = window.location.href;
-                var quantityInput = button.closest('.row').prev('.quantity').find('.input-box');
-                var quantity = quantityInput.val();
+                var quantity = $('#productQuantity').val();
 
                 // 如果數量無效或超出範圍，提示錯誤
                 if (!quantity || isNaN(quantity) || quantity < 1 || quantity > 10) {
