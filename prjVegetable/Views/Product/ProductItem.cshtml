@@ -9,10 +9,10 @@
     /*輪播 箭頭*/
     .carousel-control-prev,
     .carousel-control-next {
-        width: 50px; 
+        width: 50px;
         height: 50px;
-        background-color: rgba(0, 0, 0, 0.5); 
-        border-radius: 50%; 
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -26,7 +26,7 @@
         width: 20px; /* 調整箭頭大小 */
         height: 20px;
     }
-    
+
     /*數量*/
     .quantity {
         width: 170px;
@@ -37,21 +37,21 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
     }
 
-    .quantity button {
-        background-color: #8D8266;
-        color: #fff;
-        border: 1px solid #D6CBB0;
-        cursor: pointer;
-        font-size: 20px;
-        width: 40px;
-        height: auto;
-        text-align: center;
-        transition: background-color 0.2s;
-    }
+        .quantity button {
+            background-color: #8D8266;
+            color: #fff;
+            border: 1px solid #D6CBB0;
+            cursor: pointer;
+            font-size: 20px;
+            width: 40px;
+            height: auto;
+            text-align: center;
+            transition: background-color 0.2s;
+        }
 
-    .quantity button:hover {
-        background-color: #ACA38A;
-    }
+            .quantity button:hover {
+                background-color: #ACA38A;
+            }
 
     .input-box {
         width: 100px;
@@ -62,16 +62,16 @@
         outline: none;
     }
 
-    /*隱藏數字框的上下箭頭 */
-    .input-box::-webkit-inner-spin-button,
-    .input-box::-webkit-outer-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
+        /*隱藏數字框的上下箭頭 */
+        .input-box::-webkit-inner-spin-button,
+        .input-box::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
 
-    .input-box[type="number"] {
-        -moz-appearance: textfield;
-    }
+        .input-box[type="number"] {
+            -moz-appearance: textfield;
+        }
 
     /*加入購物車*/ /*加入我的最愛*/
     .btn.addToCartButtonItem:hover,
@@ -81,16 +81,18 @@
         color: #fff;
     }
 
+    
+
     /*立即購買*/
     .btn.buyNowButtonItem {
-        background-color: #8D8266; 
-        border-color: #8D8266; 
+        background-color: #8D8266;
+        border-color: #8D8266;
     }
 
     .btn.buyNowButtonItem:hover {
         background-color: #ACA38A;
         border-color: #ACA38A;
-        color: #fff; 
+        color: #fff;
     }
 
 
@@ -197,12 +199,20 @@
                     <button type="button" class="btn addToCartButtonItem btn-outline-secondary" data-productid="@Model.FId">
                         <i class="bi bi-cart"></i>加入購物車
                     </button>
-                    <div class="cart-success-message text-success" style="display: none;">成功加入購物車！</div>
+                    <div class="cart-success-message text-success position-absolute" style="display: none;">
+                        成功加入購物車！
+                    </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <button type="button" class="btn heartButton btn-outline-secondary" data-productid="@Model.FId">
                         <i class="heart-icon @((Model.IsFavorite) ? "bi-heart-fill text-danger" : "bi-heart")"></i> 加入最愛
                     </button>
+                    <div class="fav-success-message text-danger position-absolute" style="display: none;">
+                        成功加入最愛！
+                    </div>
+                    <div class="fav-delet-message text-danger position-absolute" style="display: none; ">
+                        移除最愛！
+                    </div>
                 </div>
                 <div class="col-12 col-md-4">
                     <button type="button" class="btn buyNowButtonItem btn-secondary w-100" data-productid="@Model.FId">
@@ -232,16 +242,17 @@
                     <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button"
                             role="tab" aria-controls="profile" aria-selected="false">
                         顧客評價 (
-                                    @{if (Model.CommentList != null)
-                                        {
-                                            @Model.CommentList.Count()
-                                        }
-                                        else
-                                        {
+                        @{
+                            if (Model.CommentList != null)
+                            {
+                                @Model.CommentList.Count()
+                            }
+                            else
+                            {
 
-                                        }
-                                    }
-                                )
+                            }
+                        }
+                        )
                     </button>
                 </li>
             </ul>
@@ -254,10 +265,10 @@
                     allowfullscreen>
                     </iframe>
                     } *@
-                    
+
                     <img src="~/Images/productintro3.jpg" class="d-block w-50 m-2" alt="蔬菜箱介紹">
                     <img src="~/Images/productintro1.jpg" class="d-block w-50 m-2" alt="配送方式">
-                    <img src="~/Images/productintro2.jpg" class="d-block w-50 m-2" alt="鑑賞保存">                    
+                    <img src="~/Images/productintro2.jpg" class="d-block w-50 m-2" alt="鑑賞保存">
                 </div>
 
                 <!-- 顧客評論範例 -->
@@ -265,7 +276,7 @@
                     <div class="reviews-section">
                         <div class="average-rating mb-5">
                             @* <h5>平均評分: @Model.AverageStar.ToString("0.0") ⭐</h5> *@
-                            
+
                             <p class="d-inline-flex star-averating">
                                 @for (int i = 1; i <= 5; i++)
                                 {
@@ -296,7 +307,7 @@
                                             <div class="d-flex flex-column">
                                                 <h5 class="user_name m-0">@comment.FPersonName</h5>
                                                 <small class="text-muted">@comment.FCreatedAt.ToString("yyyy-MM-dd")</small>
-                                                
+
                                             </div>
                                             <p class="star-rating ">
                                                 <small>
@@ -317,12 +328,12 @@
                                                     }
                                                 </small>
                                             </p>
-                                            
+
                                         </div>
-                                        
+
                                         <p class="review-text">@comment.FComment</p>
                                     </div>
-                                    
+
                                 </div>
                             }
                         }
@@ -430,7 +441,9 @@
                 var heartIcon = $(this).find(".heart-icon");
                 var productId = $(this).data("productid");
                 var isFavorite = heartIcon.hasClass("bi-heart-fill");
-                var currentUrl = window.location.href
+                var currentUrl = window.location.href;
+
+                var button = $(this);
 
                 // 檢查是否已登入
                 $.ajax({
@@ -453,8 +466,10 @@
                                     if (response.success) {
                                         if (response.isFavorite) {
                                             heartIcon.removeClass("bi-heart").addClass("bi-heart-fill text-danger");
+                                            button.closest('.col-12').find('.fav-success-message').fadeIn().delay(500).fadeOut();
                                         } else {
                                             heartIcon.removeClass("bi-heart-fill text-danger").addClass("bi-heart");
+                                            button.closest('.col-12').find('.fav-delet-message').fadeIn().delay(500).fadeOut();
                                         }
                                     } else {
                                         alert('操作失敗');
@@ -533,7 +548,7 @@
                                     data: { productId: productId, quantity: quantity },
                                     success: function (response) {
                                         if (response.success) {
-                                            button.closest('.col-12').find('.cart-success-message').fadeIn().delay(1000).fadeOut();
+                                            button.closest('.col-12').find('.cart-success-message').fadeIn().delay(500).fadeOut();
                                         } else {
                                             alert('操作失敗');
                                         }
@@ -655,7 +670,7 @@
 
 
 
-           
+
 
 
 

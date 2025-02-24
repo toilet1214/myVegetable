@@ -5,8 +5,7 @@ using prjVegetable.ViewModels;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Security.Claims;
-using X.PagedList.Extensions;
-using X.PagedList;
+
 
 namespace prjVegetable.Controllers
 {
