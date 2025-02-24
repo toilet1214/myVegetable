@@ -40,9 +40,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.FPrice)
             </th>
-            <th>
+            @* <th>
                 @Html.DisplayNameFor(model => model.FDescription)
-            </th>
+            </th> *@
             @* <th>
                 @Html.DisplayNameFor(model => model.FIntroduction)
             </th> *@
@@ -61,7 +61,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.FLaunch)
             </th>            
-            <th></th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
@@ -92,9 +92,9 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FPrice)
                 </td>
-                <td>
+                @* <td>
                     @Html.DisplayFor(modelItem => item.product.FDescription)
-                </td>
+                </td> *@
                 @* <td>
                     @Html.DisplayFor(modelItem => item.product.FIntroduction)
                 </td> *@

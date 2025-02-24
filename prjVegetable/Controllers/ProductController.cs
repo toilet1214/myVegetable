@@ -5,8 +5,7 @@ using prjVegetable.ViewModels;
 using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Security.Claims;
-using X.PagedList.Extensions;
-using X.PagedList;
+
 
 namespace prjVegetable.Controllers
 {
@@ -31,6 +30,7 @@ namespace prjVegetable.Controllers
 
             //熱銷標籤
             var popularProductIds = PopularProduct();
+            var topfavoriteProductIds = FavoriteProduct();
 
             // 取得篩選的最低價格和最高價格
             //decimal精確數值的資料型別，小數點後兩位
@@ -125,6 +125,7 @@ namespace prjVegetable.Controllers
 
                 // 設定該產品是否為熱門商品
                 pp.IsPopular = popularProductIds.Contains(p.FId);
+                pp.IsFavoritetag = topfavoriteProductIds.Contains(p.FId);
 
                 list.Add(pp);
             }
@@ -173,7 +174,7 @@ namespace prjVegetable.Controllers
             return Json(new { isLoggedIn = isLoggedIn });
         }
 
-        //熱門標籤
+        //熱銷標籤
         public List<int> PopularProduct()
         { 
             DbVegetableContext db = new DbVegetableContext();
@@ -197,6 +198,27 @@ namespace prjVegetable.Controllers
                             .ToList();
 
             return orderlist.Select(x => x.ProductId).ToList();
+        }
+
+        //顧客最愛
+        public List<int> FavoriteProduct()
+        {
+            DbVegetableContext db = new DbVegetableContext();
+            List<CProductWrap> list = new List<CProductWrap>();
+
+            var topfavorite = db.TFavorites
+                               .GroupBy(f => f.FProductId)
+                               .Select(g => new
+                               {
+                                   ProductId = g.Key,
+                                   FavoriteCount = g.Count()
+
+                               })
+                               .OrderByDescending(g => g.FavoriteCount)
+                               .Take(5)
+                               .ToList();
+
+            return topfavorite.Select(X=>X.ProductId).ToList();
         }
 
         //加入我的最愛
@@ -299,11 +321,40 @@ namespace prjVegetable.Controllers
                     comment.FPersonName = DisplayName(comment.FPersonName); 
                 }
             }
-
             x.AverageStar = AverageStar(id);
+            x.RelatedProducts = GetRelatedProducts(id, x.FClassification);
 
             return View(x);
         }
+
+        //相似商品
+        private List<CProductWrap> GetRelatedProducts(int currentProductId, string category)
+        {
+            // 獲取同分類的其他商品，排除當前商品
+            var relatedProducts = _context.TProducts
+                .Where(p => p.FClassification == category
+                       && p.FId != currentProductId
+                       && p.FLaunch == 1)
+                .OrderBy(r => Guid.NewGuid()) // 隨機排序
+                .Take(6)  // 取6個商品
+                .ToList();
+
+            // 轉換成 CProductWrap
+            var result = relatedProducts.Select(p => new CProductWrap
+            {
+                FId = p.FId,
+                FName = p.FName,
+                FPrice = p.FPrice,
+                FDescription = p.FDescription,
+                FImgName = _context.TImgs
+                    .Where(i => i.FProductId == p.FId && i.FOrderBy == 1)
+                    .Select(i => i.FName)
+                    .FirstOrDefault()
+            }).ToList();
+
+            return result;
+        }
+
 
         //顯示商品評論
         private List<CCommentWrap> GetProductComments(int productId, int personId)
@@ -419,7 +470,6 @@ namespace prjVegetable.Controllers
 
 
         //隱藏姓名
-        
         public string DisplayName(string name)
         {
             if (string.IsNullOrEmpty(name))
