@@ -11,7 +11,7 @@
 <hr />
 <div class="container my-5" id="app">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <nav class="nav flex-column align-items-start">
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
@@ -20,7 +20,7 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <div v-if="Customer" class="row">
                 <form v-if="edit===1">
                     <div class="mb-3 row">
@@ -124,8 +124,11 @@
                         <div class="col-6">
                             <div class="row">
                                 <label for="OldPassword" class="col-md-3 col-form-label">舊密碼：</label>
-                                <div class="col-md-9">
+                                <div class="col-md-9 d-flex">
                                     <input type="password" class="form-control" id="OldPassword"  v-model="OldPassword">
+                                    <button type="button" class="btn" onclick="togglePasswordVisibility('OldPassword')">
+                                        <i class="bi bi-eye "></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -134,8 +137,11 @@
                         <div class="col-6">
                             <div class="row">
                                 <label for="newPassword" class="col-md-3 col-form-label">新密碼：</label>
-                                <div class="col-md-9">
+                                <div class="col-md-9 d-flex">
                                     <input type="password" class="form-control" id="newPassword"  v-model="newPassword">
+                                    <button type="button" class="btn" onclick="togglePasswordVisibility('newPassword')">
+                                        <i class="bi bi-eye "></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -144,8 +150,11 @@
                         <div class="col-6">
                             <div class="row">
                                 <label for="ConfirmPassword" class="col-md-3 col-form-label">確認密碼：</label>
-                                <div class="col-md-9">
+                                <div class="col-md-9 d-flex">
                                     <input type="password" class="form-control" id="ConfirmPassword"  v-model="ConfirmPassword">
+                                    <button type="button" class="btn" onclick="togglePasswordVisibility('ConfirmPassword')">
+                                        <i class="bi bi-eye "></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -251,12 +260,12 @@
                 </form>
                 <!-- 返回與編輯按鈕 -->
                 <div v-if="edit==0">
-                    <button @@click="toggleEditing" class="btn btn-primary">編輯資料</button>
-                    <button v-if="loginType === 0" @@click="toggleEditPassword" class="btn btn-primary">修改密碼</button>
+                    <button @@click="toggleEditing" class="btn btn-primary m-1">編輯資料</button>
+                    <button v-if="loginType === 0" @@click="toggleEditPassword" class="btn btn-primary m-1">修改密碼</button>
                 </div>
                 <div v-if="edit>=1">
-                    <button @@click="cancel" class="btn btn-success">取消</button>
-                    <button @@click="saveCustomer" class="btn btn-success">儲存修改</button>
+                    <button @@click="cancel" class="btn btn-success m-1">取消</button>
+                    <button @@click="saveCustomer" class="btn btn-success m-1">儲存修改</button>
                 </div>
             </div>
         </div>
@@ -286,7 +295,22 @@
             });
         });
     </script>
+    <script>
+        function togglePasswordVisibility(inputId) {
+            var input = document.getElementById(inputId);
+            var icon = input.nextElementSibling.querySelector('i'); // 獲取按鈕中的圖標
 
+            if (input.type === "password") {
+                input.type = "text"; // 顯示密碼
+                icon.classList.remove("bi-eye"); // 移除顯示眼睛圖標
+                icon.classList.add("bi-eye-slash"); // 添加隱藏眼睛圖標
+            } else {
+                input.type = "password"; // 隱藏密碼
+                icon.classList.remove("bi-eye-slash"); // 移除隱藏眼睛圖標
+                icon.classList.add("bi-eye"); // 添加顯示眼睛圖標
+            }
+        }
+    </script>
     <script>
         const app = Vue.createApp({
             data() {

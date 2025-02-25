@@ -113,7 +113,7 @@
                     @Html.DisplayFor(modelItem => item.FNote)
                 </td>
                 <td>
-                    @Html.ActionLink("訂單詳細資料", "OrderList", new { id = item.FId })
+                    <a asp-action="OrderList" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a>
                 </td>
             </tr>
         }

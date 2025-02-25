@@ -7,7 +7,7 @@
 <hr />
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <nav class="nav flex-column align-items-start">
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
@@ -16,7 +16,7 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <table class="table" id="List">
                 <thead>
                     <tr>
@@ -51,7 +51,9 @@
                                     @Html.DisplayFor(modelItem => item.Popular)
                                 </td>
                                 <td>
-                                    @Html.ActionLink("移除", "DeleteFavorite", "Customer", new { id = item.FId }, new { onclick = "return confirm('確定要刪除嗎?')" })
+                                    <a href="javascript:void(0);" class="btn btn-secondary mb-2" onclick="confirmDelete('@item.FId')">
+                                        移除
+                                    </a>
                                 </td>
                             </tr>
                         }
@@ -62,6 +64,23 @@
     </div>
 </div>
 @section Scripts {
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: "確定要移除嗎？",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "確定",
+                cancelButtonText: "取消"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "/Customer/DeleteFavorite/" + id;
+                }
+            });
+        }
+    </script>
     <script>
         $(document).ready(function () {
             $('#List').DataTable({

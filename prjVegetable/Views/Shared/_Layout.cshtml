@@ -244,17 +244,20 @@
                         <div class="my-5"></div>
 
                         <!-- 密碼輸入框 -->
-                        <div class="form-group mb-3">
+                        <div class="form-group mb-3 d-flex">
                             @Html.Password("txtpassword", "", new
                                 {
                                     @class = "form-control-login custom-input",
                                     placeholder = "請輸入密碼 ( 8-20 英數字 )",
                                     required = "required"
                                 })
+                            <button type="button" class="btn" onclick="togglePasswordVisibility('txtpassword')">
+                                <i  class="bi bi-eye "></i> 
+                            </button>
                         </div>
                         <div class="d-flex justify-content-center align-items-center mt-3">
                             <hr class="w-divider-h-1 flex-grow-1">
-                            <span class="mx-3 small text-decoration-none">或</span>
+                            <span class="mx-3 modal-title small">或</span>
                             <hr class="w-divider-h-1 flex-grow-1">
                         </div>
                         <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -440,6 +443,42 @@
                     window.location.href = "@Url.Action("LogOut", "Account")";
                 }
             });
+        }
+    </script>
+    @if (TempData.Peek("ErrorReset") != null)
+    {
+        <script>
+            Swal.fire({
+                title: "注意",
+                text: @Json.Serialize(TempData["ErrorReset"]),
+                icon: "error"
+            });
+        </script>
+    }
+    @if (TempData.Peek("SuccessReset") != null)
+    {
+        <script>
+            Swal.fire({
+                title: "成功",
+                text: @Json.Serialize(TempData["SuccessReset"]),
+                icon: "success"
+            });
+        </script>
+    }
+    <script>
+        function togglePasswordVisibility(inputId) {
+            var input = document.getElementById(inputId);
+            var icon = input.nextElementSibling.querySelector('i'); // 獲取按鈕中的圖標
+
+            if (input.type === "password") {
+                input.type = "text"; // 顯示密碼
+                icon.classList.remove("bi-eye"); // 移除顯示眼睛圖標
+                icon.classList.add("bi-eye-slash"); // 添加隱藏眼睛圖標
+            } else {
+                input.type = "password"; // 隱藏密碼
+                icon.classList.remove("bi-eye-slash"); // 移除隱藏眼睛圖標
+                icon.classList.add("bi-eye"); // 添加顯示眼睛圖標
+            }
         }
     </script>
     @await RenderSectionAsync("Scripts", required: false)

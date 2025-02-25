@@ -5,15 +5,15 @@
 }
 <style>
     .star-yellow {
-        color: #ffb400; 
+        color: #ffb400;
     }
 </style>
 <h1 class="mt-5">我的評論</h1>
 <hr />
 <div class="container my-5">
     <div class="row">
-        <div class="col-md-3">
-            <nav class="nav flex-column">
+        <div class="col-md-2">
+            <nav class="nav flex-column align-items-start">
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Report">問題回報</a>
@@ -21,35 +21,21 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <table class="table" id="List">
                 <thead>
                     <tr>
-                        @* <th>
-                            @Html.DisplayNameFor(model => model.FId)
-                        </th> *@
-                        <th>
+
+                        <th style="width: 10%;">
                             @Html.DisplayNameFor(model => model.FOrderId)
                         </th>
-                        @* <th>
-                            @Html.DisplayNameFor(model => model.FPersonId)
-                        </th> *@
-                        @* <th>
-                            @Html.DisplayNameFor(model => model.FPersonName)
-                        </th> *@
-                        @* <th>
-                            @Html.DisplayNameFor(model => model.FProductId)
-                         </th>  *@
                         <th>
                             @Html.DisplayNameFor(model => model.FProductName)
                         </th>
-                        @* <th> 
-                             @Html.DisplayNameFor(model => model.FOrderListId) 
-                         </th>  *@
                         <th>
                             @Html.DisplayNameFor(model => model.FComment)
                         </th>
-                        <th>
+                        <th style="width: 10%;">
                             @Html.DisplayNameFor(model => model.FStar)
                         </th>
                     </tr>
@@ -58,32 +44,16 @@
                     @foreach (var item in Model)
                     {
                         <tr>
-                            @* <td> 
-                                     @Html.DisplayFor(modelItem => item.FId) 
-                                 </td> *@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FOrderId)
                             </td>
-                            @* <td> 
-                                     @Html.DisplayFor(modelItem => item.FPersonId) 
-                                 </td>  *@
-                            @* <td> 
-                                     @Html.DisplayFor(modelItem => item.FPersonName) 
-                                 </td>  *@
-                            @* <td> 
-                                     @Html.DisplayFor(modelItem => item.FProductId) 
-                                 </td>  *@
                             <td>
                                 @Html.DisplayFor(modelItem => item.FProductName)
                             </td>
-                            @* <td> 
-                                     @Html.DisplayFor(modelItem => item.FOrderListId) 
-                                 </td> *@ 
-                                     <td>
+                            <td>
                                 @Html.DisplayFor(modelItem => item.FComment)
                             </td>
                             <td>
-                                @* @Html.DisplayFor(modelItem => item.FStar) *@
                                 <p>
                                     <small>
                                         @for (int i = 1; i <= 5; i++)
@@ -104,7 +74,7 @@
                                     </small>
                                 </p>
                             </td>
-                            
+
                         </tr>
                     }
                 </tbody>

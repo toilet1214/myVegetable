@@ -9,7 +9,7 @@
 <hr />
 <div class="container mt-5">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <nav class="nav flex-column align-items-start">
                 <a class="nav-link" asp-controller="Customer" asp-action="Index">會員資料</a>
                 <a class="nav-link" asp-controller="Customer" asp-action="Order">訂單紀錄</a>
@@ -18,7 +18,7 @@
                 <a class="nav-link" asp-controller="Customer" asp-action="CommentIndex">我的評論</a>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-10">
             <table class="table" id="List">
                 <thead>
                     <tr>
@@ -76,11 +76,11 @@
                                     {
                                         @if (item.HasComment)
                                         {
-                                            @Html.ActionLink("查看評論", "CommentIndex", new { id = item.orderList.FId })
+                                            <a asp-action="CommentIndex" asp-route-id="@item.orderList.FId" class="btn btn-secondary mb-2">查看評論</a>
                                         }
                                         else
                                         {
-                                            @Html.ActionLink("評論", "AddComment", new { id = item.orderList.FId })
+                                            <a asp-action="AddComment" asp-route-id="@item.orderList.FId" class="btn btn-secondary mb-2">評論</a>
                                         }
                                     }
                                     else

@@ -125,12 +125,9 @@ namespace prjVegetable.Controllers
                     TempData["IsLogIn"] = HttpContext.Session.Keys.Contains(CDictionary.SK_LOGINED_USER);
                     TempData["WelcomeMessage"] = $"歡迎回來，{user.FAccount}！";
                     // 更新用戶登入資訊
-                    if (!string.IsNullOrEmpty(user.FGoogleId))
-                    {
-                        user.FGoogleId = googleId;
-                        user.FLoginType = 1;
-                        user.FIsVerified = true;
-                    }
+                    user.FGoogleId = googleId;
+                    user.FLoginType = 1;
+                    user.FIsVerified = true;
                     await _context.SaveChangesAsync();
                 }
 
@@ -390,13 +387,15 @@ namespace prjVegetable.Controllers
 
             if (verification == null || verification.FIsUsed || verification.FExpirationTime < DateTime.UtcNow)
             {
-                return Content("密碼重設連結無效或已過期");
+                TempData["ErrorReset"] = "密碼重設連結無效或已過期";
+                return RedirectToAction("Index", "Home");
             }
 
             var user = _context.TPeople.FirstOrDefault(u => u.FId == verification.FPersonId && u.FAccount == vm.Email);
             if (user == null)
             {
-                return Content("使用者不存在");
+                TempData["ErrorReset"] = "使用者不存在!";
+                return RedirectToAction("Index", "Home");
             }
 
             user.FPassword = vm.NewPassword;
@@ -404,8 +403,8 @@ namespace prjVegetable.Controllers
             verification.FUsedTime = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-
-            return Content("密碼已成功重設，請使用新密碼登入");
+            TempData["SuccessReset"] = "密碼已成功重設，請用新密碼登入!";
+            return RedirectToAction("Index", "Home");
         }
 
         // 發送 Email 的通用方法
