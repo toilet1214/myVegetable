@@ -57,7 +57,7 @@ namespace prjVegetable.Controllers
             TempData["LoginFail"] = "帳號或密碼錯誤，請重試一次";
             return Redirect(returnUrl);
         }
-        
+
         public IActionResult GoogleLogin()
         {
             var properties = new AuthenticationProperties
@@ -185,10 +185,15 @@ namespace prjVegetable.Controllers
             }
 
             P.FIsVerified = false;
+            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+            var emailSent = await SendVerificationEmail(P.FAccount, token);
+            if (!emailSent)
+            {
+                TempData["ErrorRegister"] = "電子郵件地址無效或發送失敗，請確認後重新註冊。";
+                return RedirectToAction("Register");
+            }
             _context.TPeople.Add(P);
             await _context.SaveChangesAsync(); // 先存入資料庫獲取 FId
-
-            string token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
 
             var verification = new TVerification
             {
@@ -203,12 +208,7 @@ namespace prjVegetable.Controllers
             await _context.SaveChangesAsync();
 
             // 發送驗證信，檢查 Email 是否有效
-            var emailSent = await SendVerificationEmail(P.FAccount, token);
-            if (!emailSent)
-            {
-                TempData["ErrorRegister"] = "電子郵件地址無效或發送失敗，請確認後重新註冊。";
-                return RedirectToAction("Register");
-            }
+
 
             TempData["SuccessRegister"] = "註冊成功！請檢查您的信箱並完成電子郵件驗證。";
             return RedirectToAction("Index", "Home");

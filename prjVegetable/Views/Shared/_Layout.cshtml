@@ -403,9 +403,10 @@
         @if (TempData.Peek("SuccessRegister") != null) // 註冊成功，顯示通知並跳轉
         {
             <script>
+                console.log("123");
                 Swal.fire({
                     title: "註冊成功",
-                    text: @Html.Raw(TempData["SuccessRegister"].ToString()),
+                    text: @Json.Serialize(TempData["SuccessRegister"]),
                     icon: "success"
                 });
             </script>
@@ -414,7 +415,7 @@
         {
             <script>
                 Swal.fire({
-                    title: @Html.Raw(TempData["LogoutMessage"].ToString())
+                    title: @Json.Serialize(TempData["LogoutMessage"])
                                 });
             </script>
         }
