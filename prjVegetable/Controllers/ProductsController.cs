@@ -24,22 +24,70 @@ namespace prjVegetable.Controllers
         {
             DbVegetableContext db = new DbVegetableContext();
             string keyword = vm.txtKeyword;
-            IEnumerable<TProduct> datas = null;
-            if (string.IsNullOrEmpty(keyword))
+            string selectedCategory = vm.SelectedCategory;  // 接收分類
+            string selectedStorage = vm.SelectedStorage;    // 接收藏溫方式
+            string selectedStatus = vm.SelectedStatus;      // 接收上下架狀態
+
+            // 轉換藏溫和上下架狀態的選擇
+            int? storageCondition = null;
+            if (!string.IsNullOrEmpty(selectedStorage))
             {
-                datas = from p in _context.TProducts
-                        select p;
+                storageCondition = selectedStorage switch
+                {
+                    "冷凍" => 0,
+                    "冷藏" => 1,
+                    "常溫" => 2,
+                    _ => null
+                };
             }
-            else
+
+            int? launchCondition = null;
+            if (!string.IsNullOrEmpty(selectedStatus))
             {
-                datas = _context.TProducts.Where(p =>
-                p.FName.Contains(keyword) ||
-                p.FClassification.Contains(keyword) ||
-                p.FLaunchAt.ToString().Contains(keyword) ||
-                p.FOrigin.Contains(keyword)
+                launchCondition = selectedStatus switch
+                {
+                    "上架" => 1,
+                    "下架" => 0,
+                    _ => null
+                };
+            }
+
+            // 動態構建查詢
+            IQueryable<TProduct> datas = _context.TProducts.AsQueryable();
+
+            // 根據關鍵字進行篩選
+            if (!string.IsNullOrEmpty(keyword))
+            {
+                datas = datas.Where(p =>
+                    p.FName.Contains(keyword) ||
+                    p.FClassification.Contains(keyword) ||
+                    p.FLaunchAt.ToString().Contains(keyword) ||
+                    p.FOrigin.Contains(keyword)
                 );
             }
+
+            // 根據分類篩選
+            if (!string.IsNullOrEmpty(selectedCategory))
+            {
+                datas = datas.Where(p => p.FClassification.Contains(selectedCategory));
+            }
+
+            // 根據藏溫篩選
+            if (storageCondition.HasValue)
+            {
+                datas = datas.Where(p => p.FStorage == storageCondition.Value);
+            }
+
+            // 根據上下架篩選
+            if (launchCondition.HasValue)
+            {
+                datas = datas.Where(p => p.FLaunch == launchCondition.Value);
+            }
+
+            // 執行查詢並轉換為列表
             var data = datas.ToList();
+
+            // 包裝商品資料
             List<CProductWrap> list = new List<CProductWrap>();
             foreach (var p in data)
             {
@@ -51,8 +99,10 @@ namespace prjVegetable.Controllers
                 }
                 list.Add(pp);
             }
+
             return View(list);
         }
+
 
         //詳細資料頁面
         public async Task<IActionResult> Details()

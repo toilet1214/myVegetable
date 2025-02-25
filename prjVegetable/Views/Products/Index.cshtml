@@ -22,6 +22,35 @@
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
+
+<form method="get" action="@Url.Action("Index", "Products")">
+    
+
+    <select name="SelectedCategory">
+        <option value="">選擇分類</option>
+        <option value="根莖">根莖</option>
+        <option value="葉菜">葉菜</option>
+        <option value="水果">水果</option>
+        <option value="蕈菇">蕈菇</option>
+        <option value="蔬菜箱">蔬菜箱</option>
+        <option value="其他">其他</option>
+    </select>
+
+    <select name="SelectedStorage">
+        <option value="">選擇藏溫方式</option>
+        <option value="冷凍">冷凍</option>
+        <option value="冷藏">冷藏</option>
+        <option value="常溫">常溫</option>
+    </select>
+
+    <select name="SelectedStatus">
+        <option value="">選擇上下架</option>
+        <option value="上架">上架</option>
+        <option value="下架">下架</option>
+    </select>
+
+    <button type="submit">篩選</button>
+</form>
 <table class="table" id="List">
     <thead>
         <tr>
