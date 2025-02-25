@@ -9,6 +9,7 @@
 
 *沒有查詢到的筆數
 *還沒有帶入使用者ID
+*第一筆與最後一筆提示沒有跑出來
 *編輯按鈕沒有收回來的動畫
 
 -->
@@ -64,96 +65,64 @@
 
 <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
 <div class="container my-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <!-- 左欄，搜尋按鈕與按鈕群組 -->
-        <div class="d-flex align-items-center justify-content-start">
-            <!-- 搜尋按鈕 -->
-            <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    data-bs-placement="top"
-                    title="點擊進行查詢"
-                    data-bs-delay="10">
-                <i class="bi bi-search">　查詢庫存調整單</i>
-            </button>
+        <div class="d-flex align-items-center justify-content-between w-100 flex-nowrap">
+            <!-- 左欄，搜尋按鈕與按鈕群組 -->
+            <div class="d-flex align-items-center justify-content-start flex-wrap">
+                <!-- 搜尋按鈕 -->
+                <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        data-bs-placement="top"
+                        title="點擊進行查詢"
+                        data-bs-delay="10">
+                    <i class="bi bi-search">　查詢庫存調整單</i>
+                </button>
 
-            <!-- 按鈕群組 -->
-            <div class="btn-group d-flex me-3" role="group" aria-label="Inventory Navigation">
-                <!-- 第一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["FirstId"] })"
-                   class="btn first-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="第一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-start-fill"></i>
-                </a>
+                <!-- 按鈕群組 -->
+                <div class="btn-group me-3" role="group">
+                    <!-- 第一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["FirstId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-skip-start-fill"></i>
+                    </a>
+                    <!-- 上一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-caret-left-fill"></i>
+                    </a>
+                    <!-- 下一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-caret-right-fill"></i>
+                    </a>
+                    <!-- 最後一筆 -->
+                    <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
+                       class="btn btn-hover-grow btn-lg">
+                        <i class="bi bi-skip-end-fill"></i>
+                    </a>
+                </div>
+            </div>
 
-                <!-- 上一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
-                   class="btn prev-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="上一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-left-fill"></i>
-                </a>
-
-                <!-- 下一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
-                   class="btn next-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="下一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-right-fill"></i>
-                </a>
-
-                <!-- 最後一筆 -->
-                <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
-                   class="btn last-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="最後一筆"
-                   data-current="@Model.InventoryAdjustment.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-end-fill"></i>
-                </a>
+            <!-- 右欄，其他項目 -->
+            <div class="d-flex align-items-center justify-content-end">
+                <!-- 調整日期 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">調整日期：</label>
+                    <input asp-for="InventoryAdjustment.FAdjustmentDate" class="form-control form-control-sm w-auto" type="text" id="FBaselineDate" value="@Model.InventoryAdjustment.FAdjustmentDate.ToString("yyyy-MM-dd")" readonly />
+                </div>
+                <!-- 盤點人員 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">盤點人員：</label>
+                    <input class="form-control form-control-sm w-auto" type="text" value="@ViewData["CheckerName"]" readonly />
+                </div>
+                <!-- 庫存調整單號 -->
+                <div class="d-flex align-items-center ms-3">
+                    <label class="pe-1 mb-0">調整單號：</label>
+                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" readonly />
+                </div>
             </div>
         </div>
 
-        <!-- 右欄，其他項目 -->
-        <div class="d-flex align-items-center justify-content-end">
-                <!-- 庫存盤點單號 -->
-                <div class="d-flex mb-0 align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FId" class="pe-1 mb-0">庫存調整單號：</label>
-                    <input asp-for="InventoryAdjustment.FId" class="form-control form-control-sm w-auto" type="text" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FId" class="text-danger"></span>
-                </div>
-                <!-- 調整日期 -->
-                <div class="d-flex mb-0 align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FAdjustmentDate" class="pe-1 mb-0">調整日期：</label>
-                    <input asp-for="InventoryAdjustment.FAdjustmentDate" class="form-control form-control-sm w-auto" type="text" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FAdjustmentDate" class="text-danger"></span>
-                </div>
-                <!-- 盤點人員 -->
-                <div class="d-flex align-items-center justify-content-end ms-3">
-                    <label asp-for="InventoryAdjustment.FCheckerId" class="pe-1 mb-0">盤點人員：</label>
-                    <input class="form-control form-control-sm w-auto" type="text" value="@ViewData["CheckerName"]" readonly />
-                    <span asp-validation-for="InventoryAdjustment.FCheckerId" class="text-danger"></span>
-                </div>
-
-                <!-- 隱藏的欄位 -->
-                <input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
-        </div>
-    </div>
         <div class="d-flex">
             <!-- 左邊的表格 -->
             <div class="table-container flex-grow-1 me-3 mt-2">
@@ -311,6 +280,10 @@
     </div>
 </div>
 
+
+<!-- 隱藏的欄位 -->
+<input type="hidden" name="currentId" value="@Model.InventoryAdjustment.FId" />
+
 <!-- 查詢結果視窗 -->
 <div class="modal fade" id="inventoryAdjustmentListModal" tabindex="-1" role="dialog" aria-labelledby="inventoryListModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
@@ -358,11 +331,17 @@
         const fAdjustmentEndDate = document.getElementById('FAdjustmentEndDate').value.trim();
         const fCheckerId = document.getElementById('FCheckerId').value.trim();
 
-        // 檢查是否至少輸入一個條件
-        if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
-            alert('請至少填寫一個查詢條件');
-            return;
-        }
+            // 檢查是否至少輸入一個條件
+    if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
+        Swal.fire({
+            title: '提示',
+            text: '請至少填寫一個查詢條件',
+            icon: 'warning',
+            confirmButtonText: '確定'
+        });
+        return;
+    }
+
 
         const requestData = {
             fId: fId || null,
@@ -436,21 +415,28 @@
     modal.addEventListener('show.bs.modal', disableBodyScroll);
     modal.addEventListener('hide.bs.modal', enableBodyScroll);
 
-    // 綁定確認按鈕，進行跳轉
+        // 綁定確認按鈕，進行跳轉
     document.getElementById('confirmSelection').addEventListener('click', function () {
         if (!selectedInventoryAdjustmentId) {
-            alert('請選擇一個調整單號');
+            Swal.fire({
+                title: '提示',
+                text: '請選擇一個調整單號',
+                icon: 'warning',
+                confirmButtonText: '確定'
+            });
             return;
         }
         console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
         window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
     });
+    
+
 
 </script>
 
 <!-- 編輯/儲存 -->
 <script>
-        document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
             const editButton = document.getElementById("editButton");
             const saveButton = document.getElementById("saveButton");
             const cancelEditButton = document.getElementById("cancelEditButton");
@@ -506,58 +492,96 @@
             }
         ]; // 包裝為陣列
 
-        $.ajax({
-            url: '/InventoryAdjustment/Save/' + currentId,
-            method: 'POST',
-            data: JSON.stringify(requestData), // 傳遞陣列
-            contentType: 'application/json',
-            success: function (response) {
-                if (response.success) {
-                    alert("備註更新成功！");
-                } else {
-                    alert('錯誤: ' + response.error);
-                }
-            },
-            error: function (xhr, status, error) {
-                alert("錯誤: " + error);
+           $.ajax({
+        url: '/InventoryAdjustment/Save/' + currentId,
+        method: 'POST',
+        data: JSON.stringify(requestData), // 傳遞陣列
+        contentType: 'application/json',
+        success: function (response) {
+            if (response.success) {
+                Swal.fire({
+                    title: "已更新備註",
+                    icon: "info",
+                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
+                    showConfirmButton: false
+                });
+            } else {
+                Swal.fire({
+                    title: "錯誤",
+                    text: response.error,
+                    icon: "error"
+                });
             }
-        });
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: "錯誤",
+                text: "發生錯誤，請稍後再試。詳細資訊：" + error,
+                icon: "error"
+            });
+        }
+    });
+
     }
 
-        });
+      });
 </script>
 
 <!-- 刪除 -->
 <script>
-        document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('deleteButton').addEventListener('click', function () {
             const inventoryAdjustmentsId = document.querySelector('input[name="currentId"]').value;
 
-            if (confirm('您確定要刪除此調整資料嗎？此操作無法撤銷！')) {
-                fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: `id=${inventoryAdjustmentsId}`,
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.href = data.redirectTo;
-                    } else {
-                        alert('刪除失敗，請稍後再試。');
-                    }
-                })
-                .catch(error => {
-                    console.error('錯誤:', error);
-                    alert('發生錯誤，請稍後再試。');
-                });
-            }
+            Swal.fire({
+                title: '您確定要刪除此調整資料嗎？',
+                text: '此操作無法撤銷！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `id=${inventoryAdjustmentsId}`,
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                title: '刪除成功',
+                                icon: 'success',
+                                timer: 1500, // 成功後顯示 1.5 秒
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = data.redirectTo; // 跳轉頁面
+                            });
+                        } else {
+                            Swal.fire({
+                                title: '刪除失敗',
+                                text: '請稍後再試。',
+                                icon: 'error'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('錯誤:', error);
+                        Swal.fire({
+                            title: '發生錯誤',
+                            text: '請稍後再試。',
+                            icon: 'error'
+                        });
+                    });
+                }
+            });
         });
     });
-
 </script>
+
 
 <!-- 列印 -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
@@ -609,35 +633,55 @@
 </script>
 
 
-<!-- 第一筆與最後一筆的提示-->
-<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+<!-- 第一筆與最後一筆資料提示 -->
+<!-- 由前端判斷，可以減少伺服器的負擔-->
 <script>
-         document.addEventListener("DOMContentLoaded", () => {
-        // 第一筆與上一筆按鈕檢查
-        document.querySelectorAll(".first-btn, .prev-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"), 10);
-                const firstId = parseInt(this.getAttribute("data-first"), 10);
+     document.addEventListener("DOMContentLoaded", function () {
+        const firstRecordButton = document.getElementById("firstRecordButton");
+        const previousRecordButton = document.getElementById("previousRecordButton");
+        const nextRecordButton = document.getElementById("nextRecordButton");
+        const lastRecordButton = document.getElementById("lastRecordButton");
 
-                if (currentId === firstId) {
-                    e.preventDefault(); // 阻止預設行為
-                    alert("已經在第一筆資料！");
+        // 第一筆按鈕事件
+        if (firstRecordButton) {
+            firstRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
                 }
             });
-        });
+        }
 
-        // 下一筆與最後一筆按鈕檢查
-        document.querySelectorAll(".next-btn, .last-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"), 10);
-                const lastId = parseInt(this.getAttribute("data-last"), 10);
-
-                if (currentId === lastId) {
-                    e.preventDefault(); // 阻止預設行為
-                    alert("已經在最後一筆資料！");
+        // 上一筆按鈕事件
+        if (previousRecordButton) {
+            previousRecordButton.addEventListener("click", function (event) {
+                if (firstRecordButton.dataset.isFirst === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是第一筆資料！");
                 }
             });
-        });
+        }
+
+        // 下一筆按鈕事件
+        if (nextRecordButton) {
+            nextRecordButton.addEventListener("click", function (event) {
+                if (nextRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
+
+        // 最後一筆按鈕事件
+        if (lastRecordButton) {
+            lastRecordButton.addEventListener("click", function (event) {
+                if (lastRecordButton.dataset.isLast === "true") {
+                    event.preventDefault(); // 防止跳轉
+                    alert("已是最後一筆資料！");
+                }
+            });
+        }
     });
-
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

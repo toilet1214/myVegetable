@@ -8,7 +8,6 @@
 
 *查詢到的筆數沒有更新
 *還沒有帶入使用者ID
-*列印 沒有庫存盤點單號、基準日、建檔日期
 
 -->
 <style>
@@ -130,24 +129,21 @@
         <!-- 右欄，其他項目 -->
         <div class="d-flex align-items-center justify-content-end">
             <!-- 盤點基準日 -->
-            <div class="d-flex align-items-center justify-content-end">
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
                 <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
                 <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-                <span asp-validation-for="InventoryMain.FBaselineDate" class="text-danger"></span>
             </div>
 
             <!-- 建檔日期 -->
-            <div class="d-flex align-items-center justify-content-end ms-3">
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
                 <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
                 <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
-                <span asp-validation-for="InventoryMain.FCreatedAt" class="text-danger ms-0"></span>
             </div>
 
             <!-- 庫存盤點單號 -->
-            <div class="d-flex align-items-center justify-content-end ms-3">
-                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">庫存盤點單號：</label>
+            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
+                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">盤點單號：</label>
                 <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
-                <span asp-validation-for="InventoryMain.FId" class="text-danger ms-2"></span>
             </div>
         </div>
     </div>
@@ -655,55 +651,98 @@
 
             };
 
-            $.ajax({
-                url: '/Inventory/Save/' + currentId,
-                method: 'POST',
-                data: JSON.stringify(requestData),
-                contentType: 'application/json',
-                success: function (response) {
-                    if (response.success) {
-                        if (response.redirectTo) {
-                            alert("檢測到庫存數量變更，將跳轉至盤點調整作業");
-                            window.location.href = response.redirectTo;
-                        } else {
-                            alert("已更新備註");
-                        }
-                    } else {
-                        alert('錯誤: ' + response.error);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    alert("錯誤: " + error);
+                $.ajax({
+        url: '/Inventory/Save/' + currentId,
+        method: 'POST',
+        data: JSON.stringify(requestData),
+        contentType: 'application/json',
+        success: function (response) {
+            if (response.success) {
+                if (response.redirectTo) {
+                    Swal.fire({
+                        title: "調整庫存成功",
+                        text:"將跳轉至庫存調整作業",
+                        icon: "success"
+                    }).then(() => {
+                        window.location.href = response.redirectTo;
+                    });
+                } else {
+                   Swal.fire({
+                    title: "已更新備註",
+                    icon: "info",
+                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
+                    showConfirmButton: false
+                });
                 }
+            } else {
+                Swal.fire({
+                    title: "錯誤",
+                    text: response.error,
+                    icon: "error"
+                });
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire({
+                title: "錯誤",
+                text: error,
+                icon: "error"
             });
+        }
+    });
+
         }
     });
 </script>
 
-<!-- 刪除 -->
+
+<!-- 刪除已經先拿掉了~~~~ -->
 <script>
     document.getElementById('deletebutton').addEventListener('click', function () {
         const inventoryId = document.querySelector('input[name="currentId"]').value;
 
-        if (confirm('您確定要刪除此盤點資料嗎？此操作無法撤銷！')) {
+           Swal.fire({
+        title: '您確定要刪除此盤點資料嗎？',
+        text: '此操作無法撤銷！',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '確定刪除',
+        cancelButtonText: '取消'
+    }).then((result) => {
+        if (result.isConfirmed) {
             fetch('@Url.Action("DeleteConfirmed", "Inventory")', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: `id=${inventoryId}`, 
+                body: `id=${inventoryId}`,
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = data.redirectTo;
+                    Swal.fire({
+                        title: '刪除成功',
+                        icon: 'success',
+                        timer: 1500, // 顯示 1.5 秒後自動關閉
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = data.redirectTo; // 成功後跳轉
+                    });
                 } else {
-                    alert('刪除失敗，請稍後再試。');
+                    Swal.fire({
+                        title: '刪除失敗',
+                        text: '請稍後再試。',
+                        icon: 'error'
+                    });
                 }
             })
             .catch(error => {
                 console.error('錯誤:', error);
-                alert('發生錯誤，請稍後再試。');
+                Swal.fire({
+                    title: '發生錯誤',
+                    text: '請稍後再試。',
+                    icon: 'error'
+                });
             });
         }
     });
@@ -715,7 +754,6 @@
         const url = this.getAttribute('data-url');
     });
 </script>
-
 <!-- 列印 -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
 <script>
@@ -813,7 +851,10 @@
 
                 if (currentId === firstId) {
                     e.preventDefault(); // 阻止預設行為
-                    alert("已經在第一筆資料！");
+                        Swal.fire({
+      title: "已經在第一筆資料！",
+      icon: "info"
+    });
                 }
             });
         });
@@ -826,7 +867,10 @@
 
                 if (currentId === lastId) {
                     e.preventDefault(); // 阻止預設行為
-                    alert("已經在最後一筆資料！");
+                    Swal.fire({
+      title: "此筆為最新的資料！",
+      icon: "info"
+    });
                 }
             });
         });
@@ -859,3 +903,5 @@
     });
 
 </script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
