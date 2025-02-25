@@ -200,7 +200,7 @@
                         <div class="row">
                             <label for="fStorage" class="col-md-3 col-form-label">藏溫方式：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fStorage" :value="product.fStorage" readonly>
+                                <input type="text" class="form-control" id="fStorage" :value="getStorageText(product.fStorage)" readonly>
                             </div>
                         </div>
                     </div>
@@ -208,7 +208,7 @@
                         <div class="row">
                             <label for="fLaunch" class="col-md-3 col-form-label">上架狀態：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fLaunch" :value="product.fLaunch" readonly>
+                                <input type="text" class="form-control" id="fLaunch" :value="getLaunchText(product.fLaunch)" readonly>
                             </div>
                         </div>
                     </div>
@@ -460,31 +460,35 @@
                 },
 
                 saveProduct() {
-                        Swal.fire({
-                            title: '儲存中',
-                            text: '儲存中請稍後',
-                            icon: 'info',
-                            timer:3000,
-                            showConfirmButton: false,
-                            willOpen: () => {
-                                Swal.showLoading();
-                            }
-                        });
+                    Swal.fire({
+                        title: '儲存中',
+                        text: '儲存中請稍後',
+                        icon: 'info',
+                        showConfirmButton: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
                     if (this.product.fId) {
-                        console.log(this.product);  // 打印数据，确认数据是否正确
-                        const productData =JSON.parse(JSON.stringify(this.product))
+                        console.log(this.product);
+                        const productData = JSON.parse(JSON.stringify(this.product));
+
                         axios.put(`/Products/update`, productData)
                             .then(response => {
-                                // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
+                                return this.saveImg();  // ✅ 確保圖片存完再顯示 Swal
+                            })
+                            .then(() => {
                                 Swal.fire({
                                     icon: 'success',
                                     title: '資料已儲存!',
                                     text: '產品資料儲存成功。',
-                                    timer:3000,
+                                    timer: 3000,
+                                    willClose: () => {
+                                        window.location.reload();  // ✅ Swal 關閉後再刷新頁面
+                                    }
                                 });
-                                this.saveImg();
-                                this.toggleEditting();  // 儲存後退出編輯模式
-                                window.location.reload();
+                                this.toggleEditting();
                             })
                             .catch(error => {
                                 console.error('儲存失敗', error);
@@ -515,6 +519,23 @@
                             .catch(error => {
                                 console.error("圖片儲存失敗", error);
                             });
+                    }
+                },
+
+                getStorageText(value) {
+                    switch (value) {
+                        case 0: return '冷凍';
+                        case 1: return '冷藏';
+                        case 2: return '常溫';
+                        default: return '未知';
+                    }
+                },
+
+                getLaunchText(value) {
+                    switch (value) {
+                        case 0: return '下架';
+                        case 1: return '上架';
+                        default: return '未知';
                     }
                 },
                 
