@@ -147,7 +147,8 @@
                         .then(data => {
                             Swal.fire({
                                 title: "所有資料提交完成！",
-                                icon: "success"
+                                icon: "success",
+                                confirmButtonText: "繼續新增下一筆"
                             }).then(() => {
                                 window.location.reload();
                             });
