@@ -122,7 +122,8 @@
         fetch("/GoodsInAndOut/Create", {
             method: "POST",
             body: formData
-        }).then(response => response.json())
+        })
+            .then(response => response.json())
             .then(data => {
                 if (data.success) {
                     let mainFId = data.fId;
@@ -137,19 +138,31 @@
                         });
                     });
 
-                    fetch("@Url.Action("InsertDetail")", {
+                    fetch('@Url.Action("InsertDetail")', {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify(details)
-                    }).then(response => response.json())
+                    })
+                        .then(response => response.json())
                         .then(data => {
-                            alert("所有資料提交完成！");
-                            window.location.reload();
-                        }).catch(error => console.error("Error:", error));
+                            Swal.fire({
+                                title: "所有資料提交完成！",
+                                icon: "success",
+                                confirmButtonText: "繼續新增下一筆"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        })
+                        .catch(error => console.error("Error:", error));
                 } else {
-                    alert("提交失敗：" + data.message);
+                    Swal.fire({
+                        title: "提交失敗",
+                        text: data.message,
+                        icon: "warning"
+                    });
                 }
-            }).catch(error => console.error("Error:", error));
+            })
+            .catch(error => console.error("Error:", error));
     });
 
 
@@ -273,8 +286,12 @@
         var details = document.querySelectorAll(".detail-entry");
         if (details.length > 1) {
             details[details.length - 1].remove();
+            updateTotalPrice();
         } else {
-            alert("至少需要一筆明細！");
+            Swal.fire({
+                title: "至少需要一筆明細！",
+                icon: "warning"
+            });
         }
     });
 
