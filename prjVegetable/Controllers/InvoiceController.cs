@@ -146,6 +146,7 @@ namespace prjVegetable.Controllers
                 TInvoice x = db.TInvoices.FirstOrDefault(c => c.FId == id); //Linq 語法: 判斷
                 if (x != null)
                 {
+                    x.FEditor = userId;
                     x.FStatus = 1;
                     db.SaveChanges();
                 }

@@ -5,9 +5,8 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 <div class="text-center mt-3">
-	<h1>修改採購明細內容</h1>
+    <h1>修改採購明細內容</h1>
 </div>
-
 
 <hr />
 <div class="row d-flex justify-content-center">
@@ -15,7 +14,7 @@
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
-                <label asp-for="FId" class="control-label" ></label>
+                <label asp-for="FId" class="control-label"></label>
                 <input asp-for="FId" class="form-control" />
                 <span asp-validation-for="FId" class="text-danger"></span>
             </div>
@@ -37,33 +36,46 @@
 
             <div class="form-group">
                 <label asp-for="FCount" class="control-label"></label>
-                <input asp-for="FCount" class="form-control" />
+                <input asp-for="FCount" class="form-control" id="FCount" />
                 <span asp-validation-for="FCount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FPrice" class="control-label"></label>
-                <input asp-for="FPrice" class="form-control" />
+                <input asp-for="FPrice" class="form-control" id="FPrice" />
                 <span asp-validation-for="FPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FSum" class="control-label"></label>
-                <input asp-for="FSum" class="form-control" />
+                <input asp-for="FSum" class="form-control" id="FSum" readonly />
                 <span asp-validation-for="FSum" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
                 <input type="submit" value="修改並送出" class="btn btn-primary" />
             </div>
         </form>
-		<div class="mt-2 mb-2">
-			<form asp-action="List" method="post">
-				<button type="submit" class="btn btn-danger">取消</button>
-			</form>
-		</div>
+        <div class="mt-2 mb-2">
+            <form asp-action="List" method="post">
+                <button type="submit" class="btn btn-danger">取消</button>
+            </form>
+        </div>
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function calculateSum() {
+                let count = parseFloat($("#FCount").val()) || 0;
+                let price = parseFloat($("#FPrice").val()) || 0;
+                let sum = count * price;
+                $("#FSum").val(sum); // 保留兩位小數
+            }
 
+            // 初始化載入頁面時計算一次
+            calculateSum();
 
-@* @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-} *@
+            $("#FCount, #FPrice").on("input", calculateSum);
+        });
+    </script>
+}
