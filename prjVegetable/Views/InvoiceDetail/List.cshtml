@@ -6,11 +6,7 @@
 }
 
 <h1>發票明細管理</h1>
-@* @using (Html.BeginForm())
-{
-    @:請輸入發票號碼: @Html.TextBox("txtKeyword")
-    <button type="submit" class="btn btn-warning">查詢</button>
-} *@
+
 <div class="mt-3 mb-3">
     <a href="@Url.Action("Create")" class="btn btn-primary">新增發票明細</a>
 </div>
@@ -18,81 +14,49 @@
 <table class="table" id="List">
     <thead>
         <tr>
-            <th>
-                序號
-            </th>
-            <th>
-                ID
-            </th>
-
-            <th>
-                @Html.DisplayNameFor(model => model.FNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FSum)
-            </th>
+            <th>序號</th>
+            <th>ID</th>
+            <th>@Html.DisplayNameFor(model => model.FNumber)</th>
+            <th>@Html.DisplayNameFor(model => model.FProductName)</th>
+            <th>@Html.DisplayNameFor(model => model.FCount)</th>
+            <th>@Html.DisplayNameFor(model => model.FPrice)</th>
+            <th>@Html.DisplayNameFor(model => model.FSum)</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @{
-            int count = 0;
-            @foreach (var item in Model)
-            {
-                count++;
-                <tr>
-                    <td>
-                        @count
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FNumber)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FProductName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FCount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FPrice)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FSum)
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
-                        <a href="@Url.Action("Delete", new { id = item.FId })" class="btn btn-danger" onclick="return confirm('確定要刪除嗎?');">刪除</a>
-                    </td>
-                </tr>
-            }
-
-
+        @{ int count = 0; }
+        @foreach (var item in Model)
+        {
+            count++;
+            <tr>
+                <td>@count</td>
+                <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.FProductName)</td>
+                <td>@Html.DisplayFor(modelItem => item.FCount)</td>
+                <td>@Html.DisplayFor(modelItem => item.FPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.FSum)</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
+                    <button class="btn btn-danger delete-btn" data-id="@item.FId">刪除</button>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
-@section Scripts {
 
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
-                "paging": true, // 啟用分頁
-                "lengthChange": false, // 允許用戶改變每頁顯示數量
-                "searching": true, // 啟用搜尋
-                "ordering": true, // 啟用排序
-                "info": true, // 顯示資訊
-                "autoWidth": false, // 禁用自動調整寬度
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
                 "language": {
                     "lengthMenu": "顯示 _MENU_ 筆資料",
                     "zeroRecords": "沒有符合的訂單",
@@ -107,14 +71,33 @@
                         "previous": "上一頁"
                     }
                 },
-                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
-                "lengthChange": true, // 允許改變筆數
+                "lengthMenu": [5, 10, 25, 50],
+                "lengthChange": true,
                 "columnDefs": [
                     { "orderable": false, "targets": [-1] }
                 ],
                 "order": []
             });
+
+            $(document).on("click", ".delete-btn", function () {
+                var id = $(this).data("id");
+                var deleteUrl = "@Url.Action("Delete")" + "?id=" + id;
+                
+                Swal.fire({
+                    title: "確定要刪除嗎?",
+                    text: "此操作無法撤銷！",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#3085d6",
+                    confirmButtonText: "是，刪除！",
+                    cancelButtonText: "取消"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = deleteUrl;
+                    }
+                });
+            });
         });
     </script>
-
 }
