@@ -9,14 +9,14 @@
 <br />
 <div id="app">    
     <!-- 新增資料 -->
-    <p>
+    <p class="d-flex align-items-center justify-content-between w-100">
         <a href="/Person/Create" class="btn btn-primary">新增資料</a>
         <span class="d-flex justify-content-center mx-auto">
             <button class="btn btn-outline-primary mx-1" @@click="filterData(0)">&emsp;會員&emsp;</button>
             <button class="btn btn-outline-primary mx-1" @@click="filterData(1)">&emsp;員工&emsp;</button>
             <button class="btn btn-outline-primary mx-1" @@click="filterData(2)">離職員工</button>
             <button class="btn btn-outline-primary mx-1" @@click="filterData('all')">顯示全部</button>
-        </span>
+        </span>        
     </p>
     
     <!-- 顯示資料 -->
