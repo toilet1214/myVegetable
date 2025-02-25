@@ -176,6 +176,7 @@
                     <table class="table text-center">
                         <thead>
                             <tr>
+                                <th>商品ID</th>
                                 <th>商品</th>
                                 <th>系統庫存數量</th>
                                 <th>實際庫存數量(填入數量)</th>
@@ -186,7 +187,8 @@
                             @foreach (var item in Model.InventoryDetails)
                             {
                                 <tr>
-                                    <td>@($"{item.FProductId} - {item.FName}")</td>
+                                    <td>@($"{item.FProductId}")</td>
+                                        <td>@($"{item.FName}")</td>
                                     <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
                                     <td>
                                             <input class="text-center" id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
@@ -213,12 +215,12 @@
         <!-- 右邊的按鈕 -->
         <div class="d-flex flex-column align-items-center mt-2">
             <!-- 新增按鈕 -->
-            <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" data-bs-toggle="modal" data-bs-target="#addModal" title="新增" id="addButton">
+            <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" data-bs-toggle="modal" data-bs-target="#addModal" title="新增" id="addButton">
                 <i class="bi bi-plus-square"></i>
             </button>
 
             <!-- 編輯按鈕 -->
-            <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" id="editButton" data-bs-toggle="collapse"
+                <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="editButton" data-bs-toggle="collapse"
                     data-bs-target="#editActionButtons" aria-expanded="false" aria-controls="editActionButtons"
                     data-bs-toggle="tooltip" title="編輯" data-bs-delay="10">
                 <i class="bi bi-pencil-square"></i>
@@ -233,24 +235,24 @@
             <div id="editActionButtons" class="collapse">
                 <div class="d-flex flex-column align-items-center">
                     <!-- 將系統數量帶入實際庫存按鈕 -->
-                    <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" id="syncStockButton" data-bs-toggle="tooltip"
+                        <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="syncStockButton" data-bs-toggle="tooltip"
                             title="帶入系統庫存" data-bs-delay="10">
                         <i class="bi bi-arrow-right"></i>
                     </button>
                     <!-- 將實際庫存設為0按鈕 -->
-                    <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" id="resetStockButton" data-bs-toggle="tooltip"
+                        <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="resetStockButton" data-bs-toggle="tooltip"
                             title="將實際庫存設為 0" data-bs-delay="10">
                         <i class="bi bi-0-circle-fill"></i>
                     </button>
                     <!-- 儲存按鈕 -->
-                    <button type="button" class="btn btn-light mb-2 btn-hover-grow btn-lg" id="saveButton" data-bs-toggle="tooltip"
+                        <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="saveButton" data-bs-toggle="tooltip"
                             title="儲存" data-bs-delay="10">
                         <i class="bi bi-floppy"></i>
                     </button>
                 </div>
             </div>
             <!-- 列印按鈕 -->
-            <button type="button" class="btn btn-light btn-hover-grow btn-lg" id="printButton " onclick="printTable()" data-bs-toggle="tooltip"
+                <button type="button" class="btn btn-primary btn-hover-grow btn-lg" id="printButton " onclick="printTable()" data-bs-toggle="tooltip"
                     title="列印" data-bs-delay="10">
                 <i class="bi bi-printer-fill"></i>
             </button>
@@ -598,13 +600,9 @@
 
        rows.forEach(function (row) {
         var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
-
-        // 從商品欄位分割出 FProductId 和 FName
-        var productField = row.querySelector("td:nth-child(1)").innerText.trim();
-        var productId = parseInt(productField.split(' - ')[0], 10); // 提取商品 ID
-        var productName = productField.split(' - ')[1] || ""; // 提取商品名稱
-
-        var systemQuantity = parseInt(row.querySelector("td:nth-child(2)").innerText.trim(), 10) || 0;
+        var productId = parseInt(row.querySelector("td:first-child").innerText.trim(), 10) || 0;
+        var productName = row.querySelector("td:nth-child(2)").innerText.trim();
+        var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText.trim(), 10) || 0;
         var actualQuantityInput = row.querySelector("input[name='FActualQuantity']");
         var actualQuantity = parseInt(actualQuantityInput.value, 10);
 
@@ -810,8 +808,8 @@
         const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
 
         rows.forEach(row => {
-            const systemQuantity = row.querySelector('td:nth-child(2)'); // 第2欄是系統庫存數量
-            const actualQuantityInput = row.querySelector('td:nth-child(3) input'); // 第3欄是實際庫存數量的輸入框
+            const systemQuantity = row.querySelector('td:nth-child(3)'); // 第3欄是系統庫存數量
+            const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第4欄是實際庫存數量的輸入框
 
             if (systemQuantity && actualQuantityInput && !actualQuantityInput.disabled) {
                 // 僅當輸入框可編輯時進行操作
@@ -829,7 +827,7 @@
         const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
 
         rows.forEach(row => {
-            const actualQuantityInput = row.querySelector('td:nth-child(3) input'); // 第3欄是實際庫存數量的輸入框
+            const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第3欄是實際庫存數量的輸入框
 
             if (actualQuantityInput && !actualQuantityInput.disabled) {
                 // 僅當輸入框可編輯時進行操作
