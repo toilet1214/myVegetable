@@ -5,6 +5,56 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 <style>
+    .btn-no-background {
+        background: transparent;
+        border: none;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .btn-no-background i {
+        font-size: 24px; /* 放大鏡圖示大小 */
+        color: #333; /* 圖示顏色，您可以根據需要更改顏色 */
+    }
+
+    .btn-no-background:hover i {
+        color: #007bff; /* 鼠標懸停時變藍色 */
+    }
+
+
+    /* 設定初始背景顏色為淡土黃色 */
+    .styled-select {
+        background-color: #e1d1a6; /* 淡土黃色 */
+        border: 1px solid #ccc; /* 邊框顏色 */
+        padding: 10px 20px; /* 內邊距 */
+        font-size: 16px; /* 字體大小 */
+        border-radius: 5px; /* 圓角邊框 */
+        appearance: none; /* 去除瀏覽器預設樣式 */
+        -webkit-appearance: none;
+        -moz-appearance: none;
+    }
+
+    /* 當有選擇選項時變成深土黃色 */
+    .styled-select:focus,
+    .styled-select:not(:placeholder-shown) {
+        background-color: #c1a06a; /* 深土黃色 */
+    }
+
+    /* 為了更好看，增加選擇框的顏色 */
+    .styled-select option {
+        background-color: #e1d1a6; /* 預設背景 */
+        color: #333; /* 預設文字顏色 */
+    }
+
+    /* 較深顏色選項 */
+    .styled-select:focus option,
+    .styled-select:not(:placeholder-shown) option {
+        background-color: #c1a06a; /* 深土黃色 */
+    }
+
+
+
+
     table {
         width: 100%; /* 使表格佔滿容器的寬度 */
 
@@ -22,6 +72,35 @@
 <p>
     <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
 </p>
+
+<form method="get" action="@Url.Action("Index", "Products")">
+    <select name="SelectedCategory" class="styled-select">
+        <option value="">選擇分類</option>
+        <option value="根莖">根莖</option>
+        <option value="葉菜">葉菜</option>
+        <option value="水果">水果</option>
+        <option value="蕈菇">蕈菇</option>
+        <option value="蔬菜箱">蔬菜箱</option>
+        <option value="其他">其他</option>
+    </select>
+
+    <select name="SelectedStorage" class="styled-select">
+        <option value="">選擇藏溫方式</option>
+        <option value="冷凍">冷凍</option>
+        <option value="冷藏">冷藏</option>
+        <option value="常溫">常溫</option>
+    </select>
+
+    <select name="SelectedStatus" class="styled-select">
+        <option value="">選擇上下架</option>
+        <option value="上架">上架</option>
+        <option value="下架">下架</option>
+    </select>
+    <button type="submit" class="btn-no-background">
+        <i class="bi bi-search"></i>
+    </button>
+</form>
+
 <table class="table" id="List">
     <thead>
         <tr>
