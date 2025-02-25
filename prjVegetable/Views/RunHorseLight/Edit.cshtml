@@ -1,0 +1,200 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutERP.cshtml";
+}
+
+<!-- 公告資料
+
+📢 近期網站維護公告，系統將於凌晨2點進行升級。請提前完成相關操作，以免受到影響。
+📢 新增歷史訂單下載功能。歡迎提供建議，以持續改進服務！
+📢 會員專區上線，註冊會員即可享有專屬優惠。更多精彩內容即將推出，敬請期待！
+📢 即日起開放食譜投稿，歡迎分享你的健康食譜。讓我們一起推廣美味菜餚！
+📢 網站全新改版，帶來更流暢的使用體驗。感謝大家的支持與耐心等待！
+📢 因應伺服器升級，本週五凌晨將短暫停機。
+📢 參加我們的問卷調查，即可獲得精美小禮物。您的意見對我們非常重要！
+📢 為提升服務品質，我們將於下週進行系統優化。期間可能會有短暫延遲，敬請見諒。
+📢 感謝大家的支持！我們即將推出全新功能，請持續關注最新公告。
+
+-->
+
+<style>
+
+    /* 跑馬燈區塊樣式 */
+    .preview-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        border: 1px solid #ddd;
+        padding: 10px;
+        position: relative;
+    }
+
+    /* 固定「跑馬燈預覽：」 */
+    .preview-label {
+        flex-shrink: 0;
+    }
+
+    /* 跑馬燈滾動區域 */
+    .preview-marquee {
+        flex-grow: 1;
+        overflow: hidden;
+        position: relative;
+        display: flex;
+    }
+
+    /* 滾動文字 */
+    .marquee-text {
+        display: inline-block;
+        white-space: nowrap;
+        position: absolute;
+        right: -100%;
+    }
+
+      
+
+        /* 設置區塊（Grid 8:4） */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 8fr 4fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        /* 左側公告內容 */
+        .left-panel textarea {
+            width: 100%;
+            height: 200px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+        }
+
+        /* 右側速度調整 */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+            .right-panel input {
+                width: 100%;
+                padding: 8px;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .right-panel button {
+                padding: 10px;
+                font-size: 16px;
+                color: white;
+                background: #007bff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+                .right-panel button:hover {
+                    background: #0056b3;
+                }
+
+    input[type="range"] {
+        width: 100%;
+        margin-top: 5px;
+    }
+    </style>
+
+<div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
+    <div class="container my-5">
+    <h3 class="text-align">首頁跑馬燈管理</h3>
+        <hr>
+
+    <!-- 預覽區塊 -->
+    <div class="preview-container mb-2">
+        <div class="preview-marquee">
+            <span class="marquee-text"><i class="bi bi-bell-fill"></i> 這是公告內容，滾動測試...</span>
+        </div>
+    </div>
+
+        <!-- 設置區域（左 8 右 4） -->
+        <div class="settings-grid">
+            <!-- 左側：公告內容 -->
+            <div class="left-panel">
+                <label>公告內容（可輸入多條，每行代表一條公告）：</label>
+                <textarea id="marqueeText" placeholder="輸入多條公告，每行一條" oninput="updatePreview()"></textarea>
+            </div>
+
+            <!-- 右側：滾動速度 + 儲存按鈕 -->
+        <div class="right-panel">
+            <label>滾動速度（數字越大越快）： <span id="speedValue">2</span></label>
+            <input type="range" id="marqueeSpeed" min="0.5" max="10" step="0.1" value="2" oninput="updatePreview()">
+            <button onclick="saveSettings()">儲存設定</button>
+        </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    let marqueeElement;
+    let previewContainer;
+    let position;
+    let animationFrame;
+    let speed;
+
+    document.addEventListener("DOMContentLoaded", function () {
+        // 讀取 LocalStorage 內的公告內容與速度
+        document.getElementById("marqueeText").value = localStorage.getItem("marqueeText") || "預設公告";
+        document.getElementById("marqueeSpeed").value = localStorage.getItem("marqueeSpeed") || 2;
+
+        // 初始化預覽
+        marqueeElement = document.querySelector(".preview-marquee");
+        previewContainer = document.querySelector(".preview-container");
+
+        updatePreview();
+    });
+
+    function updatePreview() {
+        let text = document.getElementById("marqueeText").value.trim();
+        speed = parseFloat(document.getElementById("marqueeSpeed").value) || 2;
+
+        if (text) {
+            let lines = text.split("\n").filter(line => line.trim() !== "");
+            marqueeElement.innerHTML = lines.join("　　　　　　　　　　"); // 直接顯示使用者輸入內容
+        } else {
+            marqueeElement.innerHTML = "預設公告"; // 預設公告也不加 icon
+        }
+
+        cancelAnimationFrame(animationFrame);
+        position = previewContainer.offsetWidth; // 重新設定初始位置
+        startPreviewAnimation();
+    }
+
+    function startPreviewAnimation() {
+        cancelAnimationFrame(animationFrame);
+        position = previewContainer.offsetWidth;
+
+        function move() {
+            position -= speed;
+            if (position <= -marqueeElement.offsetWidth) {
+                position = previewContainer.offsetWidth;
+            }
+            marqueeElement.style.transform = `translateX(${position}px)`;
+            animationFrame = requestAnimationFrame(move);
+        }
+
+        move();
+    }
+
+    function saveSettings() {
+        let newText = document.getElementById("marqueeText").value;
+        let newSpeed = document.getElementById("marqueeSpeed").value;
+
+        localStorage.setItem("marqueeText", newText);
+        localStorage.setItem("marqueeSpeed", newSpeed);
+
+        alert("設定已儲存！");
+    }
+</script>

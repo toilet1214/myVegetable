@@ -11,13 +11,15 @@
             <!-- 左邊輪播 -->
             <div class="col-md-8">
                 <h3 class="mb-4">輪播預覽</h3>
-                <hr/>
+                <hr />
                 <div id="imageCarousel" class="carousel slide" data-bs-ride="carousel">
-                    <div class="carousel-inner">
-                        @for (int i = 0; i < Model.ImagePaths.Count; i++)
+                    <div class="carousel-inner" id="carouselInner">
+                        @for (int i = 0; i < 5; i++) // 確保輪播區域最多顯示5張圖片
                         {
                             <div class="carousel-item @(i == 0 ? "active" : "")">
-                                <img src="@Model.ImagePaths[i]" class="d-block w-100" alt="Carousel Image @(i + 1)" style="max-height: 50vh; object-fit: contain;" />
+                                <img id="carouselImg@(i + 1)" src="@(i < Model.ImagePaths.Count ? Model.ImagePaths[i] : "")"
+                                     class="d-block w-100" alt="Carousel Image @(i + 1)"
+                                     style="max-height: 50vh; object-fit: contain;" />
                             </div>
                         }
                     </div>
@@ -31,6 +33,7 @@
                     </button>
                 </div>
             </div>
+
             <!-- 右邊上傳區塊 -->
             <div class="col-md-4">
                 <div class="d-flex align-items-baseline mb-4" style="max-width: fit-content;">
@@ -44,8 +47,11 @@
                     @for (int i = 0; i < 5; i++)
                     {
                         <div class="mb-3 d-flex align-items-center">
-                            <img id="preview@(i + 1)" src="@(i < Model.ImagePaths.Count ? Model.ImagePaths[i] : "")" class="me-3" style="max-width: 15vh; height: auto; display: block;" />
-                            <input type="file" id="Image@(i + 1)" name="Image@(i + 1)" onchange="previewImage(this, 'preview@(i + 1)')" class="form-control" />
+                            <img id="preview@(i + 1)" src="@(i < Model.ImagePaths.Count ? Model.ImagePaths[i] : "")"
+                                 class="me-3" style="max-width: 15vh; height: auto; display: block;" />
+                            <input type="file" id="Image@(i + 1)" name="Image@(i + 1)"
+                                   onchange="previewImage(this, 'preview@(i + 1)', 'carouselImg@(i + 1)')"
+                                   class="form-control" />
                         </div>
                     }
                     <div class="d-flex mt-4 justify-content-end">
@@ -53,20 +59,21 @@
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>
 
-
 <script>
-    // 預覽選擇的圖片
-    function previewImage(input, previewId) {
+    // 預覽選擇的圖片，並同步更新輪播圖
+    function previewImage(input, previewId, carouselId) {
         const file = input.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = function (e) {
+                // 更新右側的預覽圖
                 document.getElementById(previewId).src = e.target.result;
+                // 更新左側的輪播圖
+                document.getElementById(carouselId).src = e.target.result;
             };
             reader.readAsDataURL(file);
         }
