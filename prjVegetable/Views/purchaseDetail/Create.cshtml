@@ -13,7 +13,7 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group" hidden>
-                <label asp-for="FId" class="control-label "></label>
+                <label asp-for="FId" class="control-label"></label>
                 <input asp-for="FId" class="form-control" />
                 <span asp-validation-for="FId" class="text-danger"></span>
             </div>
@@ -36,17 +36,17 @@
 
             <div class="form-group">
                 <label asp-for="FCount" class="control-label"></label>
-                <input asp-for="FCount" class="form-control" />
+                <input asp-for="FCount" class="form-control" id="FCount" />
                 <span asp-validation-for="FCount" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FPrice" class="control-label"></label>
-                <input asp-for="FPrice" class="form-control" />
+                <input asp-for="FPrice" class="form-control" id="FPrice" />
                 <span asp-validation-for="FPrice" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FSum" class="control-label"></label>
-                <input asp-for="FSum" class="form-control" />
+                <input asp-for="FSum" class="form-control" id="FSum" readonly />
                 <span asp-validation-for="FSum" class="text-danger"></span>
             </div>
             <div class="form-group mt-2">
@@ -54,15 +54,25 @@
             </div>
         </form>
         <div class="mt-2 mb-2">
-			<form asp-action="List" method="post">
-				<button type="submit" class="btn btn-danger">取消</button>
-			</form>
-		</div>
+            <form asp-action="List" method="post">
+                <button type="submit" class="btn btn-danger">取消</button>
+            </form>
+        </div>
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function calculateSum() {
+                let count = parseFloat($("#FCount").val()) || 0;
+                let price = parseFloat($("#FPrice").val()) || 0;
+                let sum = count * price;
+                $("#FSum").val(sum); // 保留两位小数
+            }
 
-
-@* @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-} *@
+            $("#FCount, #FPrice").on("input", calculateSum);
+        });
+    </script>
+}
