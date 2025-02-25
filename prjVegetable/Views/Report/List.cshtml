@@ -50,7 +50,7 @@
                         @Html.DisplayFor(modelItem => item.FTime)
                     </td>
                     <td>
-                        @Html.ActionLink("詳細資訊", "Details", new { id = item.FId }) 
+                        <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資訊</a>
                     </td>
                 </tr>
             }
