@@ -11,7 +11,7 @@
     <!-- 新增資料 -->
     <p>
         <a href="/Person/Create" class="btn btn-primary">新增資料</a>
-        <span class="justify-content-center invisible">
+        <span class="justify-content-center d-none">
             <button class="btn btn-outline-primary">&emsp;會員&emsp;</button>
             <button class="btn btn-outline-primary">&emsp;員工&emsp;</button>
             <button class="btn btn-outline-primary">離職員工</button>
@@ -41,7 +41,7 @@
                 <th>{{item.fId}}</th>
                 <td>{{ item.fName }}</td>
                 <th>{{item.fAccount}}</th>
-                <th>{{item.fPassword}}</th>               
+                <th>{{'*'.repeat(item.fPassword.length)}}</th>               
                 <td>{{ item.fGender }}</td>
                 <td>{{ item.fBirth }}</td>
                 <td>{{ item.fPhone }}</td>
