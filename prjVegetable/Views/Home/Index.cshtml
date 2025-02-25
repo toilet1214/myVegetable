@@ -5,9 +5,30 @@
 
 @model prjVegetable.ViewModels.CHomePageViewModel
 
+<style>
+    .marquee-container {
+        width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        background: #ffffff;
+        position: relative;
+    }
+
+    .marquee {
+        display: inline-block;
+        white-space: nowrap;
+        position: absolute;
+        will-change: transform;
+    }
+</style>
+
+<div class="marquee-container mt-4 pb-4">
+    <div class="marquee"></div>
+</div>
+
 <div>
     <!-- 圖片輪播 Carousel Start-->
-    <div class="container mt-5" data-aos="fade-in" data-aos-duration="1000">
+    <div class="container mt-3" data-aos="fade-in" data-aos-duration="1000">
         <!-- Carousel 外層 -->
         <div id="carouselExampleIndicators" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
 
@@ -64,7 +85,7 @@
     <div class="row g-0 overflow-hidden my-4">
         <div class="col-lg-8 mb-3">
             <div class="lc-block" data-aos="fade-right">
-                <img src="./images/Carousel1.jpg" alt="" class="img-fluid">
+                <img src="./images/wwwww.jpg" alt="" class="img-fluid">
             </div>
         </div>
         <div class="col-lg-4 py-5 ps-4 d-flex align-items-center" data-aos="fade-down" data-aos-duration="1500">
@@ -83,7 +104,7 @@
         </div>
         <div class="col-lg-8 mb-3 mt-3" data-aos="fade-left">
             <div class="lc-block">
-                <img src="./images/Carousel2.jpg" alt="" class="img-fluid">
+                <img src="./images/www.jpg" alt="" class="img-fluid">
             </div>
         </div>
     </div>
@@ -128,3 +149,47 @@
 </div>
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var marquee = document.querySelector(".marquee");
+        var container = document.querySelector(".marquee-container");
+
+        // 讀取 LocalStorage 內的公告內容與速度
+        var text = localStorage.getItem("marqueeText") || "📢 預設公告";
+        var speed = parseFloat(localStorage.getItem("marqueeSpeed")) || 2;
+
+        var lines = text.split("\n").filter(line => line.trim() !== "");
+    marquee.innerHTML = lines.map(line => `${line}`).join("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+
+
+
+        var position = container.offsetWidth;
+        var animationFrame;
+
+        function move() {
+            position -= speed;
+            if (position < -marquee.offsetWidth) {
+                position = container.offsetWidth;
+            }
+            marquee.style.transform = "translateX(" + position + "px)";
+            animationFrame = requestAnimationFrame(move);
+        }
+
+        function startAnimation() {
+            if (!animationFrame) {
+                animationFrame = requestAnimationFrame(move);
+            }
+        }
+
+        function stopAnimation() {
+            cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+        }
+
+        startAnimation();
+
+        // 滑鼠懸停時暫停滾動
+        container.addEventListener("mouseenter", stopAnimation);
+        container.addEventListener("mouseleave", startAnimation);
+    });
+</script>
