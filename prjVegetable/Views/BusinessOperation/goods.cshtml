@@ -39,18 +39,21 @@
 </div>
 @section Scripts {
     <script>
-        new Vue({
-            el: "#app",
-            data: {
-                startDate: "2024-01-01",
-                endDate: "2025-12-31",
-                barChart: null,
-                pieChart: null,
-                productLabels: {
-                    1: "大白菜", 2: "菠菜", 3: "花椰菜", 4: "洋蔥", 5: "白蘿蔔",
-                    6: "胡蘿蔔", 7: "番茄", 8: "青椒", 9: "玉米", 10: "茄子",
-                    11: "蘋果", 12: "香蕉", 13: "葡萄", 14: "芋頭", 15: "香菇"
-                }
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    startDate: "2024-01-01",
+                    endDate: "2025-12-31",
+                    barChart: null,
+                    pieChart: null,
+                    productLabels: {
+                        1: "大白菜", 2: "菠菜", 3: "花椰菜", 4: "洋蔥", 5: "白蘿蔔",
+                        6: "胡蘿蔔", 7: "番茄", 8: "青椒", 9: "玉米", 10: "茄子",
+                        11: "蘋果", 12: "香蕉", 13: "葡萄", 14: "芋頭", 15: "香菇"
+                    }
+                };
             },
             methods: {
                 fetchData() {
@@ -108,6 +111,6 @@
                     this.barChart.render();
                 }
             }
-        });
+        }).mount("#app");
     </script>
 }

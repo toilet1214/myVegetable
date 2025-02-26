@@ -60,15 +60,18 @@
 </div>
 @section Scripts {
     <script>
-        new Vue({
-            el: "#app",
-            data: {
-                startDate: "2024-09-24",
-                endDate: "2025-12-31",
-                totalAmount: 0,
-                pieChart: null,
-                barChart: null,
-                lineChart: null
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    startDate: "2024-09-24",
+                    endDate: "2025-12-31",
+                    totalAmount: 0,
+                    pieChart: null,
+                    barChart: null,
+                    lineChart: null
+                };
             },
             methods: {
                 fetchData() {
@@ -147,7 +150,7 @@
                     this.lineChart.render();
                 }
             }
-        });
+        }).mount("#app");
     </script>
 }
 

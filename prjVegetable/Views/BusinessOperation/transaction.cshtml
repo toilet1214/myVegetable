@@ -20,49 +20,52 @@
         }
     </style>
 }
-    <div id="app">
-        <div class="fs-1 fw-bold mt-3">
-            <p>交易紀錄分析</p>
-        </div>
-        <div class="input-container mt-3 margin-left: 20px">
-            <label>選擇時間區間:</label>
-            <input type="date" v-model="startDate">
-            <span>-</span>
-            <input type="date" v-model="endDate">
-            <button class="btn btn-success" v-on:click="fetchData">查詢</button>
-        </div>
+<div id="app">
+    <div class="fs-1 fw-bold mt-3">
+        <p>交易紀錄分析</p>
+    </div>
+    <div class="input-container mt-3 margin-left: 20px">
+        <label>選擇時間區間:</label>
+        <input type="date" v-model="startDate">
+        <span>-</span>
+        <input type="date" v-model="endDate">
+        <button class="btn btn-success" v-on:click="fetchData">查詢</button>
+    </div>
 
-        <div>
-            <div class="chart-container mt-3">
-                <div class="fs-1 fw-bold text-center col-6 ">
-                    <p>交易總額: {{ totalAmount }} 元</p>
-                    <p>交易總數: {{ totalCount }} 筆</p>
-                    <img style="width: 25%; height: 50%;" src="~/images/交易紀錄分析.jpg" />
-                </div>
-
-                <div class="chart-box col-6 ">
-                    <div id="lineChartContainer" style="height: 370px;"></div>
-                </div>
+    <div>
+        <div class="chart-container mt-3">
+            <div class="fs-1 fw-bold text-center col-6 ">
+                <p>交易總額: {{ totalAmount }} 元</p>
+                <p>交易總數: {{ totalCount }} 筆</p>
+                <img style="width: 25%; height: 50%;" src="~/images/交易紀錄分析.jpg" />
             </div>
 
-            <div class="chart-container mb-3 mt-3">
-                <div id="pieChartContainer" class="chart-box " style="height: 450px;"></div>
-                <div id="barChartContainer" class="chart-box" style="height: 370px;"></div>
+            <div class="chart-box col-6 ">
+                <div id="lineChartContainer" style="height: 370px;"></div>
             </div>
+        </div>
+
+        <div class="chart-container mb-3 mt-3">
+            <div id="pieChartContainer" class="chart-box " style="height: 450px;"></div>
+            <div id="barChartContainer" class="chart-box" style="height: 370px;"></div>
         </div>
     </div>
+</div>
 @section Scripts {
     <script>
-        new Vue({
-            el: "#app",
-            data: {
-                startDate: "2024-01-01",
-                endDate: "2025-12-31",
-                totalAmount: 0,
-                totalCount: 0,
-                pieChart: null,
-                barChart: null,
-                lineChart: null
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    startDate: "2024-01-01",
+                    endDate: "2025-12-31",
+                    totalAmount: 0,
+                    totalCount: 0,
+                    pieChart: null,
+                    barChart: null,
+                    lineChart: null
+                };
             },
             methods: {
                 fetchData() {
@@ -118,6 +121,6 @@
                     this.lineChart.render();
                 }
             }
-        });
+        }).mount("#app");
     </script>
 }
