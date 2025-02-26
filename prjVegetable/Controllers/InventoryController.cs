@@ -28,118 +28,96 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Detail(int? id)
         {
-            // 如果沒有提供 ID 或查不到該 ID，導向最新一筆有效資料
-            if (id == null || !_context.TInventoryMains.Any(im => im.FId == id && im.FBaselineDate != null))
-            {
-                // 查詢最新一筆有效資料的 ID（以 FId 降序排列）
-                var latestRecordId = _context.TInventoryMains
-                    .Where(im => im.FBaselineDate != null)
-                    .OrderByDescending(im => im.FId)
-                    .Select(im => im.FId)
-                    .FirstOrDefault();
-
-                if (latestRecordId != 0) // 如果找到最新一筆資料，就導向該筆資料
-                {
-                    return RedirectToAction("Detail", new { id = latestRecordId });
-                }
-                else // 如果沒有任何有效資料，則顯示空視圖
-                {
-                    return View("DetailEmpty", new CInventoryViewModel
-                    {
-                        InventoryMain = new CInventoryMainWrap(),
-                        InventoryDetails = new List<CInventoryDetailWrap>(),
-                        Products = _context.TProducts.Select(product => new CProductUpdateWrap
-                        {
-                            FId = product.FId,
-                            FQuantity = product.FQuantity
-                        }).ToList()
-                    });
-                }
-            }
-
-            // 查詢對應的 InventoryMain 資料
-            var inventoryMain = _context.TInventoryMains
-                .Where(im => im.FId == id && im.FBaselineDate != null)
-                .FirstOrDefault();
-
-            // 包裝 InventoryMain 資料
-            var inventoryMainWrap = new CInventoryMainWrap
-            {
-                FId = inventoryMain.FId,
-                FBaselineDate = inventoryMain.FBaselineDate,
-                FCreatedAt = inventoryMain.FCreatedAt,
-                FEditor = inventoryMain.FEditor,
-                FNote = inventoryMain.FNote,
-            };
-
-            // 查詢相關的 InventoryDetails
-            var inventoryDetails = _context.TInventoryDetails
-                .Where(detail => detail.FInventoryMainId == inventoryMain.FId)
-                .ToList();
-
-            // 查詢產品資料
-            var products = _context.TProducts.ToList();
-
-            // 包裝 InventoryDetails
-            var inventoryDetailWraps = inventoryDetails.Select(detail => new CInventoryDetailWrap
-            {
-                FId = detail.FId,
-                FInventoryMainId = detail.FInventoryMainId,
-                FProductId = detail.FProductId,
-                FSystemQuantity = (int)detail.FSystemQuantity,
-                FActualQuantity = detail.FActualQuantity,
-                FName = products.FirstOrDefault(p => p.FId == detail.FProductId)?.FName
-            }).ToList();
-
-            // 查詢員工資料（只包含具備特定權限的）
-            var employees = _context.TPeople
-                .Where(p => p.FPermission == 1)
-                .ToList();
-
-            // 使用 SelectList 封裝員工資料
-            ViewData["Employees"] = new SelectList(employees, "FId", "FName");
-
-            // 獲取有效的 InventoryMain Id 列表
+            // 查詢所有有效的 InventoryMain ID 列表
             var validIds = _context.TInventoryMains
                 .Where(im => im.FBaselineDate != null)
                 .OrderBy(i => i.FId)
                 .Select(i => i.FId)
                 .ToList();
 
-            // 獲取當前顯示的資料索引與總數
+            // 如果沒有提供 ID，或者 ID 無效，則改為使用最新的一筆有效資料
+            if (id == null || !validIds.Contains(id.Value))
+            {
+                id = validIds.LastOrDefault(); // 取最後一筆（最新的）
+            }
+
+            // 查詢 InventoryMain
+            var inventoryMain = _context.TInventoryMains
+                .FirstOrDefault(im => im.FId == id && im.FBaselineDate != null);
+
+            // 如果找不到 InventoryMain，則建立空的 ViewModel
+            var inventoryMainWrap = inventoryMain != null
+                ? new CInventoryMainWrap
+                {
+                    FId = inventoryMain.FId,
+                    FBaselineDate = inventoryMain.FBaselineDate,
+                    FCreatedAt = inventoryMain.FCreatedAt,
+                    FEditor = inventoryMain.FEditor,
+                    FNote = inventoryMain.FNote,
+                }
+                : new CInventoryMainWrap(); // 空物件
+
+            // 查詢所有產品
+            var products = _context.TProducts.Select(product => new CProductUpdateWrap
+            {
+                FId = product.FId,
+                FName = product.FName,
+                FQuantity = product.FQuantity
+            }).ToList();
+
+            var productDict = _context.TProducts
+            .ToDictionary(p => p.FId, p => p.FName); // 先轉成 Dictionary
+
+            var inventoryDetails = inventoryMain != null
+                ? _context.TInventoryDetails
+                    .Where(detail => detail.FInventoryMainId == inventoryMain.FId)
+                    .ToList() // 先執行 SQL 查詢，轉換為記憶體內的物件
+                    .Select(detail => new CInventoryDetailWrap
+                    {
+                        FId = detail.FId,
+                        FInventoryMainId = detail.FInventoryMainId,
+                        FProductId = detail.FProductId,
+                        FSystemQuantity = (int)detail.FSystemQuantity,
+                        FActualQuantity = detail.FActualQuantity,
+                        FName = productDict.ContainsKey(detail.FProductId) ? productDict[detail.FProductId] : null // 避免 EF 查詢錯誤
+                    }).ToList()
+                : new List<CInventoryDetailWrap>();
+
+            // 查詢所有具備權限的員工
+            var employees = _context.TPeople
+                .Where(p => p.FPermission == 1)
+                .ToList();
+            ViewData["Employees"] = new SelectList(employees, "FId", "FName");
+
+            // 計算當前 ID 在 validIds 裡的索引
             int totalItemCount = validIds.Count;
-            int currentIndex = validIds.IndexOf(id.Value) + 1;
+            int currentIndex = id.HasValue ? validIds.IndexOf(id.Value) + 1 : 0;
 
             // 計算前一筆、下一筆、第一筆和最後一筆的 ID
-            var firstId = validIds.Cast<int?>().FirstOrDefault() ?? 0;
-            var lastId = validIds.Cast<int?>().LastOrDefault() ?? 0;
-            var previousId = validIds.Cast<int?>().Where(i => i < id).LastOrDefault(id.Value);
-            var nextId = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault(id.Value);
+            var firstId = validIds.FirstOrDefault();
+            var lastId = validIds.LastOrDefault();
+            var previousId = validIds.Where(i => i < id).LastOrDefault(firstId);
+            var nextId = validIds.Where(i => i > id).FirstOrDefault(lastId);
 
-            // 構建 ViewModel
+            // 建立 ViewModel
             var viewModel = new CInventoryViewModel
             {
                 InventoryMain = inventoryMainWrap,
-                InventoryDetails = inventoryDetailWraps.Any() ? inventoryDetailWraps : new List<CInventoryDetailWrap>(),
-                Products = products.Select(product => new CProductUpdateWrap
-                {
-                    FId = product.FId,
-                    FName = product.FName,
-                    FQuantity = product.FQuantity
-                }).ToList(),
-                TotalItemCount = totalItemCount, // 所有有效的 InventoryMain 總數
-                CurrentItemCount = currentIndex // 當前顯示的 InventoryMain 是第幾筆
+                InventoryDetails = inventoryDetails,
+                Products = products,
+                TotalItemCount = totalItemCount,
+                CurrentItemCount = currentIndex
             };
 
+            // 設定 ViewData 用於前端導覽按鈕
             ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
             ViewData["PreviousId"] = previousId;
-            ViewData["NextId"] = validIds.Cast<int?>().Where(i => i > id).FirstOrDefault() ?? lastId;
-
-
+            ViewData["NextId"] = nextId;
 
             return View(viewModel);
         }
+
 
 
         /*--------------- + Create + ----------------*/
