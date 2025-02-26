@@ -5,6 +5,7 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 <style>
+    /*放大鏡*/
     .btn-no-background {
         background: transparent;
         border: none;
@@ -18,15 +19,16 @@
     }
 
     .btn-no-background:hover i {
-        color: #007bff; /* 鼠標懸停時變藍色 */
+        color: #c1a06a; /* 鼠標懸停時變 深土黃色 */
     }
 
 
+    /* 設定 select 樣式 */
     /* 設定初始背景顏色為淡土黃色 */
     .styled-select {
-        background-color: #e1d1a6; /* 淡土黃色 */
+        background-color: #d7c9b0ff; /* 淺土黃色 */
         border: 1px solid #ccc; /* 邊框顏色 */
-        padding: 10px 20px; /* 內邊距 */
+        padding: 6px 12px; /* 內邊距 */
         font-size: 16px; /* 字體大小 */
         border-radius: 5px; /* 圓角邊框 */
         appearance: none; /* 去除瀏覽器預設樣式 */
@@ -34,25 +36,30 @@
         -moz-appearance: none;
     }
 
-    /* 當有選擇選項時變成深土黃色 */
+    /* 移除選中時的藍色背景 */
     .styled-select:focus,
-    .styled-select:not(:placeholder-shown) {
-        background-color: #c1a06a; /* 深土黃色 */
+    .styled-select:hover {
+        background-color: #e1d1a6;
     }
 
-    /* 為了更好看，增加選擇框的顏色 */
-    .styled-select option {
-        background-color: #e1d1a6; /* 預設背景 */
-        color: #333; /* 預設文字顏色 */
-    }
-
-    /* 較深顏色選項 */
-    .styled-select:focus option,
-    .styled-select:not(:placeholder-shown) option {
-        background-color: #c1a06a; /* 深土黃色 */
+    /* 修改 option 的 hover 樣式，讓它與背景一致 */
+    .styled-select option:hover,
+    .styled-select option:focus {
+        background-color: #c1a06a !important; /* 深土黃色 */
+        color: #8d8266ff;
     }
 
 
+    div.dt-container .dt-search input {
+        width:325px !important;
+        border: 1px solid #aaa;
+        border-radius: 3px;
+        padding: 5px;
+        background-color: transparent;
+        color: inherit;
+        margin-left: 3px;
+    }
+    
 
 
     table {
@@ -69,37 +76,44 @@
 <h1>商品資料列表</h1>
 <br />
 
-<p>
-    <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <a asp-action="Create" class="btn btn-outline-primary">新增資料</a>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <form method="get" action="@Url.Action("Index", "Products")" id="filterOptions" class="d-flex gap-2">
+            <button type="submit" class="btn-no-background">
+                <i class="bi bi-search"></i>
+            </button>
+            <select name="SelectedCategory" class="styled-select">
+                <option value="">選擇分類</option>
+                <option value="根莖">根莖</option>
+                <option value="葉菜">葉菜</option>
+                <option value="水果">水果</option>
+                <option value="蕈菇">蕈菇</option>
+                <option value="蔬菜箱">蔬菜箱</option>
+                <option value="其他">其他</option>
+            </select>
 
-<form method="get" action="@Url.Action("Index", "Products")">
-    <select name="SelectedCategory" class="styled-select">
-        <option value="">選擇分類</option>
-        <option value="根莖">根莖</option>
-        <option value="葉菜">葉菜</option>
-        <option value="水果">水果</option>
-        <option value="蕈菇">蕈菇</option>
-        <option value="蔬菜箱">蔬菜箱</option>
-        <option value="其他">其他</option>
-    </select>
+            <select name="SelectedStorage" class="styled-select">
+                <option value="">選擇藏溫方式</option>
+                <option value="冷凍">冷凍</option>
+                <option value="冷藏">冷藏</option>
+                <option value="常溫">常溫</option>
+            </select>
 
-    <select name="SelectedStorage" class="styled-select">
-        <option value="">選擇藏溫方式</option>
-        <option value="冷凍">冷凍</option>
-        <option value="冷藏">冷藏</option>
-        <option value="常溫">常溫</option>
-    </select>
+            <select name="SelectedStatus" class="styled-select">
+                <option value="">選擇上下架</option>
+                <option value="上架">上架</option>
+                <option value="下架">下架</option>
+            </select>
+        </form>
+    </div>
+</div>
 
-    <select name="SelectedStatus" class="styled-select">
-        <option value="">選擇上下架</option>
-        <option value="上架">上架</option>
-        <option value="下架">下架</option>
-    </select>
-    <button type="submit" class="btn-no-background">
-        <i class="bi bi-search"></i>
-    </button>
-</form>
+
+
+
 
 <table class="table" id="List">
     <thead>
@@ -120,10 +134,10 @@
                 @Html.DisplayNameFor(model => model.FPrice)
             </th>
             @* <th>
-                @Html.DisplayNameFor(model => model.FDescription)
+            @Html.DisplayNameFor(model => model.FDescription)
             </th> *@
             @* <th>
-                @Html.DisplayNameFor(model => model.FIntroduction)
+            @Html.DisplayNameFor(model => model.FIntroduction)
             </th> *@
             <th>
                 @Html.DisplayNameFor(model => model.FQuantity)
@@ -139,7 +153,7 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.FLaunch)
-            </th>            
+            </th>
             <th>操作</th>
         </tr>
     </thead>
@@ -161,7 +175,7 @@
                                 <img src="~/Images/@item.ImgList.First()" class="w-50 d-inline-block" alt="Product Image" />
                             </div>
                         }
-                       
+
                     </div>
 
                 </td>
@@ -172,11 +186,11 @@
                     @Html.DisplayFor(modelItem => item.product.FPrice)
                 </td>
                 @* <td>
-                    @Html.DisplayFor(modelItem => item.product.FDescription)
-                </td> *@
+            @Html.DisplayFor(modelItem => item.product.FDescription)
+            </td> *@
                 @* <td>
-                    @Html.DisplayFor(modelItem => item.product.FIntroduction)
-                </td> *@
+            @Html.DisplayFor(modelItem => item.product.FIntroduction)
+            </td> *@
                 <td>
                     @Html.DisplayFor(modelItem => item.product.FQuantity)
                 </td>
@@ -209,7 +223,7 @@
                     {
                         @:上架
                     }
-                </td>                
+                </td>
                 <td>
                     @* <a asp-action="Edit" asp-route-id="@item.FId">編輯資料</a><br /> *@
                     <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a><br />
@@ -220,7 +234,7 @@
     </tbody>
 </table>
 
-@section Scripts{
+@section Scripts {
     <script>
         function deleteProducts(id) {
             Swal.fire({
@@ -245,9 +259,9 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.delete-link').forEach(function(deleteLink) {
-                deleteLink.addEventListener('click', function(e) {
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.delete-link').forEach(function (deleteLink) {
+                deleteLink.addEventListener('click', function (e) {
                     e.preventDefault();
 
                     const id = deleteLink.getAttribute('data-id');  // 使用正確的屬性名稱
