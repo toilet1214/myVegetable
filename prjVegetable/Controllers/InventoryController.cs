@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using prjVegetable.Models;
 using prjVegetable.ViewModels;
+using System.Security.Claims;
 using static prjVegetable.ViewModels.CInventoryViewModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -28,6 +29,13 @@ namespace prjVegetable.Controllers
         [HttpGet]
         public IActionResult Detail(int? id)
         {
+            // 先檢查使用者是否已登入
+            int? currentUserId = GetCurrentUserId();
+            if (currentUserId == null)
+            {
+                return RedirectToAction("Login", "Account"); // 強制重新登入
+            }
+
             // 查詢所有有效的 InventoryMain ID 列表
             var validIds = _context.TInventoryMains
                 .Where(im => im.FBaselineDate != null)
@@ -118,6 +126,29 @@ namespace prjVegetable.Controllers
             return View(viewModel);
         }
 
+        public int? GetCurrentUserId()
+        {
+            // 1. 嘗試從 Session 取得 FId
+            string userId = HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
+            if (!string.IsNullOrEmpty(userId))
+            {
+                return int.Parse(userId);
+            }
+
+            // 2. 如果 Session 沒有，從 Cookie 內的 Claims 取得
+            var claimsIdentity = HttpContext.User.Identity as ClaimsIdentity;
+            if (claimsIdentity != null)
+            {
+                var userIdClaim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+                if (userIdClaim != null && int.TryParse(userIdClaim.Value, out int userIdFromClaims))
+                {
+                    return userIdFromClaims;
+                }
+            }
+
+            return null; // 無法取得 FId，視為未登入
+        }
+
 
 
         /*--------------- + Create + ----------------*/
@@ -130,6 +161,7 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public IActionResult Create(DateOnly BaseDate, int ProductStartCode, int ProductEndCode)
         {
+            int? currentUserId = GetCurrentUserId();
             // 查詢範圍內的商品
             var productsInRange = _context.TProducts
                 .Where(p => p.FId >= ProductStartCode && p.FId <= ProductEndCode)
@@ -154,7 +186,7 @@ namespace prjVegetable.Controllers
             {
                 FBaselineDate = BaseDate,
                 FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
-                FEditor = 1,
+                FEditor = currentUserId.Value,
                 FNote = $"新增庫存盤點單 - 商品範圍: {productRangeNote}" // 將商品範圍加入備註
             };
 
@@ -240,6 +272,7 @@ namespace prjVegetable.Controllers
         [Route("Inventory/Save/{currentId}")]
         public async Task<IActionResult> Save(int currentId, [FromBody] CInventoryViewModel viewModel, [FromQuery] bool redirect = true)
         {
+            int? currentUserId = GetCurrentUserId();
             if (!ModelState.IsValid)
             {
                 foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
@@ -317,9 +350,9 @@ namespace prjVegetable.Controllers
                         {
                             FadjustmentDate = inventoryMain.FBaselineDate,
                             FCreatedAt = DateOnly.FromDateTime(DateTime.Now),
-                            FEditor = 1,
+                            FEditor = currentUserId.Value,
                             FNote = "庫存調整",
-                            FCheckerId = 1
+                            FCheckerId = currentUserId.Value
                         };
 
                         _context.TInventoryAdjustments.Add(inventoryAdjustment);
