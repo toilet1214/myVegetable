@@ -183,31 +183,40 @@
                                 <th>差異數量</th>
                             </tr>
                         </thead>
-                        <tbody id="tableBody">
-                            @foreach (var item in Model.InventoryDetails)
-                            {
-                                <tr>
-                                    <td>@($"{item.FProductId}")</td>
-                                        <td>@($"{item.FName}")</td>
-                                    <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
-                                    <td>
-                                            <input class="text-center" id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
-                                    </td>
-                                    <td>
-                                        @if (item.FActualQuantity.HasValue)
-                                        {
-                                            @(item.FActualQuantity.Value - item.FSystemQuantity)
-                                        }
-                                        else
-                                        {
-                                            @(" ")
-                                        }
-                                    </td>
-                                    <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
-                                    <input type="hidden" name="FInventoryDetailId" value="@item.FId" />
-                                </tr>
-                            }
-                        </tbody>
+                            <tbody id="tableBody">
+                                @if (Model.InventoryDetails.Any())
+                                {
+                                    foreach (var item in Model.InventoryDetails)
+                                    {
+                                        <tr>
+                                            <td>@($"{item.FProductId}")</td>
+                                            <td>@($"{item.FName}")</td>
+                                            <td>@Html.DisplayFor(modelItem => item.FSystemQuantity)</td>
+                                            <td>
+                                                <input class="text-center" id="FActualQuantity_@item.FId" name="FActualQuantity" type="number" value="@item.FActualQuantity">
+                                            </td>
+                                            <td>
+                                                @if (item.FActualQuantity.HasValue)
+                                                {
+                                                    @(item.FActualQuantity.Value - item.FSystemQuantity)
+                                                }
+                                                else
+                                                {
+                                                    @(" ")
+                                                }
+                                            </td>
+                                            <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+                                            <input type="hidden" name="FInventoryDetailId" value="@item.FId" />
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" class="text-center text-muted">目前無資料</td>
+                                    </tr>
+                                }
+                            </tbody>
                     </table>
                 </div>
             </div>
