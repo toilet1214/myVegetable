@@ -911,4 +911,36 @@
 
 </script>
 
+<!-- 用鍵盤切換上下一筆 -->
+<script>
+    document.addEventListener("keydown", function (event) {
+        // 獲取第一筆與最後一筆的 ID
+        const firstId = parseInt("@ViewData["FirstId"]");
+        const lastId = parseInt("@ViewData["LastId"]");
+        const currentId = parseInt("@Model.InventoryMain.FId"); // 目前這筆的 ID
+
+        if (event.key === "ArrowLeft") {
+            if (currentId === firstId) {
+                Swal.fire({
+                    title: "已經在第一筆資料！",
+                    icon: "info"
+                });
+            } else {
+                window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
+            }
+        }
+        else if (event.key === "ArrowRight") {
+            if (currentId === lastId) {
+                Swal.fire({
+                    title: "此筆為最新的資料！",
+                    icon: "info"
+                });
+            } else {
+                window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
+            }
+        }
+    });
+</script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

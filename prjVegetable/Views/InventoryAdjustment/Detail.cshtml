@@ -82,25 +82,30 @@
                 <div class="btn-group me-3" role="group">
                     <!-- 第一筆 -->
                     <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["FirstId"] })"
-                       class="btn btn-hover-grow btn-lg">
+                       class="btn btn-hover-grow btn-lg first-btn"
+                       data-is-first="@ViewData["IsFirstRecord"]">
                         <i class="bi bi-skip-start-fill"></i>
                     </a>
                     <!-- 上一筆 -->
                     <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["PreviousId"] })"
-                       class="btn btn-hover-grow btn-lg">
+                       class="btn btn-hover-grow btn-lg prev-btn"
+                       data-is-first="@ViewData["IsFirstRecord"]">
                         <i class="bi bi-caret-left-fill"></i>
                     </a>
                     <!-- 下一筆 -->
                     <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["NextId"] })"
-                       class="btn btn-hover-grow btn-lg">
+                       class="btn btn-hover-grow btn-lg next-btn"
+                       data-is-last="@ViewData["IsLastRecord"]">
                         <i class="bi bi-caret-right-fill"></i>
                     </a>
                     <!-- 最後一筆 -->
                     <a href="@Url.Action("Detail", "InventoryAdjustment", new { id = ViewData["LastId"] })"
-                       class="btn btn-hover-grow btn-lg">
+                       class="btn btn-hover-grow btn-lg last-btn"
+                       data-is-last="@ViewData["IsLastRecord"]">
                         <i class="bi bi-skip-end-fill"></i>
                     </a>
                 </div>
+
             </div>
 
             <!-- 右欄，其他項目 -->
@@ -636,52 +641,59 @@
 <!-- 第一筆與最後一筆資料提示 -->
 <!-- 由前端判斷，可以減少伺服器的負擔-->
 <script>
-     document.addEventListener("DOMContentLoaded", function () {
-        const firstRecordButton = document.getElementById("firstRecordButton");
-        const previousRecordButton = document.getElementById("previousRecordButton");
-        const nextRecordButton = document.getElementById("nextRecordButton");
-        const lastRecordButton = document.getElementById("lastRecordButton");
-
-        // 第一筆按鈕事件
-        if (firstRecordButton) {
-            firstRecordButton.addEventListener("click", function (event) {
-                if (firstRecordButton.dataset.isFirst === "true") {
-                    event.preventDefault(); // 防止跳轉
-                    alert("已是第一筆資料！");
-                }
+    document.addEventListener("DOMContentLoaded", function () {
+        function setupButton(selector, dataAttr, message) {
+            document.querySelectorAll(selector).forEach(button => {
+                button.addEventListener("click", function (event) {
+                    if (button.dataset[dataAttr] === "True") {  // Razor 會輸出 True/False（開頭大寫）
+                        event.preventDefault(); // 阻止跳轉
+                        Swal.fire({
+                            title: message,
+                            icon: "info"
+                        });
+                    }
+                });
             });
         }
 
-        // 上一筆按鈕事件
-        if (previousRecordButton) {
-            previousRecordButton.addEventListener("click", function (event) {
-                if (firstRecordButton.dataset.isFirst === "true") {
-                    event.preventDefault(); // 防止跳轉
-                    alert("已是第一筆資料！");
-                }
-            });
-        }
+        setupButton(".first-btn, .prev-btn", "isFirst", "已是第一筆資料！");
+        setupButton(".next-btn, .last-btn", "isLast", "已是最後一筆資料！");
+    });
 
-        // 下一筆按鈕事件
-        if (nextRecordButton) {
-            nextRecordButton.addEventListener("click", function (event) {
-                if (nextRecordButton.dataset.isLast === "true") {
-                    event.preventDefault(); // 防止跳轉
-                    alert("已是最後一筆資料！");
-                }
-            });
-        }
+</script>
 
-        // 最後一筆按鈕事件
-        if (lastRecordButton) {
-            lastRecordButton.addEventListener("click", function (event) {
-                if (lastRecordButton.dataset.isLast === "true") {
-                    event.preventDefault(); // 防止跳轉
-                    alert("已是最後一筆資料！");
-                }
-            });
+<!-- 用鍵盤切換上下一筆 -->
+<script>
+    document.addEventListener("keydown", function (event) {
+        // 獲取第一筆與最後一筆的 ID
+        const firstId = parseInt("@ViewData["FirstId"]");
+        const lastId = parseInt("@ViewData["LastId"]");
+        const currentId = parseInt("@Model.InventoryAdjustment.FId"); // 目前這筆的 ID
+
+        if (event.key === "ArrowLeft") {
+            if (currentId === firstId) {
+                Swal.fire({
+                    title: "已經在第一筆資料！",
+                    icon: "info"
+                });
+            } else {
+                window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
+            }
+        }
+        else if (event.key === "ArrowRight") {
+            if (currentId === lastId) {
+                Swal.fire({
+                    title: "此筆為最新的資料！",
+                    icon: "info"
+                });
+            } else {
+                window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
+            }
         }
     });
 </script>
+
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

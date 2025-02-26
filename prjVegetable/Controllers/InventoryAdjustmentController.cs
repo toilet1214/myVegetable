@@ -92,12 +92,24 @@ namespace prjVegetable.Controllers
             var checker = _context.TPeople
                 .FirstOrDefault(p => p.FId == checkerId);
             var checkerName = checker?.FName ?? "";
-
+            
+            
             // 傳遞盤點人員的名稱
             ViewData["CheckerName"] = checkerName;
 
             // 使用 SelectList 封裝員工資料
             ViewData["Employees"] = new SelectList(employees, "FId", "FName");
+            
+            // 計算當前記錄的索引及上一筆、下一筆資料的 Id
+            var currentIndex = adjustments.FindIndex(a => a.FId == id);
+            if (currentIndex == -1)
+            {
+                _logger.LogError($"無法找到對應的記錄，FId: {id}");
+                return NotFound(new { message = "找不到對應的記錄。" });
+            }
+
+            int totalItemCount = adjustments.Count;
+            int currentItemCount = currentIndex + 1;
 
             // 創建 ViewModel 並傳遞到視圖
             var viewModel = new CInventoryAdjustmentViewModel
@@ -109,20 +121,15 @@ namespace prjVegetable.Controllers
                     FId = p.FId,
                     FQuantity = p.FQuantity,
                     FName = p.FName
-                }).ToList()
+                }).ToList(),
+                TotalItemCount = totalItemCount,
+                CurrentItemCount = currentItemCount
             };
 
             // 動態取得第一筆與最後一筆的 FId
             var firstId = adjustments.Any() ? adjustments.First().FId : id;
             var lastId = adjustments.Any() ? adjustments.Last().FId : id;
 
-            // 計算當前記錄的索引及上一筆、下一筆資料的 Id
-            var currentIndex = adjustments.FindIndex(a => a.FId == id);
-            if (currentIndex == -1)
-            {
-                _logger.LogError($"無法找到對應的記錄，FId: {id}");
-                return NotFound(new { message = "找不到對應的記錄。" });
-            }
 
             var nextId = currentIndex < adjustments.Count - 1 ? adjustments[currentIndex + 1].FId : -1;
             var previousId = currentIndex > 0 ? adjustments[currentIndex - 1].FId : -1;
@@ -132,8 +139,8 @@ namespace prjVegetable.Controllers
             var isLastRecord = currentIndex == adjustments.Count - 1;
 
             // 將資料傳遞到 View
-            ViewData["NextId"] = nextId;
-            ViewData["PreviousId"] = previousId;
+            ViewData["PreviousId"] = previousId > 0 ? previousId : null;
+            ViewData["NextId"] = nextId > 0 ? nextId : null;
             ViewData["FirstId"] = firstId;
             ViewData["LastId"] = lastId;
             ViewData["IsFirstRecord"] = isFirstRecord;
