@@ -105,9 +105,13 @@
     // 全域變數，用來存放從 API 取得的產品資訊
     let productsData = [];
 
-
     document.getElementById("cancel").addEventListener("click", function () {
-        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+        let prevPage = document.referrer; // 取得上一個頁面 URL
+        if (prevPage.includes("GoodsInAndOutIndex")) {
+            window.location.href = prevPage; // 直接返回列表頁面
+        } else {
+            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+        }
     });
 
     document.getElementById("submitAllData").addEventListener("click", function () {
