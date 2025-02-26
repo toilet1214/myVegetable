@@ -6,11 +6,6 @@
 }
 
 <h1>採購明細管理</h1>
-@* @using (Html.BeginForm())
-{
-    @:請輸入採購號碼或產品ID: @Html.TextBox("txtKeyword")
-    <button type="submit" class="btn btn-warning">查詢</button>
-} *@
 <div class="mt-3 mb-3">
     <a href="@Url.Action("Create")" class="btn btn-primary">新增採購明細</a>
 </div>
@@ -18,82 +13,70 @@
 <table class="table" id="List">
     <thead>
         <tr>
-            <th>
-                序號
-            </th>
-            <th>
-                ID
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPurchaseId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FProductIdVision)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FCount)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FSum)
-            </th>
-            <th></th>
+            <th>序號</th>
+            <th>ID</th>
+            <th>@Html.DisplayNameFor(model => model.FPurchaseId)</th>
+            <th>@Html.DisplayNameFor(model => model.FProductIdVision)</th>
+            <th>@Html.DisplayNameFor(model => model.FCount)</th>
+            <th>@Html.DisplayNameFor(model => model.FPrice)</th>
+            <th>@Html.DisplayNameFor(model => model.FSum)</th>
+            <th>操作</th>
         </tr>
     </thead>
     <tbody>
         @{
             int count = 0;
-            @foreach (var item in Model)
-            {
-                count++;
-
-                <tr>
-                    <td>
-                        @count
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FPurchaseId)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FProductIdVision)
-                    </td>
-
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FCount)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FPrice)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.FSum)
-                    </td>
-                    <td>
-                        <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
-                        <a href="@Url.Action("Delete", new { id = item.FId })" class="btn btn-danger" onclick="return confirm('確定要刪除嗎?');">刪除</a>
-                    </td>
-                </tr>
-            }
-
-
+        }
+        @foreach (var item in Model)
+        {
+            count++;
+            <tr>
+                <td>@count</td>
+                <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FPurchaseId)</td>
+                <td>@Html.DisplayFor(modelItem => item.FProductIdVision)</td>
+                <td>@Html.DisplayFor(modelItem => item.FCount)</td>
+                <td>@Html.DisplayFor(modelItem => item.FPrice)</td>
+                <td>@Html.DisplayFor(modelItem => item.FSum)</td>
+                <td>
+                    <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
+                    <button class="btn btn-danger" onclick="confirmDelete('@Url.Action("Delete", new { id = item.FId })')">刪除</button>
+                </td>
+            </tr>
         }
     </tbody>
 </table>
+
 @section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(deleteUrl) {
+            Swal.fire({
+                title: "確定要刪除嗎?",
+                text: "刪除後將無法恢復!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "確定刪除",
+                cancelButtonText: "取消"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = deleteUrl;
+                }
+            });
+        }
+    </script>
 
     <script>
         $(document).ready(function () {
             $('#List').DataTable({
-                "paging": true, // 啟用分頁
-                "lengthChange": false, // 允許用戶改變每頁顯示數量
-                "searching": true, // 啟用搜尋
-                "ordering": true, // 啟用排序
-                "info": true, // 顯示資訊
-                "autoWidth": false, // 禁用自動調整寬度
+                "paging": true,
+                "lengthChange": false,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
                 "language": {
                     "lengthMenu": "顯示 _MENU_ 筆資料",
                     "zeroRecords": "沒有符合的訂單",
@@ -108,8 +91,8 @@
                         "previous": "上一頁"
                     }
                 },
-                "lengthMenu": [5, 10, 25, 50], // 選擇每頁顯示 5, 10, 25, 50 筆
-                "lengthChange": true, // 允許改變筆數
+                "lengthMenu": [5, 10, 25, 50],
+                "lengthChange": true,
                 "columnDefs": [
                     { "orderable": false, "targets": [-1] }
                 ],
@@ -117,6 +100,4 @@
             });
         });
     </script>
-
 }
-
