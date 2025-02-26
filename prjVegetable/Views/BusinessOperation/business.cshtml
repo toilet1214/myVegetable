@@ -5,12 +5,7 @@
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
 
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Styles {
     <style>
         .chart-container {
             display: flex;
@@ -32,38 +27,38 @@
             margin-bottom: 20px;
         }
     </style>
-</head>
+}
 
-<body>
-    <div id="app">
-        <div class="fs-1 fw-bold mt-3">
-            <p>採購概況分析</p>
-        </div>
 
-        <div class="input-container mt-3">
-            <label>選擇時間區間:</label>
-            <input type="date" v-model="startDate">
-            <span>-</span>
-            <input type="date" v-model="endDate">
-            <button class="btn btn-success" v-on:click="fetchData">查詢</button>
-        </div>
-
-        <div>
-            <div class="chart-container mb-3">
-                <div class="fs-1 fw-bold text-center col-6">
-                    <p>總金額: {{ totalAmount }} 元</p>
-                    <img src="~/images/採購分析.png" />
-                </div>
-                <div id="chartContainer3" class="chart-box col-6" style="height: 370px;"></div>
-            </div>
-
-            <div class="chart-container mb-3">
-                <div id="chartContainer2" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
-                <div id="chartContainer1" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
-            </div>
-        </div>
+<div id="app">
+    <div class="fs-1 fw-bold mt-3">
+        <p>採購概況分析</p>
     </div>
 
+    <div class="input-container mt-3">
+        <label>選擇時間區間:</label>
+        <input type="date" v-model="startDate">
+        <span>-</span>
+        <input type="date" v-model="endDate">
+        <button class="btn btn-success" v-on:click="fetchData">查詢</button>
+    </div>
+
+    <div>
+        <div class="chart-container mb-3">
+            <div class="fs-1 fw-bold text-center col-6">
+                <p>總金額: {{ totalAmount }} 元</p>
+                <img src="~/images/採購分析.png" />
+            </div>
+            <div id="chartContainer3" class="chart-box col-6" style="height: 370px;"></div>
+        </div>
+
+        <div class="chart-container mb-3">
+            <div id="chartContainer2" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
+            <div id="chartContainer1" class="chart-box col-6 fw-bold" style="height: 370px;"></div>
+        </div>
+    </div>
+</div>
+@section Scripts {
     <script>
         new Vue({
             el: "#app",
@@ -154,5 +149,5 @@
             }
         });
     </script>
-</body>
-</html>
+}
+

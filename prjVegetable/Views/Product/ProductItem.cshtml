@@ -4,125 +4,125 @@
     ViewData["Title"] = "ProductItem";
     var productDescription = Model.FIntroduction.Replace(Environment.NewLine, "<br>");
 }
-
-<style>
-    /*輪播 箭頭*/
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 50px;
-        height: 50px;
-        background-color: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: absolute;
-        top: 50%;
-    }
-
-    .carousel-control-prev-icon,
-    .carousel-control-next-icon {
-        filter: invert(1); /* 讓箭頭變成白色 */
-        width: 20px; /* 調整箭頭大小 */
-        height: 20px;
-    }
-
-    /*數量*/
-    .quantity {
-        width: 170px;
-        display: flex;
-        border: none;
-        border-radius: 4px;
-        overflow: hidden;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
-    }
-
-        .quantity button {
-            background-color: #8D8266;
-            color: #fff;
-            border: 1px solid #D6CBB0;
-            cursor: pointer;
-            font-size: 20px;
-            width: 40px;
-            height: auto;
-            text-align: center;
-            transition: background-color 0.2s;
+@section Styles {
+    <style>
+        /*輪播 箭頭*/
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 50px;
+            height: 50px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: 50%;
         }
 
-            .quantity button:hover {
-                background-color: #ACA38A;
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            filter: invert(1); /* 讓箭頭變成白色 */
+            width: 20px; /* 調整箭頭大小 */
+            height: 20px;
+        }
+
+        /*數量*/
+        .quantity {
+            width: 170px;
+            display: flex;
+            border: none;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0);
+        }
+
+            .quantity button {
+                background-color: #8D8266;
+                color: #fff;
+                border: 1px solid #D6CBB0;
+                cursor: pointer;
+                font-size: 20px;
+                width: 40px;
+                height: auto;
+                text-align: center;
+                transition: background-color 0.2s;
             }
 
-    .input-box {
-        width: 100px;
-        text-align: center;
-        border: 1px solid #ACA38A;
-        padding: 8px 10px;
-        font-size: 16px;
-        outline: none;
-    }
+                .quantity button:hover {
+                    background-color: #ACA38A;
+                }
 
-        /*隱藏數字框的上下箭頭 */
-        .input-box::-webkit-inner-spin-button,
-        .input-box::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        .input-box {
+            width: 100px;
+            text-align: center;
+            border: 1px solid #ACA38A;
+            padding: 8px 10px;
+            font-size: 16px;
+            outline: none;
         }
 
-        .input-box[type="number"] {
-            -moz-appearance: textfield;
-        }
+            /*隱藏數字框的上下箭頭 */
+            .input-box::-webkit-inner-spin-button,
+            .input-box::-webkit-outer-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
 
-    /*加入購物車*/ /*加入我的最愛*/
-    .btn.addToCartButtonItem:hover,
-    .btn.heartButton:hover {
-        background-color: #ACA38A;
-        border-color: #ACA38A;
-        color: #fff;
-    }
+            .input-box[type="number"] {
+                -moz-appearance: textfield;
+            }
 
-
-
-    /*立即購買*/
-    .btn.buyNowButtonItem {
-        background-color: #8D8266;
-        border-color: #8D8266;
-    }
-
-        .btn.buyNowButtonItem:hover {
+        /*加入購物車*/ /*加入我的最愛*/
+        .btn.addToCartButtonItem:hover,
+        .btn.heartButton:hover {
             background-color: #ACA38A;
             border-color: #ACA38A;
             color: #fff;
         }
 
 
-    /*評論星星*/
-    .star-averating i {
-        font-size: 1.5rem;
-        margin-right: 5px;
-        color: #ffc107 !important;
-    }
 
-    .star-rating i {
-        color: #ffc107 !important;
-    }
+        /*立即購買*/
+        .btn.buyNowButtonItem {
+            background-color: #8D8266;
+            border-color: #8D8266;
+        }
 
-    /*相似商品*/
-    .Relatedi{
-        font-size: 2rem;
-    }
+            .btn.buyNowButtonItem:hover {
+                background-color: #ACA38A;
+                border-color: #ACA38A;
+                color: #fff;
+            }
 
-    .Relatedcard{
-        /* max-width: 250px; /* 限制卡片的最大寬度 */ */
-        margin: 0 auto;
-    }
 
-    .Relatedcard-img-top {
-        object-fit: cover; /* 確保圖片不會變形 */
-        height: 150px; /* 調整圖片的高度 */
-    }
+        /*評論星星*/
+        .star-averating i {
+            font-size: 1.5rem;
+            margin-right: 5px;
+            color: #ffc107 !important;
+        }
 
-</style>
+        .star-rating i {
+            color: #ffc107 !important;
+        }
+
+        /*相似商品*/
+        .Relatedi {
+            font-size: 2rem;
+        }
+
+        .Relatedcard {
+            /* max-width: 250px; /* 限制卡片的最大寬度 */ */ margin: 0 auto;
+        }
+
+        .Relatedcard-img-top {
+            object-fit: cover; /* 確保圖片不會變形 */
+            height: 150px; /* 調整圖片的高度 */
+        }
+
+    </style>
+}
 
 <div class="container">
     <!-- 麵包屑 start -->
@@ -363,7 +363,7 @@
                         }
                     </div>
                     @* <button id="load-more-reviews" class="btn btn-link" onclick="loadMoreReviews()">
-                        <i class="bi bi-chevron-down"></i> 顯示更多評論
+                    <i class="bi bi-chevron-down"></i> 顯示更多評論
                     </button> *@
 
                     @* <div class="add-comment mt-4">
@@ -599,7 +599,7 @@
                                         if (response.success) {
                                             window.location.href = '@Url.Action("Cart", "Cart")';
                                         } else {
-                                             alert('操作失敗: ' + response.message);
+                                            alert('操作失敗: ' + response.message);
                                         }
                                         button.prop('disabled', false);
                                     },
@@ -641,7 +641,7 @@
 
 
             //星星
-             $(document).ready(function () {
+            $(document).ready(function () {
                 // 當用戶點擊星星
                 $("#user-rating i").click(function () {
                     // 清除所有星星的選中狀態
@@ -697,13 +697,13 @@
                     success: function (response) {
                         console.log(response);  // 輸出登入狀態，便於調試
                         if (!response.isLoggedIn) {
-                        // 如果未登入，顯示登入模態框
-                        $('#LoginModal').modal('show');
+                            // 如果未登入，顯示登入模態框
+                            $('#LoginModal').modal('show');
 
-                        // 當登入模態框顯示時，將當前 URL 設置到返回的隱藏輸入框中
-                        $("#LoginModal").on('shown.bs.modal', function () {
-                            $('input[name="returnUrl"]').val(currentUrl);
-                        });
+                            // 當登入模態框顯示時，將當前 URL 設置到返回的隱藏輸入框中
+                            $("#LoginModal").on('shown.bs.modal', function () {
+                                $('input[name="returnUrl"]').val(currentUrl);
+                            });
                         } else {
                             // 用戶已登入，提交評論
                             $.ajax({

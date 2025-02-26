@@ -4,74 +4,76 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-<style>
-    /*放大鏡*/
-    .btn-no-background {
-        background: transparent;
-        border: none;
-        font-size: 20px;
-        cursor: pointer;
-    }
+@section Styles {
+    <style>
+        /*放大鏡*/
+        .btn-no-background {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+        }
 
-    .btn-no-background i {
-        font-size: 24px; /* 放大鏡圖示大小 */
-        color: #333; /* 圖示顏色，您可以根據需要更改顏色 */
-    }
+            .btn-no-background i {
+                font-size: 24px; /* 放大鏡圖示大小 */
+                color: #333; /* 圖示顏色，您可以根據需要更改顏色 */
+            }
 
-    .btn-no-background:hover i {
-        color: #c1a06a; /* 鼠標懸停時變 深土黃色 */
-    }
-
-
-    /* 設定 select 樣式 */
-    /* 設定初始背景顏色為淡土黃色 */
-    .styled-select {
-        background-color: #d7c9b0ff; /* 淺土黃色 */
-        border: 1px solid #ccc; /* 邊框顏色 */
-        padding: 6px 12px; /* 內邊距 */
-        font-size: 16px; /* 字體大小 */
-        border-radius: 5px; /* 圓角邊框 */
-        appearance: none; /* 去除瀏覽器預設樣式 */
-        -webkit-appearance: none;
-        -moz-appearance: none;
-    }
-
-    /* 移除選中時的藍色背景 */
-    .styled-select:focus,
-    .styled-select:hover {
-        background-color: #e1d1a6;
-    }
-
-    /* 修改 option 的 hover 樣式，讓它與背景一致 */
-    .styled-select option:hover,
-    .styled-select option:focus {
-        background-color: #c1a06a !important; /* 深土黃色 */
-        color: #8d8266ff;
-    }
+            .btn-no-background:hover i {
+                color: #c1a06a; /* 鼠標懸停時變 深土黃色 */
+            }
 
 
-    div.dt-container .dt-search input {
-        width:325px !important;
-        border: 1px solid #aaa;
-        border-radius: 3px;
-        padding: 5px;
-        background-color: transparent;
-        color: inherit;
-        margin-left: 3px;
-    }
-    
+        /* 設定 select 樣式 */
+        /* 設定初始背景顏色為淡土黃色 */
+        .styled-select {
+            background-color: #d7c9b0ff; /* 淺土黃色 */
+            border: 1px solid #ccc; /* 邊框顏色 */
+            padding: 6px 12px; /* 內邊距 */
+            font-size: 16px; /* 字體大小 */
+            border-radius: 5px; /* 圓角邊框 */
+            appearance: none; /* 去除瀏覽器預設樣式 */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
+
+            /* 移除選中時的藍色背景 */
+            .styled-select:focus,
+            .styled-select:hover {
+                background-color: #e1d1a6;
+            }
+
+            /* 修改 option 的 hover 樣式，讓它與背景一致 */
+            .styled-select option:hover,
+            .styled-select option:focus {
+                background-color: #c1a06a !important; /* 深土黃色 */
+                color: #8d8266ff;
+            }
 
 
-    table {
-        width: 100%; /* 使表格佔滿容器的寬度 */
+        div.dt-container .dt-search input {
+            width: 325px !important;
+            border: 1px solid #aaa;
+            border-radius: 3px;
+            padding: 5px;
+            background-color: transparent;
+            color: inherit;
+            margin-left: 3px;
+        }
 
-        table-layout: fixed; /* 使用固定布局讓欄位寬度平均 */
-    }
 
-    th, td {
-        text-align: center; /* 使所有欄位內容居中 */
-    }
-</style>
+
+        table {
+            width: 100%; /* 使表格佔滿容器的寬度 */
+
+            table-layout: fixed; /* 使用固定布局讓欄位寬度平均 */
+        }
+
+        th, td {
+            text-align: center; /* 使所有欄位內容居中 */
+        }
+    </style>
+}
 
 <h1>商品資料列表</h1>
 <br />
@@ -110,9 +112,6 @@
         </form>
     </div>
 </div>
-
-
-
 
 
 <table class="table" id="List">

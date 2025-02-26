@@ -4,12 +4,7 @@
     ViewData["Title"] = "List";
     Layout = "~/Views/Shared/_LayoutERP.cshtml";
 }
-<!DOCTYPE html>
-<html>
-<head>
-    <script src="https://cdn.canvasjs.com/canvasjs.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@section Styles {
     <style>
         .chart-container {
             display: flex;
@@ -24,8 +19,7 @@
             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
-</head>
-<body>
+}
     <div id="app">
         <div class="fs-1 fw-bold mt-3">
             <p>交易紀錄分析</p>
@@ -57,7 +51,7 @@
             </div>
         </div>
     </div>
-
+@section Scripts {
     <script>
         new Vue({
             el: "#app",
@@ -126,5 +120,4 @@
             }
         });
     </script>
-</body>
-</html>
+}

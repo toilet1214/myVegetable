@@ -4,26 +4,27 @@
 }
 
 @model prjVegetable.ViewModels.CHomePageViewModel
+@section Styles {
+    <style>
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            white-space: nowrap;
+            background: #ffffff;
+            position: relative;
+        }
 
-<style>
-    .marquee-container {
-        width: 100%;
-        overflow: hidden;
-        white-space: nowrap;
-        background: #ffffff;
-        position: relative;
-    }
-
-    .marquee {
-        display: inline-block;
-        white-space: nowrap;
-        position: absolute;
-        will-change: transform;
-        font-family: 'Noto Sans', sans-serif;
-        font-weight: 700;
-        color: #444E45;
-    }
-</style>
+        .marquee {
+            display: inline-block;
+            white-space: nowrap;
+            position: absolute;
+            will-change: transform;
+            font-family: 'Noto Sans', sans-serif;
+            font-weight: 700;
+            color: #444E45;
+        }
+    </style>
+}
 
 <div class="marquee-container mt-4 pb-4">
     <div class="marquee"></div>
@@ -71,7 +72,6 @@
     </div>
 
     <!-- 圖片輪播 Carousel End-->
-    
     <!-- 麵包屑 Breadcrumb-->
     <!-- <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
@@ -80,7 +80,6 @@
         <li class="breadcrumb-item active" aria-current="page">Library</li>
       </ol>
     </nav> -->
-    
     <!-- 網站介紹 Start-->
     <hr class="mt-4">
     <h1 data-aos="zoom-in" data-aos-duration="500"><i class="bi bi-brightness-high-fill"></i> 新鮮直送，健康每一天 <i class="bi bi-brightness-high-fill"></i></h1>
@@ -151,48 +150,49 @@
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var marquee = document.querySelector(".marquee");
+            var container = document.querySelector(".marquee-container");
 
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var marquee = document.querySelector(".marquee");
-        var container = document.querySelector(".marquee-container");
+            // 讀取 LocalStorage 內的公告內容與速度
+            var text = localStorage.getItem("marqueeText") || "📢 預設公告";
+            var speed = parseFloat(localStorage.getItem("marqueeSpeed")) || 2;
 
-        // 讀取 LocalStorage 內的公告內容與速度
-        var text = localStorage.getItem("marqueeText") || "📢 預設公告";
-        var speed = parseFloat(localStorage.getItem("marqueeSpeed")) || 2;
-
-        var lines = text.split("\n").filter(line => line.trim() !== "");
-    marquee.innerHTML = lines.map(line => `${line}`).join("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
+            var lines = text.split("\n").filter(line => line.trim() !== "");
+            marquee.innerHTML = lines.map(line => `${line}`).join("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
 
 
 
-        var position = container.offsetWidth;
-        var animationFrame;
+            var position = container.offsetWidth;
+            var animationFrame;
 
-        function move() {
-            position -= speed;
-            if (position < -marquee.offsetWidth) {
-                position = container.offsetWidth;
-            }
-            marquee.style.transform = "translateX(" + position + "px)";
-            animationFrame = requestAnimationFrame(move);
-        }
-
-        function startAnimation() {
-            if (!animationFrame) {
+            function move() {
+                position -= speed;
+                if (position < -marquee.offsetWidth) {
+                    position = container.offsetWidth;
+                }
+                marquee.style.transform = "translateX(" + position + "px)";
                 animationFrame = requestAnimationFrame(move);
             }
-        }
 
-        function stopAnimation() {
-            cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-        }
+            function startAnimation() {
+                if (!animationFrame) {
+                    animationFrame = requestAnimationFrame(move);
+                }
+            }
 
-        startAnimation();
+            function stopAnimation() {
+                cancelAnimationFrame(animationFrame);
+                animationFrame = null;
+            }
 
-        // 滑鼠懸停時暫停滾動
-        container.addEventListener("mouseenter", stopAnimation);
-        container.addEventListener("mouseleave", startAnimation);
-    });
-</script>
+            startAnimation();
+
+            // 滑鼠懸停時暫停滾動
+            container.addEventListener("mouseenter", stopAnimation);
+            container.addEventListener("mouseleave", startAnimation);
+        });
+    </script>
+}

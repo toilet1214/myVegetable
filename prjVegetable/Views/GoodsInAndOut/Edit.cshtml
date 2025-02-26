@@ -18,9 +18,9 @@
                 <div class="form-group">
                     <label asp-for="GoodsInAndOut.FInOut" class="control-label">進貨/出貨</label>
                     <select asp-for="GoodsInAndOut.FInOut" class="form-control" required>
-                        <option value="0" >進貨</option>
-                        <option value="1" >出貨</option>
-                        <option value="2" >作廢單</option>
+                        <option value="0">進貨</option>
+                        <option value="1">出貨</option>
+                        <option value="2">作廢單</option>
                     </select>
                     <span asp-validation-for="GoodsInAndOut.FInOut" class="text-danger"></span>
                 </div>
@@ -142,230 +142,231 @@
 
     </div>
 </form>
+@section Scripts {
+    <script>
+        let productsData = [];
 
-<script>
-    let productsData = [];
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch('/GoodsInAndOut/GetMemberInfo')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById("GoodsInAndOut_FEditor").value = data.data.ID;
+                    } else {
+                        console.error("無法獲取會員資訊: " + data.message);
+                    }
+                })
+                .catch(error => console.error("錯誤: ", error));
 
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch('/GoodsInAndOut/GetMemberInfo')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    document.getElementById("GoodsInAndOut_FEditor").value = data.data.ID;
-                } else {
-                    console.error("無法獲取會員資訊: " + data.message);
-                }
-            })
-            .catch(error => console.error("錯誤: ", error));
-
-        fetch('/GoodsInAndOut/GetProductsInfo')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    productsData = data.products;
-                    document.querySelectorAll(".FProductId").forEach(function (selectElem) {
-                        loadProductOptionsFor(selectElem);
-                        let selectedVal = selectElem.getAttribute("data-selected");
-                        if (selectedVal) {
-                            selectElem.value = selectedVal;
-                            selectElem.dispatchEvent(new Event("change"));
-                        }
-                    });
-                } else {
-                    console.error("無法獲取產品資訊：" + data.message);
-                }
-            })
-            .catch(error => console.error("錯誤: ", error));
-    });
-
-    function loadProductOptionsFor(selectElem) {
-        selectElem.innerHTML = '<option value="">請選擇產品</option>';
-        productsData.forEach(product => {
-            let option = document.createElement("option");
-            option.value = product.fId;
-            option.textContent = product.fName;
-            if (selectElem.getAttribute("data-selected") === product.fId.toString()) {
-                option.selected = true;
-            }
-            selectElem.appendChild(option);
+            fetch('/GoodsInAndOut/GetProductsInfo')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        productsData = data.products;
+                        document.querySelectorAll(".FProductId").forEach(function (selectElem) {
+                            loadProductOptionsFor(selectElem);
+                            let selectedVal = selectElem.getAttribute("data-selected");
+                            if (selectedVal) {
+                                selectElem.value = selectedVal;
+                                selectElem.dispatchEvent(new Event("change"));
+                            }
+                        });
+                    } else {
+                        console.error("無法獲取產品資訊：" + data.message);
+                    }
+                })
+                .catch(error => console.error("錯誤: ", error));
         });
-    }
 
-    document.addEventListener("change", function (event) {
-        if (event.target.classList.contains("FProductId")) {
-            let productId = event.target.value;
-            let detailRow = event.target.closest(".detail-entry");
-            let priceInput = detailRow.querySelector(".FPrice");
-            let countInput = detailRow.querySelector(".FCount");
-            let count = parseInt(countInput.value) || 1; // 預設數量為 1
-
-            if (productId) {
-                fetch(`/GoodsInAndOut/GetProductPrice?productId=${productId}&count=${count}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            priceInput.value = data.price;
-                            detailRow.querySelector(".FSum").value = data.subtotal;
-                            updateTotalPrice();
-                        } else {
-                            priceInput.value = "";
-                            detailRow.querySelector(".FSum").value = "";
-                            console.error("更新失敗：" + data.message);
-                        }
-                    })
-                    .catch(error => console.error("錯誤:", error));
-            } else {
-                priceInput.value = "";
-                detailRow.querySelector(".FSum").value = "";
-            }
-        }
-    });
-
-    document.addEventListener("input", function (event) {
-        if (event.target.classList.contains("FCount")) {
-            let detailRow = event.target.closest(".detail-entry");
-            let count = parseInt(event.target.value) || 1;
-            let price = parseFloat(detailRow.querySelector(".FPrice").value) || 0;
-            detailRow.querySelector(".FSum").value = (price * count).toFixed(0);
-            updateTotalPrice();
-        }
-    });
-
-
-    function updateTotalPrice() {
-        let total = 0;
-        document.querySelectorAll(".FSum").forEach(function (sumElem) {
-            let val = parseFloat(sumElem.value) || 0;
-            total += val;
-        });
-        document.getElementById("GoodsInAndOut_FTotal").value = total;
-    }
-
-    document.getElementById("addDetail").addEventListener("click", function () {
-        let detailCount = document.querySelectorAll(".detail-entry").length; // 計算目前有幾筆明細，設定 index
-
-        var newRow = `<div class="row mb-3 detail-entry">
-            <input type="hidden" name="GoodsInAndOutDetails[${detailCount}].FId" class="FId" value="0" />
-            <div class="col-3">
-                <select name="GoodsInAndOutDetails[${detailCount}].FProductId" class="FProductId form-control" required>
-                    <option value="">請選擇產品</option>
-                </select>
-            </div>
-            <div class="col-3">
-                <input type="number" name="GoodsInAndOutDetails[${detailCount}].FCount" class="FCount form-control" placeholder="數量" min="1" required />
-            </div>
-            <div class="col-3">
-                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FPrice" class="FPrice form-control" placeholder="單價" readonly />
-            </div>
-            <div class="col-2">
-                <input type="text" name="GoodsInAndOutDetails[${detailCount}].FSum" class="FSum form-control" placeholder="小計" readonly />
-            </div>
-            <div class="col-1">
-                <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
-            </div>
-        </div>`;
-
-        document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
-
-        let newSelects = document.querySelectorAll(".FProductId");
-        let lastSelect = newSelects[newSelects.length - 1];
-        loadProductOptionsFor(lastSelect);
-    });
-
-
-
-    document.addEventListener("click", async function (event) {
-    if (event.target.classList.contains("btn-remove-detail")) {
-        let detailRow = event.target.closest(".detail-entry");
-        let details = document.querySelectorAll(".detail-entry");
-        if (details.length > 1) {
-            detailRow.remove();
-            updateTotalPrice();
-        } else {
-            await Swal.fire({
-                title: "至少需要一筆明細！",
-                icon: "warning"
+        function loadProductOptionsFor(selectElem) {
+            selectElem.innerHTML = '<option value="">請選擇產品</option>';
+            productsData.forEach(product => {
+                let option = document.createElement("option");
+                option.value = product.fId;
+                option.textContent = product.fName;
+                if (selectElem.getAttribute("data-selected") === product.fId.toString()) {
+                    option.selected = true;
+                }
+                selectElem.appendChild(option);
             });
         }
-    }
-});
 
+        document.addEventListener("change", function (event) {
+            if (event.target.classList.contains("FProductId")) {
+                let productId = event.target.value;
+                let detailRow = event.target.closest(".detail-entry");
+                let priceInput = detailRow.querySelector(".FPrice");
+                let countInput = detailRow.querySelector(".FCount");
+                let count = parseInt(countInput.value) || 1; // 預設數量為 1
 
-    function submitEditData() {
-        let formData = new FormData();
-
-        // 主表資料
-        formData.append("GoodsInAndOut.FId", document.querySelector("input[name='GoodsInAndOut.FId']").value);
-        formData.append("GoodsInAndOut.FInOut", document.querySelector("select[name='GoodsInAndOut.FInOut']").value);
-        formData.append("GoodsInAndOut.FDate", document.querySelector("input[name='GoodsInAndOut.FDate']").value);
-        formData.append("GoodsInAndOut.FInvoiceId", document.querySelector("input[name='GoodsInAndOut.FInvoiceId']").value);
-        formData.append("GoodsInAndOut.FProviderId", document.querySelector("input[name='GoodsInAndOut.FProviderId']").value);
-        formData.append("GoodsInAndOut.FPersonId", document.querySelector("input[name='GoodsInAndOut.FPersonId']").value);
-        formData.append("GoodsInAndOut.FTotal", document.querySelector("input[name='GoodsInAndOut.FTotal']").value);
-        formData.append("GoodsInAndOut.FNote", document.querySelector("input[name='GoodsInAndOut.FNote']").value);
-        formData.append("GoodsInAndOut.FEditor", document.querySelector("input[name='GoodsInAndOut.FEditor']").value);
-
-        // 細項資料
-        document.querySelectorAll(".detail-entry").forEach((row, index) => {
-            let fIdInput = row.querySelector("input[name$='.FId']");
-            if (!fIdInput) {
-                console.error(`找不到細項 FId，index: ${index}`);
-                return;
+                if (productId) {
+                    fetch(`/GoodsInAndOut/GetProductPrice?productId=${productId}&count=${count}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                priceInput.value = data.price;
+                                detailRow.querySelector(".FSum").value = data.subtotal;
+                                updateTotalPrice();
+                            } else {
+                                priceInput.value = "";
+                                detailRow.querySelector(".FSum").value = "";
+                                console.error("更新失敗：" + data.message);
+                            }
+                        })
+                        .catch(error => console.error("錯誤:", error));
+                } else {
+                    priceInput.value = "";
+                    detailRow.querySelector(".FSum").value = "";
+                }
             }
-            formData.append(`GoodsInAndOutDetails[${index}].FId`, fIdInput.value || "0");
-            formData.append(`GoodsInAndOutDetails[${index}].FProductId`, row.querySelector(".FProductId").value);
-            formData.append(`GoodsInAndOutDetails[${index}].FCount`, row.querySelector(".FCount").value);
-            formData.append(`GoodsInAndOutDetails[${index}].FPrice`, row.querySelector(".FPrice").value);
-            formData.append(`GoodsInAndOutDetails[${index}].FSum`, row.querySelector(".FSum").value);
         });
 
-        console.log("送出的 FormData：", formData);
+        document.addEventListener("input", function (event) {
+            if (event.target.classList.contains("FCount")) {
+                let detailRow = event.target.closest(".detail-entry");
+                let count = parseInt(event.target.value) || 1;
+                let price = parseFloat(detailRow.querySelector(".FPrice").value) || 0;
+                detailRow.querySelector(".FSum").value = (price * count).toFixed(0);
+                updateTotalPrice();
+            }
+        });
 
-        fetch("/GoodsInAndOut/Edit", {
-            method: "POST",
-            body: formData
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("HTTP 錯誤: " + response.status);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.success) {
-                    Swal.fire({
-                        title: "資料已更新！",
-                        icon: "success"
-                    }).then(() => {
-                        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
-                    });
+
+        function updateTotalPrice() {
+            let total = 0;
+            document.querySelectorAll(".FSum").forEach(function (sumElem) {
+                let val = parseFloat(sumElem.value) || 0;
+                total += val;
+            });
+            document.getElementById("GoodsInAndOut_FTotal").value = total;
+        }
+
+        document.getElementById("addDetail").addEventListener("click", function () {
+            let detailCount = document.querySelectorAll(".detail-entry").length; // 計算目前有幾筆明細，設定 index
+
+            var newRow = `<div class="row mb-3 detail-entry">
+                        <input type="hidden" name="GoodsInAndOutDetails[${detailCount}].FId" class="FId" value="0" />
+                        <div class="col-3">
+                            <select name="GoodsInAndOutDetails[${detailCount}].FProductId" class="FProductId form-control" required>
+                                <option value="">請選擇產品</option>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <input type="number" name="GoodsInAndOutDetails[${detailCount}].FCount" class="FCount form-control" placeholder="數量" min="1" required />
+                        </div>
+                        <div class="col-3">
+                            <input type="text" name="GoodsInAndOutDetails[${detailCount}].FPrice" class="FPrice form-control" placeholder="單價" readonly />
+                        </div>
+                        <div class="col-2">
+                            <input type="text" name="GoodsInAndOutDetails[${detailCount}].FSum" class="FSum form-control" placeholder="小計" readonly />
+                        </div>
+                        <div class="col-1">
+                            <button type="button" class="btn btn-danger btn-remove-detail">移除</button>
+                        </div>
+                    </div>`;
+
+            document.getElementById("details").insertAdjacentHTML("beforeend", newRow);
+
+            let newSelects = document.querySelectorAll(".FProductId");
+            let lastSelect = newSelects[newSelects.length - 1];
+            loadProductOptionsFor(lastSelect);
+        });
+
+
+
+        document.addEventListener("click", async function (event) {
+            if (event.target.classList.contains("btn-remove-detail")) {
+                let detailRow = event.target.closest(".detail-entry");
+                let details = document.querySelectorAll(".detail-entry");
+                if (details.length > 1) {
+                    detailRow.remove();
+                    updateTotalPrice();
                 } else {
-                    Swal.fire({
-                        title: "更新失敗！",
-                        text: data.message,
+                    await Swal.fire({
+                        title: "至少需要一筆明細！",
                         icon: "warning"
                     });
                 }
-            })
-            .catch(error => {
-                console.error("提交錯誤:", error);
-                Swal.fire({
-                    title: "提交失敗!",
-                    text: "請檢查控制台錯誤訊息！",
-                    icon: "warning"
-                });
+            }
+        });
+
+
+        function submitEditData() {
+            let formData = new FormData();
+
+            // 主表資料
+            formData.append("GoodsInAndOut.FId", document.querySelector("input[name='GoodsInAndOut.FId']").value);
+            formData.append("GoodsInAndOut.FInOut", document.querySelector("select[name='GoodsInAndOut.FInOut']").value);
+            formData.append("GoodsInAndOut.FDate", document.querySelector("input[name='GoodsInAndOut.FDate']").value);
+            formData.append("GoodsInAndOut.FInvoiceId", document.querySelector("input[name='GoodsInAndOut.FInvoiceId']").value);
+            formData.append("GoodsInAndOut.FProviderId", document.querySelector("input[name='GoodsInAndOut.FProviderId']").value);
+            formData.append("GoodsInAndOut.FPersonId", document.querySelector("input[name='GoodsInAndOut.FPersonId']").value);
+            formData.append("GoodsInAndOut.FTotal", document.querySelector("input[name='GoodsInAndOut.FTotal']").value);
+            formData.append("GoodsInAndOut.FNote", document.querySelector("input[name='GoodsInAndOut.FNote']").value);
+            formData.append("GoodsInAndOut.FEditor", document.querySelector("input[name='GoodsInAndOut.FEditor']").value);
+
+            // 細項資料
+            document.querySelectorAll(".detail-entry").forEach((row, index) => {
+                let fIdInput = row.querySelector("input[name$='.FId']");
+                if (!fIdInput) {
+                    console.error(`找不到細項 FId，index: ${index}`);
+                    return;
+                }
+                formData.append(`GoodsInAndOutDetails[${index}].FId`, fIdInput.value || "0");
+                formData.append(`GoodsInAndOutDetails[${index}].FProductId`, row.querySelector(".FProductId").value);
+                formData.append(`GoodsInAndOutDetails[${index}].FCount`, row.querySelector(".FCount").value);
+                formData.append(`GoodsInAndOutDetails[${index}].FPrice`, row.querySelector(".FPrice").value);
+                formData.append(`GoodsInAndOutDetails[${index}].FSum`, row.querySelector(".FSum").value);
             });
-    }
 
-    // 讓按鈕綁定點擊事件
-    document.getElementById("submitEditData").addEventListener("click", submitEditData);
+            console.log("送出的 FormData：", formData);
 
-    document.getElementById("cancelEdit").addEventListener("click", function () {
-        let prevPage = document.referrer; // 取得上一個頁面 URL
-        if (prevPage.includes("GoodsInAndOutIndex")) {
-            window.location.href = prevPage; // 直接返回列表頁面
-        } else {
-            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+            fetch("/GoodsInAndOut/Edit", {
+                method: "POST",
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("HTTP 錯誤: " + response.status);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: "資料已更新！",
+                            icon: "success"
+                        }).then(() => {
+                            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+                        });
+                    } else {
+                        Swal.fire({
+                            title: "更新失敗！",
+                            text: data.message,
+                            icon: "warning"
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error("提交錯誤:", error);
+                    Swal.fire({
+                        title: "提交失敗!",
+                        text: "請檢查控制台錯誤訊息！",
+                        icon: "warning"
+                    });
+                });
         }
-    });
-</script>
+
+        // 讓按鈕綁定點擊事件
+        document.getElementById("submitEditData").addEventListener("click", submitEditData);
+
+        document.getElementById("cancelEdit").addEventListener("click", function () {
+            let prevPage = document.referrer; // 取得上一個頁面 URL
+            if (prevPage.includes("GoodsInAndOutIndex")) {
+                window.location.href = prevPage; // 直接返回列表頁面
+            } else {
+                window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+            }
+        });
+    </script>
+}

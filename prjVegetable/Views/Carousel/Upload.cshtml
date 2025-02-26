@@ -62,20 +62,21 @@
         </div>
     </div>
 </div>
-
-<script>
-    // 預覽選擇的圖片，並同步更新輪播圖
-    function previewImage(input, previewId, carouselId) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                // 更新右側的預覽圖
-                document.getElementById(previewId).src = e.target.result;
-                // 更新左側的輪播圖
-                document.getElementById(carouselId).src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+@section Scripts {
+    <script>
+        // 預覽選擇的圖片，並同步更新輪播圖
+        function previewImage(input, previewId, carouselId) {
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    // 更新右側的預覽圖
+                    document.getElementById(previewId).src = e.target.result;
+                    // 更新左側的輪播圖
+                    document.getElementById(carouselId).src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
         }
-    }
-</script>
+    </script>
+}

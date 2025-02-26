@@ -10,179 +10,181 @@
 *還沒有帶入使用者ID
 
 -->
-<style>
-    /*主單*/
-    .modal-table-container {
-        max-height: 70vh; /* 設定最大高度 */
-        overflow-y: auto; /* 垂直滾動條 */
-        overflow-x: hidden; /* 禁止水平滾動 */
-    }
-
-    .table-bordered {
-        margin-bottom: 0; /* 移除表格底部多餘空間 */
-    }
-
-    /*細項*/
-    .table-container {
-        height: 45vh; /* 限制表格容器的高度 */
-        overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
-        border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
-    }
-
-    .table {
-        width: 100%; /* 讓表格寬度充滿容器 */
-        border-collapse: collapse; /* 消除表格的內邊距 */
-    }
-
-        .table th, .table td {
-            padding: 8px;
-            text-align: center; /* 文字居中 */
+@section Styles {
+    <style>
+        /*主單*/
+        .modal-table-container {
+            max-height: 70vh; /* 設定最大高度 */
+            overflow-y: auto; /* 垂直滾動條 */
+            overflow-x: hidden; /* 禁止水平滾動 */
         }
 
-        .table th {
-            background-color: #f8f9fa; /* 可選：表頭背景色 */
-            font-weight: bold; /* 加粗表頭文字 */
+        .table-bordered {
+            margin-bottom: 0; /* 移除表格底部多餘空間 */
         }
 
-    .btn-hover-grow {
-        transition: transform 0.3s ease; /* 設定過渡效果 */
-    }
+        /*細項*/
+        .table-container {
+            height: 45vh; /* 限制表格容器的高度 */
+            overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
+            border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
+        }
 
-    .btn-hover-grow:hover {
-        transform: scale(1.2); /* 當滑鼠移入時放大按鈕，1.5 表示放大 50% */
-    }
+        .table {
+            width: 100%; /* 讓表格寬度充滿容器 */
+            border-collapse: collapse; /* 消除表格的內邊距 */
+        }
 
-    button:focus, .btn:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
+            .table th, .table td {
+                padding: 8px;
+                text-align: center; /* 文字居中 */
+            }
 
-</style>
+            .table th {
+                background-color: #f8f9fa; /* 可選：表頭背景色 */
+                font-weight: bold; /* 加粗表頭文字 */
+            }
+
+        .btn-hover-grow {
+            transition: transform 0.3s ease; /* 設定過渡效果 */
+        }
+
+            .btn-hover-grow:hover {
+                transform: scale(1.2); /* 當滑鼠移入時放大按鈕，1.5 表示放大 50% */
+            }
+
+        button:focus, .btn:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+    </style>
+}
 
 <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
-<div class="container my-5">
-    <div class="d-flex align-items-center justify-content-between">
-        <!-- 左欄，搜尋按鈕與按鈕群組 -->
-        <div class="d-flex align-items-center justify-content-start">
-            <!-- 搜尋按鈕 -->
-            <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModal"
-                    data-bs-placement="top"
-                    title="點擊進行查詢"
-                    data-bs-delay="10">
-                <i class="bi bi-search">　查詢庫存盤點單</i>
-            </button>
+    <div class="container my-5">
+        <div class="d-flex align-items-center justify-content-between">
+            <!-- 左欄，搜尋按鈕與按鈕群組 -->
+            <div class="d-flex align-items-center justify-content-start">
+                <!-- 搜尋按鈕 -->
+                <button type="button" id="searchButton" class="btn btn-hover-grow btn-lg me-2"
+                        data-bs-toggle="modal"
+                        data-bs-target="#exampleModal"
+                        data-bs-placement="top"
+                        title="點擊進行查詢"
+                        data-bs-delay="10">
+                    <i class="bi bi-search">　查詢庫存盤點單</i>
+                </button>
 
-            <!-- 按鈕群組 -->
-            <div class="btn-group d-flex me-3" role="group" aria-label="Inventory Navigation">
-                <!-- 第一筆 -->
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["FirstId"] })"
-                   class="btn first-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="第一筆"
-                   data-current="@Model.InventoryMain.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-start-fill"></i>
-                </a>
+                <!-- 按鈕群組 -->
+                <div class="btn-group d-flex me-3" role="group" aria-label="Inventory Navigation">
+                    <!-- 第一筆 -->
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["FirstId"] })"
+                       class="btn first-btn btn-hover-grow btn-lg"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="第一筆"
+                       data-current="@Model.InventoryMain.FId"
+                       data-first="@ViewData["FirstId"]"
+                       data-bs-delay="10">
+                        <i class="bi bi-skip-start-fill"></i>
+                    </a>
 
-                <!-- 上一筆 -->
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })"
-                   class="btn prev-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="上一筆"
-                   data-current="@Model.InventoryMain.FId"
-                   data-first="@ViewData["FirstId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-left-fill"></i>
-                </a>
+                    <!-- 上一筆 -->
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["PreviousId"] })"
+                       class="btn prev-btn btn-hover-grow btn-lg"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="上一筆"
+                       data-current="@Model.InventoryMain.FId"
+                       data-first="@ViewData["FirstId"]"
+                       data-bs-delay="10">
+                        <i class="bi bi-caret-left-fill"></i>
+                    </a>
 
-                <!-- 下一筆 -->
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })"
-                   class="btn next-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="下一筆"
-                   data-current="@Model.InventoryMain.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-caret-right-fill"></i>
-                </a>
+                    <!-- 下一筆 -->
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["NextId"] })"
+                       class="btn next-btn btn-hover-grow btn-lg"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="下一筆"
+                       data-current="@Model.InventoryMain.FId"
+                       data-last="@ViewData["LastId"]"
+                       data-bs-delay="10">
+                        <i class="bi bi-caret-right-fill"></i>
+                    </a>
 
-                <!-- 最後一筆 -->
-                <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })"
-                   class="btn last-btn btn-hover-grow btn-lg"
-                   data-bs-toggle="tooltip"
-                   data-bs-placement="top"
-                   title="最後一筆"
-                   data-current="@Model.InventoryMain.FId"
-                   data-last="@ViewData["LastId"]"
-                   data-bs-delay="10">
-                    <i class="bi bi-skip-end-fill"></i>
-                </a>
-            </div>
-        </div>
-
-        <!-- 右欄，其他項目 -->
-        <div class="d-flex align-items-center justify-content-end">
-            <!-- 盤點基準日 -->
-            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
-                <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
-                <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
-            </div>
-
-            <!-- 建檔日期 -->
-            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
-                <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
-                <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
-            </div>
-
-            <!-- 庫存盤點單號 -->
-            <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
-                <label asp-for="InventoryMain.FId" class="pe-1 mb-0">盤點單號：</label>
-                <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
-            </div>
-        </div>
-    </div>
-
-    <!-- 隱藏的必要欄位 -->
-    <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
-    @foreach (var item in Model.InventoryDetails)
-    {
-        <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
-    }
-
-    <div class="d-flex">
-        <!-- 左邊的表格 -->
-        <div class="table-container flex-grow-1 me-3 mt-2">
-            <div id="printTable">
-                <!-- 顯示庫存盤點單號、盤點基準日與建檔日期（僅列印時顯示） -->
-                <div class="row mb-3 mt-4 print-only" style="display: none; justify-content: flex-start;">
-                    <div class="col-4">
-                        <strong>庫存盤點單號：</strong> @Model.InventoryMain.FId
-                    </div>
-                    <div class="col-4">
-                        <strong>盤點基準日：</strong> @Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")
-                    </div>
-                    <div class="col-4">
-                        <strong>建檔日期：</strong> @Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")
-                    </div>
+                    <!-- 最後一筆 -->
+                    <a href="@Url.Action("Detail", "Inventory", new { id = ViewData["LastId"] })"
+                       class="btn last-btn btn-hover-grow btn-lg"
+                       data-bs-toggle="tooltip"
+                       data-bs-placement="top"
+                       title="最後一筆"
+                       data-current="@Model.InventoryMain.FId"
+                       data-last="@ViewData["LastId"]"
+                       data-bs-delay="10">
+                        <i class="bi bi-skip-end-fill"></i>
+                    </a>
                 </div>
-                <hr class="print-only" style="display: none"  />
-                <div class="table-responsive">
-                    <table class="table text-center">
-                        <thead>
-                            <tr>
-                                <th>商品ID</th>
-                                <th>商品</th>
-                                <th>系統庫存數量</th>
-                                <th>實際庫存數量(填入數量)</th>
-                                <th>差異數量</th>
-                            </tr>
-                        </thead>
+            </div>
+
+            <!-- 右欄，其他項目 -->
+            <div class="d-flex align-items-center justify-content-end">
+                <!-- 盤點基準日 -->
+                <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
+                    <label asp-for="InventoryMain.FBaselineDate" class="pe-1 mb-0">盤點基準日：</label>
+                    <input asp-for="InventoryMain.FBaselineDate" class="form-control form-control-sm w-auto" type="date" id="FBaselineDate" value="@Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")" readonly />
+                </div>
+
+                <!-- 建檔日期 -->
+                <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
+                    <label asp-for="InventoryMain.FCreatedAt" class="pe-1 mb-0">建檔日期：</label>
+                    <input asp-for="InventoryMain.FCreatedAt" class="form-control form-control-sm w-auto" type="date" id="FCreatedAt" value="@Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")" readonly />
+                </div>
+
+                <!-- 庫存盤點單號 -->
+                <div class="d-flex align-items-center justify-content-end ms-3 mb-0">
+                    <label asp-for="InventoryMain.FId" class="pe-1 mb-0">盤點單號：</label>
+                    <input asp-for="InventoryMain.FId" class="form-control form-control-sm w-auto" type="text" readonly />
+                </div>
+            </div>
+        </div>
+
+        <!-- 隱藏的必要欄位 -->
+        <input type="hidden" name="currentId" value="@Model.InventoryMain.FId" />
+        @foreach (var item in Model.InventoryDetails)
+        {
+            <input type="hidden" name="FInventoryMainId" value="@item.FInventoryMainId" />
+        }
+
+        <div class="d-flex">
+            <!-- 左邊的表格 -->
+            <div class="table-container flex-grow-1 me-3 mt-2">
+                <div id="printTable">
+                    <!-- 顯示庫存盤點單號、盤點基準日與建檔日期（僅列印時顯示） -->
+                    <div class="row mb-3 mt-4 print-only" style="display: none; justify-content: flex-start;">
+                        <div class="col-4">
+                            <strong>庫存盤點單號：</strong> @Model.InventoryMain.FId
+                        </div>
+                        <div class="col-4">
+                            <strong>盤點基準日：</strong> @Model.InventoryMain.FBaselineDate.ToString("yyyy-MM-dd")
+                        </div>
+                        <div class="col-4">
+                            <strong>建檔日期：</strong> @Model.InventoryMain.FCreatedAt.ToString("yyyy-MM-dd")
+                        </div>
+                    </div>
+                    <hr class="print-only" style="display: none" />
+                    <div class="table-responsive">
+                        <table class="table text-center">
+                            <thead>
+                                <tr>
+                                    <th>商品ID</th>
+                                    <th>商品</th>
+                                    <th>系統庫存數量</th>
+                                    <th>實際庫存數量(填入數量)</th>
+                                    <th>差異數量</th>
+                                </tr>
+                            </thead>
                             <tbody id="tableBody">
                                 @if (Model.InventoryDetails.Any())
                                 {
@@ -217,85 +219,85 @@
                                     </tr>
                                 }
                             </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- 右邊的按鈕 -->
-        <div class="d-flex flex-column align-items-center mt-2">
-            <!-- 新增按鈕 -->
-            <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" data-bs-toggle="modal" data-bs-target="#addModal" title="新增" id="addButton">
-                <i class="bi bi-plus-square"></i>
-            </button>
+            <!-- 右邊的按鈕 -->
+            <div class="d-flex flex-column align-items-center mt-2">
+                <!-- 新增按鈕 -->
+                <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" data-bs-toggle="modal" data-bs-target="#addModal" title="新增" id="addButton">
+                    <i class="bi bi-plus-square"></i>
+                </button>
 
-            <!-- 編輯按鈕 -->
+                <!-- 編輯按鈕 -->
                 <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="editButton" data-bs-toggle="collapse"
-                    data-bs-target="#editActionButtons" aria-expanded="false" aria-controls="editActionButtons"
-                    data-bs-toggle="tooltip" title="編輯" data-bs-delay="10">
-                <i class="bi bi-pencil-square"></i>
-            </button>
-            <!-- 取消按鈕 -->
-            <button type="button" class="btn btn-dark mb-2 d-none btn-hover-grow btn-lg" id="cancelEditButton" data-bs-toggle="collapse"
-                    data-bs-target="#editActionButtons" aria-expanded="true" aria-controls="editActionButtons"
-                    data-bs-toggle="tooltip" title="取消編輯" data-bs-delay="10">
-                <i class="bi bi-x-square-fill"></i>
-            </button>
-            <!-- 垂直展開的按鈕組 -->
-            <div id="editActionButtons" class="collapse">
-                <div class="d-flex flex-column align-items-center">
-                    <!-- 將系統數量帶入實際庫存按鈕 -->
+                        data-bs-target="#editActionButtons" aria-expanded="false" aria-controls="editActionButtons"
+                        data-bs-toggle="tooltip" title="編輯" data-bs-delay="10">
+                    <i class="bi bi-pencil-square"></i>
+                </button>
+                <!-- 取消按鈕 -->
+                <button type="button" class="btn btn-dark mb-2 d-none btn-hover-grow btn-lg" id="cancelEditButton" data-bs-toggle="collapse"
+                        data-bs-target="#editActionButtons" aria-expanded="true" aria-controls="editActionButtons"
+                        data-bs-toggle="tooltip" title="取消編輯" data-bs-delay="10">
+                    <i class="bi bi-x-square-fill"></i>
+                </button>
+                <!-- 垂直展開的按鈕組 -->
+                <div id="editActionButtons" class="collapse">
+                    <div class="d-flex flex-column align-items-center">
+                        <!-- 將系統數量帶入實際庫存按鈕 -->
                         <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="syncStockButton" data-bs-toggle="tooltip"
-                            title="帶入系統庫存" data-bs-delay="10">
-                        <i class="bi bi-arrow-right"></i>
-                    </button>
-                    <!-- 將實際庫存設為0按鈕 -->
+                                title="帶入系統庫存" data-bs-delay="10">
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+                        <!-- 將實際庫存設為0按鈕 -->
                         <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="resetStockButton" data-bs-toggle="tooltip"
-                            title="將實際庫存設為 0" data-bs-delay="10">
-                        <i class="bi bi-0-circle-fill"></i>
-                    </button>
-                    <!-- 儲存按鈕 -->
+                                title="將實際庫存設為 0" data-bs-delay="10">
+                            <i class="bi bi-0-circle-fill"></i>
+                        </button>
+                        <!-- 儲存按鈕 -->
                         <button type="button" class="btn btn-primary mb-2 btn-hover-grow btn-lg" id="saveButton" data-bs-toggle="tooltip"
-                            title="儲存" data-bs-delay="10">
-                        <i class="bi bi-floppy"></i>
-                    </button>
+                                title="儲存" data-bs-delay="10">
+                            <i class="bi bi-floppy"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <!-- 列印按鈕 -->
+                <!-- 列印按鈕 -->
                 <button type="button" class="btn btn-primary btn-hover-grow btn-lg" id="printButton " onclick="printTable()" data-bs-toggle="tooltip"
-                    title="列印" data-bs-delay="10">
-                <i class="bi bi-printer-fill"></i>
-            </button>
-        </div>
+                        title="列印" data-bs-delay="10">
+                    <i class="bi bi-printer-fill"></i>
+                </button>
+            </div>
             @* <button type="button" class="btn btn-light mb-2" id="deletebutton" disabled> *@
             @*     <i class="bi bi-trash-fill"></i> *@
             @* </button> *@
-    </div>
+        </div>
 
-    <div class="row mt-2">
-        <!-- 左側：備註欄與按鈕 -->
-        <div class="col-8 d-flex">
-            <button type="button" id="toggleNoteButton" class="btn me-1 mt-2 btn-lg" title="備註按鈕" disabled>
-                <i class="bi bi-journals"></i>
-            </button>
+        <div class="row mt-2">
+            <!-- 左側：備註欄與按鈕 -->
+            <div class="col-8 d-flex">
+                <button type="button" id="toggleNoteButton" class="btn me-1 mt-2 btn-lg" title="備註按鈕" disabled>
+                    <i class="bi bi-journals"></i>
+                </button>
 
-            <!-- 備註欄 -->
+                <!-- 備註欄 -->
                 <div class="ms-2 w-100">
                     <textarea id="inventoryNote"
                               class="p-2 form-control mt-2"
                               readonly>@Model.InventoryMain.FNote</textarea>
                 </div>
-        </div>
+            </div>
 
-        <!-- 右側：查詢筆數 -->
-        <div class="col-3 d-flex justify-content-end align-items-center">
-            <span>
+            <!-- 右側：查詢筆數 -->
+            <div class="col-3 d-flex justify-content-end align-items-center">
+                <span>
                     當前顯示第 @Model.CurrentItemCount 筆，共 @Model.TotalItemCount 筆資料
-            </span>
-        </div>
-        <div class="col-1">
+                </span>
+            </div>
+            <div class="col-1">
+            </div>
         </div>
     </div>
-</div>
 </div>
 
 <!-- 選擇條件來查詢 -->
@@ -355,7 +357,7 @@
                             <th>盤點單號</th>
                             <th>盤點基準日</th>
                             <th>建檔日期</th>
-                            <th>備註</th> 
+                            <th>備註</th>
                         </tr>
                     </thead>
                     <tbody id="inventoryListTableBody">
@@ -416,531 +418,530 @@
     </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<!-- 查詢 -->
-<script>
-    document.getElementById('modalSearchButton').addEventListener('click', function () {
-        const fId = document.getElementById('searchFId').value.trim();
-        const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
-        const fBaselineEndDate = document.getElementById('FBaselineEndDate').value.trim();
-        const fCreatedStartDate = document.getElementById('FCreatedStartDate').value.trim();
-        const fCreatedEndDate = document.getElementById('FCreatedEndDate').value.trim();
-
-        const requestData = {
-            fId: fId || null,
-            fBaselineStartDate: fBaselineStartDate || null,
-            fBaselineEndDate: fBaselineEndDate || null,
-            fCreatedStartDate: fCreatedStartDate || null,
-            fCreatedEndDate: fCreatedEndDate || null
-        };
-
-        if (!fId && !fBaselineStartDate && !fBaselineEndDate && !fCreatedStartDate && !fCreatedEndDate) {
-            alert('請至少填寫一個查詢條件');
-            return;
-        }
-
-        $.ajax({
-            url: '/Inventory/Search',
-            type: 'GET',
-            data: requestData,
-            success: function (response) {
-                console.log("AJAX 成功回應！", response);
-
-                if (response.success && response.inventoryMainList?.length > 0) {
-                    const tableBody = document.getElementById('inventoryListTableBody');
-                    tableBody.innerHTML = ''; // 清空表格
-
-                    response.inventoryMainList.forEach(item => {
-                        const row = `
-                        <tr class="inventory-row" data-id="${item.fId}">
-                            <td>${item.fId}</td>
-                            <td>${item.fBaselineDate ?? ''}</td>
-                            <td>${item.fCreatedAt ?? ''}</td>
-                            <td>${item.fNote ?? ''}</td> <!-- 新增備註欄位 -->
-                        </tr>
-                        `;
-                        tableBody.insertAdjacentHTML('beforeend', row);
-                    });
-
-                    // 更新結果筆數
-                    document.getElementById('searchResultCount').textContent = `符合條件的筆數: ${response.totalCount}`;
-
-                    // 顯示查詢結果視窗
-                    $("#inventoryListModal").modal("show");
-                } else {
-                    console.error("沒有查到資料或資料格式錯誤", response);
-                    alert(response.message || '查無符合條件的資料');
-                }
-            },
-            error: function (error) {
-                console.error("AJAX 失敗", error);
-                alert('發生錯誤，請稍後再試');
-            }
-        });
-    });
-
-    // 選擇邏輯：點擊行選擇並滾動
-    let selectedInventoryMainId = null; // 用來記錄選中的 ID
-
-    document.getElementById('inventoryListTableBody').addEventListener('click', function (e) {
-        const targetRow = e.target.closest('tr'); // 確保點擊的是行
-        if (targetRow && targetRow.classList.contains('inventory-row')) {
-            selectedInventoryMainId = targetRow.dataset.id; // 設定選中的 ID
-            document.querySelectorAll('.inventory-row').forEach(row => {
-                row.classList.remove('table-active'); // 移除其他行的高亮
-            });
-            targetRow.classList.add('table-active'); // 高亮當前行
-
-            // 滾動到選中行
-            const container = document.querySelector('.modal-table-container'); // 表格滾動容器
-            const rowPosition = targetRow.offsetTop; // 取得行在表格中的位置
-            container.scrollTo({
-                top: rowPosition - container.offsetHeight / 2 + targetRow.offsetHeight / 2,
-                behavior: 'smooth' // 平滑滾動效果
-            });
-
-            console.log("選中的 InventoryMainId:", selectedInventoryMainId);
-        }
-    });
-
-    // 確認選擇後跳轉
-    document.getElementById('confirmSelection').addEventListener('click', function () {
-        if (!selectedInventoryMainId) {
-            alert('請選擇一個盤點單號');
-            return;
-        }
-        console.log("即將跳轉到:", `/Inventory/Detail/${selectedInventoryMainId}`);
-        window.location.href = `/Inventory/Detail/${selectedInventoryMainId}`;
-    });
-</script>
-
-<!-- 編輯/儲存 -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-    const editButton = document.getElementById("editButton");
-    const cancelEditButton = document.getElementById("cancelEditButton");
-    const editActionButtons = document.getElementById("editActionButtons");
-    const inventoryNoteDisplay = document.getElementById("inventoryNoteDisplay");
-    const inventoryNoteEdit = document.getElementById("inventoryNoteEdit");
-    const syncStockButton = document.getElementById("syncStockButton");
-    const inputs = document.querySelectorAll('table input[type="number"]');
-
-    const bsCollapse = bootstrap.Collapse.getOrCreateInstance(editActionButtons, { toggle: false });
-    
-    // 初始化：頁面載入時所有欄位為唯讀
-        setEditable(false); // 設定所有欄位為唯讀
-
-    let isEditing = false; // 狀態控制
-    // 切換按鈕狀態的顯示與隱藏
-    function toggleButtons(isEditing) {
-        editButton.classList.toggle("d-none", isEditing);
-        cancelEditButton.classList.toggle("d-none", !isEditing);
-        isEditing ? bsCollapse.show() : bsCollapse.hide();
-    }
-
-    function setEditable(editable) {
-        // 控制輸入框和同步按鈕的狀態
-        inputs.forEach(input => input.disabled = !editable);
-        syncStockButton.disabled = !editable;
-
-        // 切換備註欄位的可編輯狀態
-    const inventoryNote = document.getElementById("inventoryNote");
-    inventoryNote.readOnly = !editable; // 切換 readonly 屬性
-
-        inputs.forEach(input => {
-        // 如果該欄位有值，則保持唯讀，即使進入編輯模式
-        const actualQuantity = parseInt(input.value, 10);
-        if (!isNaN(actualQuantity)) {
-            input.disabled = true; // 已有實際庫存，保持欄位唯讀
-        } else {
-            input.disabled = !editable; // 沒有實際庫存時，按編輯模式控制
-        }
-    });
-
-    }
-
-    // 編輯按鈕邏輯
-    editButton.addEventListener("click", function () {
-        isEditing = true;
-        toggleButtons(isEditing);
-        setEditable(isEditing);
-    });
-
-    // 取消按鈕邏輯
-    cancelEditButton.addEventListener("click", function () {
-        isEditing = false;
-        toggleButtons(isEditing);
-        setEditable(isEditing);
-
-    });
-
-    // 儲存按鈕邏輯
-    document.getElementById("saveButton").addEventListener("click", function () {
-        isEditing = false;
-        const noteText = inventoryNote.value; // 取得備註內容
-        saveData(noteText); // 提交儲存資料
-        setEditable(isEditing);
-        toggleButtons(isEditing);
-
-        // 更新顯示的備註文字
-        inventoryNoteDisplay.innerText = noteText;
-    });
-
-        // AJAX 提交儲存邏輯
-       function saveData(noteText) {
-    var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
-    var FBaselineDate = document.getElementById('FBaselineDate').value;
-    var formattedBaselineDate = FBaselineDate;
-    var formattedCreatedAt = new Date().toISOString().split("T")[0];
-
-    var inventoryMain = {
-        FBaselineDate: formattedBaselineDate,
-        FCreatedAt: formattedCreatedAt,
-        FEditor: 1,
-        FNote: noteText // 只更新 FNote
-    };
-
-    var products = [];
-    var inventoryDetails = [];
-    var rows = document.querySelectorAll("table tbody tr");
-
-    var hasQuantityChange = false; // 判斷是否有數量變更
-
-       rows.forEach(function (row) {
-        var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
-        var productId = parseInt(row.querySelector("td:first-child").innerText.trim(), 10) || 0;
-        var productName = row.querySelector("td:nth-child(2)").innerText.trim();
-        var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText.trim(), 10) || 0;
-        var actualQuantityInput = row.querySelector("input[name='FActualQuantity']");
-        var actualQuantity = parseInt(actualQuantityInput.value, 10);
-
-        // 如果實際庫存未填寫或為 NaN，直接跳過此項目
-        if (isNaN(actualQuantity)) {
-            return;
-        }
-
-        var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10) || null;
-
-        var differenceQuantity = actualQuantity - systemQuantity;
-
-        if (differenceQuantity !== 0) {
-            hasQuantityChange = true; // 如果有數量變更，設定為 true
-
-            // **只儲存有變動的庫存項目**
-            inventoryDetails.push({
-                InventoryDetail: {
-                    FId: fId,
-                    FInventoryMainId: inventoryMainId,
-                    FInventoryDetailId: fId,
-                    FActualQuantity: actualQuantity,
-                    FProductId: productId,
-                    FSystemQuantity: systemQuantity
-                },
-                FName: productName,
-                DifferenceQuantity: differenceQuantity
-            });
-
-            products.push({
-                FId: productId,
-                FQuantity: actualQuantity,
-                FName: productName
-            });
-        }
-    });
-
+@section Scripts {
+    <!-- 查詢 -->
+    <script>
+        document.getElementById('modalSearchButton').addEventListener('click', function () {
+            const fId = document.getElementById('searchFId').value.trim();
+            const fBaselineStartDate = document.getElementById('FBaselineStartDate').value.trim();
+            const fBaselineEndDate = document.getElementById('FBaselineEndDate').value.trim();
+            const fCreatedStartDate = document.getElementById('FCreatedStartDate').value.trim();
+            const fCreatedEndDate = document.getElementById('FCreatedEndDate').value.trim();
 
             const requestData = {
-                currentId: currentId,
-                InventoryMain: inventoryMain,
-                InventoryDetails: hasQuantityChange ? inventoryDetails : [],
-                Products: products
-
+                fId: fId || null,
+                fBaselineStartDate: fBaselineStartDate || null,
+                fBaselineEndDate: fBaselineEndDate || null,
+                fCreatedStartDate: fCreatedStartDate || null,
+                fCreatedEndDate: fCreatedEndDate || null
             };
 
-                $.ajax({
-        url: '/Inventory/Save/' + currentId,
-        method: 'POST',
-        data: JSON.stringify(requestData),
-        contentType: 'application/json',
-        success: function (response) {
-            if (response.success) {
-                if (response.redirectTo) {
-                    Swal.fire({
-                        title: "調整庫存成功",
-                        text:"將跳轉至庫存調整作業",
-                        icon: "success"
-                    }).then(() => {
-                        window.location.href = response.redirectTo;
-                    });
-                } else {
-                   Swal.fire({
-                    title: "已更新備註",
-                    icon: "info",
-                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
-                    showConfirmButton: false
-                });
-                }
-            } else {
-                Swal.fire({
-                    title: "錯誤",
-                    text: response.error,
-                    icon: "error"
-                });
+            if (!fId && !fBaselineStartDate && !fBaselineEndDate && !fCreatedStartDate && !fCreatedEndDate) {
+                alert('請至少填寫一個查詢條件');
+                return;
             }
-        },
-        error: function (xhr, status, error) {
-            Swal.fire({
-                title: "錯誤",
-                text: error,
-                icon: "error"
-            });
-        }
-    });
 
-        }
-    });
-</script>
+            $.ajax({
+                url: '/Inventory/Search',
+                type: 'GET',
+                data: requestData,
+                success: function (response) {
+                    console.log("AJAX 成功回應！", response);
 
+                    if (response.success && response.inventoryMainList?.length > 0) {
+                        const tableBody = document.getElementById('inventoryListTableBody');
+                        tableBody.innerHTML = ''; // 清空表格
 
-<!-- 刪除已經先拿掉了~~~~ -->
-<script>
-    document.getElementById('deletebutton').addEventListener('click', function () {
-        const inventoryId = document.querySelector('input[name="currentId"]').value;
+                        response.inventoryMainList.forEach(item => {
+                            const row = `
+                                    <tr class="inventory-row" data-id="${item.fId}">
+                                        <td>${item.fId}</td>
+                                        <td>${item.fBaselineDate ?? ''}</td>
+                                        <td>${item.fCreatedAt ?? ''}</td>
+                                        <td>${item.fNote ?? ''}</td> <!-- 新增備註欄位 -->
+                                    </tr>
+                                    `;
+                            tableBody.insertAdjacentHTML('beforeend', row);
+                        });
 
-           Swal.fire({
-        title: '您確定要刪除此盤點資料嗎？',
-        text: '此操作無法撤銷！',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonText: '確定刪除',
-        cancelButtonText: '取消'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            fetch('@Url.Action("DeleteConfirmed", "Inventory")', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                        // 更新結果筆數
+                        document.getElementById('searchResultCount').textContent = `符合條件的筆數: ${response.totalCount}`;
+
+                        // 顯示查詢結果視窗
+                        $("#inventoryListModal").modal("show");
+                    } else {
+                        console.error("沒有查到資料或資料格式錯誤", response);
+                        alert(response.message || '查無符合條件的資料');
+                    }
                 },
-                body: `id=${inventoryId}`,
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
+                error: function (error) {
+                    console.error("AJAX 失敗", error);
+                    alert('發生錯誤，請稍後再試');
+                }
+            });
+        });
+
+        // 選擇邏輯：點擊行選擇並滾動
+        let selectedInventoryMainId = null; // 用來記錄選中的 ID
+
+        document.getElementById('inventoryListTableBody').addEventListener('click', function (e) {
+            const targetRow = e.target.closest('tr'); // 確保點擊的是行
+            if (targetRow && targetRow.classList.contains('inventory-row')) {
+                selectedInventoryMainId = targetRow.dataset.id; // 設定選中的 ID
+                document.querySelectorAll('.inventory-row').forEach(row => {
+                    row.classList.remove('table-active'); // 移除其他行的高亮
+                });
+                targetRow.classList.add('table-active'); // 高亮當前行
+
+                // 滾動到選中行
+                const container = document.querySelector('.modal-table-container'); // 表格滾動容器
+                const rowPosition = targetRow.offsetTop; // 取得行在表格中的位置
+                container.scrollTo({
+                    top: rowPosition - container.offsetHeight / 2 + targetRow.offsetHeight / 2,
+                    behavior: 'smooth' // 平滑滾動效果
+                });
+
+                console.log("選中的 InventoryMainId:", selectedInventoryMainId);
+            }
+        });
+
+        // 確認選擇後跳轉
+        document.getElementById('confirmSelection').addEventListener('click', function () {
+            if (!selectedInventoryMainId) {
+                alert('請選擇一個盤點單號');
+                return;
+            }
+            console.log("即將跳轉到:", `/Inventory/Detail/${selectedInventoryMainId}`);
+            window.location.href = `/Inventory/Detail/${selectedInventoryMainId}`;
+        });
+    </script>
+
+    <!-- 編輯/儲存 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const editButton = document.getElementById("editButton");
+            const cancelEditButton = document.getElementById("cancelEditButton");
+            const editActionButtons = document.getElementById("editActionButtons");
+            const inventoryNoteDisplay = document.getElementById("inventoryNoteDisplay");
+            const inventoryNoteEdit = document.getElementById("inventoryNoteEdit");
+            const syncStockButton = document.getElementById("syncStockButton");
+            const inputs = document.querySelectorAll('table input[type="number"]');
+
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(editActionButtons, { toggle: false });
+
+            // 初始化：頁面載入時所有欄位為唯讀
+            setEditable(false); // 設定所有欄位為唯讀
+
+            let isEditing = false; // 狀態控制
+            // 切換按鈕狀態的顯示與隱藏
+            function toggleButtons(isEditing) {
+                editButton.classList.toggle("d-none", isEditing);
+                cancelEditButton.classList.toggle("d-none", !isEditing);
+                isEditing ? bsCollapse.show() : bsCollapse.hide();
+            }
+
+            function setEditable(editable) {
+                // 控制輸入框和同步按鈕的狀態
+                inputs.forEach(input => input.disabled = !editable);
+                syncStockButton.disabled = !editable;
+
+                // 切換備註欄位的可編輯狀態
+                const inventoryNote = document.getElementById("inventoryNote");
+                inventoryNote.readOnly = !editable; // 切換 readonly 屬性
+
+                inputs.forEach(input => {
+                    // 如果該欄位有值，則保持唯讀，即使進入編輯模式
+                    const actualQuantity = parseInt(input.value, 10);
+                    if (!isNaN(actualQuantity)) {
+                        input.disabled = true; // 已有實際庫存，保持欄位唯讀
+                    } else {
+                        input.disabled = !editable; // 沒有實際庫存時，按編輯模式控制
+                    }
+                });
+
+            }
+
+            // 編輯按鈕邏輯
+            editButton.addEventListener("click", function () {
+                isEditing = true;
+                toggleButtons(isEditing);
+                setEditable(isEditing);
+            });
+
+            // 取消按鈕邏輯
+            cancelEditButton.addEventListener("click", function () {
+                isEditing = false;
+                toggleButtons(isEditing);
+                setEditable(isEditing);
+
+            });
+
+            // 儲存按鈕邏輯
+            document.getElementById("saveButton").addEventListener("click", function () {
+                isEditing = false;
+                const noteText = inventoryNote.value; // 取得備註內容
+                saveData(noteText); // 提交儲存資料
+                setEditable(isEditing);
+                toggleButtons(isEditing);
+
+                // 更新顯示的備註文字
+                inventoryNoteDisplay.innerText = noteText;
+            });
+
+            // AJAX 提交儲存邏輯
+            function saveData(noteText) {
+                var currentId = parseInt(document.querySelector('input[name="currentId"]').value, 10);
+                var FBaselineDate = document.getElementById('FBaselineDate').value;
+                var formattedBaselineDate = FBaselineDate;
+                var formattedCreatedAt = new Date().toISOString().split("T")[0];
+
+                var inventoryMain = {
+                    FBaselineDate: formattedBaselineDate,
+                    FCreatedAt: formattedCreatedAt,
+                    FEditor: 1,
+                    FNote: noteText // 只更新 FNote
+                };
+
+                var products = [];
+                var inventoryDetails = [];
+                var rows = document.querySelectorAll("table tbody tr");
+
+                var hasQuantityChange = false; // 判斷是否有數量變更
+
+                rows.forEach(function (row) {
+                    var inventoryMainId = parseInt(row.querySelector("input[name='FInventoryMainId']").value, 10);
+                    var productId = parseInt(row.querySelector("td:first-child").innerText.trim(), 10) || 0;
+                    var productName = row.querySelector("td:nth-child(2)").innerText.trim();
+                    var systemQuantity = parseInt(row.querySelector("td:nth-child(3)").innerText.trim(), 10) || 0;
+                    var actualQuantityInput = row.querySelector("input[name='FActualQuantity']");
+                    var actualQuantity = parseInt(actualQuantityInput.value, 10);
+
+                    // 如果實際庫存未填寫或為 NaN，直接跳過此項目
+                    if (isNaN(actualQuantity)) {
+                        return;
+                    }
+
+                    var fId = parseInt(row.querySelector("input[name='FInventoryDetailId']").value, 10) || null;
+
+                    var differenceQuantity = actualQuantity - systemQuantity;
+
+                    if (differenceQuantity !== 0) {
+                        hasQuantityChange = true; // 如果有數量變更，設定為 true
+
+                        // **只儲存有變動的庫存項目**
+                        inventoryDetails.push({
+                            InventoryDetail: {
+                                FId: fId,
+                                FInventoryMainId: inventoryMainId,
+                                FInventoryDetailId: fId,
+                                FActualQuantity: actualQuantity,
+                                FProductId: productId,
+                                FSystemQuantity: systemQuantity
+                            },
+                            FName: productName,
+                            DifferenceQuantity: differenceQuantity
+                        });
+
+                        products.push({
+                            FId: productId,
+                            FQuantity: actualQuantity,
+                            FName: productName
+                        });
+                    }
+                });
+
+
+                const requestData = {
+                    currentId: currentId,
+                    InventoryMain: inventoryMain,
+                    InventoryDetails: hasQuantityChange ? inventoryDetails : [],
+                    Products: products
+
+                };
+
+                $.ajax({
+                    url: '/Inventory/Save/' + currentId,
+                    method: 'POST',
+                    data: JSON.stringify(requestData),
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response.success) {
+                            if (response.redirectTo) {
+                                Swal.fire({
+                                    title: "調整庫存成功",
+                                    text: "將跳轉至庫存調整作業",
+                                    icon: "success"
+                                }).then(() => {
+                                    window.location.href = response.redirectTo;
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "已更新備註",
+                                    icon: "info",
+                                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
+                                    showConfirmButton: false
+                                });
+                            }
+                        } else {
+                            Swal.fire({
+                                title: "錯誤",
+                                text: response.error,
+                                icon: "error"
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            title: "錯誤",
+                            text: error,
+                            icon: "error"
+                        });
+                    }
+                });
+
+            }
+        });
+    </script>
+
+
+    <!-- 刪除已經先拿掉了~~~~ -->
+    <script>
+        document.getElementById('deletebutton').addEventListener('click', function () {
+            const inventoryId = document.querySelector('input[name="currentId"]').value;
+
+            Swal.fire({
+                title: '您確定要刪除此盤點資料嗎？',
+                text: '此操作無法撤銷！',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '確定刪除',
+                cancelButtonText: '取消'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch('@Url.Action("DeleteConfirmed", "Inventory")', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: `id=${inventoryId}`,
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    title: '刪除成功',
+                                    icon: 'success',
+                                    timer: 1500, // 顯示 1.5 秒後自動關閉
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href = data.redirectTo; // 成功後跳轉
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: '刪除失敗',
+                                    text: '請稍後再試。',
+                                    icon: 'error'
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('錯誤:', error);
+                            Swal.fire({
+                                title: '發生錯誤',
+                                text: '請稍後再試。',
+                                icon: 'error'
+                            });
+                        });
+                }
+            });
+    </script>
+
+    <!-- 新增 -->
+    <script>
+        document.getElementById('addButton').addEventListener('click', function () {
+            const url = this.getAttribute('data-url');
+        });
+    </script>
+    <!-- 列印 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+    <script>
+        function printTable() {
+            // 顯示列印欄位
+            document.querySelectorAll('.print-only').forEach(function (element) {
+                element.style.display = 'flex'; // 使用 flex 來顯示在同一行
+            });
+
+            // 使用 printJS 進行列印
+            printJS({
+                printable: 'printTable',
+                type: 'html',
+                style: `
+                    /* 表格樣式 */
+                    table { width: 100%; border-collapse: collapse; }
+                    caption { display: block !important; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+                    th, td { text-align: center !important; vertical-align: middle !important; padding: 4px !important; }
+                    thead tr { border-bottom: 2px solid black !important; }
+                    tbody tr { border-bottom: 1px solid gray !important; }
+                    th, td { border: none !important; }
+
+                    /* 使 input 變成純文字 */
+                    input[type="text"], input[type="number"], input[type="date"] {
+                        border: none;
+                        background-color: transparent;
+                        font-size: 16px;
+                        font-family: Arial, sans-serif;
+                        width: auto;
+                        padding: 0;
+                        text-align: left;
+                        color: black;
+                    }
+
+                    /* 隱藏多餘的背景和邊框 */
+                    input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+                        outline: none;
+                        box-shadow: none;
+                    }
+                `
+            });
+
+            // 列印後隱藏這些欄位
+            document.querySelectorAll('.print-only').forEach(function (element) {
+                element.style.display = 'none';
+            });
+        }
+    </script>
+
+
+    <!-- 將系統庫存數量帶入實際庫存數量 -->
+    <script>
+        document.getElementById('syncStockButton').addEventListener('click', function () {
+            const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
+
+            rows.forEach(row => {
+                const systemQuantity = row.querySelector('td:nth-child(3)'); // 第3欄是系統庫存數量
+                const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第4欄是實際庫存數量的輸入框
+
+                if (systemQuantity && actualQuantityInput && !actualQuantityInput.disabled) {
+                    // 僅當輸入框可編輯時進行操作
+                    const systemQuantityValue = systemQuantity.textContent.trim(); // 取得系統庫存數量值
+                    actualQuantityInput.value = systemQuantityValue; // 將其填入實際庫存數量的輸入框
+                }
+            });
+        });
+    </script>
+
+
+    <!-- 將實際庫存數量歸零 -->
+    <script>
+        document.getElementById('resetStockButton').addEventListener('click', function () {
+            const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
+
+            rows.forEach(row => {
+                const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第3欄是實際庫存數量的輸入框
+
+                if (actualQuantityInput && !actualQuantityInput.disabled) {
+                    // 僅當輸入框可編輯時進行操作
+                    actualQuantityInput.value = 0; // 將值設為 0
+                }
+            });
+        });
+    </script>
+
+    <!-- 第一筆與最後一筆的提示-->
+    <!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // 第一筆與上一筆按鈕檢查
+            document.querySelectorAll(".first-btn, .prev-btn").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const currentId = parseInt(this.getAttribute("data-current"));
+                    const firstId = parseInt(this.getAttribute("data-first"));
+
+                    if (currentId === firstId) {
+                        e.preventDefault(); // 阻止預設行為
+                        Swal.fire({
+                            title: "已經在第一筆資料！",
+                            icon: "info"
+                        });
+                    }
+                });
+            });
+
+            // 下一筆與最後一筆按鈕檢查
+            document.querySelectorAll(".next-btn, .last-btn").forEach(button => {
+                button.addEventListener("click", function (e) {
+                    const currentId = parseInt(this.getAttribute("data-current"));
+                    const lastId = parseInt(this.getAttribute("data-last"));
+
+                    if (currentId === lastId) {
+                        e.preventDefault(); // 阻止預設行為
+                        Swal.fire({
+                            title: "此筆為最新的資料！",
+                            icon: "info"
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+    <!-- 確保商品起始Id<結束Id-->
+    <script>
+        document.getElementById("ProductStartCode").addEventListener("change", function () {
+            const startCode = parseInt(this.value, 10); // 獲取選定的起始商品編號
+            const endCodeSelect = document.getElementById("ProductEndCode"); // 結束商品下拉選單
+            const options = endCodeSelect.options;
+
+            // 遍歷結束商品選項，隱藏小於或等於起始編號的選項
+            for (let i = 0; i < options.length; i++) {
+                const optionValue = parseInt(options[i].value, 10);
+
+                if (optionValue <= startCode) {
+                    options[i].style.display = "none"; // 隱藏選項
+                } else {
+                    options[i].style.display = "block"; // 顯示選項
+                }
+            }
+
+            // 如果當前選擇的結束編號不符合條件，重設為第一個符合條件的選項
+            if (parseInt(endCodeSelect.value, 10) <= startCode) {
+                endCodeSelect.value = ""; // 重置為空
+            }
+        });
+
+    </script>
+
+    <!-- 用鍵盤切換上下一筆 -->
+    <script>
+        document.addEventListener("keydown", function (event) {
+            // 獲取第一筆與最後一筆的 ID
+            const firstId = parseInt("@ViewData["FirstId"]");
+            const lastId = parseInt("@ViewData["LastId"]");
+            const currentId = parseInt("@Model.InventoryMain.FId"); // 目前這筆的 ID
+
+            if (event.key === "ArrowLeft") {
+                if (currentId === firstId) {
                     Swal.fire({
-                        title: '刪除成功',
-                        icon: 'success',
-                        timer: 1500, // 顯示 1.5 秒後自動關閉
-                        showConfirmButton: false
-                    }).then(() => {
-                        window.location.href = data.redirectTo; // 成功後跳轉
+                        title: "已經在第一筆資料！",
+                        icon: "info"
                     });
                 } else {
-                    Swal.fire({
-                        title: '刪除失敗',
-                        text: '請稍後再試。',
-                        icon: 'error'
-                    });
+                    window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
                 }
-            })
-            .catch(error => {
-                console.error('錯誤:', error);
-                Swal.fire({
-                    title: '發生錯誤',
-                    text: '請稍後再試。',
-                    icon: 'error'
-                });
-            });
-        }
-    });
-</script>
-
-<!-- 新增 -->
-<script>
-        document.getElementById('addButton').addEventListener('click', function () {
-        const url = this.getAttribute('data-url');
-    });
-</script>
-<!-- 列印 -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
-<script>
-    function printTable() {
-        // 顯示列印欄位
-        document.querySelectorAll('.print-only').forEach(function(element) {
-            element.style.display = 'flex'; // 使用 flex 來顯示在同一行
-        });
-
-        // 使用 printJS 進行列印
-        printJS({
-            printable: 'printTable',
-            type: 'html',
-            style: `
-                /* 表格樣式 */
-                table { width: 100%; border-collapse: collapse; }
-                caption { display: block !important; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px; }
-                th, td { text-align: center !important; vertical-align: middle !important; padding: 4px !important; }
-                thead tr { border-bottom: 2px solid black !important; }
-                tbody tr { border-bottom: 1px solid gray !important; }
-                th, td { border: none !important; }
-
-                /* 使 input 變成純文字 */
-                input[type="text"], input[type="number"], input[type="date"] {
-                    border: none;
-                    background-color: transparent;
-                    font-size: 16px;
-                    font-family: Arial, sans-serif;
-                    width: auto;
-                    padding: 0;
-                    text-align: left;
-                    color: black;
-                }
-
-                /* 隱藏多餘的背景和邊框 */
-                input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
-                    outline: none;
-                    box-shadow: none;
-                }
-            `
-        });
-
-        // 列印後隱藏這些欄位
-        document.querySelectorAll('.print-only').forEach(function(element) {
-            element.style.display = 'none';
-        });
-    }
-</script>
-
-
-<!-- 將系統庫存數量帶入實際庫存數量 -->
-<script>
-    document.getElementById('syncStockButton').addEventListener('click', function () {
-        const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
-
-        rows.forEach(row => {
-            const systemQuantity = row.querySelector('td:nth-child(3)'); // 第3欄是系統庫存數量
-            const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第4欄是實際庫存數量的輸入框
-
-            if (systemQuantity && actualQuantityInput && !actualQuantityInput.disabled) {
-                // 僅當輸入框可編輯時進行操作
-                const systemQuantityValue = systemQuantity.textContent.trim(); // 取得系統庫存數量值
-                actualQuantityInput.value = systemQuantityValue; // 將其填入實際庫存數量的輸入框
             }
-        });
-    });
-</script>
-
-
-<!-- 將實際庫存數量歸零 -->
-<script>
-    document.getElementById('resetStockButton').addEventListener('click', function () {
-        const rows = document.querySelectorAll('table tbody tr'); // 選取所有表格的資料列
-
-        rows.forEach(row => {
-            const actualQuantityInput = row.querySelector('td:nth-child(4) input'); // 第3欄是實際庫存數量的輸入框
-
-            if (actualQuantityInput && !actualQuantityInput.disabled) {
-                // 僅當輸入框可編輯時進行操作
-                actualQuantityInput.value = 0; // 將值設為 0
-            }
-        });
-    });
-</script>
-
-<!-- 第一筆與最後一筆的提示-->
-<!-- 由後端判斷，讓使用者直接可見按鈕禁用的狀態-->
-<script>
-        document.addEventListener("DOMContentLoaded", () => {
-        // 第一筆與上一筆按鈕檢查
-        document.querySelectorAll(".first-btn, .prev-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"));
-                const firstId = parseInt(this.getAttribute("data-first"));
-
-                if (currentId === firstId) {
-                    e.preventDefault(); // 阻止預設行為
-                        Swal.fire({
-      title: "已經在第一筆資料！",
-      icon: "info"
-    });
-                }
-            });
-        });
-
-        // 下一筆與最後一筆按鈕檢查
-        document.querySelectorAll(".next-btn, .last-btn").forEach(button => {
-            button.addEventListener("click", function (e) {
-                const currentId = parseInt(this.getAttribute("data-current"));
-                const lastId = parseInt(this.getAttribute("data-last"));
-
+            else if (event.key === "ArrowRight") {
                 if (currentId === lastId) {
-                    e.preventDefault(); // 阻止預設行為
                     Swal.fire({
-      title: "此筆為最新的資料！",
-      icon: "info"
-    });
+                        title: "此筆為最新的資料！",
+                        icon: "info"
+                    });
+                } else {
+                    window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
                 }
-            });
+            }
         });
-    });
-
-</script>
-
-<!-- 確保商品起始Id<結束Id-->
-<script>
-        document.getElementById("ProductStartCode").addEventListener("change", function () {
-        const startCode = parseInt(this.value, 10); // 獲取選定的起始商品編號
-        const endCodeSelect = document.getElementById("ProductEndCode"); // 結束商品下拉選單
-        const options = endCodeSelect.options;
-
-        // 遍歷結束商品選項，隱藏小於或等於起始編號的選項
-        for (let i = 0; i < options.length; i++) {
-            const optionValue = parseInt(options[i].value, 10);
-
-            if (optionValue <= startCode) {
-                options[i].style.display = "none"; // 隱藏選項
-            } else {
-                options[i].style.display = "block"; // 顯示選項
-            }
-        }
-
-        // 如果當前選擇的結束編號不符合條件，重設為第一個符合條件的選項
-        if (parseInt(endCodeSelect.value, 10) <= startCode) {
-            endCodeSelect.value = ""; // 重置為空
-        }
-    });
-
-</script>
-
-<!-- 用鍵盤切換上下一筆 -->
-<script>
-    document.addEventListener("keydown", function (event) {
-        // 獲取第一筆與最後一筆的 ID
-        const firstId = parseInt("@ViewData["FirstId"]");
-        const lastId = parseInt("@ViewData["LastId"]");
-        const currentId = parseInt("@Model.InventoryMain.FId"); // 目前這筆的 ID
-
-        if (event.key === "ArrowLeft") {
-            if (currentId === firstId) {
-                Swal.fire({
-                    title: "已經在第一筆資料！",
-                    icon: "info"
-                });
-            } else {
-                window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
-            }
-        }
-        else if (event.key === "ArrowRight") {
-            if (currentId === lastId) {
-                Swal.fire({
-                    title: "此筆為最新的資料！",
-                    icon: "info"
-                });
-            } else {
-                window.location.href = "@Url.Action("Detail", "Inventory", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
-            }
-        }
-    });
-</script>
+    </script>
+}
 
 
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

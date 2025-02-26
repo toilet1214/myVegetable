@@ -17,7 +17,7 @@
                         <div class="row">
                             <label for="fId" class="col-md-3 col-form-label">廠商編號：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fId" :placeholder="provider.fId" readonly v-model="provider.fId">                                
+                                <input type="text" class="form-control" id="fId" :placeholder="provider.fId" readonly v-model="provider.fId">
                             </div>
                         </div>
                     </div>
@@ -211,10 +211,10 @@
         <div v-else>
             <p>載入中...</p>
         </div>
-            
+
     </div>
 </div>
- 
+
 @section Scripts
 {
     <script>
@@ -222,25 +222,25 @@
             data() {
                 return {
                     provider: {
-                        fName:'',
-                        fConnect:'',
-                        fTel:'',
-                        fUbn:'',
-                        fAccountant:'',
-                        fAddress:'',
-                        fDelivery:'',
-                        fInvoiceAdd:'',
-                        fEditor:'',
+                        fName: '',
+                        fConnect: '',
+                        fTel: '',
+                        fUbn: '',
+                        fAccountant: '',
+                        fAddress: '',
+                        fDelivery: '',
+                        fInvoiceAdd: '',
+                        fEditor: '',
                     },  // 用來存放從後端獲得的人員資料
-                    fEditorName:'',
-                    providerBackup:{},
-                    nameError:false,
-                    connectError:false,
-                    telError:false,
-                    ubnError:false,
-                    addressError:false,                    
+                    fEditorName: '',
+                    providerBackup: {},
+                    nameError: false,
+                    connectError: false,
+                    telError: false,
+                    ubnError: false,
+                    addressError: false,
 
-                    edit:false, //啟用編輯
+                    edit: false, //啟用編輯
                 };
             },
             mounted() {
@@ -248,14 +248,14 @@
             },
             methods: {
                 loadProviderId() {
-                        // 获取当前 URL 的路径部分
-                        const path = window.location.pathname;
+                    // 获取当前 URL 的路径部分
+                    const path = window.location.pathname;
 
-                        // 假设 URL 路径的格式是 /provider/Details/{id}
-                        const pathSegments = path.split('/'); // 将路径分割为数组
+                    // 假设 URL 路径的格式是 /provider/Details/{id}
+                    const pathSegments = path.split('/'); // 将路径分割为数组
 
-                        // 获取路径的最后一部分作为 ID
-                        const providerId = pathSegments[pathSegments.length - 1];
+                    // 获取路径的最后一部分作为 ID
+                    const providerId = pathSegments[pathSegments.length - 1];
                     if (providerId) {
                         axios.get(`/Providers/GetProviderById/${providerId}`)
                             .then(response => {
@@ -289,19 +289,19 @@
                 },
 
                 toggleEditting() {
-                    if(this.edit){
+                    if (this.edit) {
                         //取消編輯就回復資料
                         this.provider = JSON.parse(JSON.stringify(this.providerBackup));
-                    }else{
+                    } else {
                         //進入編輯，輩分原始資料
-                        this.providerBackup=JSON.parse(JSON.stringify(this.provider));
+                        this.providerBackup = JSON.parse(JSON.stringify(this.provider));
                     }
-                this.edit = !this.edit;  // 切換 edit 值
+                    this.edit = !this.edit;  // 切換 edit 值
                 },
                 saveProvider() {
                     if (this.provider.fId) {
                         console.log(this.provider);  // 打印数据，确认数据是否正确
-                        const providerData =JSON.parse(JSON.stringify(this.provider))
+                        const providerData = JSON.parse(JSON.stringify(this.provider))
                         axios.put(`/Providers/update`, providerData)
                             .then(response => {
                                 // 儲存成功後處理的邏輯，例如顯示成功訊息或重新載入資料
@@ -328,27 +328,27 @@
                         });
                     }
                 },
-                validateName(){
-                    this.nameError=this.provider.fName.trim().length===0;
+                validateName() {
+                    this.nameError = this.provider.fName.trim().length === 0;
                     this.validateForm();
                 },
-                validateConnect(){
-                    this.connectError=this.provider.fConnect.trim().length===0;
+                validateConnect() {
+                    this.connectError = this.provider.fConnect.trim().length === 0;
                     this.validateForm();
                 },
-                validateTel(){
+                validateTel() {
                     //僅限數字8-10碼
-                    const telRegex=/^\d{8,10}$/;
+                    const telRegex = /^\d{8,10}$/;
                     this.telError = !telRegex.test(this.provider.fTel);
                     this.validateForm();
                 },
-                validateUbn(){
-                    const ubnRegex=/^\d{8}$/;
-                    this.ubnError= !ubnRegex.test(this.provider.fUbn);
+                validateUbn() {
+                    const ubnRegex = /^\d{8}$/;
+                    this.ubnError = !ubnRegex.test(this.provider.fUbn);
                     this.validateForm();
                 },
-                validateAddress(){
-                    this.addressError=this.provider.fAddress.trim().length===0;
+                validateAddress() {
+                    this.addressError = this.provider.fAddress.trim().length === 0;
                     this.validateForm();
                 },
                 validateDelivery() {
@@ -359,11 +359,11 @@
                     this.invoiceAddError = this.provider.fInvoiceAdd.trim().length === 0;
                     this.validateForm();
                 },
-                validateAccountant(){
+                validateAccountant() {
                     this.validateForm();
                 },
-                validateForm(){
-                    this.isValid=
+                validateForm() {
+                    this.isValid =
                         !this.nameError &&
                         !this.connectError &&
                         !this.telError &&

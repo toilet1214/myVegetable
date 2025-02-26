@@ -2,62 +2,62 @@
     ViewData["Title"] = "Q&A";
 
 }
+@section Styles {
+    <style>
+        .QAtable {
+            width: 70%;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
 
-<style>
-    .QAtable {
-        width: 70%;
-        margin: 0 auto;
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-family: Arial, sans-serif;
-        line-height: 1.8;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.8);
-    }
+        .qa-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
+            padding-left: 10px;
+        }
 
-    .qa-title {
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-        border-left: 5px solid #4CAF50;
-        padding-left: 10px;
-    }
+        .qa-item {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
 
-    .qa-item {
-        display: flex;
-        flex-wrap: wrap;
-        margin-bottom: 15px;
-        padding-bottom: 15px;
-        border-bottom: 1px solid #e0e0e0;
-    }
+            .qa-item:last-child {
+                border-bottom: none;
+            }
 
-    .qa-item:last-child {
-        border-bottom: none;
-    }
+        .question {
+            flex: 0 0 40%;
+            font-weight: bold;
+            color: #4CAF50;
+        }
 
-    .question {
-        flex: 0 0 40%;
-        font-weight: bold;
-        color: #4CAF50;
-    }
+        .answer {
+            flex: 0 0 60%;
+        }
 
-    .answer {
-        flex: 0 0 60%;
-    }
-
-    .highlight {
-        font-weight: bold;
-        color: #FF5722;
-    } 
-
-</style>
+        .highlight {
+            font-weight: bold;
+            color: #FF5722;
+        }
+    </style>
+}
 <!-- 麵包屑 Breadcrumb-->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="">現在位置：</li>
-        <li class="breadcrumb-item"><a href="index.html">首頁</a></li>
+        <li class="breadcrumb-item"><a href="/">首頁</a></li>
         <li class="breadcrumb-item active" aria-current="Faq">常見問題</li>
     </ol>
 </nav>

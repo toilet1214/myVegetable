@@ -7,7 +7,7 @@
 
 <h1>人員資料列表</h1>
 <br />
-<div id="app">    
+<div id="app">
     <!-- 新增資料 -->
     <p class="d-flex align-items-center justify-content-between w-100">
         <a href="/Person/Create" class="btn btn-primary">新增資料</a>
@@ -16,9 +16,9 @@
             <button class="btn btn-outline-primary mx-1" @@click="filterData(1)">&emsp;員工&emsp;</button>
             <button class="btn btn-outline-primary mx-1" @@click="filterData(2)">離職員工</button>
             <button class="btn btn-outline-primary mx-1" @@click="filterData('all')">顯示全部</button>
-        </span>        
+        </span>
     </p>
-    
+
     <!-- 顯示資料 -->
     <table class="table" id="List">
         <thead>
@@ -41,12 +41,12 @@
                 <th>{{item.fId}}</th>
                 <td>{{ item.fName }}</td>
                 <th>{{item.fAccount}}</th>
-                <th>{{'*'.repeat(item.fPassword.length)}}</th>               
+                <th>{{'*'.repeat(item.fPassword.length)}}</th>
                 <td>{{ item.fGender }}</td>
                 <td>{{ item.fBirth }}</td>
                 <td>{{ item.fPhone }}</td>
                 <td>{{ item.fTel }}</td>
-                <td>                    
+                <td>
                     <a :href="'/Person/Details/' + item.fId" class="btn btn-secondary mb-2">詳細資料</a><br />
                     <a :href="'/Person/Delete?id=' + item.fId" @@click.prevent="confirmDelete(item.fId)" class="btn btn-danger">&emsp;移除&emsp;</a>
                 </td>
@@ -56,14 +56,14 @@
 </div>
 
 @section Scripts {
-    
+
     <script>
         const app = Vue.createApp({
             data() {
                 return {
-                    selectedFilter:'all',
+                    selectedFilter: 'all',
                     CPersonWrap: [], // 儲存所有人員資料
-                    filteredData:[],
+                    filteredData: [],
                     keyword: "", // 搜尋關鍵字
                     dataTable: null,
                 };
@@ -88,20 +88,20 @@
                         this.$nextTick(() => {
                             this.initDataTable();
                         });
-                    }).catch(error=>{
+                    }).catch(error => {
                         console.error('資料載入錯誤', error)
                     });
                 },
 
-                filterData(filter) { 
+                filterData(filter) {
                     this.selectedFilter = filter;
                     this.filteredData = this.getFilteredData();
                     if (this.filteredData.length > 0) {
                         this.updateDataTable();
-                    }                    
+                    }
                 },
-                getFilteredData() { 
-                    if (this.selectedFilter === 'all') { 
+                getFilteredData() {
+                    if (this.selectedFilter === 'all') {
                         return this.CPersonWrap;
                     }
                     return this.CPersonWrap.filter(item => item.fPermission === this.selectedFilter);
@@ -208,7 +208,7 @@
             } // 這裡結束 methods 部分
         }); // 這裡結束 Vue.createApp 的程式碼
 
-             
+
         app.mount('#app'); // 使用 Vue 3 創建並掛載應用
     </script>
 }

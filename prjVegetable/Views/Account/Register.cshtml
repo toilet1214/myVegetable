@@ -84,12 +84,12 @@
                     <input asp-for="FAddress" class="form-control text-start w-100 border-1 border-dark" required>
                     <span asp-validation-for="FAddress" class="text-danger"></span>
                 </div>
-               
+
                 <!-- 會員統編 -->
                 <div class="mb-3">
                     <label asp-for="FUbn" class="control-label"></label>
-                    <input asp-for="FUbn" class="form-control text-start w-100 border-1 border-dark" >
-                    
+                    <input asp-for="FUbn" class="form-control text-start w-100 border-1 border-dark">
+
                 </div>
                 <!-- 按鈕 -->
                 <div class="form-group d-flex justify-content-betweenmt-4">
@@ -139,23 +139,23 @@
             document.getElementById("FUbn").value = "12345678";
         }
     </script>
-    @if (TempData.Peek("ErrorRegister") != null)
-    {
-        <script>
-            Swal.fire({
-                title: "註冊失敗",
-                text: @Json.Serialize(TempData["ErrorRegister"]),
-                icon: "error"
-            });
-        </script>
-    }
     @{
+        if (TempData.Peek("ErrorRegister") != null)
+        {
+            <script>
+                Swal.fire({
+                    title: "註冊失敗",
+                    text: @Json.Serialize(TempData["ErrorRegister"]),
+                    icon: "error"
+                });
+            </script>
+        }
         var userJson = @Context.Session.GetString(CDictionary.SK_LOGINED_USER);
     }
     <script>
         window.onload = function () {
             if (@userJson != null) {
-                window.location.href = "/"; 
+                window.location.href = "/";
             }
         };
     </script>

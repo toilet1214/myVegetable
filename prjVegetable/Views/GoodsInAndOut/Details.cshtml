@@ -115,34 +115,35 @@
         <button type="button" id="backToIndex" class="btn btn-secondary">返回</button>
     </div>
 </div>
+@section Scripts {
+    <script>
+        document.getElementById("backToIndex").addEventListener("click", function () {
+            let prevPage = document.referrer; // 取得上一個頁面 URL
+            if (prevPage.includes("GoodsInAndOutIndex")) {
+                window.location.href = prevPage; // 直接返回列表頁面
+            } else {
+                window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+            }
+        });
 
-<script>
-    document.getElementById("backToIndex").addEventListener("click", function () {
-        let prevPage = document.referrer; // 取得上一個頁面 URL
-        if (prevPage.includes("GoodsInAndOutIndex")) {
-            window.location.href = prevPage; // 直接返回列表頁面
-        } else {
-            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
-        }
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        fetch("/GoodsInAndOut/GetProductsInfo")
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    let productsData = data.products;
-                    document.querySelectorAll(".ProductName").forEach((input) => {
-                        let productId = input.getAttribute("data-product-id");
-                        let product = productsData.find(p => p.fId.toString() === productId);
-                        if (product) {
-                            input.value = product.fName;
-                        }
-                    });
-                } else {
-                    console.error("無法獲取產品資訊：" + data.message);
-                }
-            })
-            .catch(error => console.error("錯誤: ", error));
-    });
-</script>
+        document.addEventListener("DOMContentLoaded", function () {
+            fetch("/GoodsInAndOut/GetProductsInfo")
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let productsData = data.products;
+                        document.querySelectorAll(".ProductName").forEach((input) => {
+                            let productId = input.getAttribute("data-product-id");
+                            let product = productsData.find(p => p.fId.toString() === productId);
+                            if (product) {
+                                input.value = product.fName;
+                            }
+                        });
+                    } else {
+                        console.error("無法獲取產品資訊：" + data.message);
+                    }
+                })
+                .catch(error => console.error("錯誤: ", error));
+        });
+    </script>
+}

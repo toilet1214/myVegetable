@@ -131,7 +131,11 @@
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" v-model="person.fPermission" @@input="validatePermission">
+                                <select class="form-control" id="fPermission" v-model="person.fPermission" @@input="validatePermission">
+                                    <option value="0">會員</option>
+                                    <option value="1">員工</option>
+                                    <option value="2">離職員工</option>
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -249,7 +253,11 @@
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" readonly v-model="person.fPermission">
+                                <select class="form-control" id="fPermission" v-model="person.fPermission" @@input="validatePermission">
+                                    <option value="0">會員</option>
+                                    <option value="1">員工</option>
+                                    <option value="2">離職員工</option>
+                                </select>
                             </div>
                         </div>
                     </div>

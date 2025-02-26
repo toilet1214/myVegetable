@@ -4,222 +4,227 @@
 @{
     Layout = "~/Views/Shared/_layoutERP.cshtml";
 }
-
-<style>
-    body {
-        font-family: Arial, sans-serif;
-    }
-
-    .container {
-        margin-top: 20px;
-    }
-
-    .header,
-    .footer {
-        margin-bottom: 20px;
-    }
-
-        .header .btn-group,
-        .footer .btn-group {
-            margin-right: 10px;
+@section Styles {
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
 
-    .label-title {
-        font-weight: bold;
-        margin-bottom: 10px;
-    }
+        .container {
+            margin-top: 20px;
+        }
 
-    .content {
-        margin-bottom: 20px;
-    }
+        .header,
+        .footer {
+            margin-bottom: 20px;
+        }
 
-    .table-container {
-        margin-top: 20px;
-    }
+            .header .btn-group,
+            .footer .btn-group {
+                margin-right: 10px;
+            }
 
-    table,
-    th,
-    td {
-        border: 1px solid #ccc;
-    }
+        .label-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
 
-    th,
-    td {
-        padding: 8px;
-        text-align: center;
-    }
+        .content {
+            margin-bottom: 20px;
+        }
 
-    .btn-img {
-        background: url('magnifier-icon.png') no-repeat center center;
-        background-size: contain;
-        border: none;
-        width: 32px;
-        height: 32px;
-    }
-    /* 添加黑色3px邊框，並設置寬度和高度 */ input[type="text"], input[type="date"], select {
-        border: 1px solid black;
-        width: 200px;
-        height: 35px;
-        box-sizing: border-box;}
+        .table-container {
+            margin-top: 20px;
+        }
 
-        textarea{
-        border: 1px solid black !important;
-        width: 400px !important; 
-        height: 200px !important;
-      }
-      .card{background:lightgray;
-      margin-top:-15px;}
+        table,
+        th,
+        td {
+            border: 1px solid #ccc;
+        }
 
-    .form-select {
-        border: 1px solid black; /* 添加黑色邊框 */
-        width: 200px; /* 設定寬度 */
-        height: 35px; /* 設定高度 */
-        box-sizing: border-box; /* 確保寬度包括內邊距和邊框 */
-    }
-</style>
+        th,
+        td {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .btn-img {
+            background: url('magnifier-icon.png') no-repeat center center;
+            background-size: contain;
+            border: none;
+            width: 32px;
+            height: 32px;
+        }
+        /* 添加黑色3px邊框，並設置寬度和高度 */ input[type="text"], input[type="date"], select {
+            border: 1px solid black;
+            width: 200px;
+            height: 35px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            border: 1px solid black !important;
+            width: 400px !important;
+            height: 200px !important;
+        }
+
+        .card {
+            background: lightgray;
+            margin-top: -15px;
+        }
+
+        .form-select {
+            border: 1px solid black; /* 添加黑色邊框 */
+            width: 200px; /* 設定寬度 */
+            height: 35px; /* 設定高度 */
+            box-sizing: border-box; /* 確保寬度包括內邊距和邊框 */
+        }
+    </style>
+}
 
 
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h2 class="label-title">進貨作業管理</h2>
-        </div>
 
-        <!-- 進貨資料 -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="label-title">進貨資料</h5>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">進貨日期</label>
-                    <div class="col-md-4">
-                        <input type="date" class="form-control">
-                        <label style="margin-left:100px;">↓</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <label class="col-md-2 col-form-label">進貨單號</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control">
-                    </div>
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <h2 class="label-title">進貨作業管理</h2>
+    </div>
+
+    <!-- 進貨資料 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="label-title">進貨資料</h5>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">進貨日期</label>
+                <div class="col-md-4">
+                    <input type="date" class="form-control">
+                    <label style="margin-left:100px;">↓</label>
+                    <input type="date" class="form-control">
                 </div>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">發票日期</label>
-                    <div class="col-md-4">
-                        <input type="date" class="form-control">
-                        <label style="margin-left:100px;">↓</label>
-                        <input type="date" class="form-control">
-                    </div>
-                    <label class="col-md-2 col-form-label">發票號碼</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">商品類別</label>
-                    <div class="col-md-4">
-                        <select class="form-select">
-                            <option>蔬菜</option>
-                            <option>水果</option>
-                        </select>
-                    </div>
-                    <label class="col-md-2 col-form-label">供應商</label>
-                    <div class="col-md-4">
-                        <select class="form-select">
-                            <option>供應商1</option>
-                            <option>供應商2</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">進貨商品</label>
-                    <div class="col-md-4">
-                        <select class="form-select">
-                            <option>商品1</option>
-                            <option>商品2</option>
-                        </select>
-                    </div>
-                    <label class="col-md-2 col-form-label">進貨數量</label>
-                    <div class="col-md-4">
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">備註</label>
-                    <div class="col-md-10">
-                        <textarea class="form-control"></textarea>
-                    </div>
+                <label class="col-md-2 col-form-label">進貨單號</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control">
                 </div>
             </div>
-        </div>
-        
-        <!-- 進貨明細 -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="label-title">進貨明細</h5>
-                <div class="table-container">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>品名編號</th>
-                                <th>品名規格</th>
-                                <th>數量</th>
-                                <th>單位</th>
-                                <th>類別名稱</th>
-                                <th>單價</th>
-                                <th>折數</th>
-                                <th>金額</th>
-                                <th>備註</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>DC007</td>
-                                <td>EB235 洗髮乳(白)</td>
-                                <td>10</td>
-                                <td>個</td>
-                                <td>一般商品</td>
-                                <td>250</td>
-                                <td>10.00</td>
-                                <td>2500</td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td>DC008</td>
-                                <td>國際經典香水</td>
-                                <td>5</td>
-                                <td>瓶</td>
-                                <td>一般商品</td>
-                                <td>200</td>
-                                <td>10.00</td>
-                                <td>1000</td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">發票日期</label>
+                <div class="col-md-4">
+                    <input type="date" class="form-control">
+                    <label style="margin-left:100px;">↓</label>
+                    <input type="date" class="form-control">
+                </div>
+                <label class="col-md-2 col-form-label">發票號碼</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control">
                 </div>
             </div>
-        </div>
-        <!-- Footer Info -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5 class="label-title">其他資訊</h5>
-                <div class="row mb-3">
-                    <label class="col-md-2 col-form-label">建檔人員</label>
-                    <div class="col-md-4">
-                        <select class="form-select" name="Creator">
-                            <option>建檔人員1</option>
-                            <option>建檔人員2</option>
-                        </select>
-                    </div>
-                    <label class="col-md-2 col-form-label">修改人員</label>
-                    <div class="col-md-4">
-                        <select class="form-select" name="Editor">
-                            <option>修改人員1</option>
-                            <option>修改人員2</option>
-                        </select>
-                    </div>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">商品類別</label>
+                <div class="col-md-4">
+                    <select class="form-select">
+                        <option>蔬菜</option>
+                        <option>水果</option>
+                    </select>
+                </div>
+                <label class="col-md-2 col-form-label">供應商</label>
+                <div class="col-md-4">
+                    <select class="form-select">
+                        <option>供應商1</option>
+                        <option>供應商2</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">進貨商品</label>
+                <div class="col-md-4">
+                    <select class="form-select">
+                        <option>商品1</option>
+                        <option>商品2</option>
+                    </select>
+                </div>
+                <label class="col-md-2 col-form-label">進貨數量</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control">
+                </div>
+            </div>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">備註</label>
+                <div class="col-md-10">
+                    <textarea class="form-control"></textarea>
                 </div>
             </div>
         </div>
     </div>
-</body>
+
+    <!-- 進貨明細 -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="label-title">進貨明細</h5>
+            <div class="table-container">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>品名編號</th>
+                            <th>品名規格</th>
+                            <th>數量</th>
+                            <th>單位</th>
+                            <th>類別名稱</th>
+                            <th>單價</th>
+                            <th>折數</th>
+                            <th>金額</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>DC007</td>
+                            <td>EB235 洗髮乳(白)</td>
+                            <td>10</td>
+                            <td>個</td>
+                            <td>一般商品</td>
+                            <td>250</td>
+                            <td>10.00</td>
+                            <td>2500</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>DC008</td>
+                            <td>國際經典香水</td>
+                            <td>5</td>
+                            <td>瓶</td>
+                            <td>一般商品</td>
+                            <td>200</td>
+                            <td>10.00</td>
+                            <td>1000</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Footer Info -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="label-title">其他資訊</h5>
+            <div class="row mb-3">
+                <label class="col-md-2 col-form-label">建檔人員</label>
+                <div class="col-md-4">
+                    <select class="form-select" name="Creator">
+                        <option>建檔人員1</option>
+                        <option>建檔人員2</option>
+                    </select>
+                </div>
+                <label class="col-md-2 col-form-label">修改人員</label>
+                <div class="col-md-4">
+                    <select class="form-select" name="Editor">
+                        <option>修改人員1</option>
+                        <option>修改人員2</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

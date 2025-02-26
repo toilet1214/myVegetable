@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css">
     <script src="https://unpkg.com/vue@3.2.45/dist/vue.global.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <!-- 導覽列 navbar Start-->
@@ -252,7 +253,7 @@
                                     required = "required"
                                 })
                             <button type="button" class="btn" onclick="togglePasswordVisibility('txtpassword')">
-                                <i  class="bi bi-eye "></i> 
+                                <i class="bi bi-eye "></i>
                             </button>
                         </div>
                         <div class="d-flex justify-content-center align-items-center mt-3">
@@ -329,6 +330,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-twzipcode@1.7.14/jquery.twzipcode.min.js"></script>
     <script>
         $(function () {
             $("#datepicker").datepicker({
@@ -393,7 +395,7 @@
 
             </script>
         }
-        @if (TempData.Peek("WelcomeMessage") != null)
+        if (TempData.Peek("WelcomeMessage") != null)
         {
             <script>
                 Swal.fire({
@@ -403,7 +405,7 @@
                 });
             </script>
         }
-        @if (TempData.Peek("SuccessRegister") != null) // 註冊成功，顯示通知並跳轉
+        if (TempData.Peek("SuccessRegister") != null) // 註冊成功，顯示通知並跳轉
         {
             <script>
                 console.log("123");
@@ -414,12 +416,32 @@
                 });
             </script>
         }
-        @if (TempData.Peek("LogoutMessage") != null)
+        if (TempData.Peek("LogoutMessage") != null)
         {
             <script>
                 Swal.fire({
                     title: @Json.Serialize(TempData["LogoutMessage"])
-                                });
+                                                                });
+            </script>
+        }
+        if (TempData.Peek("ErrorReset") != null)
+        {
+            <script>
+                Swal.fire({
+                    title: "注意",
+                    text: @Json.Serialize(TempData["ErrorReset"]),
+                    icon: "error"
+                });
+            </script>
+        }
+        if (TempData.Peek("SuccessReset") != null)
+        {
+            <script>
+                Swal.fire({
+                    title: "成功",
+                    text: @Json.Serialize(TempData["SuccessReset"]),
+                    icon: "success"
+                });
             </script>
         }
     }
@@ -445,26 +467,6 @@
             });
         }
     </script>
-    @if (TempData.Peek("ErrorReset") != null)
-    {
-        <script>
-            Swal.fire({
-                title: "注意",
-                text: @Json.Serialize(TempData["ErrorReset"]),
-                icon: "error"
-            });
-        </script>
-    }
-    @if (TempData.Peek("SuccessReset") != null)
-    {
-        <script>
-            Swal.fire({
-                title: "成功",
-                text: @Json.Serialize(TempData["SuccessReset"]),
-                icon: "success"
-            });
-        </script>
-    }
     <script>
         function togglePasswordVisibility(inputId) {
             var input = document.getElementById(inputId);

@@ -2,72 +2,74 @@
     ViewData["Title"] = "About us";
 
 }
-<style>
-    .responsive-img {
-        width: 100%;
-        height: auto;
-        object-fit: cover;
-    }
-
-    /*要記得統一Faq與About的樣式名稱噢*/
-    .QAtable {
-        width: 70%;
-        margin: 0 auto;
-        background-color: #f9f9f9;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        font-family: Arial, sans-serif;
-        line-height: 1.8;
-        color: #333;
-        background-color: rgba(255, 255, 255, 0.8);
-    }
-
-    .qa-title {
-        font-size: 24px;
-        font-weight: bold;
-        border-left: 5px solid #4CAF50;
-        padding-left: 10px;
-    }
-
-    .highlight {
-        font-weight: bold;
-        color: #FF5722;
-    }
-
-    .team-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .team-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .team-card img {
-            border-radius: 50%;
-            width: 120px;
-            height: 120px;
+@section Styles {
+    <style>
+        .responsive-img {
+            width: 100%;
+            height: auto;
             object-fit: cover;
-            margin: 15px auto;
         }
 
-        .team-card h5 {
-            font-size: 1.25rem;
+        /*要記得統一Faq與About的樣式名稱噢*/
+        .QAtable {
+            width: 70%;
+            margin: 0 auto;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            font-family: Arial, sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+
+        .qa-title {
+            font-size: 24px;
             font-weight: bold;
+            border-left: 5px solid #4CAF50;
+            padding-left: 10px;
         }
 
-        .team-card p {
-            font-size: 0.9rem;
-            color: #6c757d;
+        .highlight {
+            font-weight: bold;
+            color: #FF5722;
         }
 
-</style>
+        .team-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .team-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            }
+
+            .team-card img {
+                border-radius: 50%;
+                width: 120px;
+                height: 120px;
+                object-fit: cover;
+                margin: 15px auto;
+            }
+
+            .team-card h5 {
+                font-size: 1.25rem;
+                font-weight: bold;
+            }
+
+            .team-card p {
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+
+    </style>
+}
 <!-- 麵包屑 Breadcrumb-->
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="">現在位置：</li>
-        <li class="breadcrumb-item"><a href="index.html">首頁</a></li>
+        <li class="breadcrumb-item"><a href="/">首頁</a></li>
         <li class="breadcrumb-item active" aria-current="About">關於我們</li>
     </ol>
 </nav>
@@ -153,7 +155,7 @@
                     <p>日文大師。</p>
                 </div>
             </div>
-       </div>
+        </div>
     </div>
 </div>
 

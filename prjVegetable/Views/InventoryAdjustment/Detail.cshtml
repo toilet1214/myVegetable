@@ -13,58 +13,59 @@
 *編輯按鈕沒有收回來的動畫
 
 -->
-
-<style>
-    /*主單*/
-    .modal-table-container {
-        max-height: 70vh; /* 設定最大高度 */
-        overflow-y: auto; /* 垂直滾動條 */
-        overflow-x: hidden; /* 禁止水平滾動 */
-    }
-
-    .table-bordered {
-        margin-bottom: 0; /* 移除表格底部多餘空間 */
-    }
-
-    /*細項*/
-    .table-container {
-        height: 45vh; /* 限制表格容器的高度 */
-        overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
-        border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
-    }
-
-    .table {
-        width: 100%; /* 讓表格寬度充滿容器 */
-        border-collapse: collapse; /* 消除表格的內邊距 */
-    }
-
-        .table th, .table td {
-            padding: 8px;
-            text-align: center; /* 文字居中 */
+@section Styles {
+    <style>
+        /*主單*/
+        .modal-table-container {
+            max-height: 70vh; /* 設定最大高度 */
+            overflow-y: auto; /* 垂直滾動條 */
+            overflow-x: hidden; /* 禁止水平滾動 */
         }
 
-        .table th {
-            background-color: #f8f9fa; /* 可選：表頭背景色 */
-            font-weight: bold; /* 加粗表頭文字 */
+        .table-bordered {
+            margin-bottom: 0; /* 移除表格底部多餘空間 */
         }
 
-    .btn-hover-grow {
-        transition: transform 0.3s ease; /* 設定過渡效果 */
-    }
-
-        .btn-hover-grow:hover {
-            transform: scale(1.2); /* 當滑鼠移入時放大按鈕，1.5 表示放大 50% */
+        /*細項*/
+        .table-container {
+            height: 45vh; /* 限制表格容器的高度 */
+            overflow-y: auto; /* 超過高度時顯示垂直滾動條 */
+            border: 1px solid #ddd; /* 可選：為表格容器加上邊框 */
         }
 
-    button:focus, .btn:focus {
-        outline: none !important;
-        box-shadow: none !important;
-    }
+        .table {
+            width: 100%; /* 讓表格寬度充滿容器 */
+            border-collapse: collapse; /* 消除表格的內邊距 */
+        }
 
-</style>
+            .table th, .table td {
+                padding: 8px;
+                text-align: center; /* 文字居中 */
+            }
+
+            .table th {
+                background-color: #f8f9fa; /* 可選：表頭背景色 */
+                font-weight: bold; /* 加粗表頭文字 */
+            }
+
+        .btn-hover-grow {
+            transition: transform 0.3s ease; /* 設定過渡效果 */
+        }
+
+            .btn-hover-grow:hover {
+                transform: scale(1.2); /* 當滑鼠移入時放大按鈕，1.5 表示放大 50% */
+            }
+
+        button:focus, .btn:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+    </style>
+}
 
 <div class="d-flex align-items-center justify-content-center" style="height: 80vh;">
-<div class="container my-5">
+    <div class="container my-5">
         <div class="d-flex align-items-center justify-content-between w-100 flex-nowrap">
             <!-- 左欄，搜尋按鈕與按鈕群組 -->
             <div class="d-flex align-items-center justify-content-start flex-wrap">
@@ -322,126 +323,125 @@
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+@section Scripts {
+    <!-- 查詢 -->
+    <script>
+        let inventoryAdjustmentList = []; // 儲存查詢結果
+        let selectedInventoryAdjustmentId = null; // 使用者選擇的 InventoryAdjustmentId
 
-<!-- 查詢 -->
-<script>
-    let inventoryAdjustmentList = []; // 儲存查詢結果
-    let selectedInventoryAdjustmentId = null; // 使用者選擇的 InventoryAdjustmentId
-
-    // 綁定查詢按鈕事件
-    document.getElementById('modalSearchButton').addEventListener('click', function () {
-        const fId = document.getElementById('searchFId').value.trim();
-        const fAdjustmentStartDate = document.getElementById('FAdjustmentStartDate').value.trim();
-        const fAdjustmentEndDate = document.getElementById('FAdjustmentEndDate').value.trim();
-        const fCheckerId = document.getElementById('FCheckerId').value.trim();
+        // 綁定查詢按鈕事件
+        document.getElementById('modalSearchButton').addEventListener('click', function () {
+            const fId = document.getElementById('searchFId').value.trim();
+            const fAdjustmentStartDate = document.getElementById('FAdjustmentStartDate').value.trim();
+            const fAdjustmentEndDate = document.getElementById('FAdjustmentEndDate').value.trim();
+            const fCheckerId = document.getElementById('FCheckerId').value.trim();
 
             // 檢查是否至少輸入一個條件
-    if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
-        Swal.fire({
-            title: '提示',
-            text: '請至少填寫一個查詢條件',
-            icon: 'warning',
-            confirmButtonText: '確定'
-        });
-        return;
-    }
-
-
-        const requestData = {
-            fId: fId || null,
-            fAdjustmentStartDate: fAdjustmentStartDate || null,
-            fAdjustmentEndDate: fAdjustmentEndDate || null,
-            fCheckerId: fCheckerId || null
-        };
-
-        // 發送 AJAX 查詢請求
-        $.ajax({
-            url: '/InventoryAdjustment/Search',
-            type: 'GET',
-            data: requestData,
-            success: function (response) {
-                console.log("AJAX 成功回應！", response);
-
-                if (response.inventoryAdjustmentList && response.inventoryAdjustmentList.length > 0) {
-                    console.log("收到 InventoryAdjustmentList！", response.inventoryAdjustmentList);
-
-                    const tableBody = document.getElementById('inventoryAdjustmentListTableBody');
-                    tableBody.innerHTML = ''; // 清空表格
-
-                    response.inventoryAdjustmentList.forEach(item => {
-                        let row = `
-                        <tr class="inventory-row" data-id="${item.fId}">
-                            <td>${item.fId}</td>
-                            <td>${item.fAdjustmentDate ?? ''}</td>
-                            <td>${item.fCheckerName ?? ''}</td>
-                            <td>${item.fNote ?? ''}</td>
-                        </tr>`;
-                        tableBody.insertAdjacentHTML('beforeend', row);
-                    });
-
-                    // 顯示查詢結果視窗
-                    $("#inventoryAdjustmentListModal").modal("show");
-                } else {
-                    console.error("沒有收到 InventoryAdjustmentList！", response);
-                    alert('查無符合條件的資料');
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("查詢發生錯誤！", error);
-                alert('查詢失敗，請稍後再試');
+            if (!fId && !fAdjustmentStartDate && !fAdjustmentEndDate && !fCheckerId) {
+                Swal.fire({
+                    title: '提示',
+                    text: '請至少填寫一個查詢條件',
+                    icon: 'warning',
+                    confirmButtonText: '確定'
+                });
+                return;
             }
+
+
+            const requestData = {
+                fId: fId || null,
+                fAdjustmentStartDate: fAdjustmentStartDate || null,
+                fAdjustmentEndDate: fAdjustmentEndDate || null,
+                fCheckerId: fCheckerId || null
+            };
+
+            // 發送 AJAX 查詢請求
+            $.ajax({
+                url: '/InventoryAdjustment/Search',
+                type: 'GET',
+                data: requestData,
+                success: function (response) {
+                    console.log("AJAX 成功回應！", response);
+
+                    if (response.inventoryAdjustmentList && response.inventoryAdjustmentList.length > 0) {
+                        console.log("收到 InventoryAdjustmentList！", response.inventoryAdjustmentList);
+
+                        const tableBody = document.getElementById('inventoryAdjustmentListTableBody');
+                        tableBody.innerHTML = ''; // 清空表格
+
+                        response.inventoryAdjustmentList.forEach(item => {
+                            let row = `
+                                    <tr class="inventory-row" data-id="${item.fId}">
+                                        <td>${item.fId}</td>
+                                        <td>${item.fAdjustmentDate ?? ''}</td>
+                                        <td>${item.fCheckerName ?? ''}</td>
+                                        <td>${item.fNote ?? ''}</td>
+                                    </tr>`;
+                            tableBody.insertAdjacentHTML('beforeend', row);
+                        });
+
+                        // 顯示查詢結果視窗
+                        $("#inventoryAdjustmentListModal").modal("show");
+                    } else {
+                        console.error("沒有收到 InventoryAdjustmentList！", response);
+                        alert('查無符合條件的資料');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("查詢發生錯誤！", error);
+                    alert('查詢失敗，請稍後再試');
+                }
+            });
         });
-    });
 
-    // 綁定表格行點擊事件
-    $(document).on('click', '.inventory-row', function () {
-        selectedInventoryAdjustmentId = $(this).data('id');
-        $('.inventory-row').removeClass('table-active'); // 移除其他行的高亮
-        $(this).addClass('table-active'); // 高亮當前行
+        // 綁定表格行點擊事件
+        $(document).on('click', '.inventory-row', function () {
+            selectedInventoryAdjustmentId = $(this).data('id');
+            $('.inventory-row').removeClass('table-active'); // 移除其他行的高亮
+            $(this).addClass('table-active'); // 高亮當前行
 
-        const container = $('.modal-table-container'); // 表格滾動容器
-        const row = $(this); // 被點擊的行
-        container.animate({
-            scrollTop: container.scrollTop() + row.position().top - container.height() / 2 + row.height() / 2
-        }, 300); // 滾動到該行
-    });
+            const container = $('.modal-table-container'); // 表格滾動容器
+            const row = $(this); // 被點擊的行
+            container.animate({
+                scrollTop: container.scrollTop() + row.position().top - container.height() / 2 + row.height() / 2
+            }, 300); // 滾動到該行
+        });
 
-    // 禁用滾動功能（選用，避免頁面滾動）
-    function disableBodyScroll() {
-        document.body.style.overflow = 'hidden';
-    }
+        // 禁用滾動功能（選用，避免頁面滾動）
+        function disableBodyScroll() {
+            document.body.style.overflow = 'hidden';
+        }
 
-    function enableBodyScroll() {
-        document.body.style.overflow = '';
-    }
+        function enableBodyScroll() {
+            document.body.style.overflow = '';
+        }
 
-    const modal = document.getElementById('inventoryAdjustmentListModal');
-    modal.addEventListener('show.bs.modal', disableBodyScroll);
-    modal.addEventListener('hide.bs.modal', enableBodyScroll);
+        const modal = document.getElementById('inventoryAdjustmentListModal');
+        modal.addEventListener('show.bs.modal', disableBodyScroll);
+        modal.addEventListener('hide.bs.modal', enableBodyScroll);
 
         // 綁定確認按鈕，進行跳轉
-    document.getElementById('confirmSelection').addEventListener('click', function () {
-        if (!selectedInventoryAdjustmentId) {
-            Swal.fire({
-                title: '提示',
-                text: '請選擇一個調整單號',
-                icon: 'warning',
-                confirmButtonText: '確定'
-            });
-            return;
-        }
-        console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
-        window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
-    });
-    
+        document.getElementById('confirmSelection').addEventListener('click', function () {
+            if (!selectedInventoryAdjustmentId) {
+                Swal.fire({
+                    title: '提示',
+                    text: '請選擇一個調整單號',
+                    icon: 'warning',
+                    confirmButtonText: '確定'
+                });
+                return;
+            }
+            console.log("即將跳轉到:", `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`);
+            window.location.href = `/InventoryAdjustment/Detail/${selectedInventoryAdjustmentId}`;
+        });
 
 
-</script>
 
-<!-- 編輯/儲存 -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    </script>
+
+    <!-- 編輯/儲存 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
             const editButton = document.getElementById("editButton");
             const saveButton = document.getElementById("saveButton");
             const cancelEditButton = document.getElementById("cancelEditButton");
@@ -489,211 +489,207 @@
                 location.reload(); // 恢復為原來的內容，重新加載頁面
             });
 
-                function saveFNote(noteText, currentId) {
-        const requestData = [
-            {
-                FId: currentId,
-                FNote: noteText
-            }
-        ]; // 包裝為陣列
+            function saveFNote(noteText, currentId) {
+                const requestData = [
+                    {
+                        FId: currentId,
+                        FNote: noteText
+                    }
+                ]; // 包裝為陣列
 
-           $.ajax({
-        url: '/InventoryAdjustment/Save/' + currentId,
-        method: 'POST',
-        data: JSON.stringify(requestData), // 傳遞陣列
-        contentType: 'application/json',
-        success: function (response) {
-            if (response.success) {
-                Swal.fire({
-                    title: "已更新備註",
-                    icon: "info",
-                    timer: 1500, // 提示框顯示 1.5 秒後自動關閉
-                    showConfirmButton: false
-                });
-            } else {
-                Swal.fire({
-                    title: "錯誤",
-                    text: response.error,
-                    icon: "error"
-                });
-            }
-        },
-        error: function (xhr, status, error) {
-            Swal.fire({
-                title: "錯誤",
-                text: "發生錯誤，請稍後再試。詳細資訊：" + error,
-                icon: "error"
-            });
-        }
-    });
-
-    }
-
-      });
-</script>
-
-<!-- 刪除 -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        document.getElementById('deleteButton').addEventListener('click', function () {
-            const inventoryAdjustmentsId = document.querySelector('input[name="currentId"]').value;
-
-            Swal.fire({
-                title: '您確定要刪除此調整資料嗎？',
-                text: '此操作無法撤銷！',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '確定刪除',
-                cancelButtonText: '取消'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: `id=${inventoryAdjustmentsId}`,
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
+                $.ajax({
+                    url: '/InventoryAdjustment/Save/' + currentId,
+                    method: 'POST',
+                    data: JSON.stringify(requestData), // 傳遞陣列
+                    contentType: 'application/json',
+                    success: function (response) {
+                        if (response.success) {
                             Swal.fire({
-                                title: '刪除成功',
-                                icon: 'success',
-                                timer: 1500, // 成功後顯示 1.5 秒
+                                title: "已更新備註",
+                                icon: "info",
+                                timer: 1500, // 提示框顯示 1.5 秒後自動關閉
                                 showConfirmButton: false
-                            }).then(() => {
-                                window.location.href = data.redirectTo; // 跳轉頁面
                             });
                         } else {
                             Swal.fire({
-                                title: '刪除失敗',
-                                text: '請稍後再試。',
-                                icon: 'error'
+                                title: "錯誤",
+                                text: response.error,
+                                icon: "error"
                             });
                         }
-                    })
-                    .catch(error => {
-                        console.error('錯誤:', error);
+                    },
+                    error: function (xhr, status, error) {
                         Swal.fire({
-                            title: '發生錯誤',
-                            text: '請稍後再試。',
-                            icon: 'error'
-                        });
-                    });
-                }
-            });
-        });
-    });
-</script>
-
-
-<!-- 列印 -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
-<script>
-    function printTable() {
-        // 顯示列印欄位
-        document.querySelectorAll('.print-only').forEach(function(element) {
-            element.style.display = 'flex'; // 使用 flex 來顯示在同一行
-        });
-
-        // 使用 printJS 進行列印
-        printJS({
-            printable: 'printTable',
-            type: 'html',
-            style: `
-                /* 表格樣式 */
-                table { width: 100%; border-collapse: collapse; }
-                caption { display: block !important; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px; }
-                th, td { text-align: center !important; vertical-align: middle !important; padding: 4px !important; }
-                thead tr { border-bottom: 2px solid black !important; }
-                tbody tr { border-bottom: 1px solid gray !important; }
-                th, td { border: none !important; }
-
-                /* 使 input 變成純文字 */
-                input[type="text"], input[type="number"], input[type="date"] {
-                    border: none;
-                    background-color: transparent;
-                    font-size: 16px;
-                    font-family: Arial, sans-serif;
-                    width: auto;
-                    padding: 0;
-                    text-align: left;
-                    color: black;
-                }
-
-                /* 隱藏多餘的背景和邊框 */
-                input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
-                    outline: none;
-                    box-shadow: none;
-                }
-            `
-        });
-
-        // 列印後隱藏這些欄位
-        document.querySelectorAll('.print-only').forEach(function(element) {
-            element.style.display = 'none';
-        });
-    }
-</script>
-
-
-<!-- 第一筆與最後一筆資料提示 -->
-<!-- 由前端判斷，可以減少伺服器的負擔-->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        function setupButton(selector, dataAttr, message) {
-            document.querySelectorAll(selector).forEach(button => {
-                button.addEventListener("click", function (event) {
-                    if (button.dataset[dataAttr] === "True") {  // Razor 會輸出 True/False（開頭大寫）
-                        event.preventDefault(); // 阻止跳轉
-                        Swal.fire({
-                            title: message,
-                            icon: "info"
+                            title: "錯誤",
+                            text: "發生錯誤，請稍後再試。詳細資訊：" + error,
+                            icon: "error"
                         });
                     }
                 });
+
+            }
+
+        });
+    </script>
+
+    <!-- 刪除 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('deleteButton').addEventListener('click', function () {
+                const inventoryAdjustmentsId = document.querySelector('input[name="currentId"]').value;
+
+                Swal.fire({
+                    title: '您確定要刪除此調整資料嗎？',
+                    text: '此操作無法撤銷！',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '確定刪除',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('@Url.Action("DeleteConfirmed", "InventoryAdjustment")', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded'
+                            },
+                            body: `id=${inventoryAdjustmentsId}`,
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                if (data.success) {
+                                    Swal.fire({
+                                        title: '刪除成功',
+                                        icon: 'success',
+                                        timer: 1500, // 成功後顯示 1.5 秒
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        window.location.href = data.redirectTo; // 跳轉頁面
+                                    });
+                                } else {
+                                    Swal.fire({
+                                        title: '刪除失敗',
+                                        text: '請稍後再試。',
+                                        icon: 'error'
+                                    });
+                                }
+                            })
+                            .catch(error => {
+                                console.error('錯誤:', error);
+                                Swal.fire({
+                                    title: '發生錯誤',
+                                    text: '請稍後再試。',
+                                    icon: 'error'
+                                });
+                            });
+                    }
+                });
+            });
+        });
+    </script>
+
+
+    <!-- 列印 -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/print-js/1.6.0/print.min.js"></script>
+    <script>
+        function printTable() {
+            // 顯示列印欄位
+            document.querySelectorAll('.print-only').forEach(function (element) {
+                element.style.display = 'flex'; // 使用 flex 來顯示在同一行
+            });
+
+            // 使用 printJS 進行列印
+            printJS({
+                printable: 'printTable',
+                type: 'html',
+                style: `
+                            /* 表格樣式 */
+                            table { width: 100%; border-collapse: collapse; }
+                            caption { display: block !important; text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 10px; }
+                            th, td { text-align: center !important; vertical-align: middle !important; padding: 4px !important; }
+                            thead tr { border-bottom: 2px solid black !important; }
+                            tbody tr { border-bottom: 1px solid gray !important; }
+                            th, td { border: none !important; }
+
+                            /* 使 input 變成純文字 */
+                            input[type="text"], input[type="number"], input[type="date"] {
+                                border: none;
+                                background-color: transparent;
+                                font-size: 16px;
+                                font-family: Arial, sans-serif;
+                                width: auto;
+                                padding: 0;
+                                text-align: left;
+                                color: black;
+                            }
+
+                            /* 隱藏多餘的背景和邊框 */
+                            input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+                                outline: none;
+                                box-shadow: none;
+                            }
+                        `
+            });
+
+            // 列印後隱藏這些欄位
+            document.querySelectorAll('.print-only').forEach(function (element) {
+                element.style.display = 'none';
             });
         }
+    </script>
 
-        setupButton(".first-btn, .prev-btn", "isFirst", "已是第一筆資料！");
-        setupButton(".next-btn, .last-btn", "isLast", "已是最後一筆資料！");
-    });
 
-</script>
-
-<!-- 用鍵盤切換上下一筆 -->
-<script>
-    document.addEventListener("keydown", function (event) {
-        // 獲取第一筆與最後一筆的 ID
-        const firstId = parseInt("@ViewData["FirstId"]");
-        const lastId = parseInt("@ViewData["LastId"]");
-        const currentId = parseInt("@Model.InventoryAdjustment.FId"); // 目前這筆的 ID
-
-        if (event.key === "ArrowLeft") {
-            if (currentId === firstId) {
-                Swal.fire({
-                    title: "已經在第一筆資料！",
-                    icon: "info"
+    <!-- 第一筆與最後一筆資料提示 -->
+    <!-- 由前端判斷，可以減少伺服器的負擔-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            function setupButton(selector, dataAttr, message) {
+                document.querySelectorAll(selector).forEach(button => {
+                    button.addEventListener("click", function (event) {
+                        if (button.dataset[dataAttr] === "True") {  // Razor 會輸出 True/False（開頭大寫）
+                            event.preventDefault(); // 阻止跳轉
+                            Swal.fire({
+                                title: message,
+                                icon: "info"
+                            });
+                        }
+                    });
                 });
-            } else {
-                window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
             }
-        }
-        else if (event.key === "ArrowRight") {
-            if (currentId === lastId) {
-                Swal.fire({
-                    title: "此筆為最新的資料！",
-                    icon: "info"
-                });
-            } else {
-                window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
+
+            setupButton(".first-btn, .prev-btn", "isFirst", "已是第一筆資料！");
+            setupButton(".next-btn, .last-btn", "isLast", "已是最後一筆資料！");
+        });
+
+    </script>
+
+    <!-- 用鍵盤切換上下一筆 -->
+    <script>
+        document.addEventListener("keydown", function (event) {
+            // 獲取第一筆與最後一筆的 ID
+            const firstId = parseInt("@ViewData["FirstId"]");
+            const lastId = parseInt("@ViewData["LastId"]");
+            const currentId = parseInt("@Model.InventoryAdjustment.FId"); // 目前這筆的 ID
+
+            if (event.key === "ArrowLeft") {
+                if (currentId === firstId) {
+                    Swal.fire({
+                        title: "已經在第一筆資料！",
+                        icon: "info"
+                    });
+                } else {
+                    window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["PreviousId"]");
+                }
             }
-        }
-    });
-</script>
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            else if (event.key === "ArrowRight") {
+                if (currentId === lastId) {
+                    Swal.fire({
+                        title: "此筆為最新的資料！",
+                        icon: "info"
+                    });
+                } else {
+                    window.location.href = "@Url.Action("Detail", "InventoryAdjustment", new { id = "__ID__" })".replace("__ID__", "@ViewData["NextId"]");
+                }
+            }
+        });
+    </script>
+}
