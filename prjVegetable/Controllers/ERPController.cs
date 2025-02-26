@@ -158,20 +158,15 @@ namespace prjVegetable.Controllers
 
             var MostPopularProduct = _VegetableContext.TFavorites
                 .Join(_VegetableContext.TProducts, f => f.FProductId, p => p.FId, (f, p) => new { f, p })
-                .Join(_VegetableContext.TComments, j => j.p.FId, c => c.FProductId, (j, c) => new
-                {
-                    Name = j.p.FName,
-                    id = j.f.FProductId,
-                    c.FStar
-                })
-                .GroupBy(x => x.Name)
-                .Select(g => new
-                {
-                    ProductName = g.Key,
-                    Likes = g.Count(),
-                    Star = g.Average(a => a.FStar) // 計算平均星級
-                })
-                .OrderByDescending(y => y.Likes)  // 根據評論數量排序
+                .GroupJoin(_VegetableContext.TComments, j => j.p.FId, c => c.FProductId,
+                    (j, comments) => new
+                    {
+                        ProductName = j.p.FName,
+                        ProductId = j.p.FId,
+                        Likes = _VegetableContext.TFavorites.Count(f => f.FProductId == j.p.FId), // 依喜愛數量計算
+                        Star = comments.Any() ? comments.Average(c => c.FStar) : 0 // 如果沒有評論，平均星級為 0
+                    })
+                .OrderByDescending(y => y.Likes)  // 根據喜愛數量排序
                 .Take(5)
                 .ToList();
 
