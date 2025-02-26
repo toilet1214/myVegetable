@@ -46,14 +46,14 @@
 
 
     /* 篩選價格 */
-    #dropdownMenuButton1 {
+    #dropdownMenuButton2 {
         white-space: nowrap;
         padding: 10px 10px;
         font-size: 16px;
         width: auto;
     }
 
-    #dropdownMenuButton1:hover {
+    #dropdownMenuButton2:hover {
         background-color: #ACA38A;
     }
     
@@ -404,7 +404,7 @@
                         <input type="hidden" id="maxPriceInput" name="MaxPrice" />
                         <input type="hidden" id="sortOrderInput" name="sortOrder" value="@ViewData["SortOrder"]" />
                         <p>
-                            <button class="btn btn-primary position-absolute top-0 end-0" type="button" id="dropdownMenuButton1" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                            <button class="btn btn-primary position-absolute top-0 end-0" type="button" id="dropdownMenuButton2" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                 篩選價格
                             </button>
                         </p>
@@ -622,8 +622,8 @@
 
             // collapse隱藏/顯示
             let isVisible = false;
-            $('#dropdownMenuButton1, .lightbox-close').on('click', function () {
-                if (this.id === 'dropdownMenuButton1') {
+            $('#dropdownMenuButton2, .lightbox-close').on('click', function () {
+                if (this.id === 'dropdownMenuButton2') {
                     if (isVisible) {
                         $('#collapseExample').hide();
                     } else {
