@@ -120,5 +120,12 @@ namespace prjVegetable.Models
 
         [DisplayName("供應商名稱(顯示)")]
         public string? FProviderName { get; set; }
+
+        [DisplayName("供應商統編(顯示)")]
+        public string? FProviderUbnText { get; set; }
+
+        [DisplayName("總額")]
+        public int FTotals { get; set; } // 直接從 List 方法計算，不使用 _tInvoice.FTotal
+
     }
 }

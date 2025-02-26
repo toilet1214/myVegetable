@@ -15,7 +15,7 @@
     <thead>
         <tr>
            <th>序號</th>
-           <th>ID</th>
+           @* <th>ID</th> *@
            <th>@Html.DisplayNameFor(model => model.FNumber)</th>
            <th>@Html.DisplayNameFor(model => model.FDate)</th>
            <th>@Html.DisplayNameFor(model => model.FFormText)</th>
@@ -25,7 +25,7 @@
            <th>@Html.DisplayNameFor(model => model.FProviderUbn)</th>
            <th>@Html.DisplayNameFor(model => model.FInOutText)</th>
            <th>@Html.DisplayNameFor(model => model.FStatusText)</th>
-           <th>@Html.DisplayNameFor(model => model.FTotal)</th>
+           <th>@Html.DisplayNameFor(model => model.FTotals)</th>
            <th>@Html.DisplayNameFor(model => model.FEditor)</th>
            <th></th>
         </tr>
@@ -39,7 +39,7 @@
             count++;
                 <tr>
                     <td>@count</td>
-                    <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                   @*  <td>@Html.DisplayFor(modelItem => item.FId)</td> *@
                     <td>@Html.DisplayFor(modelItem => item.FNumber)</td>
                     <td>@Html.DisplayFor(modelItem => item.FDate)</td>
                     <td>@Html.DisplayFor(modelItem => item.FFormText)</td>
@@ -49,11 +49,15 @@
                     <td>@Html.DisplayFor(modelItem => item.FProviderUbn)</td>
                     <td>@Html.DisplayFor(modelItem => item.FInOutText)</td>
                     <td>@Html.DisplayFor(modelItem => item.FStatusText)</td>
-                    <td>@Html.DisplayFor(modelItem => item.FTotal)</td>
+                    <td>@Html.DisplayFor(modelItem => item.FTotals)</td>
                     <td>@Html.DisplayFor(modelItem => item.FEditor)</td>
                     <td>
                         <a href="@Url.Action("Edit", new { id = item.FId })" class="btn btn-success">修改</a>
+                    @if (item.FStatus != 1)
+                    {
                         <button class="btn btn-danger delete-btn" data-id="@item.FId" data-editor="@item.FEditor">作廢</button>
+                    }
+
                     </td>
                 </tr>
         }
