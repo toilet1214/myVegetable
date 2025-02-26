@@ -65,7 +65,7 @@
                         <div class="row">
                             <label for="fAccountant" class="col-md-3 col-form-label">廠商會計：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAccountant" :placeholder="provider.fAccountant" v-model="provider.fAccountant">
+                                <input type="text" class="form-control" id="fAccountant" :placeholder="provider.fAccountant" v-model="provider.fAccountant" @@input="validateAccountant">
                             </div>
                         </div>
                     </div>
@@ -238,7 +238,7 @@
                     connectError:false,
                     telError:false,
                     ubnError:false,
-                    addressError:false,
+                    addressError:false,                    
 
                     edit:false, //啟用編輯
                 };
@@ -357,6 +357,9 @@
                 },
                 validateInvoiceAdd() {
                     this.invoiceAddError = this.provider.fInvoiceAdd.trim().length === 0;
+                    this.validateForm();
+                },
+                validateAccountant(){
                     this.validateForm();
                 },
                 validateForm(){
