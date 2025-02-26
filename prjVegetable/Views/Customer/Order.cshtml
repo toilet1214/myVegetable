@@ -45,7 +45,7 @@
                         <th>
                             @Html.DisplayNameFor(model => model.FNote)
                         </th>
-                        <th>
+                        <th style="width:19%">
                             操作
                         </th>
                     </tr>
@@ -102,7 +102,7 @@
                                     @Html.DisplayFor(modelItem => item.FNote)
                                 </td>
                                 <td>
-                                    <a asp-action="OrderDetail" asp-route-id="@item.FId" class="btn btn-secondary mb-2">詳細資料</a>
+                                    <a asp-action="OrderDetail" asp-route-id="@item.FId" class="btn btn-primary mb-2">詳細資料 <i class="bi bi-chat-dots"></i></a>
                                 </td>
                             </tr>
                         }

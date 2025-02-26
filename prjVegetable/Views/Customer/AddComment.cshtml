@@ -86,11 +86,10 @@
                     <span asp-validation-for="FStar" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <input type="submit" value="送出評論" class="btn btn-primary" />
+                    <a asp-action="OrderDetail" asp-route-id="Model.FOrderId" class="btn btn-primary m-2">取消評論</a>
+                    <input type="submit" value="送出評論" class="btn btn-primary m-2" />
                 </div>
-                <div>
-                    <a asp-action="OrderDetail" asp-route-id="Model.FOrderId" class="btn btn-secondary m-2">取消評論</a>
-                </div>
+
             </form>
         </div>
         

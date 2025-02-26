@@ -249,8 +249,8 @@
                             <div class="row">
                                 <label class="col-md-3 col-form-label">郵件驗證：</label>
                                 <div class="col-md-9">
-                                    <button v-if="!emailVerified" @@click="resendVerificationEmail" class="btn btn-primary" id="resendButton">
-                                        重新發送驗證信
+                                    <button v-if="!emailVerified" @@click="resendVerificationEmail" class="btn btn-primary " id="resendButton">
+                                        重新發送驗證信 <i class="bi bi-send"></i>
                                     </button>
                                     <label v-if="emailVerified" class="col-form-label text-success">已驗證</label>
                                 </div>
@@ -260,12 +260,12 @@
                 </form>
                 <!-- 返回與編輯按鈕 -->
                 <div v-if="edit==0">
-                    <button @@click="toggleEditing" class="btn btn-primary m-1">編輯資料</button>
-                    <button v-if="loginType === 0" @@click="toggleEditPassword" class="btn btn-primary m-1">修改密碼</button>
+                    <button @@click="toggleEditing" class="btn btn-primary  m-1">編輯資料 <i class="bi bi-pencil-square"></i></button>
+                    <button v-if="loginType === 0" @@click="toggleEditPassword" class="btn btn-primary  m-1">修改密碼 <i class="bi bi-lock"></i></button>
                 </div>
                 <div v-if="edit>=1">
-                    <button @@click="cancel" class="btn btn-success m-1">取消</button>
-                    <button @@click="saveCustomer" class="btn btn-success m-1">儲存修改</button>
+                    <button @@click="cancel" class="btn btn-success m-1">取消 <i class="bi bi-x-circle"></i></button>
+                    <button @@click="saveCustomer" class="btn btn-success  m-1">儲存修改 <i class="bi bi-check-circle"></i></button>
                 </div>
             </div>
         </div>
