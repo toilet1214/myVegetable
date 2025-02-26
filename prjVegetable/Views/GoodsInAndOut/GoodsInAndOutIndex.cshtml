@@ -50,78 +50,84 @@
 </table>
 @section Scripts {
     <script>
-        $(document).ready(function () {
-            $('#List').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": true,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "language": {
-                    "lengthMenu": "顯示 _MENU_ 筆資料",
-                    "zeroRecords": "沒有符合的訂單",
-                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
-                    "infoEmpty": "沒有可顯示的資料",
-                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
-                    "search": "搜尋：",
-                    "paginate": {
-                        "first": "第一頁",
-                        "last": "最後一頁",
-                        "next": "下一頁",
-                        "previous": "上一頁"
-                    }
-                },
-                "lengthMenu": [5, 10, 25, 50],
-                "lengthChange": true,
-            });
+        $('#List').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "autoWidth": false,
+            "language": {
+                "lengthMenu": "顯示 _MENU_ 筆資料",
+                "zeroRecords": "沒有符合的訂單",
+                "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                "infoEmpty": "沒有可顯示的資料",
+                "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                "search": "搜尋：",
+                "paginate": {
+                    "first": "第一頁",
+                    "last": "最後一頁",
+                    "next": "下一頁",
+                    "previous": "上一頁"
+                }
+            },
+            "lengthMenu": [5, 10, 25, 50],
+            "lengthChange": true,
+            "drawCallback": function () {
+                // 確保按鈕在 DataTable 重新繪製時仍然可用
+                $(".btn-invalid").off("click").on("click", function () {
+                    let fId = $(this).data("id");
 
-            $(".btn-invalid").click(function () {
-                let fId = $(this).data("id");
-                Swal.fire({
-                    title: "是否確定作廢?",
-                    text: "作廢後須透過編輯才能取消作廢",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#3085d6",
-                    cancelButtonColor: "#d33",
-                    confirmButtonText: "確認",
-                    cancelButtonText: "取消"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: "/GoodsInAndOut/Invalidate",
-                            type: "POST",
-                            contentType: "application/json",
-                            data: JSON.stringify({ FId: fId }),
-                            success: function (response) {
-                                if (response.success) {
+                    Swal.fire({
+                        title: "確定要作廢這筆資料嗎？",
+                        text: "這個動作無法還原！",
+                        icon: "warning",
+                        showCancelButton: true,
+                        confirmButtonColor: "#3085d6",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "確定作廢",
+                        cancelButtonText: "取消"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "/GoodsInAndOut/Invalidate",
+                                type: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify({ FId: fId }),
+                                success: function (response) {
+                                    if (response.success) {
+                                        Swal.fire({
+                                            title: "作廢成功！",
+                                            icon: "success",
+                                            confirmButtonText: "確定"
+                                        }).then(() => location.reload());
+                                    } else {
+                                        Swal.fire({
+                                            title: "作廢失敗",
+                                            text: response.message,
+                                            icon: "warning",
+                                            confirmButtonText: "確定"
+                                        });
+                                    }
+                                },
+                                error: function () {
                                     Swal.fire({
-                                        title: "已作廢!",
-                                        icon: "success"
-                                    }).then(() => {
-                                        location.reload();
-                                    });
-                                } else {
-                                    Swal.fire({
-                                        title: "錯誤!",
-                                        text: "錯誤訊息: " + response.message,
-                                        icon: "error"
+                                        title: "作廢請求失敗",
+                                        text: "請稍後再試！",
+                                        icon: "error",
+                                        confirmButtonText: "確定"
                                     });
                                 }
-                            },
-                            error: function () {
-                                Swal.fire({
-                                    title: "Error!",
-                                    text: "Invalidation request failed, please try again later!",
-                                    icon: "error"
-                                });
-                            }
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
-            });
+            }
         });
+
+    </script>
+    <script>
+        let a = @Model.ToString();
+        console.log(a);
     </script>
 }
 
