@@ -42,7 +42,6 @@ namespace prjVegetable.Controllers
             {
                 string json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
-                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
                 var claims = new List<Claim>
                 {
@@ -134,7 +133,6 @@ namespace prjVegetable.Controllers
                 // **存入 Session**
                 string json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
-                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
 
                 Debug.WriteLine(json);
