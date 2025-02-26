@@ -134,6 +134,9 @@ namespace prjVegetable.Controllers
                 // **存入 Session**
                 string json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
+                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_PERMISSION, user.FPermission.ToString());
+                HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
+
                 Debug.WriteLine(json);
                 // **設定驗證 Cookie**
                 var claims = new List<Claim>
