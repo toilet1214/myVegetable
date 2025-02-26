@@ -56,7 +56,7 @@
                         <div class="row">                            
                             <label for="fGender" class="col-md-3 col-form-label">性別：</label>
                             <div class="col-md-9">
-                                <select class="form-control" id="fGender" v-model="person.fGender">
+                                <select class="form-control" id="fGender" v-model="person.fGender" @@input="validateGender">
                                     <option value="男">男</option>
                                     <option value="女">女</option>
                                     <option value="其他">其他</option>
@@ -68,7 +68,7 @@
                         <div class="row">
                             <label for="fBirth" class="col-md-3 col-form-label">生日：</label>
                             <div class="col-md-9">
-                                <input type="date" class="form-control" id="datepicker" :placeholder="person.fBirth" v-model="person.fBirth">
+                                <input type="date" class="form-control" id="datepicker" :placeholder="person.fBirth" v-model="person.fBirth" @@input="validateBirth">
                             </div>
                         </div>
                     </div>
@@ -87,7 +87,7 @@
                         <div class="row">
                             <label for="fTel" class="col-md-3 col-form-label">家用電話：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel">
+                                <input type="text" class="form-control" id="fTel" :placeholder="person.fTel" v-model="person.fTel" @@input="validateTel">
                                 <div v-if="telError" style="color:red;font-size:1rem">請輸入有效電話號碼</div>
                             </div>
                         </div>
@@ -98,7 +98,7 @@
                         <div class="row">
                             <label for="fAddress" class="col-md-3 col-form-label">地址：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fAddress" :placeholder="person.fAddress" v-model="person.fAddress">
+                                <input type="text" class="form-control" id="fAddress" :placeholder="person.fAddress" v-model="person.fAddress" @@input="validateAddress">
                             </div>
                         </div>
                     </div>
@@ -131,7 +131,7 @@
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" v-model="person.fPermission">
+                                <input type="text" class="form-control" id="fPermission" :value="person.fPermission" v-model="person.fPermission" @@input="validatePermission">
                             </div>
                         </div>
                     </div>
@@ -432,6 +432,21 @@
                         this.ubnError = !ubnRegex.test(this.person.fUbn);
                     }
                     this.validateForm(); // 驗證整個表單
+                },
+                validateGender(){
+                    this.validateForm();
+                },
+                validateBirth(){
+                    this.validateForm();
+                },
+                validateTel(){
+                    this.validateForm();
+                },
+                validateAddress(){
+                    this.validateForm();
+                },
+                validatePermission(){
+                    this.validateForm();
                 },
                 validateAccount(){
                 //與現有帳號不得重複
