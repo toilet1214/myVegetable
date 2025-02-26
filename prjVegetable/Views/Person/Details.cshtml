@@ -253,10 +253,10 @@
                         <div class="row">
                             <label for="fPermission" class="col-md-3 col-form-label">權限：</label>
                             <div class="col-md-9">
-                                <select class="form-control" id="fPermission" v-model="person.fPermission" @@input="validatePermission">
-                                    <option value="0">會員</option>
-                                    <option value="1">員工</option>
-                                    <option value="2">離職員工</option>
+                                <select class="form-control" id="fPermission" v-model="person.fPermission" @@input="validatePermission" disabled>
+                                    <option value="0" >會員</option>
+                                    <option value="1" >員工</option>
+                                    <option value="2" >離職員工</option>
                                 </select>
                             </div>
                         </div>
