@@ -361,6 +361,11 @@
     document.getElementById("submitEditData").addEventListener("click", submitEditData);
 
     document.getElementById("cancelEdit").addEventListener("click", function () {
-        window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+        let prevPage = document.referrer; // 取得上一個頁面 URL
+        if (prevPage.includes("GoodsInAndOutIndex")) {
+            window.location.href = prevPage; // 直接返回列表頁面
+        } else {
+            window.location.href = "/GoodsInAndOut/GoodsInAndOutIndex";
+        }
     });
 </script>

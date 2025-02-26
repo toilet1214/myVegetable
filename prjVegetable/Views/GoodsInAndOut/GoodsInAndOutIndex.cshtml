@@ -42,7 +42,7 @@
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.FId" class="btn btn-warning btn-sm">編輯</a>
                     <a asp-action="Details" asp-route-id="@item.FId" class="btn btn-info btn-sm">詳情</a>
-                    <button type="button" class="btn btn-danger btn-sm btn-invalid" data-id="@item.FId">作廢</button>
+                    <button type="button" class="btn btn-danger btn-sm btn-invalid" data-id="@item.FId" data-status="@item.FInOut">作廢</button>
                 </td>
             </tr>
         }
@@ -50,84 +50,103 @@
 </table>
 @section Scripts {
     <script>
-        $('#List').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "language": {
-                "lengthMenu": "顯示 _MENU_ 筆資料",
-                "zeroRecords": "沒有符合的訂單",
-                "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
-                "infoEmpty": "沒有可顯示的資料",
-                "infoFiltered": "(從 _MAX_ 筆資料過濾)",
-                "search": "搜尋：",
-                "paginate": {
-                    "first": "第一頁",
-                    "last": "最後一頁",
-                    "next": "下一頁",
-                    "previous": "上一頁"
+        $(document).ready(function () {
+            let table = $('#List').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "stateSave": true,  // 🔹 開啟 DataTable 狀態保存
+                "language": {
+                    "lengthMenu": "顯示 _MENU_ 筆資料",
+                    "zeroRecords": "沒有符合的訂單",
+                    "info": "顯示第 _START_ 到 _END_ 筆，共 _TOTAL_ 筆",
+                    "infoEmpty": "沒有可顯示的資料",
+                    "infoFiltered": "(從 _MAX_ 筆資料過濾)",
+                    "search": "搜尋：",
+                    "paginate": {
+                        "first": "第一頁",
+                        "last": "最後一頁",
+                        "next": "下一頁",
+                        "previous": "上一頁"
+                    }
+                },
+                "lengthMenu": [5, 10, 25, 50],
+                "lengthChange": true,
+                "drawCallback": function () {
+                    // 當 DataTable 繪製完成後，恢復滾動位置
+                    let scrollPos = sessionStorage.getItem("datatable-scroll");
+                    if (scrollPos) {
+                        $(window).scrollTop(scrollPos);
+                    }
                 }
-            },
-            "lengthMenu": [5, 10, 25, 50],
-            "lengthChange": true,
-            "drawCallback": function () {
-                // 確保按鈕在 DataTable 重新繪製時仍然可用
-                $(".btn-invalid").off("click").on("click", function () {
-                    let fId = $(this).data("id");
+            });
 
+            // 在頁面離開前，儲存滾動位置
+            $(window).on("beforeunload", function () {
+                sessionStorage.setItem("datatable-scroll", $(window).scrollTop());
+            });
+
+            // 監聽作廢按鈕
+            $(".btn-invalid").off("click").on("click", function () {
+                let fId = $(this).data("id");
+                let currentStatus = $(this).closest("tr").find("td:eq(1)").text().trim();  // 取得進出貨狀態
+
+                if (currentStatus === "作廢單") {
                     Swal.fire({
-                        title: "確定要作廢這筆資料嗎？",
-                        text: "這個動作無法還原！",
-                        icon: "warning",
-                        showCancelButton: true,
-                        confirmButtonColor: "#3085d6",
-                        cancelButtonColor: "#d33",
-                        confirmButtonText: "確定作廢",
-                        cancelButtonText: "取消"
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            $.ajax({
-                                url: "/GoodsInAndOut/Invalidate",
-                                type: "POST",
-                                contentType: "application/json",
-                                data: JSON.stringify({ FId: fId }),
-                                success: function (response) {
-                                    if (response.success) {
-                                        Swal.fire({
-                                            title: "作廢成功！",
-                                            icon: "success",
-                                            confirmButtonText: "確定"
-                                        }).then(() => location.reload());
-                                    } else {
-                                        Swal.fire({
-                                            title: "作廢失敗",
-                                            text: response.message,
-                                            icon: "warning",
-                                            confirmButtonText: "確定"
-                                        });
-                                    }
-                                },
-                                error: function () {
+                        title: "此筆資料已是廢棄單！",
+                        icon: "info",
+                        confirmButtonText: "確定"
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: "確定要作廢這筆資料嗎？",
+                    text: "這個動作無法還原！",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    confirmButtonText: "確定作廢",
+                    cancelButtonText: "取消"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/GoodsInAndOut/Invalidate",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({ FId: fId }),
+                            success: function (response) {
+                                if (response.success) {
                                     Swal.fire({
-                                        title: "作廢請求失敗",
-                                        text: "請稍後再試！",
-                                        icon: "error",
+                                        title: "作廢成功！",
+                                        icon: "success",
+                                        confirmButtonText: "確定"
+                                    }).then(() => location.reload());
+                                } else {
+                                    Swal.fire({
+                                        title: "作廢失敗",
+                                        text: response.message,
+                                        icon: "warning",
                                         confirmButtonText: "確定"
                                     });
                                 }
-                            });
-                        }
-                    });
+                            },
+                            error: function () {
+                                Swal.fire({
+                                    title: "作廢請求失敗",
+                                    text: "請稍後再試！",
+                                    icon: "error",
+                                    confirmButtonText: "確定"
+                                });
+                            }
+                        });
+                    }
                 });
-            }
+            });
         });
-
-    </script>
-    <script>
-        let a = @Model.ToString();
-        console.log(a);
     </script>
 }
 
