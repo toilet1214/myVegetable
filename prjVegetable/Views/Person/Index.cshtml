@@ -26,8 +26,7 @@
                 <th>序號</th>
                 <th>ID</th>
                 <th>姓名</th>
-                <th>帳號</th>
-                <th>密碼</th>
+                <th>帳號</th>                
                 <th>性別</th>
                 <th>生日</th>
                 <th>手機</th>
@@ -41,7 +40,6 @@
                 <th>{{item.fId}}</th>
                 <td>{{ item.fName }}</td>
                 <th>{{item.fAccount}}</th>
-                <th>{{'*'.repeat(item.fPassword.length)}}</th>
                 <td>{{ item.fGender }}</td>
                 <td>{{ item.fBirth }}</td>
                 <td>{{ item.fPhone }}</td>
@@ -209,6 +207,6 @@
         }); // 這裡結束 Vue.createApp 的程式碼
 
 
-        app.mount('#app'); // 使用 Vue 3 創建並掛載應用
+        app.mount('#app'); 
     </script>
 }
