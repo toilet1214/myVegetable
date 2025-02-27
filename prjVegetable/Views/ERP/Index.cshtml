@@ -23,7 +23,7 @@
                 <div class="col-md-4">
                     <div class="card info-card mt-3 h-100">
                         <div class="card-body ">
-                            <h5 class="card-title fw-bold fs-5">會員</h5>
+                            <h5 class="card-title fw-bold fs-5">會員數</h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-people-fill display-6"></i>
@@ -34,12 +34,12 @@
                     </div>
                 </div>
                 <!-- End 會員 -->
-                <!-- 瀏覽人次 -->
+                <!-- 平均訂單 -->
                 <div class="col-md-4">
                     <div class="card info-card  position-relative mt-3 h-100">
                         <div class="filter position-absolute top-0 end-0 p-2">
                             <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="VisitorsList">
+                            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow" id="AvgOrderTotalsList">
                                 <li class="dropdown-header text-start">
                                     <h6>篩選</h6>
                                 </li>
@@ -49,20 +49,20 @@
                             </ul>
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title fw-bold fs-5">瀏覽人次 <span id="VisitorsDate">| 當日</span></h5>
+                            <h5 class="card-title fw-bold fs-5">平均訂單金額 <span id="AvgOrderTotalsDate">| 當日</span></h5>
                             <div class="d-flex align-items-center">
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
-                                    <i class="bi bi-fire display-6"></i>
+                                    <i class="bi bi-currency-dollar display-6"></i>
                                 </div>
-                                <h3 id="Visitors" class="flex-grow-1 text-center m-0">123</h3>
+                                <h3 id="AvgOrderTotal" class="flex-grow-1 text-center m-0"></h3>
                             </div>
                             <div class="d-flex align-items-center justify-content-center">
-                                <i class="bi bi-dash text-success" id="VisitorsPercentage">123</i>
+                                <i class="bi bi-dash text-secondary" id="AvgOrderTotalsPercentage"></i>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!-- End 瀏覽人次 -->
+                <!-- End 平均訂單 -->
                 <!-- 訂單 -->
                 <div class="col-md-4">
                     <div class="card info-card sales-card position-relative mt-3 h-100">
@@ -83,10 +83,10 @@
                                 <div class="card-icon rounded-circle d-flex align-items-center justify-content-center me-3">
                                     <i class="bi bi-cart-check-fill display-6"></i>
                                 </div>
-                                <h3 id="Orders" class="flex-grow-1 text-center m-0">123</h3>
+                                <h3 id="Orders" class="flex-grow-1 text-center m-0"></h3>
                             </div>
                             <div class="d-flex align-items-center justify-content-center">
-                                <i class="bi bi-dash text-success" id="OrdersPercentage">123</i>
+                                <i class="bi bi-dash text-secondary" id="OrdersPercentage"></i>
                             </div>
                         </div>
                     </div>
@@ -218,90 +218,162 @@
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
-    <!-- 數據卡片 -->
+    <!-- 會員數據卡片 -->
     <script>
-        function SetCardData(ClassPer, Percentage, Color, Icon) {
-            ClassPer.innerHTML = Math.abs(Percentage).toLocaleString() + `%`;
-            ClassPer.classList.remove("text-success", "text-secondary", "text-danger", "bi-caret-up-fill", "bi-caret-down-fill", "bi-dash");
-            ClassPer.classList.add(Color, Icon);
-        }
-        function SetDefaultCard(Percentage, ClassPer) {
-            if (Percentage == 0) {
-                SetCardData(ClassPer, Percentage, "text-secondary", "bi-dash");
-            } else if (Percentage > 0) {
-                SetCardData(ClassPer, Percentage, "text-success", "bi-caret-up-fill");
-            }
-            else {
-                SetCardData(ClassPer, Percentage, "text-danger", "bi-caret-down-fill");
-            }
-        }
-        //會員數
         const TotalMembers = @Model.TotalMembers;
         let Members = document.getElementById("Members");
         Members.innerHTML = TotalMembers.toLocaleString();
+    </script>
 
-        //瀏覽人次
-        let Visitors = document.getElementById("Visitors");
-        let VisitorsList = document.getElementById("VisitorsList");
-        let VisitorsPercentage = document.getElementById("VisitorsPercentage");
-        const TotalVisitorsYear = @Model.TotalVisitorsYear;
-        const TotalVisitorsMonth = @Model.TotalVisitorsMonth;
-        const TotalVisitorsDay = @Model.TotalVisitorsDay;
-        Visitors.innerHTML = TotalVisitorsDay.toLocaleString();
-        SetDefaultCard(@ViewBag.VisitorsPercentageDay, VisitorsPercentage);
-        VisitorsList.addEventListener("click", (e) => {
-            e.preventDefault();
-            const VisitorsFilter = e.target.textContent.trim();
-            if (VisitorsFilter === "篩選") {
-                return;
+    <!--訂單平均金額-->
+    <script>
+        let AvgOrderTotal = document.getElementById("AvgOrderTotal");
+        let AvgOrderTotalsList = document.getElementById("AvgOrderTotalsList");
+        let AvgOrderTotalsPercentage = document.getElementById("AvgOrderTotalsPercentage");
+        let AvgOrderTotalsDate = document.getElementById("AvgOrderTotalsDate");
+
+        // 確保數據格式正確
+        const AvgOrderTotalsYear = @Json.Serialize(Model.AvgOrderTotalsYear);
+        const AvgOrderTotalsMonth = @Json.Serialize(Model.AvgOrderTotalsMonth);
+        const AvgOrderTotalsDay = @Json.Serialize(Model.AvgOrderTotalsDay);
+
+        const AvgOrderTotalsPercentageYear = @ViewBag.AvgOrderTotalsPercentageYear;
+        const AvgOrderTotalsPercentageMonth = @ViewBag.AvgOrderTotalsPercentageMonth;
+        const AvgOrderTotalsPercentageDay = @ViewBag.AvgOrderTotalsPercentageDay;
+
+        // 根據百分比變化更新顯示
+        function AvgOrderTotalsPercentageDisplay(percentage) {
+            if (percentage > 0) {
+                AvgOrderTotalsPercentage.classList.remove("text-secondary");
+                AvgOrderTotalsPercentage.classList.remove("text-danger");
+                AvgOrderTotalsPercentage.classList.add("text-success");
+                AvgOrderTotalsPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                AvgOrderTotalsPercentage.classList.remove("bi-dash");
+                AvgOrderTotalsPercentage.classList.remove("bi-caret-down-fill");
+                AvgOrderTotalsPercentage.classList.add("bi-caret-up-fill");
             }
-            document.getElementById("VisitorsDate").innerHTML = "| " + VisitorsFilter;
-            switch (VisitorsFilter) {
-                case "當日":
-                    Visitors.innerHTML = TotalVisitorsDay.toLocaleString();
-                    SetDefaultCard(@ViewBag.VisitorsPercentageDay, VisitorsPercentage);
-                    break;
-                case "當月":
-                    Visitors.innerHTML = TotalVisitorsMonth.toLocaleString();
-                    SetDefaultCard(@ViewBag.VisitorsPercentageMonth, VisitorsPercentage);
-                    break;
-                case "當年":
-                    Visitors.innerHTML = TotalVisitorsYear.toLocaleString();
-                    SetDefaultCard(@ViewBag.VisitorsPercentageYear, VisitorsPercentage);
-                    break;
+            else if (percentage == 0) {
+                AvgOrderTotalsPercentage.classList.remove("text-success");
+                AvgOrderTotalsPercentage.classList.remove("text-danger");
+                AvgOrderTotalsPercentage.classList.add("text-secondary");
+                AvgOrderTotalsPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                AvgOrderTotalsPercentage.classList.remove("bi-caret-down-fill");
+                AvgOrderTotalsPercentage.classList.remove("bi-caret-up-fill");
+                AvgOrderTotalsPercentage.classList.add("bi-dash");
             }
-        })
-        //訂單
+            else {
+                percentage *= -1;
+                AvgOrderTotalsPercentage.classList.remove("text-secondary");
+                AvgOrderTotalsPercentage.classList.remove("text-success");
+                AvgOrderTotalsPercentage.classList.add("text-danger");
+                AvgOrderTotalsPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                AvgOrderTotalsPercentage.classList.remove("bi-dash");
+                AvgOrderTotalsPercentage.classList.remove("bi-caret-up-fill");
+                AvgOrderTotalsPercentage.classList.add("bi-caret-down-fill");
+            }
+        }
+
+        AvgOrderTotal.innerHTML = AvgOrderTotalsDay.toLocaleString();
+        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageDay);
+        // 監聽篩選選單點擊事件
+        AvgOrderTotalsList.addEventListener("click", function (event) {
+            if (event.target.classList.contains("dropdown-item")) {
+                let selectedText = event.target.innerText.trim(); // 取得選中的文字
+
+                switch (selectedText) {
+                    case "當日":
+                        AvgOrderTotal.innerHTML = AvgOrderTotalsDay.toLocaleString();
+                        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageDay);
+                        break;
+                    case "當月":
+                        AvgOrderTotal.innerHTML = AvgOrderTotalsMonth.toLocaleString();
+                        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageMonth);
+                        break;
+                    case "當年":
+                        AvgOrderTotal.innerHTML = AvgOrderTotalsYear.toLocaleString();
+                        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageYear);
+                        break;
+                }
+
+                // 更新標題顯示
+                AvgOrderTotalsDate.innerHTML = `| ${selectedText}`;
+            }
+        });
+    </script>
+    <!--訂單卡片]-->
+    <script>
         let Orders = document.getElementById("Orders");
         let OrdersList = document.getElementById("OrdersList");
         let OrdersPercentage = document.getElementById("OrdersPercentage");
-        const TotalOrdersYear = @Model.TotalOrdersYear;
-        const TotalOrdersMonth = @Model.TotalOrdersMonth;
-        const TotalOrdersDay = @Model.TotalOrdersDay;
-        Orders.innerHTML = @Model.TotalOrdersDay;
-        SetDefaultCard(@ViewBag.OrdersPercentageDay, OrdersPercentage);
-        OrdersList.addEventListener("click", (e) => {
-            e.preventDefault();
-            const OrdersFilter = e.target.textContent.trim();
-            if (OrdersFilter === "篩選") {
-                return;
+        let OrdersDate = document.getElementById("OrdersDate");
+
+        // 確保數據格式正確
+        const OrdersYear = @Json.Serialize(Model.TotalOrdersYear);
+        const OrdersMonth = @Json.Serialize(Model.TotalOrdersMonth);
+        const OrdersDay = @Json.Serialize(Model.TotalOrdersDay);
+
+        const OrdersPercentageYear = @ViewBag.OrdersPercentageYear;
+        const OrdersPercentageMonth = @ViewBag.OrdersPercentageMonth;
+        const OrdersPercentageDay = @ViewBag.OrdersPercentageDay;
+
+        // 根據百分比變化更新顯示
+        function OrdersPercentageDisplay(percentage) {
+            if (percentage > 0) {
+                OrdersPercentage.classList.remove("text-secondary");
+                OrdersPercentage.classList.remove("text-danger");
+                OrdersPercentage.classList.add("text-success");
+                OrdersPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                OrdersPercentage.classList.remove("bi-dash");
+                OrdersPercentage.classList.remove("bi-caret-down-fill");
+                OrdersPercentage.classList.add("bi-caret-up-fill");
             }
-            document.getElementById("OrdersDate").innerHTML = "| " + OrdersFilter;
-            switch (OrdersFilter) {
-                case "當日":
-                    Orders.innerHTML = TotalOrdersDay.toLocaleString();
-                    SetDefaultCard(@ViewBag.OrdersPercentageDay, OrdersPercentage);
-                    break;
-                case "當月":
-                    Orders.innerHTML = TotalOrdersMonth.toLocaleString();
-                    SetDefaultCard(@ViewBag.OrdersPercentageMonth, OrdersPercentage);
-                    break;
-                case "當年":
-                    Orders.innerHTML = TotalOrdersYear.toLocaleString();
-                    SetDefaultCard(@ViewBag.OrdersPercentageYear, OrdersPercentage);
-                    break;
+            else if (percentage == 0) {
+                OrdersPercentage.classList.remove("text-success");
+                OrdersPercentage.classList.remove("text-danger");
+                OrdersPercentage.classList.add("text-secondary");
+                OrdersPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                OrdersPercentage.classList.remove("bi-caret-down-fill");
+                OrdersPercentage.classList.remove("bi-caret-up-fill");
+                OrdersPercentage.classList.add("bi-dash");
             }
-        })
+            else {
+                percentage *= -1;
+                OrdersPercentage.classList.remove("text-secondary");
+                OrdersPercentage.classList.remove("text-success");
+                OrdersPercentage.classList.add("text-danger");
+                OrdersPercentage.innerHTML = `${percentage.toFixed(1)}%`;
+                OrdersPercentage.classList.remove("bi-dash");
+                OrdersPercentage.classList.remove("bi-caret-up-fill");
+                OrdersPercentage.classList.add("bi-caret-down-fill");
+            }
+        }
+
+        Orders.innerHTML = OrdersDay.toLocaleString();
+        OrdersPercentageDisplay(OrdersPercentageDay);
+        // 監聽篩選選單點擊事件
+        OrdersList.addEventListener("click", function (event) {
+            if (event.target.classList.contains("dropdown-item")) {
+                let selectedText = event.target.innerText.trim(); // 取得選中的文字
+
+                switch (selectedText) {
+                    case "當日":
+                        Orders.innerHTML = OrdersDay.toLocaleString();
+                        OrdersPercentageDisplay(OrdersPercentageDay);
+                        break;
+                    case "當月":
+                        Orders.innerHTML = OrdersMonth.toLocaleString();
+                        OrdersPercentageDisplay(OrdersPercentageMonth);
+                        break;
+                    case "當年":
+                        Orders.innerHTML = OrdersYear.toLocaleString();
+                        OrdersPercentageDisplay(OrdersPercentageYear);
+                        break;
+                }
+
+                // 更新標題顯示
+                OrdersDate.innerHTML = `| ${selectedText}`;
+            }
+        });
     </script>
     <!--會員數折線圖-->
     <script>
@@ -315,11 +387,11 @@
         let YearLabel = @Html.Raw(JsonSerializer.Serialize(
         Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
         let chart;
-        let maxAll = Math.max(...TotalMembersAll,5); // 取得最大值
+        let maxAll = Math.max(...TotalMembersAll, 5); // 取得最大值
         let maxYAll = Math.ceil(maxAll / 5) * 5; // 計算接近的 5 的倍數
-        let maxYear = Math.max(...TotalMembersYear,5); // 取得最大值
+        let maxYear = Math.max(...TotalMembersYear, 5); // 取得最大值
         let maxYYear = Math.ceil(maxYear / 5) * 5; // 計算接近的 5 的倍數
-        let maxMonth = Math.max(...TotalMembersMonth,5); // 取得最大值
+        let maxMonth = Math.max(...TotalMembersMonth, 5); // 取得最大值
         let maxYMonth = Math.ceil(maxMonth / 5) * 5; // 計算接近的 5 的倍數
         function MemberCountMonth() {
             if (chart) chart.destroy();
@@ -371,9 +443,9 @@
                         let value = series[seriesIndex][dataPointIndex];
 
                         return `<div class="custom-tooltip">
-                                            <strong>${xLabel} 號</strong> <br>
-                                            會員數: <span style="color:#ff4560;">${value} 位</span>
-                                        </div>`;
+                                                                                    <strong>${xLabel} 號</strong> <br>
+                                                                                    會員數: <span style="color:#ff4560;">${value} 位</span>
+                                                                                </div>`;
                     }
                 }
             });
@@ -429,9 +501,9 @@
                         let value = series[seriesIndex][dataPointIndex];
 
                         return `<div class="custom-tooltip">
-                                                    <strong>${xLabel} 月</strong> <br>
-                                                    會員數: <span style="color:#ff4560;">${value} 位</span>
-                                                </div>`;
+                                                                                            <strong>${xLabel} 月</strong> <br>
+                                                                                            會員數: <span style="color:#ff4560;">${value} 位</span>
+                                                                                        </div>`;
                     }
                 }
             });
@@ -487,9 +559,9 @@
                         let value = series[seriesIndex][dataPointIndex];
 
                         return `<div class="custom-tooltip">
-                                                    <strong>${xLabel} 年</strong> <br>
-                                                    會員數: <span style="color:#ff4560;">${value} 位</span>
-                                                </div>`;
+                                                                                            <strong>${xLabel} 年</strong> <br>
+                                                                                            會員數: <span style="color:#ff4560;">${value} 位</span>
+                                                                                        </div>`;
                     }
                 }
             });
@@ -532,22 +604,22 @@
             if (!orders || orders.length === 0) {
                 // 若沒有未處理訂單，顯示提示訊息
                 $("#notification").append(`
-                                        <div class="text-center p-3">
-                                            <i class="bi bi-check-circle text-success"></i>
-                                            <p class="fs-6" style="color:#707070;">目前沒有未處理訂單</p>
-                                        </div>
-                                    `);
+                                                                                <div class="text-center p-3">
+                                                                                    <i class="bi bi-check-circle text-success"></i>
+                                                                                    <p class="fs-6" style="color:#707070;">目前沒有未處理訂單</p>
+                                                                                </div>
+                                                                            `);
             } else {
                 $.each(orders, function (index, item) {
                     var html = `
-                                            <div class="notification-item px-0 py-2">
-                                                <i class="bi bi-exclamation-circle-fill text-warning"></i>
-                                                <div>
-                                                    <h3 style="color:darkred;">訂單未處理</h3>
-                                                            <a href="/Order/List" class="fs-6" style="color:#707070;">訂單編號: ${item} 已超過三天未出貨</a>
-                                                </div>
-                                                    </div>
-                                            <div><hr class="my-2" /></div>`;
+                                                                                    <div class="notification-item px-0 py-2">
+                                                                                        <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                                                                                        <div>
+                                                                                            <h3 style="color:darkred;">訂單未處理</h3>
+                                                                                                    <a href="/Order/List" class="fs-6" style="color:#707070;">訂單編號: ${item} 已超過三天未出貨</a>
+                                                                                        </div>
+                                                                                            </div>
+                                                                                    <div><hr class="my-2" /></div>`;
 
                     $("#notification").append(html); // 將 HTML 插入通知區塊
                 });
@@ -720,17 +792,17 @@
                 var productNameCell = $('<td></td>').text(product.ProductName); // 商品名稱
                 row.append(productNameCell);
 
-                var totalLikesCell = $('<td></td>').text(product.Likes); 
+                var totalLikesCell = $('<td></td>').text(product.Likes);
                 row.append(totalLikesCell);
 
 
                 var totalRateCell = $('<td></td>');
                 var starContainer = $('<p class="d-inline-flex star-averating"></p>');
-                
+
                 var starValue = product.Star;
                 var wholeStars = Math.floor(starValue); // 整數部分
                 var halfStar = (starValue - wholeStars) >= 0.5 ? true : false; // 判斷是否有半顆星
-                
+
                 for (var i = 1; i <= 5; i++) {
                     if (i <= wholeStars) {
                         starContainer.append('<i class="bi bi-star-fill"></i>'); // 滿星
@@ -741,7 +813,7 @@
                         starContainer.append('<i class="bi bi-star"></i>'); // 空星
                     }
                 }
-                
+
                 totalRateCell.append(starContainer);
                 totalRateCell.append(' ' + starValue.toFixed(1)); // 顯示數字，確保只有 .0 和 .5
                 row.append(totalRateCell);

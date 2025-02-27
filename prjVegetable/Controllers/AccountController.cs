@@ -103,7 +103,12 @@ namespace prjVegetable.Controllers
                         FAccount = email,
                         FGoogleId = googleId,
                         FLoginType = 1,
-                        FIsVerified = true
+                        FIsVerified = true,
+                        FBirth = DateOnly.Parse("1995-03-18"),
+                        FAddress= "基隆市仁愛區和平路",
+                        FPhone= "0967890123",
+                        FTel= "02-3456789",
+                        FGender = "男"
                     };
 
                     try

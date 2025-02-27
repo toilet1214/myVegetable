@@ -20,31 +20,132 @@ namespace prjVegetable.Controllers
 
         public IActionResult Index()
         {
-            int TotalOrdersYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year);
-            int TotalOrdersMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.Month && o.FOrderAt.Year == DateTime.Now.Year);
-            int TotalOrdersDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date);
-            int TotalOrdersLastYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date.AddYears(-1));
-            int TotalOrdersLastMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date.AddMonths(-1));
-            int TotalOrdersLastDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date.AddDays(-1));
-            if (TotalOrdersLastYear != 0)
+            int TotalOrdersYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2);
+            int TotalOrdersMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.Month && o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2);
+            int TotalOrdersDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date && o.FStatus == 2);
+            int TotalOrdersLastYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year-1 && o.FStatus == 2);
+            int TotalOrdersLastMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.AddMonths(-1).Month && o.FOrderAt.Year == DateTime.Now.AddMonths(-1).Year && o.FStatus == 2); 
+            int TotalOrdersLastDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date.AddDays(-1) && o.FStatus == 2);
+
+            // 當年與去年比較
+            if (TotalOrdersLastYear == 0 && TotalOrdersYear == 0)
+            {
+                ViewBag.OrdersPercentageYear = 0; // 如果今年和去年都是零
+            }
+            else if (TotalOrdersLastYear != 0)
             {
                 ViewBag.OrdersPercentageYear = Math.Round(((decimal)(TotalOrdersYear / TotalOrdersLastYear - 1) * 100), 1);
             }
-            else ViewBag.OrdersPercentageYear = 100;
-            if (TotalOrdersLastMonth != 0)
+            else
+            {
+                ViewBag.OrdersPercentageYear = 100; // 如果去年沒有訂單，但今年有訂單
+            }
+
+            // 當月與上月比較
+            if (TotalOrdersLastMonth == 0 && TotalOrdersMonth == 0)
+            {
+                ViewBag.OrdersPercentageMonth = 0; // 如果本月和上月都是零
+            }
+            else if (TotalOrdersLastMonth != 0)
             {
                 ViewBag.OrdersPercentageMonth = Math.Round((decimal)((TotalOrdersMonth / TotalOrdersLastMonth - 1) * 100), 1);
             }
-            else ViewBag.OrdersPercentageMonth = 100;
-            if (TotalOrdersLastDay != 0)
+            else
+            {
+                ViewBag.OrdersPercentageMonth = 100; // 如果上月沒有訂單，但本月有訂單
+            }
+
+            // 當日與昨日比較
+            if (TotalOrdersLastDay == 0 && TotalOrdersDay == 0)
+            {
+                ViewBag.OrdersPercentageDay = 0; // 如果今天和昨天都是零
+            }
+            else if (TotalOrdersLastDay != 0)
             {
                 ViewBag.OrdersPercentageDay = Math.Round(((decimal)(TotalOrdersDay / TotalOrdersLastDay - 1) * 100), 1);
             }
-            else ViewBag.OrdersPercentageDay = 100;
+            else
+            {
+                ViewBag.OrdersPercentageDay = 100; // 如果昨天沒有訂單，但今天有訂單
+            }
 
-            ViewBag.VisitorsPercentageDay = 100;
-            ViewBag.VisitorsPercentageMonth = 80;
-            ViewBag.VisitorsPercentageYear = 70;
+
+            double AvgOrderTotalsYear = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            double AvgOrderTotalsMonth = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Month == DateTime.Now.Month && o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            double AvgOrderTotalsDay = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Date == DateTime.Now.Date && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            // 修正：正確比較去年的平均訂單金額
+            double AvgOrderTotalsLastYear = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Year == DateTime.Now.Year - 1 && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            // 修正：正確比較上個月的平均訂單金額
+            double AvgOrderTotalsLastMonth = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Month == DateTime.Now.AddMonths(-1).Month && o.FOrderAt.Year == DateTime.Now.AddMonths(-1).Year && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            // 修正：確保計算的是「昨天」的訂單平均金額
+            double AvgOrderTotalsLastDay = Math.Round(
+                _VegetableContext.TOrders
+                    .Where(o => o.FOrderAt.Date == DateTime.Now.Date.AddDays(-1) && o.FStatus == 2)
+                    .Select(a => (double?)a.FTotal)
+                    .Average() ?? 0, 2);
+
+            // 計算成長率並存入 ViewBag
+            // 檢查去年數據
+            if (AvgOrderTotalsLastYear == AvgOrderTotalsYear)
+            {
+                ViewBag.AvgOrderTotalsPercentageYear = 0; // 當年和去年數據都為零，設為零
+            }
+            else
+            {
+                ViewBag.AvgOrderTotalsPercentageYear = AvgOrderTotalsLastYear != 0
+                    ? Math.Round(((decimal)(AvgOrderTotalsYear / AvgOrderTotalsLastYear - 1) * 100), 1)
+                    : 100;
+            }
+
+            // 檢查上月數據
+            if (AvgOrderTotalsLastMonth == AvgOrderTotalsMonth)
+            {
+                ViewBag.AvgOrderTotalsPercentageMonth = 0; // 當月和上月數據都為零，設為零
+            }
+            else
+            {
+                ViewBag.AvgOrderTotalsPercentageMonth = AvgOrderTotalsLastMonth != 0
+                    ? Math.Round((decimal)((AvgOrderTotalsMonth / AvgOrderTotalsLastMonth - 1) * 100), 1)
+                    : 100;
+            }
+
+            // 檢查昨日數據
+            if (AvgOrderTotalsLastDay == AvgOrderTotalsDay)
+            {
+                ViewBag.AvgOrderTotalsPercentageDay = 0; // 當日和昨日數據都為零，設為零
+            }
+            else
+            {
+                ViewBag.AvgOrderTotalsPercentageDay = AvgOrderTotalsLastDay != 0
+                    ? Math.Round(((decimal)(AvgOrderTotalsDay / AvgOrderTotalsLastDay - 1) * 100), 1)
+                    : 100;
+            }
+
 
             var members = _VegetableContext.TPeople.Where(p => p.FPermission == 0).ToList();
             var startDate = DateTime.Now.Date.AddDays(-29);
@@ -227,6 +328,7 @@ namespace prjVegetable.Controllers
                 .GroupBy(x => x.Classification)
                 .Select(g => g.Sum(x => x.Count))
                 .ToList();
+
             var UnDoneOrder = _VegetableContext.TOrders.Where(x => x.FStatus == 1 && x.FOrderAt < DateTime.Now.AddDays(-3)).Select(x => x.FId).ToList();
             var viewmodel = new CERPIndexViewModel
             {
@@ -235,9 +337,9 @@ namespace prjVegetable.Controllers
                 TotalMembersAll = TotalMembersAll.Values.ToList(),
                 TotalMembersYear = TotalMembersYear.Values.ToList(),
                 TotalMembersMonth = TotalMembersMonth.Values.ToList(),
-                TotalVisitorsYear = 100,//待修改
-                TotalVisitorsMonth = 10,//待修改
-                TotalVisitorsDay = 1,//待修改
+                AvgOrderTotalsYear = AvgOrderTotalsYear,
+                AvgOrderTotalsMonth = AvgOrderTotalsMonth,
+                AvgOrderTotalsDay = AvgOrderTotalsDay,
                 TotalOrdersYear = TotalOrdersYear,
                 TotalOrdersMonth = TotalOrdersMonth,
                 TotalOrdersDay = TotalOrdersDay,

@@ -10,9 +10,9 @@ namespace prjVegetable.ViewModels
         public List<int> TotalMembersYear { get; set; }
         public List<int> TotalMembersMonth { get; set; }
         public List<int> AllMembersLabels { get; set; }
-        public int TotalVisitorsYear { get; set; }
-        public int TotalVisitorsMonth { get; set; }
-        public int TotalVisitorsDay { get; set; }
+        public double AvgOrderTotalsYear { get; set; }
+        public double AvgOrderTotalsMonth { get; set; }
+        public double AvgOrderTotalsDay { get; set; }
         public int TotalOrdersYear { get; set; }
         public int TotalOrdersMonth { get; set; }
         public int TotalOrdersDay { get; set; }
