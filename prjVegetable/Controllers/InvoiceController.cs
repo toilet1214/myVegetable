@@ -20,64 +20,56 @@ namespace prjVegetable.Controllers
         //----------List------------------------
         public IActionResult List(CKeywordViewModel vm)
         {
-            //先session
+            // 先session
             var checkout = int.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int userId);
 
             // 先驗證身分
-            if (!checkout == true)
+            if (!checkout)
             {
                 return RedirectToAction("Index", "Home"); // 若未登入，跳轉至登入頁面
             }
 
-            //if (ModelState.IsValid)
-            //{
-            //    return RedirectToAction("List", "Invoice"); // 若驗證成功，回到Views():Purchase/List
-            //}
-
-            //額外使用"CKeywordViewModel"內的引數，區分request/required 的回傳值
             DbVegetableContext db = new DbVegetableContext();
             string? keyword = vm.txtKeyword;
 
-            // 先查詢所有的供應商名稱，轉為 Dictionary 方便查找
-            var providers = db.TProviders.ToDictionary(p => p.FId, p => p.FName);
+            // 先查詢所有的供應商資料，轉為 Dictionary 方便查找
+            var providers = db.TProviders.ToDictionary(p => p.FId, p => new { p.FName, p.FUbn });
 
-            //view()呈現
-            IEnumerable<TInvoice> datas = null;
+            // 查詢發票資料
+            IEnumerable<TInvoice> datas = string.IsNullOrEmpty(keyword) ?
+                db.TInvoices :
+                db.TInvoices.Where(p =>
+                    p.FCustomerId.ToString().Contains(keyword) ||
+                    p.FCustomerUbn.Contains(keyword) ||
+                    p.FProviderId.ToString().Contains(keyword) ||
+                    p.FProviderUbn.Contains(keyword) ||
+                    p.FForm.Contains(keyword) ||
+                    p.FInOut.ToString().Contains(keyword) ||
+                    p.FStatus.ToString().Contains(keyword) ||
+                    p.FDate.ToString().Contains(keyword) ||
+                    p.FNumber.Contains(keyword) ||
+                    p.FEditor.ToString().Contains(keyword) ||
+                    p.FTotal.ToString().Contains(keyword) ||
+                    p.FId.ToString().Contains(keyword));
 
-            //查詢使用者輸入關鍵字，進入資料庫尋找:(1)關鍵字是否空值 (2)
-            if (string.IsNullOrEmpty(keyword))
-                datas = from t in db.TInvoices
-                        select t;
-            else
-                datas = db.TInvoices.Where(
-                 p => p.FCustomerId.ToString().Contains(keyword)
-                || p.FCustomerUbn.Contains(keyword)
-                || p.FProviderId.ToString().Contains(keyword)
-                || p.FProviderUbn.Contains(keyword)
-                || p.FForm.Contains(keyword)
-                || p.FInOut.ToString().Contains(keyword)
-                || p.FStatus.ToString().Contains(keyword)
-                || p.FDate.ToString().Contains(keyword)
-                || p.FNumber.Contains(keyword)
-                || p.FEditor.ToString().Contains(keyword)
-                || p.FTotal.ToString().Contains(keyword)
-                || p.FId.ToString().Contains(keyword));
+            // 查詢發票明細，計算發票總額 (FSum 總和)
+            var invoiceTotals = db.TInvoiceDetails
+                .GroupBy(d => d.FNumber)  // 依發票號碼分組
+                .ToDictionary(g => g.Key, g => g.Sum(d => d.FSum)); // 計算該發票的小計總額
 
-            //原TPurchase 擴展為CTPurchaseWrap(綠框): CTPurchaseWrap 為TPurchase的擴展。目的為，若有資料變動的時候，可以不造成程式碼更動太大。
-            //List<CInvoiceWrap> list = new List<CInvoiceWrap>();
-            //foreach (var t in datas)
-            //    list.Add(new CInvoiceWrap() { TInvoice = t });
-
+            // 轉換成 CInvoiceWrap，包含供應商名稱與供應商統編，並填入計算後的總額
             List<CInvoiceWrap> list = datas.Select(t => new CInvoiceWrap()
             {
                 TInvoice = t,
-                FProviderName = providers.ContainsKey(t.FProviderId) ? providers[t.FProviderId] : "未知供應商"
+                FProviderName = providers.ContainsKey(t.FProviderId) ? providers[t.FProviderId].FName : "未知供應商",
+                FProviderUbn = providers.ContainsKey(t.FProviderId) ? providers[t.FProviderId].FUbn : "未知統編",
+                FTotals = invoiceTotals.ContainsKey(t.FNumber) ? invoiceTotals[t.FNumber] : 0 // 填入計算後的總額
             }).ToList();
-
-
 
             return View(list);
         }
+
+
 
         //----------Create------------------------
         public IActionResult Create()
@@ -98,8 +90,9 @@ namespace prjVegetable.Controllers
 
             // 取得 TProduct 的所有 FName，并传递给前端
             ViewBag.ProductList = _dbContext.TProviders
-                                         .Select(p => new { p.FId, p.FName })
-                                         .ToList();
+                .Select(p => new { p.FId, p.FName, p.FUbn })
+                .ToList();
+
 
             //insert id into FEditor
             var viewModel = new CInvoiceWrap
@@ -173,8 +166,8 @@ namespace prjVegetable.Controllers
 
             // 取得 TProduct 的所有 FName，并传递给前端
             ViewBag.ProductList = _dbContext.TProviders
-                                         .Select(p => new { p.FId, p.FName })
-                                         .ToList();
+                .Select(p => new { p.FId, p.FName, p.FUbn })
+                .ToList();
 
             // 將找到的客戶資料傳遞到 View
             return View(c);

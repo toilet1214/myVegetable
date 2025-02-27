@@ -15,7 +15,7 @@
     <thead>
         <tr>
             <th>序號</th>
-            <th>ID</th>
+            @* <th>ID</th> *@
             <th>@Html.DisplayNameFor(model => model.FNumber)</th>
             <th>@Html.DisplayNameFor(model => model.FProductName)</th>
             <th>@Html.DisplayNameFor(model => model.FCount)</th>
@@ -31,7 +31,7 @@
             count++;
             <tr>
                 <td>@count</td>
-                <td>@Html.DisplayFor(modelItem => item.FId)</td>
+                @* <td>@Html.DisplayFor(modelItem => item.FId)</td> *@
                 <td>@Html.DisplayFor(modelItem => item.FNumber)</td>
                 <td>@Html.DisplayFor(modelItem => item.FProductName)</td>
                 <td>@Html.DisplayFor(modelItem => item.FCount)</td>

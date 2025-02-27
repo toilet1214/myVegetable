@@ -48,17 +48,18 @@
             <div class="form-group">
                 <label asp-for="FProviderId" class="control-label"></label>
                 @* <input asp-for="FProviderId" class="form-control" /> *@
-                <select asp-for="FProviderId" class="form-control">
+                <select id="FProviderId" asp-for="FProviderId" class="form-control">
+                    <option value="">請選擇供應商</option>
                     @foreach (var item in ViewBag.ProductList)
                     {
-                        <option value="@item.FId">@item.FName</option>
+                        <option value="@item.FId" data-ubn="@item.FUbn">@item.FName</option>
                     }
                 </select>
                 <span asp-validation-for="FProviderId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FProviderUbn" class="control-label"></label>
-                <input asp-for="FProviderUbn" class="form-control" />
+                <input asp-for="FProviderUbn" class="form-control" readonly />
                 <span asp-validation-for="FProviderUbn" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -78,9 +79,9 @@
                 <span asp-validation-for="FStatus" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="FTotal" class="control-label"></label>
-                <input asp-for="FTotal" class="form-control" />
-                <span asp-validation-for="FTotal" class="text-danger"></span>
+                <label asp-for="FTotals" class="control-label"></label>
+                <input asp-for="FTotals" class="form-control" readonly />
+                <span asp-validation-for="FTotals" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="FEditor" class="control-label"></label>
@@ -98,7 +99,17 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const providerSelect = document.getElementById("FProviderId");
+        const providerUbnInput = document.getElementById("FProviderUbn");
 
+        providerSelect.addEventListener("change", function () {
+            const selectedOption = providerSelect.options[providerSelect.selectedIndex];
+            providerUbnInput.value = selectedOption.getAttribute("data-ubn") || "";
+        });
+    });
+</script>
 
 
 @* @section Scripts {
