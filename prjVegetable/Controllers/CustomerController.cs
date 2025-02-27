@@ -57,29 +57,29 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> update([FromBody] CCustomerWrap CustomerWrap)
+        public async Task<IActionResult> update([FromBody] CPersonWrap PersonWrap)
         {
-            if (CustomerWrap == null || CustomerWrap.FId == 0)
+            if (PersonWrap == null || PersonWrap.FId == 0)
             {
                 return BadRequest("請求資料錯誤，缺少 FId");
             }
 
-            TPerson e = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == CustomerWrap.FId);
+            TPerson e = await _context.TPeople.FirstOrDefaultAsync(c => c.FId == PersonWrap.FId);
 
             if (e == null)
             {
                 return NotFound("找不到對應的會員");
             }
 
-            e.FName = CustomerWrap.FName;
-            e.FAccount = CustomerWrap.FAccount;
-            e.FPassword = CustomerWrap.FPassword;
-            e.FBirth = CustomerWrap.FBirth;
-            e.FPhone = CustomerWrap.FPhone;
-            e.FTel = CustomerWrap.FTel;
-            e.FAddress = CustomerWrap.FAddress;
-            e.FUbn = CustomerWrap.FUbn;
-            e.FGender = CustomerWrap.FGender;
+            e.FName = PersonWrap.FName;
+            e.FAccount = PersonWrap.FAccount;
+            e.FPassword = PersonWrap.FPassword;
+            e.FBirth = PersonWrap.FBirth;
+            e.FPhone = PersonWrap.FPhone;
+            e.FTel = PersonWrap.FTel;
+            e.FAddress = PersonWrap.FAddress;
+            e.FUbn = PersonWrap.FUbn;
+            e.FGender = PersonWrap.FGender;
 
             await _context.SaveChangesAsync();
 

@@ -132,6 +132,11 @@ namespace prjVegetable.Models
         {
             get { return _person.FEditor; }
             set { _person.FEditor = value; }
-        }        
+        }
+
+        [Required(ErrorMessage = "必填")]
+        [Compare("FPassword", ErrorMessage = "請確認密碼一致")]
+        [DisplayName("確認密碼")]
+        public string ConfirmPassword { get; set; }
     }
 }
