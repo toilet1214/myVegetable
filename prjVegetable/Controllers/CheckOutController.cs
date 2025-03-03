@@ -91,7 +91,6 @@ namespace prjVegetable.Controllers
                 // 清空購物車（直接刪除 TCart）
                 _dbContext.TCarts.RemoveRange(cartItems);
                 _dbContext.SaveChanges();
-                _dbContext.SaveChanges();
 
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
             }
@@ -101,12 +100,6 @@ namespace prjVegetable.Controllers
                 return View("Error");
             }
         }
-
-
-
-
-
-
         //step1 : 網頁導入傳值到前端
         public ActionResult Payment(int orderId)
         {
