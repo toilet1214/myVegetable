@@ -311,9 +311,9 @@
         let TotalMembersMonth = @Html.Raw(JsonSerializer.Serialize(Model.TotalMembersMonth));
         let AllLabel = @Html.Raw(JsonSerializer.Serialize(Model.AllMembersLabels));
         let MonthLabel = @Html.Raw(JsonSerializer.Serialize(
-        Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select((date, index) => (date.Day == 1 || index == 0) ? date.ToString("MM/dd") : date.ToString("dd")).ToList()));
+    Enumerable.Range(0, 30).Select(i => DateTime.Now.AddDays(-i)).Reverse().Select((date, index) => (date.Day == 1 || index == 0) ? date.ToString("MM/dd") : date.ToString("dd")).ToList()));
         let YearLabel = @Html.Raw(JsonSerializer.Serialize(
-        Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
+    Enumerable.Range(0, 12).Select(i => DateTime.Now.AddMonths(-i)).Reverse().Select(date => (date.Month == 1 || date == DateTime.Now.AddMonths(-11)) ? date.ToString("yyyy/MM") : date.ToString("MM")).ToList()));
         let chart;
         let maxAll = Math.max(...TotalMembersAll,5); // 取得最大值
         let maxYAll = Math.ceil(maxAll / 5) * 5; // 計算接近的 5 的倍數
@@ -720,17 +720,17 @@
                 var productNameCell = $('<td></td>').text(product.ProductName); // 商品名稱
                 row.append(productNameCell);
 
-                var totalLikesCell = $('<td></td>').text(product.Likes); 
+                var totalLikesCell = $('<td></td>').text(product.Likes);
                 row.append(totalLikesCell);
 
 
                 var totalRateCell = $('<td></td>');
                 var starContainer = $('<p class="d-inline-flex star-averating"></p>');
-                
+
                 var starValue = product.Star;
                 var wholeStars = Math.floor(starValue); // 整數部分
                 var halfStar = (starValue - wholeStars) >= 0.5 ? true : false; // 判斷是否有半顆星
-                
+
                 for (var i = 1; i <= 5; i++) {
                     if (i <= wholeStars) {
                         starContainer.append('<i class="bi bi-star-fill"></i>'); // 滿星
@@ -741,7 +741,7 @@
                         starContainer.append('<i class="bi bi-star"></i>'); // 空星
                     }
                 }
-                
+
                 totalRateCell.append(starContainer);
                 totalRateCell.append(' ' + starValue.toFixed(1)); // 顯示數字，確保只有 .0 和 .5
                 row.append(totalRateCell);
