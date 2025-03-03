@@ -43,7 +43,7 @@ namespace prjVegetable.Controllers
                     .ToList();
 
                 if (!cartItems.Any())
-                    return BadRequest("購物車是空的，無法完成結帳。");
+                    return RedirectToAction("ProductList", "Product");
 
                 // 計算購物車中的總金額
                 int totalAmount = 0;
