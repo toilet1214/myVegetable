@@ -88,6 +88,9 @@ namespace prjVegetable.Controllers
                     };
                     _dbContext.TOrderLists.Add(orderListItem);
                 }
+                // 清空購物車（直接刪除 TCart）
+                _dbContext.TCarts.RemoveRange(cartItems);
+                _dbContext.SaveChanges();
                 _dbContext.SaveChanges();
 
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
@@ -194,6 +197,7 @@ namespace prjVegetable.Controllers
         [HttpPost]
         public ActionResult PayInfo(IFormCollection id)
         {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
             var data = new Dictionary<string, string>();
             foreach (string key in id.Keys)
             {
@@ -254,39 +258,6 @@ namespace prjVegetable.Controllers
             }
             return View("CheckOutIndex", data);
         }
-
-        [HttpPost("UpdateOrderStatus")]
-        public IActionResult UpdateOrderStatus([FromBody] OrderUpdateModel updateModel)
-        {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
-            // 根據傳入的 orderId 找到訂單
-            var order = _dbContext.TOrders.FirstOrDefault(o => o.FId == updateModel.OrderId);
-            var cartItems = _dbContext.TCarts
-                   .Where(c => c.FPersonId == currentUserId)
-                   .ToList();
-            
-            if (order == null)
-            {
-                return NotFound("找不到訂單");
-            }
-
-            // 根據 rtnCode 更新狀態
-            if (updateModel.RtnCode == 0)
-            {
-                order.FStatus = 3;
-                order.FPay = 1;
-            }
-            else if (updateModel.RtnCode == 1)
-            {
-                order.FStatus = 1;
-                order.FPay = 2;
-                // 清空購物車（直接刪除 TCart）
-                _dbContext.TCarts.RemoveRange(cartItems);
-            }
-            _dbContext.SaveChanges();
-            return Ok("更新成功");
-        }
-
         public class OrderUpdateModel
         {
             public int OrderId { get; set; }
