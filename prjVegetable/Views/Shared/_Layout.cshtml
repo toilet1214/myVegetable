@@ -1,8 +1,5 @@
 ﻿@using System.Text.Json
-@{
-    // 取得 Session 中的登入使用者 ID
-    var loggedUserId = ViewContext.HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID);
-}
+
 <!DOCTYPE html>
 <html lang="zh-TW" class="h-100">
 
@@ -59,22 +56,23 @@
                             <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#contactUsModal">
                                 <i class="bi bi-chat-fill fs-4 me-3"></i>
                             </a>
-                            @if (TempData.Peek("IsLogIn") != null)
+                            @{
+                                var permission = 0;
+                                var userJson = @Context.Session.GetString(CDictionary.SK_LOGINED_USER);
+                                if (!string.IsNullOrEmpty(userJson))
+                                {
+                                    var user = JsonSerializer.Deserialize<TPerson>(userJson);
+                                    permission = user.FPermission;   // 取得權限
+                                }
+                            }
+                            @if (!string.IsNullOrEmpty(userJson))
                             {
 
                                 <button class="dropdown border-0 bg-white p-0">
                                     <a id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-person-fill fs-4 me-3"></i></a>
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                                         <li><a class="dropdown-item fs-5" asp-controller="Customer" asp-action="Index"><i class="bi bi-person-fill"></i> 會員中心</a></li>
-                                        @{
-                                            var permission = 0;
-                                            var userJson = @Context.Session.GetString(CDictionary.SK_LOGINED_USER);
-                                            if (!string.IsNullOrEmpty(userJson))
-                                            {
-                                                var user = JsonSerializer.Deserialize<TPerson>(userJson);
-                                                permission = user.FPermission;   // 取得權限
-                                            }
-                                        }
+                                        
                                         @if (permission == 1)
                                         {
                                             <li><a class="dropdown-item fs-5" asp-controller="ERP" asp-action="Index"><i class="bi bi-gear"></i> 後台管理</a></li>
@@ -91,7 +89,7 @@
                                 </a>
                             }
 
-                            @if (!string.IsNullOrEmpty(loggedUserId))
+                            @if (!string.IsNullOrEmpty(userJson))
                             {
                                 <a asp-action="Cart" asp-controller="Cart" role="button">
                                     <i class="bi bi-bag-fill fs-4 me-3"></i>

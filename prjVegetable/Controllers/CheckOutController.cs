@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjVegetable.Models;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using System.Text.Json;
+
 
 namespace prjVegetable.Controllers
 {
@@ -89,7 +92,6 @@ namespace prjVegetable.Controllers
                     _dbContext.TOrderLists.Add(orderListItem);
                 }
                 _dbContext.SaveChanges();
-                ClearCart(currentUserId);
 
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
             }
@@ -104,11 +106,9 @@ namespace prjVegetable.Controllers
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out userId);
             var userCartItems = _dbContext.TCarts.Where(c => c.FPersonId == userId).ToList();
-            if (userCartItems.Any())
-            {
-                _dbContext.TCarts.RemoveRange(userCartItems);
-                _dbContext.SaveChanges();  
-            }
+
+            _dbContext.TCarts.RemoveRange(userCartItems);
+            _dbContext.SaveChanges();
         }
         //step1 : 網頁導入傳值到前端
         public ActionResult Payment(int orderId)
@@ -198,7 +198,7 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public ActionResult PayInfo(IFormCollection id,int currentUserId)
+        public ActionResult PayInfo(IFormCollection id, int currentUserId)
         {
             Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out currentUserId);
             var data = new Dictionary<string, string>();
@@ -214,10 +214,20 @@ namespace prjVegetable.Controllers
                 ecpayOrder.RtnCode = int.Parse(id["RtnCode"]);
                 if (id["RtnMsg"] == "Succeeded")
                 {
+                    var UId = db.TOrders.Where(m => m.FMerchantTradeNo == ecpayOrder.MerchantTradeNo).FirstOrDefault().FPersonId;
                     ecpayOrder.RtnMsg = "已付款";
                     ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
                     ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
                     db.SaveChanges();
+                    
+                    TPerson user = db.TPeople.FirstOrDefault(m => m.FId == UId);
+                    if (user != null)
+                    {
+                        string json = JsonSerializer.Serialize(user);
+                        HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER, json);
+                        HttpContext.Session.SetString(CDictionary.SK_LOGINED_USER_ID, user.FId.ToString());
+                        ClearCart(user.FId);
+                    }
                 }
                 if (int.TryParse(id["CustomField1"], out int orderId))
                 {
