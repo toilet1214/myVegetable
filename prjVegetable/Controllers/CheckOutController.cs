@@ -88,9 +88,8 @@ namespace prjVegetable.Controllers
                     };
                     _dbContext.TOrderLists.Add(orderListItem);
                 }
-                // 清空購物車（直接刪除 TCart）
-                _dbContext.TCarts.RemoveRange(cartItems);
                 _dbContext.SaveChanges();
+                ClearCart(currentUserId);
 
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
             }
@@ -98,6 +97,17 @@ namespace prjVegetable.Controllers
             {
                 Console.WriteLine("錯誤：" + ex.Message);
                 return View("Error");
+            }
+        }
+
+        private void ClearCart(int userId)
+        {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out userId);
+            var userCartItems = _dbContext.TCarts.Where(c => c.FPersonId == userId).ToList();
+            if (userCartItems.Any())
+            {
+                _dbContext.TCarts.RemoveRange(userCartItems);
+                _dbContext.SaveChanges();  
             }
         }
         //step1 : 網頁導入傳值到前端
@@ -188,9 +198,9 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public ActionResult PayInfo(IFormCollection id)
+        public ActionResult PayInfo(IFormCollection id,int currentUserId)
         {
-            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out currentUserId);
             var data = new Dictionary<string, string>();
             foreach (string key in id.Keys)
             {
@@ -202,11 +212,13 @@ namespace prjVegetable.Controllers
             if (ecpayOrder != null)
             {
                 ecpayOrder.RtnCode = int.Parse(id["RtnCode"]);
-                if (id["RtnMsg"] == "Succeeded") ecpayOrder.RtnMsg = "已付款";
-                ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
-                ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
-                db.SaveChanges();
-
+                if (id["RtnMsg"] == "Succeeded")
+                {
+                    ecpayOrder.RtnMsg = "已付款";
+                    ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
+                    ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
+                    db.SaveChanges();
+                }
                 if (int.TryParse(id["CustomField1"], out int orderId))
                 {
                     var order = db.TOrders.FirstOrDefault(o => o.FId == orderId);
