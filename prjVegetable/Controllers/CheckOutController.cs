@@ -90,12 +90,6 @@ namespace prjVegetable.Controllers
                 }
                 _dbContext.SaveChanges();
 
-
-
-                // 清空購物車（直接刪除 TCart）
-                _dbContext.TCarts.RemoveRange(cartItems);
-                _dbContext.SaveChanges();
-
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
             }
             catch (Exception ex)
@@ -264,8 +258,13 @@ namespace prjVegetable.Controllers
         [HttpPost("UpdateOrderStatus")]
         public IActionResult UpdateOrderStatus([FromBody] OrderUpdateModel updateModel)
         {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out int currentUserId);
             // 根據傳入的 orderId 找到訂單
             var order = _dbContext.TOrders.FirstOrDefault(o => o.FId == updateModel.OrderId);
+            var cartItems = _dbContext.TCarts
+                   .Where(c => c.FPersonId == currentUserId)
+                   .ToList();
+            
             if (order == null)
             {
                 return NotFound("找不到訂單");
@@ -281,6 +280,8 @@ namespace prjVegetable.Controllers
             {
                 order.FStatus = 1;
                 order.FPay = 2;
+                // 清空購物車（直接刪除 TCart）
+                _dbContext.TCarts.RemoveRange(cartItems);
             }
             _dbContext.SaveChanges();
             return Ok("更新成功");
