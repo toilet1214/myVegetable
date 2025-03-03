@@ -43,7 +43,7 @@ namespace prjVegetable.Controllers
                     .ToList();
 
                 if (!cartItems.Any())
-                    return BadRequest("購物車是空的，無法完成結帳。");
+                    return RedirectToAction("ProductList", "Product");
 
                 // 計算購物車中的總金額
                 int totalAmount = 0;
@@ -89,12 +89,7 @@ namespace prjVegetable.Controllers
                     _dbContext.TOrderLists.Add(orderListItem);
                 }
                 _dbContext.SaveChanges();
-
-
-
-                // 清空購物車（直接刪除 TCart）
-                _dbContext.TCarts.RemoveRange(cartItems);
-                _dbContext.SaveChanges();
+                ClearCart(currentUserId);
 
                 return RedirectToAction("Payment", "CheckOut", new { orderId = newOrder.FId });
             }
@@ -105,11 +100,16 @@ namespace prjVegetable.Controllers
             }
         }
 
-
-
-
-
-
+        private void ClearCart(int userId)
+        {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out userId);
+            var userCartItems = _dbContext.TCarts.Where(c => c.FPersonId == userId).ToList();
+            if (userCartItems.Any())
+            {
+                _dbContext.TCarts.RemoveRange(userCartItems);
+                _dbContext.SaveChanges();  
+            }
+        }
         //step1 : 網頁導入傳值到前端
         public ActionResult Payment(int orderId)
         {
@@ -149,12 +149,12 @@ namespace prjVegetable.Controllers
             //綠界需要的參數
             { "MerchantTradeNo",  MerchantTradeNo},
             { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
-            { "TotalAmount",  SQLorder.FTotal.ToString()},
+            { "TotalAmount",  SQLorder.FTotal.ToString().Trim()},
             { "TradeDesc",  "無"},
             { "ItemName",  itemName},
             { "ExpireDate",  "3"},
-            { "CustomField1",  SQLorder.FId.ToString()},
-            { "CustomField2",  ""},
+            { "CustomField1",  SQLorder.FId.ToString().Trim()},
+            { "CustomField2",  SQLorder.FPersonId.ToString().Trim()},
             { "CustomField3",  ""},
             { "CustomField4",  ""},
             { "ReturnURL",  $"{website}/api/AddPayInfo"},
@@ -198,8 +198,9 @@ namespace prjVegetable.Controllers
         }
 
         [HttpPost]
-        public ActionResult PayInfo(IFormCollection id)
+        public ActionResult PayInfo(IFormCollection id,int currentUserId)
         {
+            Int32.TryParse(HttpContext.Session.GetString(CDictionary.SK_LOGINED_USER_ID), out currentUserId);
             var data = new Dictionary<string, string>();
             foreach (string key in id.Keys)
             {
@@ -211,11 +212,13 @@ namespace prjVegetable.Controllers
             if (ecpayOrder != null)
             {
                 ecpayOrder.RtnCode = int.Parse(id["RtnCode"]);
-                if (id["RtnMsg"] == "Succeeded") ecpayOrder.RtnMsg = "已付款";
-                ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
-                ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
-                db.SaveChanges();
-
+                if (id["RtnMsg"] == "Succeeded")
+                {
+                    ecpayOrder.RtnMsg = "已付款";
+                    ecpayOrder.PaymentDate = Convert.ToDateTime(id["PaymentDate"]);
+                    ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
+                    db.SaveChanges();
+                }
                 if (int.TryParse(id["CustomField1"], out int orderId))
                 {
                     var order = db.TOrders.FirstOrDefault(o => o.FId == orderId);
@@ -260,32 +263,6 @@ namespace prjVegetable.Controllers
             }
             return View("CheckOutIndex", data);
         }
-
-        [HttpPost("UpdateOrderStatus")]
-        public IActionResult UpdateOrderStatus([FromBody] OrderUpdateModel updateModel)
-        {
-            // 根據傳入的 orderId 找到訂單
-            var order = _dbContext.TOrders.FirstOrDefault(o => o.FId == updateModel.OrderId);
-            if (order == null)
-            {
-                return NotFound("找不到訂單");
-            }
-
-            // 根據 rtnCode 更新狀態
-            if (updateModel.RtnCode == 0)
-            {
-                order.FStatus = 3;
-                order.FPay = 1;
-            }
-            else if (updateModel.RtnCode == 1)
-            {
-                order.FStatus = 1;
-                order.FPay = 2;
-            }
-            _dbContext.SaveChanges();
-            return Ok("更新成功");
-        }
-
         public class OrderUpdateModel
         {
             public int OrderId { get; set; }
