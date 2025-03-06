@@ -273,8 +273,8 @@
             }
         }
 
-        AvgOrderTotal.innerHTML = AvgOrderTotalsDay.toLocaleString();
-        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageDay);
+        AvgOrderTotal.innerHTML = AvgOrderTotalsYear.toLocaleString();
+        AvgOrderTotalsPercentageDisplay(AvgOrderTotalsPercentageYear);
         // 監聽篩選選單點擊事件
         AvgOrderTotalsList.addEventListener("click", function (event) {
             if (event.target.classList.contains("dropdown-item")) {
@@ -348,8 +348,8 @@
             }
         }
 
-        Orders.innerHTML = OrdersDay.toLocaleString();
-        OrdersPercentageDisplay(OrdersPercentageDay);
+        Orders.innerHTML = OrdersYear.toLocaleString();
+        OrdersPercentageDisplay(OrdersPercentageYear);
         // 監聽篩選選單點擊事件
         OrdersList.addEventListener("click", function (event) {
             if (event.target.classList.contains("dropdown-item")) {

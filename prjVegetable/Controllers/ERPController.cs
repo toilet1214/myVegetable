@@ -23,8 +23,8 @@ namespace prjVegetable.Controllers
             int TotalOrdersYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2);
             int TotalOrdersMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.Month && o.FOrderAt.Year == DateTime.Now.Year && o.FStatus == 2);
             int TotalOrdersDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date && o.FStatus == 2);
-            int TotalOrdersLastYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year-1 && o.FStatus == 2);
-            int TotalOrdersLastMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.AddMonths(-1).Month && o.FOrderAt.Year == DateTime.Now.AddMonths(-1).Year && o.FStatus == 2); 
+            int TotalOrdersLastYear = _VegetableContext.TOrders.Count(o => o.FOrderAt.Year == DateTime.Now.Year - 1 && o.FStatus == 2);
+            int TotalOrdersLastMonth = _VegetableContext.TOrders.Count(o => o.FOrderAt.Month == DateTime.Now.AddMonths(-1).Month && o.FOrderAt.Year == DateTime.Now.AddMonths(-1).Year && o.FStatus == 2);
             int TotalOrdersLastDay = _VegetableContext.TOrders.Count(o => o.FOrderAt.Date == DateTime.Now.Date.AddDays(-1) && o.FStatus == 2);
 
             // 當年與去年比較
@@ -258,18 +258,31 @@ namespace prjVegetable.Controllers
             .ToList();
 
             var MostPopularProduct = _VegetableContext.TFavorites
-                .Join(_VegetableContext.TProducts, f => f.FProductId, p => p.FId, (f, p) => new { f, p })
-                .GroupJoin(_VegetableContext.TComments, j => j.p.FId, c => c.FProductId,
-                    (j, comments) => new
-                    {
-                        ProductName = j.p.FName,
-                        ProductId = j.p.FId,
-                        Likes = _VegetableContext.TFavorites.Count(f => f.FProductId == j.p.FId), // 依喜愛數量計算
-                        Star = comments.Any() ? comments.Average(c => c.FStar) : 0 // 如果沒有評論，平均星級為 0
-                    })
-                .OrderByDescending(y => y.Likes)  // 根據喜愛數量排序
-                .Take(5)
-                .ToList();
+    .GroupBy(f => f.FProductId) // 先根據產品 ID 分組
+    .Select(g => new
+    {
+        ProductId = g.Key,
+        Likes = g.Count() // 計算該產品的喜愛數量
+    })
+    .Join(_VegetableContext.TProducts, f => f.ProductId, p => p.FId,
+        (f, p) => new
+        {
+            ProductName = p.FName,
+            ProductId = p.FId,
+            Likes = f.Likes
+        })
+    .GroupJoin(_VegetableContext.TComments, j => j.ProductId, c => c.FProductId,
+        (j, comments) => new
+        {
+            ProductName = j.ProductName,
+            ProductId = j.ProductId,
+            Likes = j.Likes,
+            Star = comments.Any() ? comments.Average(c => c.FStar) : 0 // 計算平均星級
+        })
+    .OrderByDescending(y => y.Likes) // 根據喜愛數量排序
+    .Take(5)
+    .ToList();
+
 
 
             List<int> SellingClassYear = _VegetableContext.TOrderLists
