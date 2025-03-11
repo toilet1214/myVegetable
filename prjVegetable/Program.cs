@@ -43,9 +43,9 @@ builder.Services.AddAuthentication(options =>
 })
 .AddGoogle(googleOptions =>
 {
-    googleOptions.ClientId = "787695587602-c0sg85tlcrteh4r27hhdiqsgtavdstdl.apps.googleusercontent.com";
-    googleOptions.ClientSecret = "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";
-    googleOptions.CallbackPath = "/signin-google"; // 預設回調路徑
+    googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    googleOptions.CallbackPath = "/signin-google";
 });
 
 var app = builder.Build();
